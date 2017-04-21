@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_bg"
+    android:clickable="true"
+    android:padding="@dimen/fifteen">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_rect_white_rad_ten">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvTitleTimeSecurity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/ten"
+            android:text="@string/time_security_title"
+            android:textColor="@color/blue_pri"
+            android:textSize="@dimen/nineteen"
+            codePan:typeface="@string/dialog_title_font"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvTitleTimeSecurity"
+            android:padding="@dimen/fifteen">
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvMessageTimeSecurity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:text="@string/time_security_message"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvTarkieTimeTitleTimeSecurity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvMessageTimeSecurity"
+                android:layout_marginTop="@dimen/twenty"
+                android:gravity="center"
+                android:text="@string/server_time"
+                android:textColor="@color/blue_pri"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+            <LinearLayout
+                android:id="@+id/llDateTimeTimeSecurity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvTarkieTimeTitleTimeSecurity"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/five"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvDateTimeSecurity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="November 23, 2014"
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/sixteen"
+                        codePan:typeface="@string/proxima_nova_light"/>
+
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvTimeTimeSecurity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text="12:00 pm"
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/sixteen"
+                        codePan:typeface="@string/proxima_nova_light"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/five"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvValidateTimeSecurity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text="@string/time_security_refresh"
+                        android:textColor="@color/blue_pri"
+                        android:textSize="@dimen/sixteen"
+                        codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvInstructionsTimeSecurity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/llDateTimeTimeSecurity"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="@string/time_security_instructions"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvInstructionsTimeSecurity"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/fifteen"
+                android:orientation="horizontal">
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnCancelTimeSecurity"
+                    android:layout_width="@dimen/one_hundred"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_gray_qua_rad_five"
+                    android:padding="@dimen/ten"
+                    android:text="@string/cancel"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/eighteen"
+                    codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnSettingsTimeSecurity"
+                    android:layout_width="@dimen/one_hundred"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/ten"
+                    android:layout_marginStart="@dimen/ten"
+                    android:background="@drawable/state_rect_green_pri_rad_five"
+                    android:padding="@dimen/ten"
+                    android:text="@string/settings"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/eighteen"
+                    codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

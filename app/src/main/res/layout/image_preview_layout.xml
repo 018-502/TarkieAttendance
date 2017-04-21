@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/rlHeaderImagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header"
+        android:background="@color/header">
+
+        <FrameLayout
+            android:id="@+id/flBackImagePreview"
+            android:layout_width="@dimen/header"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="@dimen/seventeen"
+                android:layout_height="@dimen/fifteen"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnBackImagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvImagePreview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/flBackImagePreview"
+            android:layout_toLeftOf="@+id/flDeleteImagePreview"
+            android:layout_toRightOf="@+id/flBackImagePreview"
+            android:layout_toStartOf="@+id/flDeleteImagePreview"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <FrameLayout
+            android:id="@+id/flDeleteImagePreview"
+            android:layout_width="@dimen/header"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="@dimen/eighteen"
+                android:layout_height="@dimen/twenty_one"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_delete"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnDeleteImagePreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpImagePreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/rlHeaderImagePreview"/>
+
+</RelativeLayout>

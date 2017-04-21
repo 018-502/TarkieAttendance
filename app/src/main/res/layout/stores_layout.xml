@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/rlHeaderStores"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header"
+        android:layout_alignParentTop="true"
+        android:background="@color/header">
+
+        <FrameLayout
+            android:id="@+id/flBackStores"
+            android:layout_width="@dimen/header"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="@dimen/eighteen"
+                android:layout_height="@dimen/sixteen"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnBackStores"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvTitleStores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/header"
+            android:layout_marginRight="@dimen/header"
+            android:layout_toEndOf="@+id/flBackStores"
+            android:layout_toRightOf="@+id/flBackStores"
+            android:gravity="center"
+            android:text="@string/stores"
+            android:textColor="@color/white"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/flSearchStores"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlHeaderStores"
+        android:layout_margin="@dimen/fifteen">
+
+        <com.codepan.widget.CodePanTextField
+            android:id="@+id/etSearchStores"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/state_rect_gray_sec_rad_three"
+            android:hint="@string/search"
+            android:paddingBottom="@dimen/ten"
+            android:paddingEnd="@dimen/thirty"
+            android:paddingLeft="@dimen/eight"
+            android:paddingRight="@dimen/thirty"
+            android:paddingStart="@dimen/eight"
+            android:paddingTop="@dimen/ten"
+            android:textColor="@color/gray_pri"
+            android:textColorHint="@color/gray_qua"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <ImageView
+            android:layout_width="@dimen/twenty"
+            android:layout_height="@dimen/twenty_one"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/eight"
+            android:layout_marginRight="@dimen/eight"
+            android:src="@drawable/ic_search"/>
+
+    </FrameLayout>
+
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:layout_below="@+id/flSearchStores"
+        android:background="@color/gray_sec"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/vDivider">
+
+        <ListView
+            android:id="@+id/lvStores"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/transparent"
+            android:dividerHeight="0dp"
+            android:listSelector="@color/transparent"
+            android:scrollbarSize="@dimen/scrollbar"
+            android:scrollbarThumbVertical="@color/scrollbar"/>
+
+        <ImageView
+            android:id="@+id/ivLoadingStores"
+            android:layout_width="@dimen/fifty"
+            android:layout_height="@dimen/fifty"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_loading"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

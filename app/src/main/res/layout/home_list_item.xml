@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:background="@color/gray_sec"/>
+
+    <RelativeLayout
+        android:id="@+id/rlItemHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vDivider"
+        android:paddingBottom="@dimen/eight"
+        android:paddingEnd="@dimen/ten"
+        android:paddingLeft="@dimen/ten"
+        android:paddingRight="@dimen/ten"
+        android:paddingStart="@dimen/ten"
+        android:paddingTop="@dimen/eight">
+
+        <ImageView
+            android:id="@+id/ivLogoHome"
+            android:layout_width="@dimen/thirty_eight"
+            android:layout_height="@dimen/thirty_eight"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@color/gray_sec"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvNameHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/ten"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_marginStart="@dimen/ten"
+            android:layout_toEndOf="@+id/ivLogoHome"
+            android:layout_toLeftOf="@+id/ivNextHome"
+            android:layout_toRightOf="@+id/ivLogoHome"
+            android:layout_toStartOf="@+id/ivNextHome"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+        <ImageView
+            android:id="@+id/ivNextHome"
+            android:layout_width="@dimen/seven"
+            android:layout_height="@dimen/fifteen"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_next_dark"/>
+
+    </RelativeLayout>
+
+    <com.codepan.widget.CodePanButton
+        android:id="@+id/btnItemHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rlItemHome"
+        android:layout_alignTop="@+id/rlItemHome"
+        android:background="@drawable/state_rect_trans_dark"/>
+
+</RelativeLayout>

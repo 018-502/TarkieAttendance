@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/rlSignatureDialog"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_trans_sixty"
+    android:clickable="true"
+    android:padding="@dimen/ten">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_rect_white_rad_five"
+        android:padding="@dimen/ten">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvTitleSignatureDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/five"
+            android:text="@string/add_signature"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <FrameLayout
+            android:id="@+id/flSignatureDialog"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/one_hundred_fifty"
+            android:layout_below="@+id/tvTitleSignatureDialog"
+            android:layout_marginTop="@dimen/ten">
+
+            <com.codepan.widget.SignatureView
+                android:id="@+id/svSignatureDialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_layer_rect_white_rad_five_str_green"/>
+
+            <ImageView
+                android:id="@+id/ivSignatureDialog"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_layer_rect_white_rad_five_str_green"
+                android:padding="@dimen/five"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/llSignatureDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/flSignatureDialog"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/ten"
+            android:orientation="horizontal">
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnCancelSignatureDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_gray_qui_rad_five"
+                android:minWidth="@dimen/one_hundred_twenty"
+                android:paddingBottom="@dimen/ten"
+                android:paddingLeft="@dimen/five"
+                android:paddingRight="@dimen/five"
+                android:paddingTop="@dimen/ten"
+                android:text="Cancel"
+                android:textColor="@color/white"
+                android:textSize="@dimen/eighteen"
+                android:visibility="visible"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnSaveSignatureDialog"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/five"
+                android:layout_marginStart="@dimen/five"
+                android:background="@drawable/state_rect_green_pri_rad_five"
+                android:minWidth="@dimen/one_hundred_twenty"
+                android:paddingBottom="@dimen/ten"
+                android:paddingLeft="@dimen/five"
+                android:paddingRight="@dimen/five"
+                android:paddingTop="@dimen/ten"
+                android:text="Save"
+                android:textColor="@color/white"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

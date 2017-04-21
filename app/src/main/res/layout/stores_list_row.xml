@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/vHeader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/twelve"
+        android:layout_marginTop="@dimen/ten"
+        android:visibility="gone"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvHeaderMain"
+        android:layout_width="@dimen/thirty"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/vHeader"
+        android:layout_marginTop="@dimen/one"
+        android:gravity="center_horizontal"
+        android:text="A"
+        android:textColor="@color/blue_pri"
+        android:textSize="@dimen/twenty"
+        android:visibility="gone"
+        codePan:typeface="@string/proxima_nova_bold"/>
+
+    <LinearLayout
+        android:id="@+id/llHeader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/thirteen"
+        android:layout_alignTop="@+id/tvStoreName"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvHeader"
+            android:layout_width="@dimen/thirty"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:text="A"
+            android:textColor="@color/blue_pri"
+            android:textSize="@dimen/twenty"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/one"
+            android:background="@color/blue_pri"/>
+
+    </LinearLayout>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvStoreName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vHeader"
+        android:background="@drawable/state_rect_trans_dark"
+        android:paddingBottom="@dimen/twelve"
+        android:paddingEnd="@dimen/ten"
+        android:paddingLeft="@dimen/thirty"
+        android:paddingRight="@dimen/ten"
+        android:paddingStart="@dimen/thirty"
+        android:paddingTop="@dimen/twelve"
+        android:text="ABC Supermart"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/seventeen"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:layout_below="@+id/tvStoreName"
+        android:layout_marginLeft="@dimen/thirty"
+        android:layout_marginStart="@dimen/thirty"
+        android:background="@color/gray_sec"/>
+
+    <LinearLayout
+        android:id="@+id/llFooter"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/twelve"
+        android:layout_alignBottom="@+id/tvStoreName"
+        android:orientation="horizontal">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvFooter"
+            android:layout_width="@dimen/thirty"
+            android:layout_height="match_parent"
+            android:gravity="top|center_horizontal"
+            android:text="B"
+            android:textColor="@color/blue_pri"
+            android:textSize="@dimen/twenty"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

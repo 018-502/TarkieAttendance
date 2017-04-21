@@ -1,0 +1,83 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusableInTouchMode="true">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_bg_sec"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/ivLogoAuthorization"
+            android:layout_width="@dimen/one_hundred_fifty_three"
+            android:layout_height="@dimen/seventy"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/eighteen"
+            android:src="@drawable/ic_logo"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ivLogoAuthorization"
+            android:layout_marginBottom="@dimen/eighty_four"
+            android:layout_marginEnd="@dimen/forty_six"
+            android:layout_marginLeft="@dimen/forty_six"
+            android:layout_marginRight="@dimen/forty_six"
+            android:layout_marginStart="@dimen/forty_six"
+            android:layout_marginTop="@dimen/thirty"
+            android:background="@drawable/bg_rect_white_rad_ten"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/twenty_two"
+            android:paddingEnd="@dimen/sixteen"
+            android:paddingLeft="@dimen/sixteen"
+            android:paddingRight="@dimen/sixteen"
+            android:paddingStart="@dimen/sixteen"
+            android:paddingTop="@dimen/twenty_two">
+
+            <com.codepan.widget.CodePanTextField
+                android:id="@+id/etCodeAuthorization"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_gray_sen_rad_five"
+                android:gravity="center"
+                android:hint="Authorization Code"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:padding="@dimen/nine"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/nineteen"
+                codePan:autoHideKeyboard="true"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnAuthorization"
+                android:layout_width="@dimen/one_hundred_thirty_two"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/twenty_two"
+                android:background="@drawable/state_rect_green_pri_rad_five"
+                android:gravity="center"
+                android:padding="@dimen/nine"
+                android:text="Authorize"
+                android:textColor="@color/white"
+                android:textSize="@dimen/nineteen"
+                codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

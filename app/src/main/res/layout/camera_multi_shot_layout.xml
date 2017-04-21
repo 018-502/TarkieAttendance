@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/flCameraMultiShot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.codepan.widget.FocusIndicatorView
+                android:id="@+id/dvCameraMultiShot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/vCameraMultiShot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"/>
+
+    <RelativeLayout
+        android:id="@+id/rlHeaderCameraMultiShot"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header"
+        android:background="@color/header">
+
+        <FrameLayout
+            android:id="@+id/flBackCameraMultiShot"
+            android:layout_width="@dimen/header"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="@dimen/seventeen"
+                android:layout_height="@dimen/fifteen"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnBackCameraMultiShot"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/eighteen"
+            android:layout_marginRight="@dimen/eighteen"
+            android:layout_toEndOf="@+id/flBackCameraMultiShot"
+            android:layout_toLeftOf="@+id/flOptionsCameraMultiShot"
+            android:layout_toRightOf="@+id/flBackCameraMultiShot"
+            android:layout_toStartOf="@+id/flOptionsCameraMultiShot"
+            android:gravity="center"
+            android:text="@string/camera"
+            android:textColor="@color/white"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <FrameLayout
+            android:id="@+id/flOptionsCameraMultiShot"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="@dimen/four"
+                android:layout_height="@dimen/twenty"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_options_light"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnOptionsCameraMultiShot"
+                android:layout_width="@dimen/thirty"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/rlPhotoGridCameraMultiShot"
+        android:background="@color/black_trans_twenty"
+        android:gravity="center_vertical|end"
+        android:orientation="horizontal"
+        android:padding="@dimen/eight">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvPhotosTakenCameraMultiShot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/yellow_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/five"
+            android:layout_marginStart="@dimen/five"
+            android:text="@string/photos_taken"
+            android:textColor="@color/white"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlPhotoGridCameraMultiShot"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/flCaptureCameraMultiShot"
+        android:background="@color/white"
+        android:visibility="gone">
+
+        <HorizontalScrollView
+            android:id="@+id/hsvPhotoGridCameraMultiShot"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/forty_nine"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:cacheColorHint="@color/white"
+            android:fadingEdge="horizontal"
+            android:fadingEdgeLength="@dimen/forty"
+            android:requiresFadingEdge="horizontal"
+            android:scrollbarSize="0dp"
+            android:scrollbarThumbHorizontal="@color/transparent">
+
+            <LinearLayout
+                android:id="@+id/llPhotoGridCameraMultiShot"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:animateLayoutChanges="true"
+                android:animationCache="false"
+                android:gravity="end"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/five"
+                android:paddingEnd="@dimen/two"
+                android:paddingRight="@dimen/two"
+                android:paddingTop="@dimen/five"/>
+
+        </HorizontalScrollView>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/flCaptureCameraMultiShot"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fifty_five"
+        android:layout_alignParentBottom="true"
+        android:background="@color/blue_pri">
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnCaptureCameraMultiShot"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/state_rect_trans_dark"
+            android:gravity="center"
+            android:text="@string/take_photo"
+            android:textColor="@color/white"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlOptionsCameraMultiShot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/llOptionsCameraMultiShot"
+            android:layout_width="@dimen/two_hundred"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/three"
+            android:background="@color/gray_sen"
+            android:elevation="@dimen/eight"
+            android:orientation="vertical">
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnDoneCameraMultiShot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:gravity="left"
+                android:padding="@dimen/twelve"
+                android:text="@string/save"
+                android:textColor="@color/gray_oct"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
+                android:background="@color/gray_non"/>
+
+            <LinearLayout
+                android:id="@+id/llSwitchCameraMultiShot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnSwitchCameraMultiShot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_trans_dark"
+                    android:gravity="left"
+                    android:padding="@dimen/twelve"
+                    android:text="@string/switch_camera"
+                    android:textColor="@color/gray_oct"
+                    android:textSize="@dimen/eighteen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/one"
+                    android:background="@color/gray_non"/>
+
+            </LinearLayout>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnClearCameraMultiShot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:gravity="left"
+                android:padding="@dimen/twelve"
+                android:text="@string/clear_all"
+                android:textColor="@color/gray_oct"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

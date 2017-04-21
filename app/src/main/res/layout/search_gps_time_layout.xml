@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_bg"
+    android:clickable="true"
+    android:padding="@dimen/thirty">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_rect_white_rad_ten"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/fifteen">
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/search_gps_title"
+            android:textColor="@color/blue_pri"
+            android:textSize="@dimen/nineteen"
+            codePan:typeface="@string/dialog_title_font"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ten"
+            android:gravity="center"
+            android:text="@string/search_gps_message"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <ImageView
+            android:id="@+id/ivLoadingSearchGpsTime"
+            android:layout_width="@dimen/fifty_five"
+            android:layout_height="@dimen/fifty_five"
+            android:layout_marginTop="@dimen/ten"
+            android:src="@drawable/ic_loading"/>
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnCancelSearchGpsTime"
+            android:layout_width="@dimen/one_hundred_twenty"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ten"
+            android:background="@drawable/state_rect_green_pri_rad_five"
+            android:padding="@dimen/ten"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

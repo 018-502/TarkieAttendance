@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/rlHeaderForm"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header"
+        android:background="@color/header">
+
+        <FrameLayout
+            android:id="@+id/flBackForm"
+            android:layout_width="@dimen/header"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+
+            <ImageView
+                android:layout_width="@dimen/seventeen"
+                android:layout_height="@dimen/fifteen"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_back"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnBackForm"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvNameForm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/eighteen"
+            android:layout_marginRight="@dimen/eighteen"
+            android:layout_toEndOf="@+id/flBackForm"
+            android:layout_toLeftOf="@+id/flOptionsForm"
+            android:layout_toRightOf="@+id/flBackForm"
+            android:layout_toStartOf="@+id/flOptionsForm"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <FrameLayout
+            android:id="@+id/flOptionsForm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:layout_width="@dimen/four"
+                android:layout_height="@dimen/twenty"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_options_light"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnOptionsForm"
+                android:layout_width="@dimen/thirty"
+                android:layout_height="match_parent"
+                android:background="@drawable/state_rect_trans_dark"/>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/flForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/llPageForm"
+        android:layout_below="@+id/rlHeaderForm"/>
+
+    <LinearLayout
+        android:id="@+id/llPageForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/flNextForm"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"/>
+
+    <FrameLayout
+        android:id="@+id/flNextForm"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fifty_five"
+        android:layout_alignParentBottom="true"
+        android:background="@color/blue_pri">
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnNextForm"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/state_rect_trans_dark"
+            android:gravity="center"
+            android:text="@string/next"
+            android:textColor="@color/white"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <ImageView
+            android:layout_width="@dimen/eight"
+            android:layout_height="@dimen/fifteen"
+            android:layout_gravity="center_vertical|end"
+            android:layout_margin="@dimen/fifteen"
+            android:src="@drawable/ic_next_light"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlOptionsForm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/llOptionsForm"
+            android:layout_width="@dimen/one_hundred_eighty"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/three"
+            android:background="@color/gray_sen"
+            android:elevation="@dimen/eight"
+            android:orientation="vertical">
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnSaveForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:gravity="left"
+                android:padding="@dimen/twelve"
+                android:text="@string/save"
+                android:textColor="@color/gray_oct"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
+                android:background="@color/gray_non"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnCancelForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_dark"
+                android:gravity="left"
+                android:padding="@dimen/twelve"
+                android:text="@string/cancel"
+                android:textColor="@color/gray_oct"
+                android:textSize="@dimen/eighteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <LinearLayout
+                android:id="@+id/llDeleteForm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/one"
+                    android:background="@color/gray_non"/>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnDeleteForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_trans_dark"
+                    android:gravity="left"
+                    android:padding="@dimen/twelve"
+                    android:text="@string/delete"
+                    android:textColor="@color/gray_oct"
+                    android:textSize="@dimen/eighteen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

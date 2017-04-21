@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/ten">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvQuestionGps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/five"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/seventeen"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <FrameLayout
+        android:id="@+id/flGetGps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvQuestionGps"
+        android:background="@drawable/bg_rect_blue_pri_rad_three">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/seventeen"
+                android:layout_height="@dimen/twenty_one"
+                android:src="@drawable/ic_gps"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvStatusGps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/five"
+                android:layout_marginStart="@dimen/five"
+                android:text="@string/add_geo_tag"
+                android:textColor="@color/white"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnGetGps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/state_rect_trans_rad_three"
+            android:padding="@dimen/ten"
+            android:textSize="@dimen/seventeen"/>
+
+    </FrameLayout>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvLatitudeGps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/flGetGps"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/fifteen"
+        android:visibility="gone"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvLongitudeGps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/flGetGps"
+        android:layout_marginLeft="@dimen/ten"
+        android:layout_marginStart="@dimen/ten"
+        android:layout_toEndOf="@+id/tvLatitudeGps"
+        android:layout_toRightOf="@+id/tvLatitudeGps"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/fifteen"
+        android:visibility="gone"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+</RelativeLayout>

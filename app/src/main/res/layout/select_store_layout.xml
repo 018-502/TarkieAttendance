@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dialog_bg"
+    android:clickable="true"
+    android:padding="@dimen/twenty_five">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rect_white_rad_ten"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/fifteen"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvNameForm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_store"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fifteen"
+            android:background="@drawable/bg_rect_gray_sec_rad_three">
+
+            <ImageView
+                android:id="@+id/ivSelectStore"
+                android:layout_width="@dimen/seventeen"
+                android:layout_height="@dimen/thirteen"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/ten"
+                android:layout_marginRight="@dimen/ten"
+                android:src="@drawable/ic_dropdown"/>
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnSelectStore"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_rad_three"
+                android:gravity="start"
+                android:paddingBottom="@dimen/eleven"
+                android:paddingEnd="@dimen/forty_seven"
+                android:paddingLeft="@dimen/ten"
+                android:paddingRight="@dimen/forty_seven"
+                android:paddingStart="@dimen/ten"
+                android:paddingTop="@dimen/eleven"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_bold"/>
+
+        </FrameLayout>
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnOkStore"
+            android:layout_width="@dimen/one_hundred_twenty"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fifteen"
+            android:background="@drawable/state_rect_green_pri_rad_five"
+            android:padding="@dimen/ten"
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
