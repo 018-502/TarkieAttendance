@@ -136,7 +136,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				setMax(4);
 				successMsg = "Send back-up successful.";
 				failedMsg = "Failed to send back-up.";
-				title = "Sending back-up";
+				title = "Sending Back-up Data";
 				String fileName = TarkieLib.getBackupFileName(db);
 				sendBackUp(db, fileName);
 				break;

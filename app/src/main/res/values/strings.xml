@@ -46,6 +46,8 @@
     <string name="no_in">NO IN</string>
     <string name="no_out">NO OUT</string>
     <string name="select">SELECT</string>
+    <string name="submit">SUBMIT</string>
+    <string name="pending">PENDING</string>
     <string name="camera">Camera</string>
     <string name="submitted">SUBMITTED</string>
     <string name="draft">DRAFT</string>
@@ -97,4 +99,14 @@
     <string name="camera_error_title">Camera Failed</string>
     <string name="camera_error_message">Unable to load camera, please try to restart your device and try again.</string>
     <string name="hour">0h</string>
+    <string name="incomplete_title">Incomplete Details</string>
+    <string name="incomplete_message">You have incomplete details in this form. Please make sure to fill out all required fields.</string>
+    <string name="submit_entries_title">Submit Entries</string>
+    <string name="submit_entries_message">Once you submit this entries you can no longer edit it.\nAre you sure you want to submit?</string>
+    <string name="discard_entry_title">Discard this entry?</string>
+    <string name="discard_entry_message">You will lose your work and you will have to start over.</string>
+    <string name="delete_entry_title">Delete this entry?</string>
+    <string name="delete_entry_message">Are you sure you want to delete this entry?</string>
+    <string name="submit_entry_title">Submit Entry</string>
+    <string name="submit_entry_message">Do you want to finalize and submit this entry?"</string>
 </resources>

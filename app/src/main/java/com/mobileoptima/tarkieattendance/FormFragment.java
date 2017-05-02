@@ -67,9 +67,10 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		((MainActivity) getActivity()).setOnBackPressedCallback(this);
-		manager = getActivity().getSupportFragmentManager();
-		db = ((MainActivity) getActivity()).getDatabase();
+		MainActivity main = (MainActivity) getActivity();
+		main.setOnBackPressedCallback(this);
+		manager = main.getSupportFragmentManager();
+		db = main.getDatabase();
 		db.openConnection();
 		pageList = Data.loadPages(db, form.ID);
 	}
@@ -233,8 +234,8 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 						}
 						if(!hasRequired) {
 							final AlertDialogFragment alert = new AlertDialogFragment();
-							alert.setDialogTitle("Submit Entry");
-							alert.setDialogMessage("Do you want to finalize and submit this entry?");
+							alert.setDialogTitle(R.string.submit_entry_title);
+							alert.setDialogMessage(R.string.submit_entry_message);
 							alert.setOnFragmentCallback(this);
 							alert.setPositiveButton("Submit", new OnClickListener() {
 								@Override
@@ -321,8 +322,8 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 
 	public void cancelEntry() {
 		final AlertDialogFragment alert = new AlertDialogFragment();
-		alert.setDialogTitle("Discard this entry?");
-		alert.setDialogMessage("You will lose your work and you will have to start over.");
+		alert.setDialogTitle(R.string.discard_entry_title);
+		alert.setDialogMessage(R.string.discard_entry_message);
 		alert.setOnFragmentCallback(this);
 		alert.setPositiveButton("Yes", new OnClickListener() {
 			@Override
@@ -346,8 +347,8 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 
 	public void deleteEntry() {
 		final AlertDialogFragment alert = new AlertDialogFragment();
-		alert.setDialogTitle("Delete this Entry?");
-		alert.setDialogMessage("Are you sure you want to delete this entry?");
+		alert.setDialogTitle(R.string.delete_entry_title);
+		alert.setDialogMessage(R.string.delete_entry_message);
 		alert.setOnFragmentCallback(this);
 		alert.setPositiveButton("Yes", new OnClickListener() {
 			@Override

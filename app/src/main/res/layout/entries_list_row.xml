@@ -4,17 +4,32 @@
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/ten"
-    android:background="@drawable/state_rect_trans_dark">
+    android:background="@drawable/state_rect_trans_dark"
+    android:padding="@dimen/ten">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <CheckBox
+        android:id="@+id/cbEntries"
+        android:layout_width="@dimen/seventeen"
+        android:layout_height="@dimen/seventeen"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/ten"
+        android:layout_marginRight="@dimen/ten"
+        android:background="@drawable/state_bmp_box"
+        android:button="@null"
+        android:clickable="false"
+        android:focusable="false"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/five"
         android:layout_marginRight="@dimen/five"
+        android:layout_toEndOf="@+id/cbEntries"
         android:layout_toLeftOf="@+id/llStatusEntries"
+        android:layout_toRightOf="@+id/cbEntries"
         android:layout_toStartOf="@+id/llStatusEntries"
         android:orientation="vertical">
 
@@ -33,16 +48,16 @@
             android:layout_height="wrap_content"
             android:text="DCWR"
             android:textColor="@color/gray_qua"
-            android:textSize="@dimen/sixteen"
+            android:textSize="@dimen/fifteen"
             codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanLabel
             android:id="@+id/tvReferenceNoEntries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ABCDEF"
+            android:text="PENDING"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/sixteen"
+            android:textSize="@dimen/fifteen"
             codePan:typeface="@string/proxima_nova_light"/>
 
     </LinearLayout>
@@ -64,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="SUBMITTED"
             android:textColor="@color/green_pri"
-            android:textSize="@dimen/sixteen"
+            android:textSize="@dimen/fifteen"
             codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -73,7 +88,7 @@
             android:layout_height="wrap_content"
             android:text="Oct 6, 2017"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/sixteen"
+            android:textSize="@dimen/fifteen"
             codePan:typeface="@string/proxima_nova_light"/>
 
     </LinearLayout>

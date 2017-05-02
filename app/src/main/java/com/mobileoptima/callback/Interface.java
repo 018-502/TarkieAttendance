@@ -38,7 +38,7 @@ public class Interface {
 		void onCountdownFinish();
 	}
 
-	public interface OnSelectStoreCallback{
+	public interface OnSelectStoreCallback {
 		void onSelectStore(StoreObj store);
 	}
 
@@ -60,5 +60,9 @@ public class Interface {
 
 	public interface OnCameraDoneCallback {
 		void onCameraDone(ArrayList<ImageObj> imageList);
+	}
+
+	public interface OnHighlightEntriesCallback {
+		void onHighlightEntries(boolean isHighlight);
 	}
 }

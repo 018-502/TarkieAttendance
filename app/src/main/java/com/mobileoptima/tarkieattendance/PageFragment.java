@@ -74,8 +74,9 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		manager = getActivity().getSupportFragmentManager();
-		db = ((MainActivity) getActivity()).getDatabase();
+		MainActivity main = (MainActivity) getActivity();
+		manager = main.getSupportFragmentManager();
+		db = main.getDatabase();
 		db.openConnection();
 	}
 

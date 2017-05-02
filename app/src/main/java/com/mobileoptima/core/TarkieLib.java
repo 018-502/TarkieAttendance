@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 
 import com.codepan.database.Condition;
@@ -875,6 +874,36 @@ public class TarkieLib {
 				}
 			}
 		}
+		return binder.finish();
+	}
+
+	public static boolean hasUnfilledUpFields(SQLiteAdapter db, String entryID) {
+		boolean result = false;
+		String e = Tables.getName(TB.ENTRIES);
+		String f = Tables.getName(TB.FORMS);
+		String q = Tables.getName(TB.FIELDS);
+		String a = Tables.getName(TB.ANSWERS);
+		String query = "SELECT a.value FROM " + e + " e, " + f + " f, " + q + " q LEFT JOIN " + a + " a " +
+				"ON a.entryID = e.ID AND a.fieldID = q.ID WHERE e.ID = '" + entryID + "' AND f.ID = e.formID " +
+				"AND q.formID = f.ID AND q.isRequired = 1 and q.isActive = 1";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			String value = cursor.getString(0);
+			result = value == null || value.isEmpty();
+		}
+		cursor.close();
+		return result;
+	}
+
+	public static boolean submitEntry(SQLiteAdapter db, String entryID) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		String date = CodePanUtils.getDate();
+		String time = CodePanUtils.getTime();
+		query.add(new FieldValue("isSubmit", true));
+		query.add(new FieldValue("dateSubmitted", date));
+		query.add(new FieldValue("timeSubmitted", time));
+		binder.update(Tables.getName(ENTRIES), query, entryID);
 		return binder.finish();
 	}
 

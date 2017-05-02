@@ -34,6 +34,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnCountdownFinishCallback;
 import com.mobileoptima.callback.Interface.OnGpsFixedCallback;
+import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
@@ -57,13 +58,14 @@ import static com.mobileoptima.callback.Interface.OnLoginCallback;
 
 public class MainActivity extends FragmentActivity implements OnClickListener, OnRefreshCallback,
 		OnOverrideCallback, OnLoginCallback, OnInitializeCallback, ServiceConnection,
-		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback {
+		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
+		OnHighlightEntriesCallback {
 
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
 			tvTimeInMain, tvSyncMain, tvLastSyncMain;
 	private CodePanButton btnSyncMain, btnHomeMain, btnVisitsMain, btnInventoryMain,
-			btnPhotosMain, btnEntriesMain;
+			btnPhotosMain, btnEntriesMain, btnSelectMain;
 	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private OnBackPressedCallback backPressedCallback;
@@ -140,6 +142,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnInventoryMain = (CodePanButton) findViewById(R.id.btnInventoryMain);
 		btnPhotosMain = (CodePanButton) findViewById(R.id.btnPhotosMain);
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
+		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
 		rlMenuMain = (RelativeLayout) findViewById(R.id.rlMenuMain);
 		rlMain = (RelativeLayout) findViewById(R.id.rlMain);
 		dlMain = (DrawerLayout) findViewById(R.id.dlMain);
@@ -154,6 +157,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		findViewById(R.id.llLogoutMain).setOnClickListener(this);
 		findViewById(R.id.btnMenuMain).setOnClickListener(this);
 		llTimeInMain.setOnClickListener(this);
+		btnSelectMain.setOnClickListener(this);
 		btnHomeMain.setOnClickListener(this);
 		btnVisitsMain.setOnClickListener(this);
 		btnInventoryMain.setOnClickListener(this);
@@ -289,6 +293,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					else {
 						EntriesFragment entries = new EntriesFragment();
 						entries.setOnOverrideCallback(this);
+						entries.setOnHighlightEntriesCallback(this);
 						transaction.add(R.id.flContainerMain, entries, TabType.ENTRIES);
 					}
 					if(current != null) {
@@ -569,6 +574,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
+			case R.id.btnSelectMain:
+				if(tabType.equals(TabType.ENTRIES)) {
+					EntriesFragment entries = (EntriesFragment) manager.findFragmentByTag(tabType);
+					if(!entries.isHighlight()) {
+						entries.select(true);
+					}
+					else {
+						entries.submit();
+					}
+				}
+				break;
 		}
 	}
 
@@ -576,7 +592,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		View rlSyncMain = findViewById(R.id.rlSyncMain);
 		View rlSearchMain = findViewById(R.id.rlSearchMain);
 		View rlNotifMain = findViewById(R.id.rlNotifMain);
-		View btnSelectMain = findViewById(R.id.btnSelectMain);
 		resetTab();
 		switch(tabType) {
 			case TabType.HOME:
@@ -724,7 +739,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				}
 			}
 			else {
-				if(tabType != TabType.HOME) {
+				if(!tabType.equals(TabType.HOME)) {
 					setDefaultTab();
 				}
 				else {
@@ -1139,5 +1154,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		transaction.add(R.id.rlMain, alert, DialogTag.MOCK);
 		transaction.addToBackStack(null);
 		transaction.commit();
+	}
+
+	@Override
+	public void onHighlightEntries(boolean isHighlight) {
+		if(isHighlight) {
+			btnSelectMain.setText(R.string.submit);
+		}
+		else {
+			btnSelectMain.setText(R.string.select);
+		}
 	}
 }

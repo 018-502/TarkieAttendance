@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
@@ -58,6 +59,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 				holder.tvStatusEntries = (CodePanLabel) view.findViewById(R.id.tvStatusEntries);
 				holder.tvFormEntries = (CodePanLabel) view.findViewById(R.id.tvFormEntries);
 				holder.tvReferenceNoEntries = (CodePanLabel) view.findViewById(R.id.tvReferenceNoEntries);
+				holder.cbEntries = (CheckBox) view.findViewById(R.id.cbEntries);
 				view.setTag(holder);
 			}
 			else {
@@ -72,14 +74,28 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 			if(obj.isSubmit) {
 				holder.tvStatusEntries.setTextColor(green);
 				holder.tvStatusEntries.setText(R.string.submitted);
+				holder.cbEntries.setVisibility(View.GONE);
 			}
 			else {
 				holder.tvStatusEntries.setTextColor(orange);
 				holder.tvStatusEntries.setText(R.string.draft);
+				if(obj.isHighlight) {
+					holder.cbEntries.setVisibility(View.VISIBLE);
+					holder.cbEntries.setChecked(obj.isCheck);
+				}
+				else {
+					holder.cbEntries.setVisibility(View.GONE);
+				}
 			}
 			if(obj.dDate != null) {
-				String date = CodePanUtils.getCalendarDate(obj.dDate, true, false);
+				String date = CodePanUtils.getCalendarDate(obj.dDate, true, true);
 				holder.tvDateEntries.setText(date);
+			}
+			if(obj.referenceNo != null) {
+				holder.tvReferenceNoEntries.setText(obj.referenceNo);
+			}
+			else {
+				holder.tvReferenceNoEntries.setText(R.string.pending);
 			}
 		}
 		return view;
@@ -91,5 +107,6 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 		private CodePanLabel tvDateEntries;
 		private CodePanLabel tvFormEntries;
 		private CodePanLabel tvReferenceNoEntries;
+		private CheckBox cbEntries;
 	}
 }
