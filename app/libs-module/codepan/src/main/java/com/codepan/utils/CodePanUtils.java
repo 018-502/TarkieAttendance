@@ -614,7 +614,7 @@ public class CodePanUtils {
 	public static boolean extractDatabase(Context context, String folderName, String databaseName) {
 		boolean result = false;
 		try {
-			File dir = new File(Environment.getExternalStorageDirectory().toString() + "/	" + folderName);
+			File dir = context.getDir(folderName, Context.MODE_PRIVATE);
 			if(!dir.exists()) {
 				dir.mkdir();
 			}

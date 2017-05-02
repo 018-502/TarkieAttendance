@@ -21,6 +21,7 @@ import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.ProgressWheel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
+import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.DialogTag;
 import com.mobileoptima.constant.Key;
 import com.mobileoptima.constant.Module;
@@ -131,6 +132,14 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				title = "Updating Master File";
 				updateMasterFile(db);
 				break;
+			case SEND_BACKUP:
+				setMax(4);
+				successMsg = "Send back-up successful.";
+				failedMsg = "Failed to send back-up.";
+				title = "Sending back-up";
+				String fileName = TarkieLib.getBackupFileName(db);
+				sendBackUp(db, fileName);
+				break;
 			case SYNC_DATA:
 				int count = TarkieLib.getCountSyncTotal(db);
 				setMax(count + 2);
@@ -235,6 +244,109 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 		bg.start();
 	}
 
+	public void updateMasterFile(final SQLiteAdapter db) {
+		bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Looper.prepare();
+				try {
+					result = Rx.getCompany(db, getErrorCallback());
+					Thread.sleep(250);
+					handler.sendMessage(handler.obtainMessage());
+					if(result) {
+						result = Rx.getStores(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getEmployees(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getBreaks(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getIncidents(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getForms(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getFields(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getEntries(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getServerTime(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.setName(Process.UPDATE_MASTER_FILE);
+		bg.start();
+	}
+
+	public void sendBackUp(final SQLiteAdapter db, final String fileName) {
+		bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Looper.prepare();
+				try {
+//					result = TarkieLib.decryptErrorMsg(getActivity(), App.FOLDER_BACKUP, App.ERROR_PWD);
+//					Thread.sleep(250);
+//					handler.sendMessage(handler.obtainMessage());
+//					if(result) {
+						result = CodePanUtils.extractDatabase(getActivity(), App.FOLDER_BACKUP, App.DB);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+//					}
+					if(result) {
+						result = CodePanUtils.zipFolder(getActivity(), App.FOLDER_BACKUP, App.FOLDER, fileName);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Tx.uploadSendBackUp(db, fileName, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = CodePanUtils.deleteFilesInDir(getActivity(), App.FOLDER_BACKUP);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+//					if(result) {
+//						result = TarkieLib.purgeData(db);
+//						Thread.sleep(250);
+//						handler.sendMessage(handler.obtainMessage());
+//					}
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.setName(Process.SEND_BACKUP);
+		bg.start();
+	}
+
 	public void syncData(final SQLiteAdapter db) {
 		bg = new Thread(new Runnable() {
 			@Override
@@ -312,65 +424,6 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 			}
 		});
 		bg.setName(Process.SYNC_DATA);
-		bg.start();
-	}
-
-	public void updateMasterFile(final SQLiteAdapter db) {
-		bg = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				Looper.prepare();
-				try {
-					result = Rx.getCompany(db, getErrorCallback());
-					Thread.sleep(250);
-					handler.sendMessage(handler.obtainMessage());
-					if(result) {
-						result = Rx.getStores(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getEmployees(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getBreaks(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getIncidents(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getForms(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getFields(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getEntries(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-					if(result) {
-						result = Rx.getServerTime(db, getErrorCallback());
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
-					}
-				}
-				catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		bg.setName(Process.UPDATE_MASTER_FILE);
 		bg.start();
 	}
 

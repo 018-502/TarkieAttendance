@@ -268,8 +268,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						transaction.show(old);
 					}
 					else {
-						UpgradeFragment upgrade = new UpgradeFragment();
-						transaction.add(R.id.flContainerMain, upgrade, TabType.PHOTOS);
+						PhotosFragment photos = new PhotosFragment();
+						transaction.add(R.id.flContainerMain, photos, TabType.PHOTOS);
 					}
 					if(current != null) {
 						transaction.hide(current);
@@ -439,6 +439,42 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				break;
 			case R.id.llSendBackUpMain:
 				dlMain.closeDrawer(rlMenuMain);
+				if(CodePanUtils.hasInternet(this)) {
+					final AlertDialogFragment alert = new AlertDialogFragment();
+					alert.setDialogTitle("Send Back-up");
+					alert.setDialogMessage("Do you want to send back-up?");
+					alert.setPositiveButton("Yes", new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							manager.popBackStack();
+							LoadingDialogFragment loading = new LoadingDialogFragment();
+							loading.setAction(Action.SEND_BACKUP);
+							loading.setOnRefreshCallback(MainActivity.this);
+							loading.setOnOverrideCallback(MainActivity.this);
+							transaction = manager.beginTransaction();
+							transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+									R.anim.fade_in, R.anim.fade_out);
+							transaction.add(R.id.rlMain, loading);
+							transaction.addToBackStack(null);
+							transaction.commit();
+						}
+					});
+					alert.setNegativeButton("Cancel", new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							manager.popBackStack();
+						}
+					});
+					transaction = manager.beginTransaction();
+					transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+							R.anim.fade_in, R.anim.fade_out);
+					transaction.add(R.id.rlMain, alert);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				}
+				else {
+					CodePanUtils.alertToast(this, R.string.no_internet_message);
+				}
 				break;
 			case R.id.llSupportMain:
 				dlMain.closeDrawer(rlMenuMain);

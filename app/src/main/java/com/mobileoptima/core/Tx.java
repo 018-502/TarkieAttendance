@@ -502,4 +502,64 @@ public class Tx {
 		}
 		return result;
 	}
+
+	public static boolean uploadSendBackUp(SQLiteAdapter db, String fileName, OnErrorCallback errorCallback) {
+		boolean result = false;
+		final int INDENT = 4;
+		String action = "backup.php";
+		String url = "https://www.tarkie.com/API/2.3/" + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			String empID = TarkieLib.getEmployeeID(db);
+			apiKey = "75TvNCip314ts6l1Q1N9i2F3BcRWr090y31W54G279UxaoQx5Z";
+			paramsObj.put("action", "upload-backup");
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("user_id", empID);
+			params = paramsObj.toString(INDENT);
+			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
+					"/" + fileName;
+			File file = new File(path);
+//			if(!file.exists() || file.isDirectory()) {
+//				return TarkieLib.updateStatusSignatureUpload(db, TB.TIME_OUT, image.ID);
+//			}
+			response = CodePanUtils.uploadFile(url, params, "backup", "application/zip", file);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					if(status.equals("ok")) {
+//						result = TarkieLib.updateStatusSignatureUpload(db, TB.TIME_OUT, image.ID);
+						result = true;
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
 }

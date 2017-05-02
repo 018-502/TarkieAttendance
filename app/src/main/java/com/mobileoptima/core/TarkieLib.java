@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 
 import com.codepan.database.Condition;
@@ -182,6 +183,12 @@ public class TarkieLib {
 	public static String getAPIKey(SQLiteAdapter db) {
 		String table = Tables.getName(TB.API_KEY);
 		String query = "SELECT apiKey FROM " + table + " WHERE ID = 1";
+		return db.getString(query);
+	}
+
+	public static String getCompanyName(SQLiteAdapter db) {
+		String table = Tables.getName(COMPANY);
+		String query = "SELECT name FROM " + table + " LIMIT 1";
 		return db.getString(query);
 	}
 
@@ -983,5 +990,17 @@ public class TarkieLib {
 			}
 		}
 		return false;
+	}
+
+	public static String getBackupFileName(SQLiteAdapter db) {
+		String companyName = TarkieLib.getCompanyName(db);
+		String employeeName = TarkieLib.getEmployeeName(db, TarkieLib.getEmployeeID(db));
+		String version = CodePanUtils.getVersionName(db.getContext());
+		String date = CodePanUtils.getDate();
+		String time = CodePanUtils.getTime();
+		String fileName = companyName + "_" + employeeName + "_" + date + "_" + time + "_" + version + ".zip";
+		fileName = fileName.replace(" ", "_");
+		fileName = fileName.replace(":", "-");
+		return fileName;
 	}
 }

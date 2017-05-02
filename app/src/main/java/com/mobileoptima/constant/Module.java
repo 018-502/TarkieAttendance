@@ -5,6 +5,7 @@ public class Module {
 		AUTHORIZE_DEVICE,
 		LOGIN,
 		UPDATE_MASTER_FILE,
+		SEND_BACKUP,
 		SYNC_DATA,
 		VALIDATE_SERVER_TIME
 	}
@@ -20,6 +21,9 @@ public class Module {
 				break;
 			case UPDATE_MASTER_FILE:
 				title = "Update Master File";
+				break;
+			case SEND_BACKUP:
+				title = "Send Back-up";
 				break;
 			case SYNC_DATA:
 				title = "Sync Data";
