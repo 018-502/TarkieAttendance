@@ -1847,14 +1847,15 @@ public class CodePanUtils {
 		return result;
 	}
 
-	public static String handleNextLine(String text, boolean isHTML) {
+	public static String handleHTMLEntities(String text, boolean isHTML) {
 		String result = "";
 		if(text != null && !text.equals("null")) {
 			if(isHTML) {
 				result = text.replace("\n", "&NewLine;");
 			}
 			else {
-				result = text.replace("&NewLine;", "\n");
+				result = text.replace("&NewLine;", "\n")
+						.replace("&Tab;", "    ");
 			}
 		}
 		return result;

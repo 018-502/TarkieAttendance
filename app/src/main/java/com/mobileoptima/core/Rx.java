@@ -931,7 +931,7 @@ public class Rx {
 						String type = dataObj.getString("field_type");
 						String name = CodePanUtils.handleUniCode(dataObj.getString("field_name"));
 						String uniCode = CodePanUtils.handleUniCode(dataObj.getString("field_description"));
-						String description = CodePanUtils.handleNextLine(uniCode, false);
+						String description = CodePanUtils.handleHTMLEntities(uniCode, false);
 						query.clearAll();
 						query.add(new FieldValue("ID", fieldID));
 						query.add(new FieldValue("name", name));

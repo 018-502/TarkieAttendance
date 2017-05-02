@@ -82,7 +82,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="@dimen/eight"
             android:layout_marginRight="@dimen/eight"
-            android:src="@drawable/ic_search"/>
+            android:src="@drawable/ic_search_dark"/>
 
     </FrameLayout>
 

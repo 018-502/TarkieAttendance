@@ -4,7 +4,9 @@
     <color name="green_pri">#27AE60</color>
     <color name="red_pri">#FF0000</color>
     <color name="white_pri">#FAFADC</color>
+    <color name="white_sec">#FAFAFA</color>
     <color name="yellow_pri">#FDF232</color>
+    <color name="orange_pri">#FF9700</color>
     <color name="gray_pri">#505050</color>
     <color name="gray_sec">#EDEDED</color>
     <color name="gray_ter">#A7A7A7</color>
@@ -14,5 +16,6 @@
     <color name="gray_sep">#C8C8C8</color>
     <color name="gray_oct">#808080</color>
     <color name="gray_non">#CCCCCC</color>
+    <color name="gray_dec">#DFDFDF</color>
 </resources>
 

@@ -15,7 +15,6 @@ import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.model.TimeObj;
 import com.codepan.utils.CodePanUtils;
-import com.mobileoptima.constant.AnswerType;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.Incident;
@@ -828,45 +827,10 @@ public class TarkieLib {
 		for(FieldObj field : fieldList) {
 			if(field.isQuestion) {
 				AnswerObj answer = field.answer;
-				String value = answer.value;
-				switch(field.type) {
-					case FieldType.MS:
-						if(answer.choiceList != null && !answer.choiceList.isEmpty()) {
-							value = "";
-							for(ChoiceObj choiceObj : answer.choiceList) {
-								if(choiceObj.isCheck) {
-									value += choiceObj.code + ",";
-								}
-							}
-							int length = value.length();
-							if(length != 0) {
-								value = value.substring(0, length - 1);
-							}
-						}
-						break;
-					case FieldType.PHOTO:
-						if(answer.imageList != null && !answer.imageList.isEmpty()) {
-							value = "";
-							for(ImageObj image : answer.imageList) {
-								value += image.ID + ",";
-							}
-							int length = value.length();
-							if(length != 0) {
-								value = value.substring(0, length - 1);
-							}
-						}
-						break;
-					case FieldType.YON:
-						value = answer.isCheck ? AnswerType.YES : AnswerType.NO;
-						break;
-					case FieldType.CB:
-						value = answer.isCheck ? AnswerType.CHECK : AnswerType.UNCHECK;
-						break;
-				}
 				query.clearAll();
 				query.add(new FieldValue("entryID", entryID));
 				query.add(new FieldValue("fieldID", field.ID));
-				query.add(new FieldValue("value", value));
+				query.add(new FieldValue("value", answer.value));
 				query.add(new FieldValue("isUpdate", true));
 				binder.insert(Tables.getName(ANSWERS), query);
 			}
@@ -888,43 +852,8 @@ public class TarkieLib {
 		for(FieldObj field : fieldList) {
 			if(field.isQuestion) {
 				AnswerObj answer = field.answer;
-				String value = answer.value;
-				switch(field.type) {
-					case FieldType.MS:
-						if(answer.choiceList != null && !answer.choiceList.isEmpty()) {
-							value = "";
-							for(ChoiceObj choiceObj : answer.choiceList) {
-								if(choiceObj.isCheck) {
-									value += choiceObj.code + ",";
-								}
-							}
-							int length = value.length();
-							if(length != 0) {
-								value = value.substring(0, length - 1);
-							}
-						}
-						break;
-					case FieldType.PHOTO:
-						if(answer.imageList != null && !answer.imageList.isEmpty()) {
-							value = "";
-							for(ImageObj image : answer.imageList) {
-								value += image.ID + ",";
-							}
-							int length = value.length();
-							if(length != 0) {
-								value = value.substring(0, length - 1);
-							}
-						}
-						break;
-					case FieldType.YON:
-						value = answer.isCheck ? AnswerType.YES : AnswerType.NO;
-						break;
-					case FieldType.CB:
-						value = answer.isCheck ? AnswerType.CHECK : AnswerType.UNCHECK;
-						break;
-				}
 				query.clearAll();
-				query.add(new FieldValue("value", value));
+				query.add(new FieldValue("value", answer.value));
 				String table = Tables.getName(TB.ANSWERS);
 				String sql = "SELECT ID FROM " + table + " WHERE fieldID = '" + field.ID + "' " +
 						"AND entryID = '" + entryID + "'";
@@ -1004,5 +933,55 @@ public class TarkieLib {
 			CodePanUtils.deleteFile(path);
 		}
 		return binder.finish();
+	}
+
+	public static FieldObj getUnfilledUpField(ArrayList<FieldObj> fieldList) {
+		for(FieldObj field : fieldList) {
+			if(field.isRequired && field.isQuestion) {
+				AnswerObj answer = field.answer;
+				switch(field.type) {
+					case FieldType.MS:
+						if(!hasSelected(answer.choiceList)) {
+							return field;
+						}
+						break;
+					case FieldType.YON:
+						if(!answer.isActive) {
+							return field;
+						}
+						break;
+					case FieldType.PHOTO:
+						if(answer.imageList != null) {
+							if(answer.imageList.isEmpty()) {
+								return field;
+							}
+						}
+						else {
+							return field;
+						}
+						break;
+					default:
+						if(answer.value != null) {
+							if(answer.value.isEmpty()) {
+								return field;
+							}
+						}
+						else {
+							return field;
+						}
+						break;
+				}
+			}
+		}
+		return null;
+	}
+
+	public static boolean hasSelected(ArrayList<ChoiceObj> choiceList) {
+		for(ChoiceObj obj : choiceList) {
+			if(obj.isCheck) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

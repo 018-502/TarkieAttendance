@@ -93,7 +93,9 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 			@Override
 			public void run() {
 				try {
-					fieldList = Data.loadFields(db, form, entry, page);
+					if(fieldList == null) {
+						fieldList = Data.loadFields(db, form, entry, page);
+					}
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -110,6 +112,10 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 
 	public void setEntry(EntryObj entry) {
 		this.entry = entry;
+	}
+
+	public void setFieldList(ArrayList<FieldObj> fieldList) {
+		this.fieldList = fieldList;
 	}
 
 	Handler handler = new Handler(new Handler.Callback() {
@@ -315,10 +321,12 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 								if(!cbBoxCb.isChecked()) {
 									cbBoxCb.setChecked(true);
 									answer.isCheck = true;
+									answer.value = AnswerType.CHECK;
 								}
 								else {
 									cbBoxCb.setChecked(false);
 									answer.isCheck = false;
+									answer.value = AnswerType.UNCHECK;
 								}
 								withChanges = true;
 							}
@@ -358,6 +366,7 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 								btnYesYon.setEnabled(true);
 								answer.isCheck = false;
 								answer.isActive = true;
+								answer.value = AnswerType.NO;
 								withChanges = true;
 							}
 						});
@@ -368,6 +377,7 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 								btnYesYon.setEnabled(false);
 								answer.isCheck = true;
 								answer.isActive = true;
+								answer.value = AnswerType.YES;
 								withChanges = true;
 							}
 						});
@@ -731,47 +741,6 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 		}
 	}
 
-	public FieldObj getUnfilledUpField() {
-		for(FieldObj field : fieldList) {
-			if(field.isRequired && field.isQuestion) {
-				AnswerObj answer = field.answer;
-				switch(field.type) {
-					case FieldType.MS:
-						if(!hasSelected(answer.choiceList)) {
-							return field;
-						}
-						break;
-					case FieldType.YON:
-						if(!answer.isActive) {
-							return field;
-						}
-						break;
-					case FieldType.PHOTO:
-						if(answer.imageList != null) {
-							if(answer.imageList.isEmpty()) {
-								return field;
-							}
-						}
-						else {
-							return field;
-						}
-						break;
-					default:
-						if(answer.value != null) {
-							if(answer.value.isEmpty()) {
-								return field;
-							}
-						}
-						else {
-							return field;
-						}
-						break;
-				}
-			}
-		}
-		return null;
-	}
-
 	public boolean hasSelected(ArrayList<ChoiceObj> choiceList) {
 		for(ChoiceObj obj : choiceList) {
 			if(obj.isCheck) {
@@ -790,6 +759,39 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	}
 
 	public ArrayList<FieldObj> getFieldList() {
+		if(fieldList != null) {
+			for(FieldObj field : fieldList) {
+				AnswerObj answer = field.answer;
+				switch(field.type) {
+					case FieldType.MS:
+						if(answer.choiceList != null && !answer.choiceList.isEmpty()) {
+							answer.value = "";
+							for(ChoiceObj choiceObj : answer.choiceList) {
+								if(choiceObj.isCheck) {
+									answer.value += choiceObj.code + ",";
+								}
+							}
+							int length = answer.value.length();
+							if(length != 0) {
+								answer.value = answer.value.substring(0, length - 1);
+							}
+						}
+						break;
+					case FieldType.PHOTO:
+						if(answer.imageList != null && !answer.imageList.isEmpty()) {
+							answer.value = "";
+							for(ImageObj image : answer.imageList) {
+								answer.value += image.ID + ",";
+							}
+							int length = answer.value.length();
+							if(length != 0) {
+								answer.value = answer.value.substring(0, length - 1);
+							}
+						}
+						break;
+				}
+			}
+		}
 		return this.fieldList;
 	}
 

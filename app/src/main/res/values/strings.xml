@@ -25,6 +25,7 @@
     <string name="tab_home">Home</string>
     <string name="tab_photos">Photos</string>
     <string name="tab_entries">Entries</string>
+    <string name="tab_visits">Visits</string>
     <string name="tab_inventory">Inventory</string>
     <string name="inventory">INVENTORY</string>
     <string name="app_forms">APP FORMS</string>
@@ -46,6 +47,9 @@
     <string name="no_out">NO OUT</string>
     <string name="select">SELECT</string>
     <string name="camera">Camera</string>
+    <string name="submitted">SUBMITTED</string>
+    <string name="draft">DRAFT</string>
+    <string name="new_form">NEW FORM</string>
     <string name="photos_taken">Photos Taken</string>
     <string name="retake">Retake</string>
     <string name="take_photo">Take Photo</string>

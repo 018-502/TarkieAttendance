@@ -45,7 +45,9 @@
             android:layout_toLeftOf="@+id/flOptionsForm"
             android:layout_toRightOf="@+id/flBackForm"
             android:layout_toStartOf="@+id/flOptionsForm"
+            android:ellipsize="end"
             android:gravity="center"
+            android:maxLines="2"
             android:textColor="@color/white"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>
