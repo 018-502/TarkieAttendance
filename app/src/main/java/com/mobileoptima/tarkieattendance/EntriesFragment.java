@@ -40,10 +40,21 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 	private SQLiteAdapter db;
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
-		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -61,6 +72,7 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 					if(!obj.isSubmit) {
 						FormFragment form = new FormFragment();
 						form.setEntry(obj);
+						form.setOnFragmentCallback(EntriesFragment.this);
 						form.setOnOverrideCallback(overrideCallback);
 						transaction = getActivity().getSupportFragmentManager().beginTransaction();
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
@@ -75,7 +87,7 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 				}
 				else {
 					if(!TarkieLib.hasUnfilledUpFields(db, obj.ID)) {
-						obj.isCheck = true;
+						obj.isCheck = !obj.isCheck;
 						lvEntries.invalidate();
 						adapter.notifyDataSetChanged();
 					}
@@ -123,21 +135,32 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 	}
 
 	public void select(boolean isHighlight) {
+		boolean hasDraft = false;
 		for(EntryObj obj : entryList) {
+			if(!hasDraft) hasDraft = !obj.isSubmit;
 			obj.isHighlight = isHighlight;
 			if(!isHighlight) {
 				obj.isCheck = false;
 			}
 		}
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(isHighlight);
+		if(hasDraft) {
+			if(overrideCallback != null) {
+				overrideCallback.onOverride(isHighlight);
+			}
+			if(highlightEntriesCallback != null) {
+				highlightEntriesCallback.onHighlightEntries(isHighlight);
+			}
+			this.isHighlight = isHighlight;
+			lvEntries.invalidate();
+			adapter.notifyDataSetChanged();
 		}
-		if(highlightEntriesCallback != null) {
-			highlightEntriesCallback.onHighlightEntries(isHighlight);
+		else {
+			for(EntryObj obj : entryList) {
+				obj.isHighlight = false;
+				obj.isCheck = false;
+			}
+			CodePanUtils.alertToast(getActivity(), "No available entries.");
 		}
-		this.isHighlight = isHighlight;
-		lvEntries.invalidate();
-		adapter.notifyDataSetChanged();
 	}
 
 	public boolean hasSelected() {
@@ -205,6 +228,17 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 	@Override
 	public void onFragment(boolean status) {
 		this.inOtherFragment = status;
+		if(!status) {
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
+		}
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(isOnBackStack) {
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
+		}
 	}
 
 	@Override

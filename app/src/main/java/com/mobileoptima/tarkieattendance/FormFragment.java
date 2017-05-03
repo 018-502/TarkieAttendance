@@ -35,6 +35,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	private CodePanButton btnNextForm, btnBackForm, btnSaveForm, btnCancelForm,
 			btnDeleteForm, btnOptionsForm;
 	private LinearLayout llPageForm, llDeleteForm;
+	private OnFragmentCallback fragmentCallback;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private RelativeLayout rlOptionsForm;
@@ -51,17 +52,13 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	@Override
 	public void onStart() {
 		super.onStart();
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(true);
-		}
+		setOnBackStack(true);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(false);
-		}
+		setOnBackStack(false);
 	}
 
 	@Override
@@ -397,6 +394,10 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 		this.overrideCallback = overrideCallback;
 	}
 
+	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {
+		this.fragmentCallback = fragmentCallback;
+	}
+
 	public PageObj getPage(String tag) {
 		for(PageObj obj : pageList) {
 			if(obj.tag.equals(tag)) {
@@ -427,6 +428,15 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	public void onFragment(boolean status) {
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(!status);
+		}
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(fragmentCallback != null) {
+			fragmentCallback.onFragment(isOnBackStack);
+		}
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
 		}
 	}
 }

@@ -190,7 +190,7 @@ public class BreakTimeFragment extends Fragment implements OnClickListener,
 		this.obj = obj;
 	}
 
-	public void setOnBackStack(boolean isOnBackStack) {
+	private void setOnBackStack(boolean isOnBackStack) {
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(isOnBackStack);
 		}

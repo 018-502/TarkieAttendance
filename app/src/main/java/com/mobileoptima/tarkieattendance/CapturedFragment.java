@@ -63,6 +63,7 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
+		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -226,11 +227,10 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 		transaction.commit();
 	}
 
-	public void setOnBackStack(boolean isOnBackStack) {
+	private void setOnBackStack(boolean isOnBackStack) {
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(isOnBackStack);
 		}
-		((MainActivity) getActivity()).setOnBackPressedCallback(this);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.mobileoptima.tarkieattendance;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
@@ -37,6 +38,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnRefres
 	private OnOverrideCallback overrideCallback;
 	private OnRefreshCallback refreshCallback;
 	private OnLoginCallback loginCallback;
+	private FragmentManager manager;
 	private boolean inOtherFragment;
 	private ImageView ivLogoLogin;
 	private CodePanButton btnLogin;
@@ -59,6 +61,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnRefres
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
 		main.setOnBackPressedCallback(this);
+		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
 	}
@@ -140,7 +143,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnRefres
 
 	@Override
 	public void onRefresh() {
-		getActivity().getSupportFragmentManager().popBackStack();
+		manager.popBackStack();
 		if(refreshCallback != null) {
 			refreshCallback.onRefresh();
 		}
@@ -161,7 +164,7 @@ public class LoginFragment extends Fragment implements OnClickListener, OnRefres
 			getActivity().finish();
 		}
 		else {
-			getActivity().getSupportFragmentManager().popBackStack();
+			manager.popBackStack();
 		}
 	}
 
@@ -169,7 +172,8 @@ public class LoginFragment extends Fragment implements OnClickListener, OnRefres
 	public void onFragment(boolean status) {
 		this.inOtherFragment = status;
 		if(!status) {
-			((MainActivity) getActivity()).setOnBackPressedCallback(this);
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
 			if(overrideCallback != null) {
 				overrideCallback.onOverride(true);
 			}

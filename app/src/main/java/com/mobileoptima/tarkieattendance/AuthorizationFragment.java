@@ -2,6 +2,7 @@ package com.mobileoptima.tarkieattendance;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -26,10 +27,11 @@ import com.mobileoptima.constant.Module.Action;
 public class AuthorizationFragment extends Fragment implements OnClickListener, OnRefreshCallback,
 		OnBackPressedCallback, OnFragmentCallback {
 
-	private CodePanButton btnAuthorization;
 	private CodePanTextField etCodeAuthorization;
-	private OnRefreshCallback refreshCallback;
 	private OnOverrideCallback overrideCallback;
+	private OnRefreshCallback refreshCallback;
+	private CodePanButton btnAuthorization;
+	private FragmentManager manager;
 	private boolean inOtherFragment;
 	private SQLiteAdapter db;
 
@@ -50,6 +52,7 @@ public class AuthorizationFragment extends Fragment implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
 		main.setOnBackPressedCallback(this);
+		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
 	}
@@ -113,15 +116,9 @@ public class AuthorizationFragment extends Fragment implements OnClickListener, 
 
 	@Override
 	public void onRefresh() {
-		getActivity().getSupportFragmentManager().popBackStack();
+		manager.popBackStack();
 		if(refreshCallback != null) {
 			refreshCallback.onRefresh();
-		}
-	}
-
-	public void setOnBackStack(boolean isOnBackStack) {
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(isOnBackStack);
 		}
 	}
 
@@ -131,18 +128,18 @@ public class AuthorizationFragment extends Fragment implements OnClickListener, 
 			getActivity().finish();
 		}
 		else {
-			getActivity().getSupportFragmentManager().popBackStack();
+			manager.popBackStack();
 		}
 	}
 
 	@Override
 	public void onFragment(boolean status) {
 		this.inOtherFragment = status;
-		if(!status) {
-			((MainActivity) getActivity()).setOnBackPressedCallback(this);
-			if(overrideCallback != null) {
-				overrideCallback.onOverride(true);
-			}
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
 		}
 	}
 }

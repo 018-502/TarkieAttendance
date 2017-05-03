@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,6 +50,18 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 	private String photo, signature;
 	private SQLiteAdapter db;
 	private GpsObj gps;
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -234,6 +245,12 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 		transaction.commit();
 	}
 
+	public void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
+		}
+	}
+
 	@Override
 	public void onFragment(boolean status) {
 		if(overrideCallback != null) {
@@ -245,7 +262,6 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 	public void onSign(String signature) {
 		if(signature != null) {
 			this.signature = signature;
-			Log.e("signature", "" + signature);
 			Bitmap bitmap = CodePanUtils.getBitmapImage(getActivity(), App.FOLDER, signature);
 			ivSignatureSummary.setImageBitmap(bitmap);
 			flSignatureSummary.setVisibility(View.VISIBLE);

@@ -515,7 +515,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 		this.isMultiUpdate = isMultiUpdate;
 	}
 
-	public void setOnBackStack(boolean isOnBackStack) {
+	private void setOnBackStack(boolean isOnBackStack) {
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(isOnBackStack);
 		}

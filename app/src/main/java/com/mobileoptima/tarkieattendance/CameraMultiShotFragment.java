@@ -233,7 +233,8 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 			fragmentCallback.onFragment(isOnBackStack);
 		}
 		if(!isOnBackStack) {
-			((MainActivity) getActivity()).setOnBackPressedCallback(backPressedCallback);
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(backPressedCallback);
 		}
 	}
 
@@ -415,7 +416,8 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	public void onFragment(boolean status) {
 		this.inOtherFragment = status;
 		if(!status) {
-			((MainActivity) getActivity()).setOnBackPressedCallback(this);
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
 			if(!imageList.isEmpty()) {
 				if(overrideCallback != null) {
 					overrideCallback.onOverride(true);
