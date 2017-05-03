@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:text="Thompson, Josh"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/seventeen"
+            android:textSize="@dimen/sixteen"
             codePan:typeface="@string/proxima_nova_bold"/>
 
         <com.codepan.widget.CodePanLabel

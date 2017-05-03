@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
+import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.Condition;
 import com.codepan.database.Condition.Operator;
 import com.codepan.database.FieldValue;
@@ -50,11 +51,53 @@ import static com.mobileoptima.schema.Tables.TB.SYNC_BATCH;
 
 public class TarkieLib {
 
+	public static void alertDialog(final FragmentActivity activity, String title, String message,
+								   OnFragmentCallback callback) {
+		final FragmentManager manager = activity.getSupportFragmentManager();
+		final AlertDialogFragment alert = new AlertDialogFragment();
+		alert.setDialogTitle(title);
+		alert.setDialogMessage(message);
+		alert.setOnFragmentCallback(callback);
+		alert.setPositiveButton("Ok", new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				manager.popBackStack();
+			}
+		});
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+				R.anim.fade_in, R.anim.fade_out);
+		transaction.add(R.id.rlMain, alert);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
 	public static void alertDialog(final FragmentActivity activity, String title, String message) {
 		final FragmentManager manager = activity.getSupportFragmentManager();
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setDialogTitle(title);
 		alert.setDialogMessage(message);
+		alert.setPositiveButton("Ok", new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				manager.popBackStack();
+			}
+		});
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+				R.anim.fade_in, R.anim.fade_out);
+		transaction.add(R.id.rlMain, alert);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	public static void alertDialog(final FragmentActivity activity, int title, int message,
+								   OnFragmentCallback callback) {
+		final FragmentManager manager = activity.getSupportFragmentManager();
+		final AlertDialogFragment alert = new AlertDialogFragment();
+		alert.setDialogTitle(title);
+		alert.setDialogMessage(message);
+		alert.setOnFragmentCallback(callback);
 		alert.setPositiveButton("Ok", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -633,6 +676,15 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
+	public static boolean updateStatusUpload(SQLiteAdapter db, TB tb, String recID) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String table = Tables.getName(tb);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("isUpload", true));
+		binder.update(table, query, recID);
+		return binder.finish();
+	}
+
 	public static boolean updateStatusPhotoUpload(SQLiteAdapter db, TB tb, String recID) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String table = Tables.getName(tb);
@@ -770,10 +822,23 @@ public class TarkieLib {
 		tableList.add(TB.BREAK_IN);
 		tableList.add(TB.BREAK_OUT);
 		tableList.add(TB.INCIDENT_REPORT);
+		tableList.add(TB.ENTRIES);
+		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
+			query.clearAll();
+			switch(tb) {
+				case ENTRIES:
+					query.add(new Condition("isDelete", false, Operator.EQUALS));
+					query.add(new Condition("isSubmit", true, Operator.EQUALS));
+					query.add(new Condition("isSync", false, Operator.EQUALS));
+					break;
+				default:
+					query.add(new Condition("isSync", false, Operator.EQUALS));
+					break;
+			}
 			String table = Tables.getName(tb);
-			String query = "SELECT COUNT(ID) FROM " + table + " WHERE isSync = 0";
-			count += db.getInt(query);
+			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE " + query.getConditions();
+			count += db.getInt(sql);
 		}
 		return count;
 	}
@@ -783,11 +848,24 @@ public class TarkieLib {
 		ArrayList<TB> tableList = new ArrayList<>();
 		tableList.add(TB.TIME_IN);
 		tableList.add(TB.TIME_OUT);
+		tableList.add(TB.PHOTO);
+		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
+			query.clearAll();
+			switch(tb) {
+				case PHOTO:
+					query.add(new Condition("isUpload", false, Operator.EQUALS));
+					query.add(new Condition("isSignature", false, Operator.EQUALS));
+					query.add(new Condition("fileName", Operator.NOT_NULL));
+					break;
+				default:
+					query.add(new Condition("isPhotoUpload", false, Operator.EQUALS));
+					query.add(new Condition("photo", Operator.NOT_NULL));
+					break;
+			}
 			String table = Tables.getName(tb);
-			String query = "SELECT COUNT(ID) FROM " + table + " WHERE isPhotoUpload = 0 " +
-					"AND photo NOT NULL";
-			count += db.getInt(query);
+			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE " + query.getConditions();
+			count += db.getInt(sql);
 		}
 		return count;
 	}
@@ -795,12 +873,25 @@ public class TarkieLib {
 	public static int getCountSignatureUpload(SQLiteAdapter db) {
 		int count = 0;
 		ArrayList<TB> tableList = new ArrayList<>();
+		tableList.add(TB.PHOTO);
 		tableList.add(TB.TIME_OUT);
+		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
+			query.clearAll();
+			switch(tb) {
+				case PHOTO:
+					query.add(new Condition("isUpload", false, Operator.EQUALS));
+					query.add(new Condition("isSignature", true, Operator.EQUALS));
+					query.add(new Condition("fileName", Operator.NOT_NULL));
+					break;
+				case TIME_OUT:
+					query.add(new Condition("isSignatureUpload", false, Operator.EQUALS));
+					query.add(new Condition("signature", Operator.NOT_NULL));
+					break;
+			}
 			String table = Tables.getName(tb);
-			String query = "SELECT COUNT(ID) FROM " + table + " WHERE isSignatureUpload = 0 " +
-					"AND signature NOT NULL";
-			count += db.getInt(query);
+			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE " + query.getConditions();
+			count += db.getInt(sql);
 		}
 		return count;
 	}
@@ -1031,5 +1122,26 @@ public class TarkieLib {
 		fileName = fileName.replace(" ", "_");
 		fileName = fileName.replace(":", "-");
 		return fileName;
+	}
+
+	public static String getWebPhotoIDs(SQLiteAdapter db, String value) {
+		String webPhotoIDs = "";
+		String table = Tables.getName(TB.PHOTO);
+		if(value != null && !value.isEmpty()) {
+			String condition = "ID = " + value.replace(",", " OR ID = ");
+			String query = "SELECT webPhotoID FROM " + table + " WHERE (" + condition + ") " +
+					"AND isDelete = 0 AND isUpload = 1";
+			Cursor cursor = db.read(query);
+			while(cursor.moveToNext()) {
+				if(cursor.getPosition() != cursor.getCount() - 1) {
+					webPhotoIDs += cursor.getString(0) + ",";
+				}
+				else {
+					webPhotoIDs += cursor.getString(0);
+				}
+			}
+			cursor.close();
+		}
+		return webPhotoIDs;
 	}
 }

@@ -154,17 +154,6 @@ public class HomeFragment extends Fragment {
 					CodePanButton btnItemHome = (CodePanButton) child.findViewById(R.id.btnItemHome);
 					ImageView ivLogoHome = (ImageView) child.findViewById(R.id.ivLogoHome);
 					imageLoader.displayImage(obj.logoUrl, ivLogoHome, options);
-//					switch(obj.type) {
-//						case FormType.OVERTIME:
-//							ivLogoHome.setImageResource(R.drawable.ic_overtime);
-//							break;
-//						case FormType.SCHEDULE:
-//							ivLogoHome.setImageResource(R.drawable.ic_schedule);
-//							break;
-//						case FormType.COMPLIANCE:
-//							ivLogoHome.setImageResource(R.drawable.ic_compliance);
-//							break;
-//					}
 					btnItemHome.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {

@@ -35,6 +35,7 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnCountdownFinishCallback;
 import com.mobileoptima.callback.Interface.OnGpsFixedCallback;
 import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
+import com.mobileoptima.callback.Interface.OnMultiUpdateCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
@@ -59,7 +60,7 @@ import static com.mobileoptima.callback.Interface.OnLoginCallback;
 public class MainActivity extends FragmentActivity implements OnClickListener, OnRefreshCallback,
 		OnOverrideCallback, OnLoginCallback, OnInitializeCallback, ServiceConnection,
 		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
-		OnHighlightEntriesCallback {
+		OnHighlightEntriesCallback, OnMultiUpdateCallback {
 
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
@@ -273,6 +274,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					}
 					else {
 						PhotosFragment photos = new PhotosFragment();
+						photos.setOnOverrideCallback(this);
 						transaction.add(R.id.flContainerMain, photos, TabType.PHOTOS);
 					}
 					if(current != null) {
@@ -512,10 +514,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 							public void onClick(View view) {
 								manager.popBackStack();
 								LoadingDialogFragment loading = new LoadingDialogFragment();
-								loading.setMultiUpdate(true);
 								loading.setAction(Action.SYNC_DATA);
 								loading.setOnRefreshCallback(MainActivity.this);
 								loading.setOnOverrideCallback(MainActivity.this);
+								loading.setOnMultiUpdateCallback(MainActivity.this);
 								transaction = manager.beginTransaction();
 								transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
 										R.anim.fade_in, R.anim.fade_out);
@@ -723,6 +725,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		updateSyncCount();
 		updateLastSynced();
 		reloadForms();
+		reloadEntries();
 	}
 
 	@Override
@@ -739,7 +742,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				}
 			}
 			else {
-				if(!tabType.equals(TabType.HOME)) {
+				int count = manager.getBackStackEntryCount();
+				if(!tabType.equals(TabType.HOME) && count == 0) {
 					setDefaultTab();
 				}
 				else {
@@ -834,7 +838,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			Fragment fragment = manager.findFragmentByTag(TabType.ENTRIES);
 			if(fragment != null) {
 				EntriesFragment entries = (EntriesFragment) fragment;
+				entries.select(false);
 				entries.loadEntries(db);
+			}
+		}
+	}
+
+	public void reloadPhotos() {
+		if(!isPause) {
+			Fragment fragment = manager.findFragmentByTag(TabType.PHOTOS);
+			if(fragment != null) {
+				PhotosFragment photos = (PhotosFragment) fragment;
+				photos.loadPhotos(db);
 			}
 		}
 	}
@@ -1164,5 +1179,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		else {
 			btnSelectMain.setText(R.string.select);
 		}
+	}
+
+	@Override
+	public void onMultiUpdate() {
+		updateSyncCount();
 	}
 }

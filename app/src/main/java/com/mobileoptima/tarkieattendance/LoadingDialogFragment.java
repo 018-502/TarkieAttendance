@@ -19,6 +19,7 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.ProgressWheel;
+import com.mobileoptima.callback.Interface.OnMultiUpdateCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
@@ -33,6 +34,7 @@ import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.core.Tx;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakOutObj;
+import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.TimeInObj;
@@ -47,6 +49,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 	private boolean result, isDone, isPause, isMultiUpdate;
 	private OnTimeValidatedCallback timeValidationCallback;
 	private String successMsg, failedMsg, error, message;
+	private OnMultiUpdateCallback multiUpdateCallback;
 	private OnFragmentCallback fragmentCallback;
 	private OnOverrideCallback overrideCallback;
 	private ProgressWheel progressLoadingDialog;
@@ -313,9 +316,9 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 //					Thread.sleep(250);
 //					handler.sendMessage(handler.obtainMessage());
 //					if(result) {
-						result = CodePanUtils.extractDatabase(getActivity(), App.FOLDER_BACKUP, App.DB);
-						Thread.sleep(250);
-						handler.sendMessage(handler.obtainMessage());
+					result = CodePanUtils.extractDatabase(getActivity(), App.FOLDER_BACKUP, App.DB);
+					Thread.sleep(250);
+					handler.sendMessage(handler.obtainMessage());
 //					}
 					if(result) {
 						result = CodePanUtils.zipFolder(getActivity(), App.FOLDER_BACKUP, App.FOLDER, fileName);
@@ -380,6 +383,20 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 					for(BreakOutObj out : Data.loadBreakOutSync(db)) {
 						if(result) {
 							result = Tx.syncBreakOut(db, out, getErrorCallback());
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
+					for(ImageObj image : Data.loadPhotosUpload(db)) {
+						if(result) {
+							result = Tx.uploadEntryPhoto(db, image, getErrorCallback());
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
+					for(EntryObj entry : Data.loadEntriesSync(db)) {
+						if(result) {
+							result = Tx.syncEntry(db, entry, getErrorCallback());
 							Thread.sleep(250);
 							handler.sendMessage(handler.obtainMessage());
 						}
@@ -458,8 +475,8 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 						showResult(message);
 					}
 				}
-				if(isMultiUpdate && refreshCallback != null) {
-					refreshCallback.onRefresh();
+				if(multiUpdateCallback != null) {
+					multiUpdateCallback.onMultiUpdate();
 				}
 			}
 			else {
@@ -499,6 +516,10 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 		this.refreshCallback = refreshCallback;
 	}
 
+	public void setOnMultiUpdateCallback(OnMultiUpdateCallback multiUpdateCallback) {
+		this.multiUpdateCallback = multiUpdateCallback;
+	}
+
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
 		this.overrideCallback = overrideCallback;
 	}
@@ -509,10 +530,6 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 
 	public void setOnTimeValidatedCallback(OnTimeValidatedCallback timeValidationCallback) {
 		this.timeValidationCallback = timeValidationCallback;
-	}
-
-	public void setMultiUpdate(boolean isMultiUpdate) {
-		this.isMultiUpdate = isMultiUpdate;
 	}
 
 	private void setOnBackStack(boolean isOnBackStack) {

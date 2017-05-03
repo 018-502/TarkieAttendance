@@ -70,7 +70,7 @@ public class SignatureFragment extends Fragment implements OnClickListener {
 				break;
 			case R.id.btnSaveSignature:
 				if(!svSignature.isEmpty()) {
-					String fileName = System.currentTimeMillis() + ".png";
+					String fileName = System.currentTimeMillis() + ".jpg";
 					String path = getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath();
 					int width = svSignature.getWidth();
 					int height = svSignature.getHeight();

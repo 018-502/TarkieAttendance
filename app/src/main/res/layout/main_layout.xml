@@ -219,7 +219,7 @@
                     android:paddingTop="@dimen/two"
                     android:text="@string/select"
                     android:textColor="@color/blue_pri"
-                    android:textSize="@dimen/twelve"
+                    android:textSize="@dimen/thirteen"
                     codePan:typeface="@string/proxima_nova_mid"/>
 
             </RelativeLayout>
@@ -524,7 +524,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:scaleType="centerInside"
-                                android:src="@drawable/ic_logo_regent_green"/>
+                                android:src="@drawable/ic_logo_miescor"/>
 
                         </FrameLayout>
 

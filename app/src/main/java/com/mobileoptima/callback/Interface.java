@@ -65,4 +65,8 @@ public class Interface {
 	public interface OnHighlightEntriesCallback {
 		void onHighlightEntries(boolean isHighlight);
 	}
+
+	public interface OnMultiUpdateCallback {
+		void onMultiUpdate();
+	}
 }

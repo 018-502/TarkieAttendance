@@ -312,6 +312,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 			MainActivity main = (MainActivity) getActivity();
 			main.updateSyncCount();
 			main.reloadEntries();
+			main.reloadPhotos();
 			main.setTab(TabType.ENTRIES);
 			manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		}

@@ -96,7 +96,7 @@ public class SignatureDialogFragment extends Fragment implements View.OnClickLis
 				}
 				else {
 					if(!svSignatureDialog.isEmpty()) {
-						String fileName = System.currentTimeMillis() + ".png";
+						String fileName = System.currentTimeMillis() + ".jpg";
 						String path = getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath();
 						int width = svSignatureDialog.getWidth();
 						int height = svSignatureDialog.getHeight();

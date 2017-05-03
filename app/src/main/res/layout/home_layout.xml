@@ -17,14 +17,14 @@
             android:id="@+id/flLogoHome"
             android:layout_width="match_parent"
             android:layout_height="@dimen/one_hundred"
-            android:background="@color/green_pri">
+            android:background="@color/transparent">
 
             <ImageView
                 android:id="@+id/ivLogoHome"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/sixty_five"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_logo_regent_white"/>
+                android:src="@drawable/ic_logo_miescor"/>
 
         </FrameLayout>
 

@@ -5,6 +5,7 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
+import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
@@ -343,7 +344,7 @@ public class Data {
 	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db) {
 		ArrayList<EntryObj> entryList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
-		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, f.ID, f.name, f.logoUrl FROM " +
+		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, f.logoUrl FROM " +
 				Tables.getName(TB.ENTRIES) + " e , " + Tables.getName(TB.FORMS) + " f " +
 				"WHERE e.empID = '" + empID + "' AND e.isDelete = 0 AND f.ID = e.formID " +
 				"ORDER BY e.ID DESC";
@@ -354,10 +355,11 @@ public class Data {
 			entry.dDate = cursor.getString(1);
 			entry.dTime = cursor.getString(2);
 			entry.isSubmit = cursor.getInt(3) == 1;
+			entry.referenceNo = cursor.getString(4);
 			FormObj form = new FormObj();
-			form.ID = cursor.getString(4);
-			form.name = cursor.getString(5);
-			form.logoUrl = cursor.getString(6);
+			form.ID = cursor.getString(5);
+			form.name = cursor.getString(6);
+			form.logoUrl = cursor.getString(7);
 			entry.form = form;
 			entryList.add(entry);
 		}
@@ -536,5 +538,76 @@ public class Data {
 		}
 		cursor.close();
 		return imageList;
+	}
+
+	public static ArrayList<ImageObj> loadPhotosUpload(SQLiteAdapter db) {
+		ArrayList<ImageObj> imageList = new ArrayList<>();
+		String table = Tables.getName(TB.PHOTO);
+		String query = "SELECT ID, fileName, syncBatchID, isSignature FROM " + table + " WHERE " +
+				"isUpload = 0 AND isDelete = 0";
+		net.sqlcipher.Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			ImageObj image = new ImageObj();
+			image.ID = cursor.getString(0);
+			image.fileName = cursor.getString(1);
+			image.syncBatchID = cursor.getString(2);
+			image.isSignature = cursor.getInt(3) == 1;
+			imageList.add(image);
+		}
+		cursor.close();
+		return imageList;
+	}
+
+	public static ArrayList<EntryObj> loadEntriesSync(SQLiteAdapter db) {
+		ArrayList<EntryObj> entryList = new ArrayList<>();
+		String query = "SELECT ID, dDate, dTime, referenceNo, dateSubmitted, timeSubmitted, syncBatchID, isFromWeb, formID " +
+				"FROM " + Tables.getName(TB.ENTRIES) + " WHERE isSync = 0 AND isSubmit = 1 AND " +
+				"isDelete = 0";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			EntryObj entry = new EntryObj();
+			entry.ID = cursor.getString(0);
+			entry.dDate = cursor.getString(1);
+			entry.dTime = cursor.getString(2);
+			entry.referenceNo = cursor.getString(3);
+			entry.dateSubmitted = cursor.getString(4);
+			entry.timeSubmitted = cursor.getString(5);
+			entry.syncBatchID = cursor.getString(6);
+			entry.isFromWeb = cursor.getInt(7) == 1;
+			FormObj form = new FormObj();
+			form.ID = cursor.getString(8);
+			entry.form = form;
+			ArrayList<FieldObj> fieldList = new ArrayList<>();
+			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + Tables.getName(TB.ANSWERS) + " a, " +
+					Tables.getName(TB.FIELDS) + " f WHERE f.formID = " + form.ID + " " +
+					"AND a.entryID = " + entry.ID + " AND a.fieldID = f.ID " +
+					"AND f.isActive = 1 AND a.value NOT NULL";
+			Cursor c = db.read(query);
+			while(c.moveToNext()) {
+				FieldObj field = new FieldObj();
+				field.ID = c.getString(0);
+				field.type = c.getString(1);
+				AnswerObj answer = new AnswerObj();
+				answer.ID = c.getString(2);
+				String value = c.getString(3);
+				switch(field.type) {
+					case FieldType.PHOTO:
+					case FieldType.SIG:
+						answer.value = TarkieLib.getWebPhotoIDs(db, value);
+						break;
+					default:
+						answer.value = value;
+						break;
+				}
+				answer.syncBatchID = entry.syncBatchID;
+				field.answer = answer;
+				fieldList.add(field);
+			}
+			c.close();
+			entry.fieldList = fieldList;
+			entryList.add(entry);
+		}
+		cursor.close();
+		return entryList;
 	}
 }

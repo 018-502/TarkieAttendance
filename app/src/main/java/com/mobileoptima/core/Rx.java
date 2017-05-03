@@ -1051,12 +1051,14 @@ public class Rx {
 						query.add(new FieldValue("dDate", dataObj.getString("date_created")));
 						query.add(new FieldValue("dTime", dataObj.getString("time_created")));
 						query.add(new FieldValue("referenceNo", dataObj.getString("reference_number")));
-						query.add(new FieldValue("webEntryID", webEntryID));
 						query.add(new FieldValue("isFromWeb", true));
 						String table = Tables.getName(Tables.TB.ENTRIES);
 						String sql = "SELECT ID FROM " + table + " WHERE webEntryID = '" + webEntryID + "'";
 						String entryID;
 						if(!db.isRecordExists(sql)) {
+							String syncBatchID = TarkieLib.getSyncBatchID(db);
+							query.add(new FieldValue("webEntryID", webEntryID));
+							query.add(new FieldValue("syncBatchID", syncBatchID));
 							entryID = binder.insert(table, query);
 						}
 						else {

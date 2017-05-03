@@ -40,21 +40,10 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 	private SQLiteAdapter db;
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		setOnBackStack(true);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		setOnBackStack(false);
-	}
-
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
+		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -77,7 +66,7 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 						transaction = getActivity().getSupportFragmentManager().beginTransaction();
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-						transaction.replace(R.id.rlMain, form, Tag.FORM);
+						transaction.add(R.id.rlMain, form, Tag.FORM);
 						transaction.addToBackStack(null);
 						transaction.commit();
 					}
@@ -92,7 +81,8 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 						adapter.notifyDataSetChanged();
 					}
 					else {
-						TarkieLib.alertDialog(getActivity(), R.string.incomplete_title, R.string.incomplete_message);
+						TarkieLib.alertDialog(getActivity(), R.string.incomplete_title,
+								R.string.incomplete_message, EntriesFragment.this);
 					}
 				}
 			}
@@ -143,18 +133,16 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 				obj.isCheck = false;
 			}
 		}
-		if(hasDraft) {
-			if(overrideCallback != null) {
-				overrideCallback.onOverride(isHighlight);
-			}
-			if(highlightEntriesCallback != null) {
-				highlightEntriesCallback.onHighlightEntries(isHighlight);
-			}
-			this.isHighlight = isHighlight;
-			lvEntries.invalidate();
-			adapter.notifyDataSetChanged();
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isHighlight);
 		}
-		else {
+		if(highlightEntriesCallback != null) {
+			highlightEntriesCallback.onHighlightEntries(isHighlight);
+		}
+		this.isHighlight = isHighlight;
+		lvEntries.invalidate();
+		adapter.notifyDataSetChanged();
+		if(!hasDraft && isHighlight) {
 			for(EntryObj obj : entryList) {
 				obj.isHighlight = false;
 				obj.isCheck = false;
@@ -200,6 +188,8 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 					}
 					if(result) {
 						select(false);
+						MainActivity main = (MainActivity) getActivity();
+						main.updateSyncCount();
 						CodePanUtils.alertToast(getActivity(), "Entries has been successfully submitted.");
 					}
 					else {
@@ -234,13 +224,6 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 		}
 	}
 
-	private void setOnBackStack(boolean isOnBackStack) {
-		if(isOnBackStack) {
-			MainActivity main = (MainActivity) getActivity();
-			main.setOnBackPressedCallback(this);
-		}
-	}
-
 	@Override
 	public void onBackPressed() {
 		if(inOtherFragment) {
@@ -253,6 +236,15 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 			else {
 				getActivity().onBackPressed();
 			}
+		}
+	}
+
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		if(!hidden) {
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
 		}
 	}
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.GridView;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.adapter.PhotosAdapter;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.ImageObj;
 
@@ -21,20 +23,23 @@ import java.util.ArrayList;
 
 public class PhotosFragment extends Fragment {
 
+	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
+	private FragmentManager manager;
 	private PhotosAdapter adapter;
+	private int spacing, numCol;
 	private GridView gvPhotos;
 	private SQLiteAdapter db;
-	private int numCol = 3;
-	private int spacing;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		db = ((MainActivity) getActivity()).getDatabase();
+		MainActivity main = (MainActivity) getActivity();
+		manager = main.getSupportFragmentManager();
+		db = main.getDatabase();
 		db.openConnection();
-		numCol = CodePanUtils.getSupportedNoOfCol(getActivity(), numCol);
+		numCol = CodePanUtils.getSupportedNoOfCol(main);
 		spacing = CodePanUtils.pxToDp(getActivity(), numCol);
 	}
 
@@ -52,11 +57,10 @@ public class PhotosFragment extends Fragment {
 				ImagePreviewFragment imagePreview = new ImagePreviewFragment();
 				imagePreview.setImageList(imageList, position);
 				imagePreview.setIsDeletable(false);
-				transaction = getActivity().getSupportFragmentManager().beginTransaction();
+				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
 				transaction.add(R.id.rlMain, imagePreview);
-				transaction.hide(PhotosFragment.this);
 				transaction.addToBackStack(null);
 				transaction.commit();
 			}
@@ -89,4 +93,8 @@ public class PhotosFragment extends Fragment {
 			return true;
 		}
 	});
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
+	}
 }

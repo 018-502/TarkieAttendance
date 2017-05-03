@@ -1678,20 +1678,25 @@ public class CodePanUtils {
 		return BitmapFactory.decodeFile(image.getPath(), opts);
 	}
 
-	public static int getSupportedNoOfCol(Context context, int numCol) {
+	public static int getSupportedNoOfCol(Context context) {
+		final int numCol = 3;
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		float widthDp = metrics.widthPixels / metrics.density;
 		if(numCol != 0) {
-			if(metrics.widthPixels % numCol == 0) {
-				return numCol;
-			}
-			else {
-				if(widthDp <= 360) {
-					return numCol - 1;
+			if(widthDp <= 360) {
+				if(metrics.widthPixels % numCol == 0) {
+					return numCol;
 				}
 				else {
-					return numCol + 1;
+					return numCol - 1;
 				}
+			}
+			else {
+				int x = numCol + 1;
+				while(metrics.widthPixels % x != 0) {
+					x++;
+				}
+				return x;
 			}
 		}
 		else {

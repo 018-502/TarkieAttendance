@@ -127,14 +127,14 @@ public class SignatureView extends SurfaceView implements OnTouchListener, Callb
 		this.invalidate();
 		File path = new File(strPath);
 		path.mkdirs();
-		if(!strFile.toLowerCase(Locale.ENGLISH).contains(".png")) {
-			strFile += ".png";
+		if(!strFile.toLowerCase(Locale.ENGLISH).contains(".jpg")) {
+			strFile += ".jpg";
 		}
 		File file = new File(path, strFile);
 		FileOutputStream out;
 		try {
 			out = new FileOutputStream(file);
-			this.getBitmap(width, height).compress(Bitmap.CompressFormat.PNG, 90, out);
+			this.getBitmap(width, height).compress(Bitmap.CompressFormat.JPEG, 90, out);
 			return true;
 		}
 		catch(FileNotFoundException e) {
