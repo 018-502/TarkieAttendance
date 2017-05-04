@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tarkie Attendance</string>
+    <string name="app_name">Tarsie</string>
     <string name="dialog_title_font">@string/proxima_nova_semi_bold</string>
     <string name="menu">Menu</string>
     <string name="menu_time_in">@string/time_in</string>
@@ -12,6 +12,8 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_logout">Log-out</string>
     <string name="menu_locations">Locations</string>
+    <string name="employee_name">Unknown Employee</string>
+    <string name="employee_no">000-000</string>
     <string name="time_in">Time In</string>
     <string name="time_out">Time Out</string>
     <string name="attendance">Attendance</string>
@@ -19,6 +21,7 @@
     <string name="total_break">Total Break</string>
     <string name="stores">Stores</string>
     <string name="search">Search</string>
+    <string name="search_entries">Search Entries</string>
     <string name="total_work_hours">Total Work Hours</string>
     <string name="total_net_work_hours">Total Net Work Hours</string>
     <string name="hereby">I hereby declare this information to be true and correct.</string>
@@ -40,6 +43,7 @@
     <string name="delete">Delete</string>
     <string name="settings">Settings</string>
     <string name="select_date">Select Date</string>
+    <string name="select_range">Select Range</string>
     <string name="summary">Summary</string>
     <string name="add_geo_tag">Add Geo-tag</string>
     <string name="ok">OK</string>
@@ -111,4 +115,11 @@
     <string name="submit_entry_message">Do you want to finalize and submit this entry?</string>
     <string name="unsubmitted_entries_title">Unsubmitted Entries</string>
     <string name="unsubmitted_entries_message">You still have unsubmitted entries, please finalize and submit first.</string>
+
+    <string-array name="tab_search_entries">
+        <item>Date</item>
+        <item>Store</item>
+        <item>Category</item>
+        <item>Status</item>
+    </string-array>
 </resources>

@@ -30,6 +30,7 @@ import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnCountdownFinishCallback;
@@ -50,6 +51,7 @@ import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.core.TimeSecurity;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
+import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.service.MainService;
 
@@ -64,7 +66,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
-			tvTimeInMain, tvSyncMain, tvLastSyncMain;
+			tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private CodePanButton btnSyncMain, btnHomeMain, btnVisitsMain, btnInventoryMain,
 			btnPhotosMain, btnEntriesMain, btnSelectMain;
 	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
@@ -73,6 +75,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private LocalBroadcastManager broadcastManager;
 	private ImageView ivTimeInMain, ivTimeOutMain;
 	private RelativeLayout rlMain, rlMenuMain;
+	private CircularImageView ivEmployeeMain;
 	private String tabType = TabType.DEFAULT;
 	private FragmentTransaction transaction;
 	private BroadcastReceiver receiver;
@@ -135,6 +138,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		tvTimeInMain = (CodePanLabel) findViewById(R.id.tvTimeInMain);
 		tvSyncMain = (CodePanLabel) findViewById(R.id.tvSyncMain);
 		tvLastSyncMain = (CodePanLabel) findViewById(R.id.tvLastSyncMain);
+		tvEmployeeNameMain = (CodePanLabel) findViewById(R.id.tvEmployeeNameMain);
+		tvEmployeeNoMain = (CodePanLabel) findViewById(R.id.tvEmployeeNoMain);
+		ivEmployeeMain = (CircularImageView) findViewById(R.id.ivEmployeeMain);
 		ivTimeInMain = (ImageView) findViewById(R.id.ivTimeInMain);
 		ivTimeOutMain = (ImageView) findViewById(R.id.ivTimeOutMain);
 		btnSyncMain = (CodePanButton) findViewById(R.id.btnSyncMain);
@@ -157,6 +163,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		findViewById(R.id.llLocationsMain).setOnClickListener(this);
 		findViewById(R.id.llLogoutMain).setOnClickListener(this);
 		findViewById(R.id.btnMenuMain).setOnClickListener(this);
+		findViewById(R.id.btnSearchMain).setOnClickListener(this);
 		llTimeInMain.setOnClickListener(this);
 		btnSelectMain.setOnClickListener(this);
 		btnHomeMain.setOnClickListener(this);
@@ -613,6 +620,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					}
 				}
 				break;
+			case R.id.btnSearchMain:
+				SearchEntriesFragment search = new SearchEntriesFragment();
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.replace(R.id.rlMain, search);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
 		}
 	}
 
@@ -625,7 +641,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.HOME:
 				tvHomeMain.setEnabled(true);
 				ivHomeMain.setImageResource(R.drawable.ic_home_enabled);
-				rlNotifMain.setVisibility(View.VISIBLE);
+				//rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -633,7 +649,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.VISITS:
 				tvVisitsMain.setEnabled(true);
 				ivVisitsMain.setImageResource(R.drawable.ic_visits_enabled);
-				rlNotifMain.setVisibility(View.VISIBLE);
+				//rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -641,7 +657,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.INVENTORY:
 				tvInventoryMain.setEnabled(true);
 				ivInventoryMain.setImageResource(R.drawable.ic_inventory_enabled);
-				rlNotifMain.setVisibility(View.VISIBLE);
+				//rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -649,7 +665,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.PHOTOS:
 				tvPhotosMain.setEnabled(true);
 				ivPhotosMain.setImageResource(R.drawable.ic_photos_enabled);
-				rlNotifMain.setVisibility(View.VISIBLE);
+				//rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -657,7 +673,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.ENTRIES:
 				tvEntriesMain.setEnabled(true);
 				ivEntriesMain.setImageResource(R.drawable.ic_entries_enabled);
-				rlNotifMain.setVisibility(View.GONE);
+				//rlNotifMain.setVisibility(View.GONE);
 				rlSyncMain.setVisibility(View.GONE);
 				rlSearchMain.setVisibility(View.VISIBLE);
 				btnSelectMain.setVisibility(View.VISIBLE);
@@ -728,6 +744,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		checkSecurity();
 		checkTimeIn();
 		setDefaultTab();
+		updateUser();
 		setReceiver();
 		registerReceiver();
 		updateSyncCount();
@@ -742,6 +759,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	@Override
 	public void onLogin() {
+		updateUser();
 	}
 
 	@Override
@@ -1079,6 +1097,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				String text = title + " N/A";
 				tvLastSyncMain.setText(text);
 			}
+		}
+	}
+
+	public void updateUser() {
+		String empID = TarkieLib.getEmployeeID(db);
+		if(empID != null) {
+			EmployeeObj employee = TarkieLib.getEmployee(db, empID);
+			tvEmployeeNameMain.setText(employee.fullName);
+			tvEmployeeNoMain.setText(employee.employeeNo);
+			CodePanUtils.displayImage(ivEmployeeMain, employee.imageUrl,
+					R.drawable.ic_user_placeholder);
 		}
 	}
 

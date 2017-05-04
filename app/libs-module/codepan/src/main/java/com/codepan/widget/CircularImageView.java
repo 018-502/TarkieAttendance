@@ -2,6 +2,7 @@ package com.codepan.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -11,6 +12,8 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.codepan.R;
 
 public class CircularImageView extends ImageView {
 
@@ -29,12 +32,20 @@ public class CircularImageView extends ImageView {
 
 	public CircularImageView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		init(context, attrs);
 		setup();
 	}
 
 	public CircularImageView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+		init(context, attrs);
 		setup();
+	}
+
+	public void init(Context context, AttributeSet attrs) {
+		TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.circular);
+		borderWidth = ta.getInteger(R.styleable.circular_borderWidth, 0);
+		ta.recycle();
 	}
 
 	private void setup() {

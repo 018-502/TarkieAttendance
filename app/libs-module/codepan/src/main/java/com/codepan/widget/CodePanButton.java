@@ -37,8 +37,8 @@ public class CodePanButton extends Button {
 		}
 		setTextColor(textColorEnabled);
 		setBackgroundState(backgroundEnabled);
-		enableStatePressed(enableStatePressed);
 		ta.recycle();
+		enableStatePressed(enableStatePressed);
 	}
 
 	public void setBackgroundState(Drawable background) {

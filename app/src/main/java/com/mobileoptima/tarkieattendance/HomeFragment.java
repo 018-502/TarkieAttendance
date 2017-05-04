@@ -169,7 +169,8 @@ public class HomeFragment extends Fragment {
 								transaction.commit();
 							}
 							else {
-								TarkieLib.alertDialog(getActivity(), "Time-in Required", "Please time-in first before creating new entries.");
+								TarkieLib.alertDialog(getActivity(), "Time-in Required",
+										"Please time-in first before creating new entries.");
 							}
 						}
 					});

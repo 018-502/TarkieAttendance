@@ -24,6 +24,7 @@ import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.ImageObj;
@@ -257,17 +258,31 @@ public class TarkieLib {
 		return db.getString(query);
 	}
 
+	public static EmployeeObj getEmployee(SQLiteAdapter db, String empID) {
+		EmployeeObj employee = new EmployeeObj();
+		String table = Tables.getName(TB.EMPLOYEE);
+		String query = "SELECT employeeNo, firstName, lastName, email, mobile, imageUrl FROM " +
+				table + " WHERE ID = '" + empID + "'";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			employee.ID = empID;
+			employee.employeeNo = cursor.getString(0);
+			employee.firstName = cursor.getString(1);
+			employee.lastName = cursor.getString(2);
+			employee.fullName = employee.firstName + " " + employee.lastName;
+			employee.email = cursor.getString(3);
+			employee.mobile = cursor.getString(4);
+			employee.imageUrl = cursor.getString(5);
+		}
+		cursor.close();
+		return employee;
+	}
+
 	public static String getGroupID(SQLiteAdapter db) {
 		String e = Tables.getName(TB.EMPLOYEE);
 		String c = Tables.getName(TB.CREDENTIALS);
 		String query = "SELECT e.groupID FROM " + e + " e, " + c + " c WHERE c.ID = 1 " +
 				"AND e.ID = c.empID";
-		return db.getString(query);
-	}
-
-	public static String getEmployeeUrl(SQLiteAdapter db, String empID) {
-		String table = Tables.getName(EMPLOYEE);
-		String query = "SELECT imageUrl FROM " + table + " WHERE ID = '" + empID + "'";
 		return db.getString(query);
 	}
 
@@ -1131,8 +1146,9 @@ public class TarkieLib {
 	}
 
 	public static String getBackupFileName(SQLiteAdapter db) {
+		String empID = getEmployeeID(db);
 		String companyName = TarkieLib.getCompanyName(db);
-		String employeeName = TarkieLib.getEmployeeName(db, TarkieLib.getEmployeeID(db));
+		String employeeName = TarkieLib.getEmployeeName(db, empID);
 		String version = CodePanUtils.getVersionName(db.getContext());
 		String date = CodePanUtils.getDate();
 		String time = CodePanUtils.getTime();

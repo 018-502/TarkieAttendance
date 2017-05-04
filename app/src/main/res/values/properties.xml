@@ -3,6 +3,7 @@
     <color name="dialog_bg">@color/black_trans_sixty</color>
     <color name="header">@color/blue_pri</color>
     <color name="scrollbar">@color/black_trans_forty</color>
+    <color name="divider">@color/gray_sec</color>
     <dimen name="header">@dimen/forty_five</dimen>
     <dimen name="scrollbar">@dimen/three</dimen>
     <dimen name="signature_height">@dimen/two_hundred</dimen>

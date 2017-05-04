@@ -49,6 +49,10 @@
         <attr name="src" format="reference"/>
     </declare-styleable>
 
+    <declare-styleable name="circular">
+        <attr name="borderWidth" format="integer"/>
+    </declare-styleable>
+
     <!--sample
     <com.codepan.widget.ProgressWheel
         android:id="@+id/progressLoadingDialog"

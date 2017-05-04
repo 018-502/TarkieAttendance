@@ -2,6 +2,7 @@
 <RelativeLayout
     android:id="@+id/rlMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:circular="http://schemas.android.com/apk/res-auto"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -123,8 +124,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="@dimen/ten"
-                    android:layout_marginRight="@dimen/ten"
-                    android:visibility="gone">
+                    android:layout_marginRight="@dimen/ten">
 
                     <ImageView
                         android:layout_width="@dimen/twenty_seven"
@@ -166,32 +166,14 @@
                     android:layout_marginEnd="@dimen/five"
                     android:layout_marginRight="@dimen/five"
                     android:layout_toLeftOf="@+id/btnSelectMain"
-                    android:layout_toStartOf="@+id/btnSelectMain">
+                    android:layout_toStartOf="@+id/btnSelectMain"
+                    android:visibility="gone">
 
                     <ImageView
                         android:layout_width="@dimen/twenty"
                         android:layout_height="@dimen/twenty_one"
                         android:layout_centerInParent="true"
                         android:src="@drawable/ic_search_light"/>
-
-                    <com.codepan.widget.CodePanLabel
-                        android:id="@+id/tvSearchMain"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginEnd="@dimen/two"
-                        android:layout_marginRight="@dimen/two"
-                        android:layout_marginTop="@dimen/fourteen"
-                        android:background="@drawable/bg_oval_red"
-                        android:gravity="center"
-                        android:padding="@dimen/one"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/ten"
-                        android:visibility="gone"
-                        codePan:reference="dynamic"
-                        codePan:setSquare="true"
-                        codePan:typeface="@string/proxima_nova_bold"/>
 
                     <com.codepan.widget.CodePanButton
                         android:id="@+id/btnSearchMain"
@@ -220,6 +202,7 @@
                     android:text="@string/select"
                     android:textColor="@color/blue_pri"
                     android:textSize="@dimen/thirteen"
+                    android:visibility="gone"
                     codePan:typeface="@string/proxima_nova_mid"/>
 
             </RelativeLayout>
@@ -504,8 +487,9 @@
                     <RelativeLayout
                         android:id="@+id/rlCoverMain"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/one_hundred"
+                        android:layout_height="wrap_content"
                         android:background="@color/blue_pri"
+                        android:paddingBottom="@dimen/seven"
                         android:paddingEnd="@dimen/fifteen"
                         android:paddingLeft="@dimen/fifteen"
                         android:paddingRight="@dimen/fifteen"
@@ -513,12 +497,12 @@
                         android:paddingTop="@dimen/fifteen">
 
                         <FrameLayout
-                            android:layout_width="@dimen/one_hundred_thirty"
-                            android:layout_height="@dimen/seventy"
+                            android:layout_width="@dimen/one_hundred"
+                            android:layout_height="@dimen/fifty"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:background="@drawable/bg_rect_white_rad_three"
-                            android:padding="@dimen/ten">
+                            android:padding="@dimen/seven">
 
                             <ImageView
                                 android:layout_width="match_parent"
@@ -528,17 +512,37 @@
 
                         </FrameLayout>
 
+                        <com.codepan.widget.CircularImageView
+                            android:id="@+id/ivEmployeeMain"
+                            android:layout_width="@dimen/fifty"
+                            android:layout_height="@dimen/fifty"
+                            android:src="@drawable/ic_user_placeholder"
+                            circular:borderWidth="5"/>
+
                         <com.codepan.widget.CodePanLabel
+                            android:id="@+id/tvEmployeeNameMain"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
-                            android:layout_marginBottom="@dimen/seven"
-                            android:text="@string/menu"
+                            android:layout_below="@+id/ivEmployeeMain"
+                            android:layout_marginTop="@dimen/three"
+                            android:text="@string/employee_name"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/eighteen"
+                            android:textSize="@dimen/seventeen"
                             codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                        <com.codepan.widget.CodePanLabel
+                            android:id="@+id/tvEmployeeNoMain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_below="@+id/tvEmployeeNameMain"
+                            android:text="@string/employee_no"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/thirteen"
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </RelativeLayout>
 
@@ -835,7 +839,8 @@
                         android:clickable="true"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="@dimen/ten">
+                        android:padding="@dimen/ten"
+                        android:visibility="gone">
 
                         <FrameLayout
                             android:layout_width="@dimen/twenty_five"
@@ -864,7 +869,8 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec"/>
+                        android:background="@color/gray_sec"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/llLogoutMain"
