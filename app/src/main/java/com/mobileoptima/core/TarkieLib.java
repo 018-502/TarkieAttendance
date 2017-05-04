@@ -213,6 +213,11 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.INTEGER, column);
 		}
+		column = "category";
+		table = Tables.getName(TB.FORMS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
 		binder.finish();
 	}
 

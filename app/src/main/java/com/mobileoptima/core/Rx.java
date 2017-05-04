@@ -836,6 +836,7 @@ public class Rx {
 						String formID = dataObj.getString("form_id");
 						String name = CodePanUtils.handleUniCode(dataObj.getString("form_name"));
 						String description = CodePanUtils.handleUniCode(dataObj.getString("form_description"));
+						String category = CodePanUtils.handleUniCode(dataObj.getString("form_type"));
 						String logoUrl = dataObj.getString("form_logo");
 						CodePanUtils.clearImageUrl(db.getContext(), logoUrl);
 						query.clearAll();
@@ -843,6 +844,7 @@ public class Rx {
 						query.add(new FieldValue("name", name));
 						query.add(new FieldValue("groupID", groupID));
 						query.add(new FieldValue("description", description));
+						query.add(new FieldValue("category", category));
 						query.add(new FieldValue("dateCreated", dataObj.getString("form_date_created")));
 						query.add(new FieldValue("timeCreated", dataObj.getString("form_time_created")));
 						query.add(new FieldValue("isActive", dataObj.getString("form_is_active")));

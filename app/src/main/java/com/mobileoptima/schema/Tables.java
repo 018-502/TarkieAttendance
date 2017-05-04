@@ -253,6 +253,7 @@ public class Tables {
 				query.add(new Field("timeCreated", DataType.TEXT));
 				query.add(new Field("groupID", DataType.INTEGER));
 				query.add(new Field("logoUrl", DataType.TEXT));
+				query.add(new Field("category", DataType.TEXT));
 				query.add(new Field("isActive", 1));
 				break;
 			case FIELDS:

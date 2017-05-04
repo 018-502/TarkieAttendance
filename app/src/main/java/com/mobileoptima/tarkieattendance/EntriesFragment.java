@@ -30,12 +30,12 @@ import java.util.ArrayList;
 public class EntriesFragment extends Fragment implements OnFragmentCallback, OnBackPressedCallback {
 
 	private OnHighlightEntriesCallback highlightEntriesCallback;
-	private boolean isHighlight, inOtherFragment;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<EntryObj> entryList;
 	private FragmentManager manager;
 	private EntriesAdapter adapter;
+	private boolean isHighlight;
 	private ListView lvEntries;
 	private SQLiteAdapter db;
 
@@ -219,7 +219,6 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 
 	@Override
 	public void onFragment(boolean status) {
-		this.inOtherFragment = status;
 		if(!status) {
 			MainActivity main = (MainActivity) getActivity();
 			main.setOnBackPressedCallback(this);
@@ -228,7 +227,8 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 
 	@Override
 	public void onBackPressed() {
-		if(inOtherFragment) {
+		int count = manager.getBackStackEntryCount();
+		if(count > 0) {
 			manager.popBackStack();
 		}
 		else {

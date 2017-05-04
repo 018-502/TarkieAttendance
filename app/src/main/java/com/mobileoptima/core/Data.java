@@ -3,8 +3,10 @@ package com.mobileoptima.core;
 import com.codepan.database.Condition;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
+import com.mobileoptima.constant.Status;
 import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
@@ -19,6 +21,7 @@ import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.InventoryObj;
 import com.mobileoptima.model.LocationObj;
 import com.mobileoptima.model.PageObj;
+import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
@@ -609,5 +612,64 @@ public class Data {
 		}
 		cursor.close();
 		return entryList;
+	}
+
+	public static ArrayList<SearchObj> searchEntriesByDate(SQLiteAdapter db, String startDate, String endDate) {
+		ArrayList<SearchObj> searchList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
+		String table = Tables.getName(TB.ENTRIES);
+		String query = "SELECT dDate, COUNT(ID) FROM " + table + " WHERE dDate " +
+				"BETWEEN '" + startDate + "' AND '" + endDate + "' AND empID = '" + empID + "' " +
+				"GROUP BY dDate ORDER BY dDate DESC";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			SearchObj search = new SearchObj();
+			String date = cursor.getString(0);
+			search.name = CodePanUtils.getCalendarDate(date, true, true);
+			search.count = cursor.getInt(1) + " Entries";
+			searchList.add(search);
+		}
+		cursor.close();
+		return searchList;
+	}
+
+	public static ArrayList<SearchObj> searchEntriesByCategory(SQLiteAdapter db) {
+		ArrayList<SearchObj> searchList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
+		String e = Tables.getName(TB.ENTRIES);
+		String f = Tables.getName(TB.FORMS);
+		String query = "SELECT f.category, COUNT(e.ID) FROM " + e + " e, " + f + " f WHERE " +
+				"e.empID = '" + empID + "' AND f.ID = e.formID GROUP BY f.category " +
+				"ORDER BY f.category";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			SearchObj search = new SearchObj();
+			search.name = cursor.getString(0);
+			search.count = cursor.getInt(1) + " Entries";
+			searchList.add(search);
+		}
+		cursor.close();
+		return searchList;
+	}
+
+	public static ArrayList<SearchObj> searchEntriesByStatus(SQLiteAdapter db) {
+		ArrayList<SearchObj> searchList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
+		String table = Tables.getName(TB.ENTRIES);
+		String query = "SELECT CASE " +
+				"WHEN isDelete = 1 THEN '" + Status.DELETED + "' " +
+				"WHEN isSubmit = 1 THEN '" + Status.SUBMITTED + "' " +
+				"WHEN isSubmit = 0 THEN '" + Status.DRAFT + "' " +
+				"END AS status, COUNT(ID) FROM " + table + " " +
+				"WHERE empID = '" + empID + "' GROUP BY status";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			SearchObj search = new SearchObj();
+			search.name = cursor.getString(0);
+			search.count = cursor.getInt(1) + " Entries";
+			searchList.add(search);
+		}
+		cursor.close();
+		return searchList;
 	}
 }

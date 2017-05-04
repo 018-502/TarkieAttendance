@@ -1,6 +1,9 @@
 package com.mobileoptima.tarkieattendance;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.codepan.calendar.callback.Interface.OnPickDateCallback;
@@ -16,19 +20,28 @@ import com.codepan.calendar.view.CalendarView;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
+import com.mobileoptima.adapter.SearchItemAdapter;
 import com.mobileoptima.constant.DateType;
 import com.mobileoptima.constant.EntriesSearchType;
+import com.mobileoptima.core.Data;
+import com.mobileoptima.model.SearchObj;
+
+import java.util.ArrayList;
 
 public class SearchItemFragment extends Fragment implements OnClickListener, OnPickDateCallback {
 
 	private CodePanLabel tvStartDateSearchItem, tvEndDateSearchItem;
+	private ArrayList<SearchObj> searchList;
 	private RelativeLayout rlDateSearchItem;
 	private FragmentTransaction transaction;
-	private FrameLayout flSearchItem;
+	private SearchItemAdapter adapter;
 	private String startDate, endDate;
+	private FrameLayout flSearchItem;
 	private FragmentManager manager;
+	private ListView lvSearchItem;
 	private int tabType, dateType;
 	private SQLiteAdapter db;
+	private View vDivider;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -46,6 +59,8 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 		tvEndDateSearchItem = (CodePanLabel) view.findViewById(R.id.tvEndDateSearchItem);
 		rlDateSearchItem = (RelativeLayout) view.findViewById(R.id.rlDateSearchItem);
 		flSearchItem = (FrameLayout) view.findViewById(R.id.flSearchItem);
+		lvSearchItem = (ListView) view.findViewById(R.id.lvSearchItem);
+		vDivider = view.findViewById(R.id.vDivider);
 		tvStartDateSearchItem.setOnClickListener(this);
 		tvEndDateSearchItem.setOnClickListener(this);
 		endDate = CodePanUtils.getDate();
@@ -58,21 +73,25 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 			case EntriesSearchType.DATE:
 				flSearchItem.setVisibility(View.GONE);
 				rlDateSearchItem.setVisibility(View.VISIBLE);
+				vDivider.setVisibility(View.VISIBLE);
 				break;
 			case EntriesSearchType.STORE:
 				flSearchItem.setVisibility(View.VISIBLE);
 				rlDateSearchItem.setVisibility(View.GONE);
+				vDivider.setVisibility(View.VISIBLE);
 				break;
 			case EntriesSearchType.CATEGORY:
 				flSearchItem.setVisibility(View.GONE);
 				rlDateSearchItem.setVisibility(View.GONE);
+				vDivider.setVisibility(View.GONE);
 				break;
 			case EntriesSearchType.STATUS:
 				flSearchItem.setVisibility(View.GONE);
 				rlDateSearchItem.setVisibility(View.GONE);
+				vDivider.setVisibility(View.GONE);
 				break;
-
 		}
+		loadItems(db);
 		return view;
 	}
 
@@ -93,6 +112,45 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 				break;
 		}
 	}
+
+	public void loadItems(final SQLiteAdapter db) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Looper.prepare();
+				try {
+					switch(tabType) {
+						case EntriesSearchType.DATE:
+							searchList = Data.searchEntriesByDate(db, startDate, endDate);
+							break;
+						case EntriesSearchType.STORE:
+							searchList = new ArrayList<>();
+							break;
+						case EntriesSearchType.CATEGORY:
+							searchList = Data.searchEntriesByCategory(db);
+							break;
+						case EntriesSearchType.STATUS:
+							searchList = Data.searchEntriesByStatus(db);
+							break;
+					}
+					handler.sendMessage(handler.obtainMessage());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message message) {
+			adapter = new SearchItemAdapter(getActivity(), searchList);
+			lvSearchItem.setAdapter(adapter);
+			return true;
+		}
+	});
 
 	public void showCalendar(String currentDate) {
 		CalendarView calendar = new CalendarView();
@@ -138,5 +196,6 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 				}
 				break;
 		}
+		loadItems(db);
 	}
 }

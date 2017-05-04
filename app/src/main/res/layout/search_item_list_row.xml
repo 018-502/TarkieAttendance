@@ -24,7 +24,7 @@
         android:layout_toLeftOf="@+id/tvCountSearchItem"
         android:layout_toStartOf="@+id/tvCountSearchItem"
         android:textColor="@color/gray_qui"
-        android:textSize="@dimen/sixteen"
+        android:textSize="@dimen/seventeen"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <com.codepan.widget.CodePanLabel
@@ -37,7 +37,7 @@
         android:layout_toLeftOf="@+id/ivNextSearchItem"
         android:layout_toStartOf="@+id/ivNextSearchItem"
         android:textColor="@color/gray_qui"
-        android:textSize="@dimen/sixteen"
+        android:textSize="@dimen/seventeen"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <ImageView
