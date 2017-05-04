@@ -54,8 +54,8 @@ public class Condition {
 		setFloat(value);
 	}
 
-	public Condition(String field, boolean value, Operator operator) {
-		this.operator = operator;
+	public Condition(String field, boolean value) {
+		this.operator = Operator.EQUALS;
 		this.field = field;
 		if(value) {
 			setInt(TRUE);

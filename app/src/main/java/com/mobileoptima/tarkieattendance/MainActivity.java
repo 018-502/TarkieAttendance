@@ -339,39 +339,65 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					}
 				}
 				else {
-					final AlertDialogFragment alert = new AlertDialogFragment();
-					alert.setDialogTitle("Confirm Time-out");
-					alert.setDialogMessage("Do you want to time-out?");
-					alert.setPositiveButton("Yes", new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							manager.popBackStack();
-							CameraFragment camera = new CameraFragment();
-							camera.setGps(getGps());
-							camera.setOnOverrideCallback(MainActivity.this);
-							camera.setImageType(ImageType.TIME_OUT);
-							camera.setDate(CodePanUtils.getDate());
-							camera.setTime(CodePanUtils.getTime());
-							transaction = manager.beginTransaction();
-							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-							transaction.add(R.id.rlMain, camera);
-							transaction.addToBackStack(null);
-							transaction.commit();
-						}
-					});
-					alert.setNegativeButton("Cancel", new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							manager.popBackStack();
-						}
-					});
-					transaction = manager.beginTransaction();
-					transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-							R.anim.fade_in, R.anim.fade_out);
-					transaction.add(R.id.rlMain, alert);
-					transaction.addToBackStack(null);
-					transaction.commit();
+					if(!TarkieLib.hasUnsubmittedEntries(db)) {
+						final AlertDialogFragment alert = new AlertDialogFragment();
+						alert.setDialogTitle("Confirm Time-out");
+						alert.setDialogMessage("Do you want to time-out?");
+						alert.setPositiveButton("Yes", new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								manager.popBackStack();
+								CameraFragment camera = new CameraFragment();
+								camera.setGps(getGps());
+								camera.setOnOverrideCallback(MainActivity.this);
+								camera.setImageType(ImageType.TIME_OUT);
+								camera.setDate(CodePanUtils.getDate());
+								camera.setTime(CodePanUtils.getTime());
+								transaction = manager.beginTransaction();
+								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+								transaction.add(R.id.rlMain, camera);
+								transaction.addToBackStack(null);
+								transaction.commit();
+							}
+						});
+						alert.setNegativeButton("Cancel", new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								manager.popBackStack();
+							}
+						});
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+								R.anim.fade_in, R.anim.fade_out);
+						transaction.add(R.id.rlMain, alert);
+						transaction.addToBackStack(null);
+						transaction.commit();
+					}
+					else {
+						final AlertDialogFragment alert = new AlertDialogFragment();
+						alert.setDialogTitle(R.string.unsubmitted_entries_title);
+						alert.setDialogMessage(R.string.unsubmitted_entries_message);
+						alert.setPositiveButton("View", new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								manager.popBackStack();
+								setTab(TabType.ENTRIES);
+							}
+						});
+						alert.setNegativeButton("Cancel", new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								manager.popBackStack();
+							}
+						});
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+								R.anim.fade_in, R.anim.fade_out);
+						transaction.add(R.id.rlMain, alert);
+						transaction.addToBackStack(null);
+						transaction.commit();
+					}
 				}
 				break;
 			case R.id.llAttendanceMain:

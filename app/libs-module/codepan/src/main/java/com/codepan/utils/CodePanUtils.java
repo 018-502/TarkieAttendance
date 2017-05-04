@@ -357,6 +357,27 @@ public class CodePanUtils {
 		return parsableString;
 	}
 
+	public static boolean decryptTextFile(Context context, String folder, String password) {
+		boolean result = false;
+		String path = context.getDir(folder, Context.MODE_PRIVATE).getPath();
+		File dir = new File(path);
+		if(dir.exists() && dir.isDirectory()) {
+			String[] child = dir.list();
+			if(child.length > 0) {
+				for(String file : child) {
+					result = file.contains(".") || CodePanUtils.decryptFile(context, folder, file, password, ".txt");
+				}
+			}
+			else {
+				result = true;
+			}
+		}
+		else {
+			result = true;
+		}
+		return result;
+	}
+
 	public static boolean decryptFile(Context context, String folderName, String fileName, String password, String extFile) {
 		boolean result = false;
 		String path = context.getDir(folderName, Context.MODE_PRIVATE).getPath() + "/" + fileName;

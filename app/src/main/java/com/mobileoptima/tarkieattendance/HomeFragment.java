@@ -157,15 +157,20 @@ public class HomeFragment extends Fragment {
 					btnItemHome.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							FormFragment form = new FormFragment();
-							form.setForm(obj);
-							form.setOnOverrideCallback(overrideCallback);
-							transaction = manager.beginTransaction();
-							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-							transaction.replace(R.id.rlMain, form, Tag.FORM);
-							transaction.addToBackStack(null);
-							transaction.commit();
+							if(TarkieLib.isTimeIn(db)) {
+								FormFragment form = new FormFragment();
+								form.setForm(obj);
+								form.setOnOverrideCallback(overrideCallback);
+								transaction = manager.beginTransaction();
+								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+								transaction.replace(R.id.rlMain, form, Tag.FORM);
+								transaction.addToBackStack(null);
+								transaction.commit();
+							}
+							else {
+								TarkieLib.alertDialog(getActivity(), "Time-in Required", "Please time-in first before creating new entries.");
+							}
 						}
 					});
 					if(formList.indexOf(obj) == formList.size() - 1) {

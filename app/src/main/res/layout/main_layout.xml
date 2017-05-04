@@ -509,14 +509,14 @@
                         android:paddingEnd="@dimen/fifteen"
                         android:paddingLeft="@dimen/fifteen"
                         android:paddingRight="@dimen/fifteen"
-                        android:paddingStart="@dimen/fifteen">
+                        android:paddingStart="@dimen/fifteen"
+                        android:paddingTop="@dimen/fifteen">
 
                         <FrameLayout
                             android:layout_width="@dimen/one_hundred_thirty"
                             android:layout_height="@dimen/seventy"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
                             android:background="@drawable/bg_rect_white_rad_three"
                             android:padding="@dimen/ten">
 

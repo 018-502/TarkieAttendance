@@ -119,7 +119,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				authorizeDevice(db, authorizationCode, deviceID);
 				break;
 			case LOGIN:
-				setMax(3);
+				setMax(5);
 				successMsg = "Login successful.";
 				failedMsg = "Failed to login.";
 				title = "Validating Account";
@@ -129,14 +129,13 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				break;
 			case UPDATE_MASTER_FILE:
 				setMax(9);
-				//setMax(6);
 				successMsg = "Update master list successful.";
 				failedMsg = "Failed to update master file.";
 				title = "Updating Master File";
 				updateMasterFile(db);
 				break;
 			case SEND_BACKUP:
-				setMax(4);
+				setMax(5);
 				successMsg = "Send back-up successful.";
 				failedMsg = "Failed to send back-up.";
 				title = "Sending Back-up Data";
@@ -233,6 +232,16 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 						handler.sendMessage(handler.obtainMessage());
 					}
 					if(result) {
+						result = Rx.getForms(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getFields(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
 						result = Rx.getServerTime(db, getErrorCallback());
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
@@ -312,16 +321,16 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 			public void run() {
 				Looper.prepare();
 				try {
-//					result = TarkieLib.decryptErrorMsg(getActivity(), App.FOLDER_BACKUP, App.ERROR_PWD);
-//					Thread.sleep(250);
-//					handler.sendMessage(handler.obtainMessage());
-//					if(result) {
-					result = CodePanUtils.extractDatabase(getActivity(), App.FOLDER_BACKUP, App.DB);
+					result = CodePanUtils.decryptTextFile(getActivity(), App.BACKUP, App.ERROR_PWD);
 					Thread.sleep(250);
 					handler.sendMessage(handler.obtainMessage());
-//					}
 					if(result) {
-						result = CodePanUtils.zipFolder(getActivity(), App.FOLDER_BACKUP, App.FOLDER, fileName);
+						result = CodePanUtils.extractDatabase(getActivity(), App.BACKUP, App.DB);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = CodePanUtils.zipFolder(getActivity(), App.BACKUP, App.FOLDER, fileName);
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
 					}
@@ -331,7 +340,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 						handler.sendMessage(handler.obtainMessage());
 					}
 					if(result) {
-						result = CodePanUtils.deleteFilesInDir(getActivity(), App.FOLDER_BACKUP);
+						result = CodePanUtils.deleteFilesInDir(getActivity(), App.BACKUP);
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
 					}
@@ -571,7 +580,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 
 	@Override
 	public void onError(String error, String params, String response, boolean showError) {
-		CodePanUtils.setErrorMsg(getActivity(), error, params, response);
+		CodePanUtils.setErrorMsg(getActivity(), error, params, response, App.BACKUP, App.ERROR_PWD);
 		if(showError) {
 			this.error = error;
 		}

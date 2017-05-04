@@ -285,6 +285,7 @@ public class Tables {
 				query.add(new Field("timeSubmitted", DataType.TEXT));
 				query.add(new Field("syncBatchID", DataType.TEXT));
 				query.add(new Field("webEntryID", DataType.INTEGER));
+				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("isFromWeb", 0));
 				query.add(new Field("isDelete", 0));
 				query.add(new Field("isSubmit", 0));

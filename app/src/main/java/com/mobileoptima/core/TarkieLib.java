@@ -207,6 +207,11 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.INTEGER, column);
 		}
+		column = "timeInID";
+		table = Tables.getName(TB.ENTRIES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
 		binder.finish();
 	}
 
@@ -603,7 +608,7 @@ public class TarkieLib {
 		String table = Tables.getName(TB.STORES);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("isDefault", false));
-		query.add(new Condition("isDefault", true, Operator.EQUALS));
+		query.add(new Condition("isDefault", true));
 		binder.update(table, query);
 		query.clearAll();
 		query.add(new FieldValue("isDefault", true));
@@ -828,12 +833,12 @@ public class TarkieLib {
 			query.clearAll();
 			switch(tb) {
 				case ENTRIES:
-					query.add(new Condition("isDelete", false, Operator.EQUALS));
-					query.add(new Condition("isSubmit", true, Operator.EQUALS));
-					query.add(new Condition("isSync", false, Operator.EQUALS));
+					query.add(new Condition("isDelete", false));
+					query.add(new Condition("isSubmit", true));
+					query.add(new Condition("isSync", false));
 					break;
 				default:
-					query.add(new Condition("isSync", false, Operator.EQUALS));
+					query.add(new Condition("isSync", false));
 					break;
 			}
 			String table = Tables.getName(tb);
@@ -854,12 +859,13 @@ public class TarkieLib {
 			query.clearAll();
 			switch(tb) {
 				case PHOTO:
-					query.add(new Condition("isUpload", false, Operator.EQUALS));
-					query.add(new Condition("isSignature", false, Operator.EQUALS));
+					query.add(new Condition("isUpload", false));
+					query.add(new Condition("isSignature", false));
+					query.add(new Condition("isDelete", false));
 					query.add(new Condition("fileName", Operator.NOT_NULL));
 					break;
 				default:
-					query.add(new Condition("isPhotoUpload", false, Operator.EQUALS));
+					query.add(new Condition("isPhotoUpload", false));
 					query.add(new Condition("photo", Operator.NOT_NULL));
 					break;
 			}
@@ -880,12 +886,13 @@ public class TarkieLib {
 			query.clearAll();
 			switch(tb) {
 				case PHOTO:
-					query.add(new Condition("isUpload", false, Operator.EQUALS));
-					query.add(new Condition("isSignature", true, Operator.EQUALS));
+					query.add(new Condition("isUpload", false));
+					query.add(new Condition("isSignature", true));
+					query.add(new Condition("isDelete", false));
 					query.add(new Condition("fileName", Operator.NOT_NULL));
 					break;
 				case TIME_OUT:
-					query.add(new Condition("isSignatureUpload", false, Operator.EQUALS));
+					query.add(new Condition("isSignatureUpload", false));
 					query.add(new Condition("signature", Operator.NOT_NULL));
 					break;
 			}
@@ -909,12 +916,14 @@ public class TarkieLib {
 		String dTime = CodePanUtils.getTime();
 		String empID = getEmployeeID(db);
 		String syncBatchID = getSyncBatchID(db);
+		String timeInID = getTimeInID(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("formID", formID));
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("isSubmit", isSubmit));
+		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		if(isSubmit) {
 			query.add(new FieldValue("dateSubmitted", dDate));
@@ -984,6 +993,15 @@ public class TarkieLib {
 		}
 		cursor.close();
 		return result;
+	}
+
+	public static boolean hasUnsubmittedEntries(SQLiteAdapter db) {
+		String timeInID = getTimeInID(db);
+		String empID = getEmployeeID(db);
+		String table = Tables.getName(TB.ENTRIES);
+		String query = "SELECT ID FROM " + table + " WHERE timeInID = '" + timeInID + "' " +
+				"AND empID = '" + empID + "' AND isSubmit = 0";
+		return db.isRecordExists(query);
 	}
 
 	public static boolean submitEntry(SQLiteAdapter db, String entryID) {

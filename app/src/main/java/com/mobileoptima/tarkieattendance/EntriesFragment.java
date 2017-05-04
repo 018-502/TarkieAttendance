@@ -133,15 +133,6 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 				obj.isCheck = false;
 			}
 		}
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(isHighlight);
-		}
-		if(highlightEntriesCallback != null) {
-			highlightEntriesCallback.onHighlightEntries(isHighlight);
-		}
-		this.isHighlight = isHighlight;
-		lvEntries.invalidate();
-		adapter.notifyDataSetChanged();
 		if(!hasDraft && isHighlight) {
 			for(EntryObj obj : entryList) {
 				obj.isHighlight = false;
@@ -149,6 +140,17 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 			}
 			CodePanUtils.alertToast(getActivity(), "No available entries.");
 		}
+		else {
+			if(overrideCallback != null) {
+				overrideCallback.onOverride(isHighlight);
+			}
+			this.isHighlight = isHighlight;
+			if(highlightEntriesCallback != null) {
+				highlightEntriesCallback.onHighlightEntries(isHighlight);
+			}
+		}
+		lvEntries.invalidate();
+		adapter.notifyDataSetChanged();
 	}
 
 	public boolean hasSelected() {
