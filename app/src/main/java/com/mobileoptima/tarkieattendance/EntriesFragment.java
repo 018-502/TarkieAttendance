@@ -1,5 +1,6 @@
 package com.mobileoptima.tarkieattendance;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -19,31 +20,40 @@ import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
+import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.EntriesAdapter;
 import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.SearchObj;
 
 import java.util.ArrayList;
 
+import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+
 public class EntriesFragment extends Fragment implements OnClickListener, OnFragmentCallback,
-		OnBackPressedCallback {
+		OnBackPressedCallback, OnSaveEntryCallback {
 
 	private OnHighlightEntriesCallback highlightEntriesCallback;
+	private boolean isHighlight, inOtherFragment, isMultiple;
 	private CodePanButton btnSelectEntries, btnBackEntries;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private RelativeLayout rlHeaderEntries;
 	private ArrayList<EntryObj> entryList;
-	private boolean isHighlight, isSearch;
+	private CodePanLabel tvTitleEntries;
 	private FragmentManager manager;
 	private EntriesAdapter adapter;
 	private ListView lvEntries;
+	private SearchObj search;
 	private SQLiteAdapter db;
+	private int type;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,7 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.entries_layout, container, false);
 		lvEntries = (ListView) view.findViewById(R.id.lvEntries);
+		tvTitleEntries = (CodePanLabel) view.findViewById(R.id.tvTitleEntries);
 		btnBackEntries = (CodePanButton) view.findViewById(R.id.btnBackEntries);
 		btnSelectEntries = (CodePanButton) view.findViewById(R.id.btnSelectEntries);
 		rlHeaderEntries = (RelativeLayout) view.findViewById(R.id.rlHeaderEntries);
@@ -73,11 +84,13 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 						FormFragment form = new FormFragment();
 						form.setEntry(obj);
 						form.setOnFragmentCallback(EntriesFragment.this);
+						form.setOnSaveEntryCallback(EntriesFragment.this);
 						form.setOnOverrideCallback(overrideCallback);
-						transaction = getActivity().getSupportFragmentManager().beginTransaction();
+						transaction = manager.beginTransaction();
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
 						transaction.add(R.id.rlMain, form, Tag.FORM);
+						transaction.hide(EntriesFragment.this);
 						transaction.addToBackStack(null);
 						transaction.commit();
 					}
@@ -92,14 +105,34 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 						adapter.notifyDataSetChanged();
 					}
 					else {
-						TarkieLib.alertDialog(getActivity(), R.string.incomplete_title,
-								R.string.incomplete_message, EntriesFragment.this);
+						ArrayList<SpannableMap> spannableList = new ArrayList<>();
+						String message = getString(R.string.incomplete_message);
+						int index = message.indexOf("*");
+						spannableList.add(new SpannableMap(index, index + 1, Color.RED));
+						final AlertDialogFragment alert = new AlertDialogFragment();
+						alert.setDialogTitle(R.string.incomplete_title);
+						alert.setDialogMessage(R.string.incomplete_message);
+						alert.setSpannableList(spannableList);
+						alert.setOnFragmentCallback(EntriesFragment.this);
+						alert.setPositiveButton("OK", new View.OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								manager.popBackStack();
+							}
+						});
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+								R.anim.fade_in, R.anim.fade_out);
+						transaction.add(R.id.rlMain, alert);
+						transaction.addToBackStack(null);
+						transaction.commit();
 					}
 				}
 			}
 		});
-		if(isSearch) {
+		if(search != null) {
 			rlHeaderEntries.setVisibility(View.VISIBLE);
+			tvTitleEntries.setText(search.name);
 		}
 		else {
 			rlHeaderEntries.setVisibility(View.GONE);
@@ -113,7 +146,7 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 			@Override
 			public void run() {
 				try {
-					entryList = Data.loadEntries(db);
+					entryList = Data.loadEntries(db, search, type);
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -141,8 +174,12 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 		this.highlightEntriesCallback = highlightEntriesCallback;
 	}
 
-	public void setIsSearch(boolean isSearch) {
-		this.isSearch = isSearch;
+	public void setSearch(SearchObj search) {
+		this.search = search;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 	public void select(boolean isHighlight) {
@@ -175,12 +212,20 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	}
 
 	public boolean hasSelected() {
+		this.isMultiple = false;
+		boolean hasSelected = false;
+		int count = 0;
 		for(EntryObj obj : entryList) {
 			if(obj.isCheck) {
-				return true;
+				hasSelected = true;
+				count++;
+				if(count > 1) {
+					isMultiple = true;
+					break;
+				}
 			}
 		}
-		return false;
+		return hasSelected;
 	}
 
 	public boolean isHighlight() {
@@ -190,8 +235,12 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	public void submit() {
 		if(hasSelected()) {
 			final AlertDialogFragment alert = new AlertDialogFragment();
-			alert.setDialogTitle(R.string.submit_entries_title);
-			alert.setDialogMessage(R.string.submit_entries_message);
+			String title = "Submit " + (isMultiple ? "Entries" : "Entry");
+			String message = "Once you submit " + (isMultiple ? "these entries" : "this entry") + " " +
+					"you can no longer edit " + (isMultiple ? "them" : "it") + ".\n" +
+					"Are you sure you want to submit?";
+			alert.setDialogTitle(title);
+			alert.setDialogMessage(message);
 			alert.setOnFragmentCallback(this);
 			alert.setPositiveButton("Yes", new OnClickListener() {
 				@Override
@@ -240,6 +289,7 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 
 	@Override
 	public void onFragment(boolean status) {
+		this.inOtherFragment = status;
 		if(!status) {
 			MainActivity main = (MainActivity) getActivity();
 			main.setOnBackPressedCallback(this);
@@ -249,7 +299,7 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	@Override
 	public void onBackPressed() {
 		int count = manager.getBackStackEntryCount();
-		if(count > 0) {
+		if((count > 0 && search == null) || inOtherFragment) {
 			manager.popBackStack();
 		}
 		else {
@@ -278,13 +328,29 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 				onBackPressed();
 				break;
 			case R.id.btnSelectEntries:
-				if(isHighlight) {
+				if(!isHighlight) {
+					btnSelectEntries.setText(R.string.submit);
 					select(true);
 				}
 				else {
+					btnSelectEntries.setText(R.string.select);
 					submit();
 				}
 				break;
+		}
+	}
+
+	@Override
+	public void onSaveEntry() {
+		MainActivity main = (MainActivity) getActivity();
+		main.updateSyncCount();
+		main.reloadEntries();
+		main.reloadPhotos();
+		if(search != null) {
+			manager.popBackStack();
+		}
+		else {
+			manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
 		}
 	}
 }

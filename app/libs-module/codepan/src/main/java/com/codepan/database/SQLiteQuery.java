@@ -46,6 +46,24 @@ public class SQLiteQuery {
 		conditionList.add(condition);
 	}
 
+	public void removeCondition(int index) {
+		if(conditionList != null) {
+			conditionList.remove(index);
+		}
+	}
+
+	public void removeFieldValue(int index) {
+		if(fieldValueList != null) {
+			fieldValueList.remove(index);
+		}
+	}
+
+	public void removeField(int index) {
+		if(fieldList != null) {
+			fieldList.remove(index);
+		}
+	}
+
 	public void clearConditionList() {
 		if(conditionList != null) {
 			conditionList.clear();

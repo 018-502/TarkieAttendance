@@ -20,6 +20,7 @@ import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
@@ -37,6 +38,7 @@ public class HomeFragment extends Fragment {
 
 	private LinearLayout llInventoryHome, llFormHome;
 	private ArrayList<InventoryObj> inventoryList;
+	private OnSaveEntryCallback saveEntryCallback;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private DisplayImageOptions options;
@@ -161,6 +163,7 @@ public class HomeFragment extends Fragment {
 								FormFragment form = new FormFragment();
 								form.setForm(obj);
 								form.setOnOverrideCallback(overrideCallback);
+								form.setOnSaveEntryCallback(saveEntryCallback);
 								transaction = manager.beginTransaction();
 								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -188,6 +191,10 @@ public class HomeFragment extends Fragment {
 
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
 		this.overrideCallback = overrideCallback;
+	}
+
+	public void setOnSaveEntryCallback(OnSaveEntryCallback saveEntryCallback) {
+		this.saveEntryCallback = saveEntryCallback;
 	}
 
 	public void upgrade() {

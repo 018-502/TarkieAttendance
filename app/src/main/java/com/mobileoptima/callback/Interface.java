@@ -4,6 +4,7 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
 
 import java.util.ArrayList;
@@ -68,5 +69,13 @@ public class Interface {
 
 	public interface OnMultiUpdateCallback {
 		void onMultiUpdate();
+	}
+
+	public interface OnSearchItemCallback {
+		void onSearchItem(SearchObj search, int type);
+	}
+
+	public interface OnSaveEntryCallback {
+		void onSaveEntry();
 	}
 }

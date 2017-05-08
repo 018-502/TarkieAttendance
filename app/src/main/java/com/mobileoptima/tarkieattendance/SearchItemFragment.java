@@ -22,6 +22,7 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.SearchItemAdapter;
+import com.mobileoptima.callback.Interface.OnSearchItemCallback;
 import com.mobileoptima.constant.DateType;
 import com.mobileoptima.constant.EntriesSearchType;
 import com.mobileoptima.core.Data;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 public class SearchItemFragment extends Fragment implements OnClickListener, OnPickDateCallback {
 
 	private CodePanLabel tvStartDateSearchItem, tvEndDateSearchItem;
+	private OnSearchItemCallback searchItemCallback;
 	private ArrayList<SearchObj> searchList;
 	private RelativeLayout rlDateSearchItem;
 	private FragmentTransaction transaction;
@@ -92,15 +94,10 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 		lvSearchItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				EntriesFragment entries = new EntriesFragment();
-				entries.setIsSearch(true);
-				transaction = manager.beginTransaction();
-				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-				transaction.add(R.id.rlMain, entries);
-				transaction.hide(getParentFragment());
-				transaction.addToBackStack(null);
-				transaction.commit();
+				if(searchItemCallback != null) {
+					SearchObj search = searchList.get(i);
+					searchItemCallback.onSearchItem(search, tabType);
+				}
 			}
 		});
 		loadItems(db);
@@ -109,6 +106,10 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 
 	public void setTabType(int tabType) {
 		this.tabType = tabType;
+	}
+
+	public void setOnSearchItemCallback(OnSearchItemCallback searchItemCallback) {
+		this.searchItemCallback = searchItemCallback;
 	}
 
 	@Override

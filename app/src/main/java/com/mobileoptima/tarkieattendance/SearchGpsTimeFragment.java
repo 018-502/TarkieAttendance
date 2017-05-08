@@ -203,7 +203,7 @@ public class SearchGpsTimeFragment extends Fragment implements OnClickListener, 
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setDialogTitle("Validation Success");
 		alert.setDialogMessage("Tarkie time has been successfully updated");
-		alert.setPositiveButton("Ok", new OnClickListener() {
+		alert.setPositiveButton("OK", new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				manager.popBackStack();

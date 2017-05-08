@@ -38,6 +38,7 @@ import com.mobileoptima.callback.Interface.OnGpsFixedCallback;
 import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnMultiUpdateCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.DialogTag;
@@ -62,7 +63,7 @@ import static com.mobileoptima.callback.Interface.OnLoginCallback;
 public class MainActivity extends FragmentActivity implements OnClickListener, OnRefreshCallback,
 		OnOverrideCallback, OnLoginCallback, OnInitializeCallback, ServiceConnection,
 		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
-		OnHighlightEntriesCallback, OnMultiUpdateCallback {
+		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback {
 
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
@@ -224,6 +225,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					else {
 						HomeFragment home = new HomeFragment();
 						home.setOnOverrideCallback(this);
+						home.setOnSaveEntryCallback(this);
 						transaction.add(R.id.flContainerMain, home, TabType.HOME);
 					}
 					if(current != null) {
@@ -622,6 +624,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				break;
 			case R.id.btnSearchMain:
 				SearchEntriesFragment search = new SearchEntriesFragment();
+				search.setOnOverrideCallback(this);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -953,7 +956,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			final AlertDialogFragment alert = new AlertDialogFragment();
 			alert.setDialogTitle(R.string.gps_title);
 			alert.setDialogMessage(R.string.gps_message);
-			alert.setPositiveButton("Ok", new OnClickListener() {
+			alert.setPositiveButton("OK", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					manager.popBackStack();
@@ -982,7 +985,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			final AlertDialogFragment alert = new AlertDialogFragment();
 			alert.setDialogTitle(R.string.mock_title);
 			alert.setDialogMessage(R.string.mock_message);
-			alert.setPositiveButton("Ok", new OnClickListener() {
+			alert.setPositiveButton("OK", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					manager.popBackStack();
@@ -1239,5 +1242,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	public void onMultiUpdate() {
 		updateSyncCount();
+	}
+
+	@Override
+	public void onSaveEntry() {
+		manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
+		updateSyncCount();
+		reloadEntries();
+		reloadPhotos();
+		setTab(TabType.ENTRIES);
 	}
 }

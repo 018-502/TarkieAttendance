@@ -19,7 +19,7 @@ import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
-import com.mobileoptima.constant.TabType;
+import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.EntryObj;
@@ -35,6 +35,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	private CodePanButton btnNextForm, btnBackForm, btnSaveForm, btnCancelForm,
 			btnDeleteForm, btnOptionsForm;
 	private LinearLayout llPageForm, llDeleteForm;
+	private OnSaveEntryCallback saveEntryCallback;
 	private OnFragmentCallback fragmentCallback;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
@@ -308,13 +309,8 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 			result = TarkieLib.saveEntry(db, form.ID, fieldList, isSubmit);
 			CodePanUtils.alertToast(getActivity(), "Entry has been has successfully saved.");
 		}
-		if(result) {
-			MainActivity main = (MainActivity) getActivity();
-			main.updateSyncCount();
-			main.reloadEntries();
-			main.reloadPhotos();
-			main.setTab(TabType.ENTRIES);
-			manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		if(result && saveEntryCallback != null) {
+			saveEntryCallback.onSaveEntry();
 		}
 	}
 
@@ -397,6 +393,10 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 
 	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {
 		this.fragmentCallback = fragmentCallback;
+	}
+
+	public void setOnSaveEntryCallback(OnSaveEntryCallback saveEntryCallback) {
+		this.saveEntryCallback = saveEntryCallback;
 	}
 
 	public PageObj getPage(String tag) {

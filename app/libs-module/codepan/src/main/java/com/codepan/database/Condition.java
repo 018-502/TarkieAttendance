@@ -18,11 +18,46 @@ public class Condition {
 		LIKE
 	}
 
-	public Operator operator;
+	public Operator operator = Operator.EQUALS;
 	public String field;
 	public String value;
 	public String start;
 	public String end;
+
+	public Condition(String field, String value) {
+		this.field = field;
+		setString(value);
+	}
+
+	public Condition(String field, long value) {
+		this.field = field;
+		setLong(value);
+	}
+
+	public Condition(String field, int value) {
+		this.field = field;
+		setInt(value);
+	}
+
+	public Condition(String field, double value) {
+		this.field = field;
+		setDouble(value);
+	}
+
+	public Condition(String field, float value) {
+		this.field = field;
+		setFloat(value);
+	}
+
+	public Condition(String field, boolean value) {
+		this.field = field;
+		if(value) {
+			setInt(TRUE);
+		}
+		else {
+			setInt(FALSE);
+		}
+	}
 
 	public Condition(String field, String value, Operator operator) {
 		this.operator = operator;
@@ -52,17 +87,6 @@ public class Condition {
 		this.operator = operator;
 		this.field = field;
 		setFloat(value);
-	}
-
-	public Condition(String field, boolean value) {
-		this.operator = Operator.EQUALS;
-		this.field = field;
-		if(value) {
-			setInt(TRUE);
-		}
-		else {
-			setInt(FALSE);
-		}
 	}
 
 	public Condition(String field, Operator operator) {

@@ -3,7 +3,6 @@ package com.mobileoptima.tarkieattendance;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +10,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.codepan.callback.Interface.OnFragmentCallback;
+import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
-import com.codepan.widget.CustomTypefaceSpan;
 
 import java.util.ArrayList;
 
@@ -29,9 +28,8 @@ public class AlertDialogFragment extends Fragment {
 	private int dialogMessageVisibility = View.VISIBLE;
 	private int dialogTitleVisibility = View.GONE;
 	private OnFragmentCallback fragmentCallback;
-	private SpannableStringBuilder ssb;
 	private boolean isOnBackStack = false;
-	private boolean hasFont = false;
+	private ArrayList<SpannableMap> list;
 	private int title, message;
 
 	@Override
@@ -55,7 +53,8 @@ public class AlertDialogFragment extends Fragment {
 		tvMessageAlertDialog = (CodePanLabel) view.findViewById(R.id.tvMessageAlertDialog);
 		dialogTitle = dialogTitle != null ? dialogTitle : getResources().getString(title);
 		dialogMessage = dialogMessage != null ? dialogMessage : getResources().getString(message);
-		if(hasFont) {
+		if(list != null) {
+			SpannableStringBuilder ssb = CodePanUtils.customizeText(list, dialogMessage);
 			tvMessageAlertDialog.setText(ssb);
 		}
 		else {
@@ -96,11 +95,7 @@ public class AlertDialogFragment extends Fragment {
 	}
 
 	public void setSpannableList(ArrayList<SpannableMap> list) {
-		ssb = new SpannableStringBuilder(dialogMessage);
-		for(SpannableMap obj : list) {
-			ssb.setSpan(new CustomTypefaceSpan(obj.typeface), obj.start, obj.end, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-		}
-		hasFont = true;
+		this.list = list;
 	}
 
 	public void setPositiveButton(String positiveButtonTitle, OnClickListener onClick) {

@@ -4,6 +4,7 @@ import com.codepan.database.Condition;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
 import com.codepan.utils.CodePanUtils;
+import com.mobileoptima.constant.EntriesSearchType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
@@ -55,25 +56,6 @@ public class Data {
 		inventoryList.add(pullOuts);
 		return inventoryList;
 	}
-//	public static ArrayList<FormObj> loadForms(SQLiteAdapter db) {
-//		ArrayList<FormObj> formList = new ArrayList<>();
-//		FormObj overtime = new FormObj();
-//		overtime.ID = "1";
-//		overtime.name = "Overtime Request";
-//		overtime.type = FormType.OVERTIME;
-//		FormObj schedule = new FormObj();
-//		schedule.ID = "2";
-//		schedule.name = "Schedule";
-//		schedule.type = FormType.SCHEDULE;
-//		FormObj compliance = new FormObj();
-//		compliance.ID = "3";
-//		compliance.name = "Compliance";
-//		compliance.type = FormType.COMPLIANCE;
-//		formList.add(overtime);
-//		formList.add(schedule);
-//		formList.add(compliance);
-//		return formList;
-//	}
 
 	public static ArrayList<FormObj> loadForms(SQLiteAdapter db) {
 		ArrayList<FormObj> formList = new ArrayList<>();
@@ -112,11 +94,12 @@ public class Data {
 
 	public static ArrayList<AttendanceObj> loadAttendance(SQLiteAdapter db) {
 		ArrayList<AttendanceObj> attendanceList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
 		String i = Tables.getName(TB.TIME_IN);
 		String o = Tables.getName(TB.TIME_OUT);
 		String query = "SELECT i.ID, i.dDate, i.dTime, i.isTimeOut, o.ID, o.dDate, " +
 				"o.dTime, o.signature FROM " + i + " as i LEFT JOIN " + o + " as o ON " +
-				"o.timeInID = i.ID ORDER BY i.ID DESC";
+				"o.timeInID = i.ID WHERE i.empID = '" + empID + "' ORDER BY i.ID DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			String timeInID = cursor.getString(0);
@@ -167,17 +150,17 @@ public class Data {
 												 boolean isAdded, int limit) {
 		ArrayList<StoreObj> storeList = new ArrayList<>();
 		String table = Tables.getName(TB.STORES);
-		SQLiteQuery sql = new SQLiteQuery();
+		SQLiteQuery query = new SQLiteQuery();
 		if(search != null) {
-			sql.add(new Condition("name", search, Operator.LIKE));
+			query.add(new Condition("name", search, Operator.LIKE));
 		}
 		if(start != null) {
-			sql.add(new Condition("name", start, Operator.GREATER_THAN));
+			query.add(new Condition("name", start, Operator.GREATER_THAN));
 		}
-		String condition = sql.hasConditions() ? " WHERE " + sql.getConditions() : "";
-		String query = "SELECT ID, name, address, radius, gpsLongitude, gpsLatitude FROM " +
+		String condition = query.hasConditions() ? " WHERE " + query.getConditions() : "";
+		String sql = "SELECT ID, name, address, radius, gpsLongitude, gpsLatitude FROM " +
 				table + condition + " ORDER BY name LIMIT " + limit;
-		Cursor cursor = db.read(query);
+		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
 			StoreObj store = new StoreObj();
 			store.ID = cursor.getString(0);
@@ -344,14 +327,47 @@ public class Data {
 		return imageList;
 	}
 
-	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db) {
+	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db, SearchObj obj, int type) {
 		ArrayList<EntryObj> entryList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
-		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, f.logoUrl FROM " +
-				Tables.getName(TB.ENTRIES) + " e , " + Tables.getName(TB.FORMS) + " f " +
-				"WHERE e.empID = '" + empID + "' AND e.isDelete = 0 AND f.ID = e.formID " +
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new Condition("e.isDelete", false));
+		query.add(new Condition("e.empID", empID));
+		if(obj != null) {
+			switch(type) {
+				case EntriesSearchType.DATE:
+					query.add(new Condition("e.dDate", obj.search));
+					break;
+				case EntriesSearchType.STORE:
+					break;
+				case EntriesSearchType.CATEGORY:
+					query.add(new Condition("f.category", obj.search));
+					break;
+				case EntriesSearchType.FORM:
+					query.add(new Condition("f.ID", obj.search));
+					break;
+				case EntriesSearchType.STATUS:
+					switch(obj.search) {
+						case Status.DRAFT:
+							query.add(new Condition("isSubmit", false));
+							break;
+						case Status.DELETED:
+							query.removeCondition(0);
+							query.add(new Condition("e.isDelete", true));
+							break;
+						case Status.SUBMITTED:
+							query.add(new Condition("isSubmit", true));
+							break;
+					}
+					break;
+			}
+		}
+		String e = Tables.getName(TB.ENTRIES);
+		String f = Tables.getName(TB.FORMS);
+		String sql = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, f.logoUrl " +
+				"FROM " + e + " e, " + f + " f WHERE f.ID = e.formID AND " + query.getConditions() + " " +
 				"ORDER BY e.ID DESC";
-		Cursor cursor = db.read(query);
+		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
 			entry.ID = cursor.getString(0);
@@ -563,9 +579,12 @@ public class Data {
 
 	public static ArrayList<EntryObj> loadEntriesSync(SQLiteAdapter db) {
 		ArrayList<EntryObj> entryList = new ArrayList<>();
-		String query = "SELECT ID, dDate, dTime, referenceNo, dateSubmitted, timeSubmitted, syncBatchID, isFromWeb, formID " +
-				"FROM " + Tables.getName(TB.ENTRIES) + " WHERE isSync = 0 AND isSubmit = 1 AND " +
-				"isDelete = 0";
+		String e = Tables.getName(TB.ENTRIES);
+		String f = Tables.getName(TB.FIELDS);
+		String a = Tables.getName(TB.ANSWERS);
+		String query = "SELECT ID, dDate, dTime, referenceNo, dateSubmitted, timeSubmitted, " +
+				"syncBatchID, isFromWeb, formID FROM " + e + " WHERE isSync = 0 AND isSubmit = 1 " +
+				"AND isDelete = 0";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
@@ -581,10 +600,9 @@ public class Data {
 			form.ID = cursor.getString(8);
 			entry.form = form;
 			ArrayList<FieldObj> fieldList = new ArrayList<>();
-			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + Tables.getName(TB.ANSWERS) + " a, " +
-					Tables.getName(TB.FIELDS) + " f WHERE f.formID = " + form.ID + " " +
-					"AND a.entryID = " + entry.ID + " AND a.fieldID = f.ID " +
-					"AND f.isActive = 1 AND a.value NOT NULL";
+			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + a + " a, " + f + " f " +
+					"WHERE f.formID = " + form.ID + " AND a.entryID = " + entry.ID + " " +
+					"AND a.fieldID = f.ID AND f.isActive = 1 AND a.value NOT NULL";
 			Cursor c = db.read(query);
 			while(c.moveToNext()) {
 				FieldObj field = new FieldObj();
@@ -625,8 +643,11 @@ public class Data {
 		while(cursor.moveToNext()) {
 			SearchObj search = new SearchObj();
 			String date = cursor.getString(0);
+			int count = cursor.getInt(1);
+			String entry = count > 1 ? "Entries" : "Entry";
 			search.name = CodePanUtils.getCalendarDate(date, true, true);
-			search.count = cursor.getInt(1) + " Entries";
+			search.count = count + " " + entry;
+			search.search = date;
 			searchList.add(search);
 		}
 		cursor.close();
@@ -644,8 +665,11 @@ public class Data {
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			SearchObj search = new SearchObj();
+			int count = cursor.getInt(1);
+			String entry = count > 1 ? "Entries" : "Entry";
 			search.name = cursor.getString(0);
-			search.count = cursor.getInt(1) + " Entries";
+			search.count = count + " " + entry;
+			search.search = cursor.getString(0);
 			searchList.add(search);
 		}
 		cursor.close();
@@ -657,14 +681,17 @@ public class Data {
 		String empID = TarkieLib.getEmployeeID(db);
 		String e = Tables.getName(TB.ENTRIES);
 		String f = Tables.getName(TB.FORMS);
-		String query = "SELECT f.name, COUNT(e.ID) FROM " + e + " e, " + f + " f WHERE " +
+		String query = "SELECT f.name, COUNT(e.ID), f.ID FROM " + e + " e, " + f + " f WHERE " +
 				"e.empID = '" + empID + "' AND f.ID = e.formID GROUP BY f.ID " +
 				"ORDER BY f.name";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			SearchObj search = new SearchObj();
+			int count = cursor.getInt(1);
+			String entry = count > 1 ? "Entries" : "Entry";
 			search.name = cursor.getString(0);
-			search.count = cursor.getInt(1) + " Entries";
+			search.count = count + " " + entry;
+			search.search = cursor.getString(2);
 			searchList.add(search);
 		}
 		cursor.close();
@@ -684,8 +711,11 @@ public class Data {
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			SearchObj search = new SearchObj();
+			int count = cursor.getInt(1);
+			String entry = count > 1 ? "Entries" : "Entry";
 			search.name = cursor.getString(0);
-			search.count = cursor.getInt(1) + " Entries";
+			search.count = count + " " + entry;
+			search.search = cursor.getString(0);
 			searchList.add(search);
 		}
 		cursor.close();

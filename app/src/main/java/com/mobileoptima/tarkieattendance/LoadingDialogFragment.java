@@ -557,7 +557,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 			final AlertDialogFragment alert = new AlertDialogFragment();
 			alert.setDialogTitle(title);
 			alert.setDialogMessage(message);
-			alert.setPositiveButton("Okay", new OnClickListener() {
+			alert.setPositiveButton("OK", new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					manager.popBackStack();

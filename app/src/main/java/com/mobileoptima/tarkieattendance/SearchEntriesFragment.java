@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,16 +20,22 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.SlidingTabLayout;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSearchItemCallback;
 import com.mobileoptima.constant.EntriesSearchType;
+import com.mobileoptima.model.SearchObj;
 
 import java.util.ArrayList;
 
-public class SearchEntriesFragment extends Fragment implements OnClickListener {
+public class SearchEntriesFragment extends Fragment implements OnClickListener,
+		OnSearchItemCallback {
 
+	private OnOverrideCallback overrideCallback;
 	private OnFragmentCallback fragmentCallback;
 	private CodePanButton btnBackSearchEntries;
 	private SlidingTabLayout stlSearchEntries;
 	private ArrayList<Fragment> fragmentList;
+	private FragmentTransaction transaction;
 	private ViewPager vpSearchEntries;
 	private ViewPagerAdapter adapter;
 	private FragmentManager manager;
@@ -77,6 +84,11 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener {
 		SearchItemFragment category = new SearchItemFragment();
 		SearchItemFragment form = new SearchItemFragment();
 		SearchItemFragment status = new SearchItemFragment();
+		date.setOnSearchItemCallback(this);
+		store.setOnSearchItemCallback(this);
+		category.setOnSearchItemCallback(this);
+		form.setOnSearchItemCallback(this);
+		status.setOnSearchItemCallback(this);
 		date.setTabType(EntriesSearchType.DATE);
 		store.setTabType(EntriesSearchType.STORE);
 		category.setTabType(EntriesSearchType.CATEGORY);
@@ -118,9 +130,28 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener {
 		this.fragmentCallback = fragmentCallback;
 	}
 
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
+	}
+
 	private void setOnBackStack(boolean isOnBackStack) {
 		if(fragmentCallback != null) {
 			fragmentCallback.onFragment(isOnBackStack);
 		}
+	}
+
+	@Override
+	public void onSearchItem(SearchObj search, int type) {
+		EntriesFragment entries = new EntriesFragment();
+		entries.setType(type);
+		entries.setSearch(search);
+		entries.setOnOverrideCallback(overrideCallback);
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+		transaction.add(R.id.rlMain, entries);
+		transaction.hide(this);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 }

@@ -105,9 +105,7 @@
     <string name="camera_error_message">Unable to load camera, please try to restart your device and try again.</string>
     <string name="hour">0h</string>
     <string name="incomplete_title">Incomplete Details</string>
-    <string name="incomplete_message">You have incomplete details in this form. Please make sure to fill out all required fields.</string>
-    <string name="submit_entries_title">Submit Entries</string>
-    <string name="submit_entries_message">Once you submit these entries you can no longer edit them.\nAre you sure you want to submit?</string>
+    <string name="incomplete_message">You have incomplete details in this form. Please make sure to fill out all required * fields.</string>
     <string name="discard_entry_title">Discard this entry?</string>
     <string name="discard_entry_message">You will lose your work and you will have to start over.</string>
     <string name="delete_entry_title">Delete this entry?</string>

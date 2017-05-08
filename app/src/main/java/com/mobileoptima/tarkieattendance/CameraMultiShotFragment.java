@@ -467,7 +467,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setDialogTitle(R.string.camera_error_title);
 		alert.setDialogMessage(R.string.camera_error_message);
-		alert.setPositiveButton("Ok", new View.OnClickListener() {
+		alert.setPositiveButton("OK", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				manager.popBackStack();

@@ -59,7 +59,7 @@ public class TarkieLib {
 		alert.setDialogTitle(title);
 		alert.setDialogMessage(message);
 		alert.setOnFragmentCallback(callback);
-		alert.setPositiveButton("Ok", new View.OnClickListener() {
+		alert.setPositiveButton("OK", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				manager.popBackStack();
@@ -78,7 +78,7 @@ public class TarkieLib {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setDialogTitle(title);
 		alert.setDialogMessage(message);
-		alert.setPositiveButton("Ok", new View.OnClickListener() {
+		alert.setPositiveButton("OK", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				manager.popBackStack();
@@ -99,7 +99,7 @@ public class TarkieLib {
 		alert.setDialogTitle(title);
 		alert.setDialogMessage(message);
 		alert.setOnFragmentCallback(callback);
-		alert.setPositiveButton("Ok", new View.OnClickListener() {
+		alert.setPositiveButton("OK", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				manager.popBackStack();
@@ -118,7 +118,7 @@ public class TarkieLib {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setDialogTitle(title);
 		alert.setDialogMessage(message);
-		alert.setPositiveButton("Ok", new View.OnClickListener() {
+		alert.setPositiveButton("OK", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
 				manager.popBackStack();
@@ -724,7 +724,7 @@ public class TarkieLib {
 		String table = Tables.getName(tb);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("isSignatureUpload", true));
-		query.add(new Condition("timeInID", timeInID, Operator.EQUALS));
+		query.add(new Condition("timeInID", timeInID));
 		binder.update(table, query);
 		return binder.finish();
 	}
