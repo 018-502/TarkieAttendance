@@ -87,11 +87,11 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
+		inputFinishHandler = new Handler();
+		anim = AnimationUtils.loadAnimation(main, R.anim.rotate_clockwise);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
-		inputFinishHandler = new Handler();
-		anim = AnimationUtils.loadAnimation(getActivity(), R.anim.rotate_clockwise);
 	}
 
 	@Override

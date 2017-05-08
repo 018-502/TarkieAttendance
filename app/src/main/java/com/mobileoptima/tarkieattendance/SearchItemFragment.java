@@ -7,6 +7,8 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +23,7 @@ import com.codepan.calendar.view.CalendarView;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
+import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.SearchItemAdapter;
 import com.mobileoptima.callback.Interface.OnSearchItemCallback;
 import com.mobileoptima.constant.DateType;
@@ -32,23 +35,30 @@ import java.util.ArrayList;
 
 public class SearchItemFragment extends Fragment implements OnClickListener, OnPickDateCallback {
 
+	private final int LIMIT = 30;
+	private final long IDLE_TIME = 500;
+
 	private CodePanLabel tvStartDateSearchItem, tvEndDateSearchItem;
 	private OnSearchItemCallback searchItemCallback;
+	private String startDate, endDate, search;
 	private ArrayList<SearchObj> searchList;
 	private RelativeLayout rlDateSearchItem;
 	private FragmentTransaction transaction;
+	private CodePanTextField etSearchItem;
+	private Handler inputFinishHandler;
 	private SearchItemAdapter adapter;
-	private String startDate, endDate;
 	private FrameLayout flSearchItem;
 	private FragmentManager manager;
 	private ListView lvSearchItem;
 	private int tabType, dateType;
 	private SQLiteAdapter db;
+	private long lastEdit;
 	private View vDivider;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		inputFinishHandler = new Handler();
 		MainActivity main = (MainActivity) getActivity();
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
@@ -61,6 +71,7 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 		tvStartDateSearchItem = (CodePanLabel) view.findViewById(R.id.tvStartDateSearchItem);
 		tvEndDateSearchItem = (CodePanLabel) view.findViewById(R.id.tvEndDateSearchItem);
 		rlDateSearchItem = (RelativeLayout) view.findViewById(R.id.rlDateSearchItem);
+		etSearchItem = (CodePanTextField) view.findViewById(R.id.etSearchItem);
 		flSearchItem = (FrameLayout) view.findViewById(R.id.flSearchItem);
 		lvSearchItem = (ListView) view.findViewById(R.id.lvSearchItem);
 		vDivider = view.findViewById(R.id.vDivider);
@@ -98,6 +109,23 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 					SearchObj search = searchList.get(i);
 					searchItemCallback.onSearchItem(search, tabType);
 				}
+			}
+		});
+		etSearchItem.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
+				search = cs.toString();
+				lastEdit = System.currentTimeMillis();
+				inputFinishHandler.removeCallbacks(inputFinishChecker);
+				inputFinishHandler.postDelayed(inputFinishChecker, IDLE_TIME);
+			}
+
+			@Override
+			public void afterTextChanged(Editable editable) {
 			}
 		});
 		loadItems(db);
@@ -143,7 +171,7 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 							searchList = Data.searchEntriesByCategory(db);
 							break;
 						case EntriesSearchType.FORM:
-							searchList = Data.searchEntriesByForm(db);
+							searchList = Data.searchEntriesByForm(db, search);
 							break;
 						case EntriesSearchType.STATUS:
 							searchList = Data.searchEntriesByStatus(db);
@@ -214,4 +242,13 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 		}
 		loadItems(db);
 	}
+
+	private Runnable inputFinishChecker = new Runnable() {
+		@Override
+		public void run() {
+			if(System.currentTimeMillis() > lastEdit + IDLE_TIME - 500) {
+				loadItems(db);
+			}
+		}
+	};
 }

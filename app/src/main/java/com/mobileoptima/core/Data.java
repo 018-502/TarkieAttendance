@@ -641,14 +641,14 @@ public class Data {
 				"GROUP BY dDate ORDER BY dDate DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			SearchObj search = new SearchObj();
+			SearchObj obj = new SearchObj();
 			String date = cursor.getString(0);
 			int count = cursor.getInt(1);
 			String entry = count > 1 ? "Entries" : "Entry";
-			search.name = CodePanUtils.getCalendarDate(date, true, true);
-			search.count = count + " " + entry;
-			search.search = date;
-			searchList.add(search);
+			obj.name = CodePanUtils.getCalendarDate(date, true, true);
+			obj.count = count + " " + entry;
+			obj.search = date;
+			searchList.add(obj);
 		}
 		cursor.close();
 		return searchList;
@@ -664,35 +664,40 @@ public class Data {
 				"ORDER BY f.category";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			SearchObj search = new SearchObj();
+			SearchObj obj = new SearchObj();
 			int count = cursor.getInt(1);
 			String entry = count > 1 ? "Entries" : "Entry";
-			search.name = cursor.getString(0);
-			search.count = count + " " + entry;
-			search.search = cursor.getString(0);
-			searchList.add(search);
+			obj.name = cursor.getString(0);
+			obj.count = count + " " + entry;
+			obj.search = cursor.getString(0);
+			searchList.add(obj);
 		}
 		cursor.close();
 		return searchList;
 	}
 
-	public static ArrayList<SearchObj> searchEntriesByForm(SQLiteAdapter db) {
+	public static ArrayList<SearchObj> searchEntriesByForm(SQLiteAdapter db, String search) {
 		ArrayList<SearchObj> searchList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new Condition("e.empID", empID));
+		if(search != null) {
+			query.add(new Condition("f.name", search, Operator.LIKE));
+		}
 		String e = Tables.getName(TB.ENTRIES);
 		String f = Tables.getName(TB.FORMS);
-		String query = "SELECT f.name, COUNT(e.ID), f.ID FROM " + e + " e, " + f + " f WHERE " +
-				"e.empID = '" + empID + "' AND f.ID = e.formID GROUP BY f.ID " +
+		String sql = "SELECT f.name, COUNT(e.ID), f.ID FROM " + e + " e, " + f + " f WHERE " +
+				"f.ID = e.formID AND " + query.getConditions() + " GROUP BY f.ID " +
 				"ORDER BY f.name";
-		Cursor cursor = db.read(query);
+		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
-			SearchObj search = new SearchObj();
+			SearchObj obj = new SearchObj();
 			int count = cursor.getInt(1);
 			String entry = count > 1 ? "Entries" : "Entry";
-			search.name = cursor.getString(0);
-			search.count = count + " " + entry;
-			search.search = cursor.getString(2);
-			searchList.add(search);
+			obj.name = cursor.getString(0);
+			obj.count = count + " " + entry;
+			obj.search = cursor.getString(2);
+			searchList.add(obj);
 		}
 		cursor.close();
 		return searchList;
@@ -710,13 +715,13 @@ public class Data {
 				"WHERE empID = '" + empID + "' GROUP BY status";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			SearchObj search = new SearchObj();
+			SearchObj obj = new SearchObj();
 			int count = cursor.getInt(1);
 			String entry = count > 1 ? "Entries" : "Entry";
-			search.name = cursor.getString(0);
-			search.count = count + " " + entry;
-			search.search = cursor.getString(0);
-			searchList.add(search);
+			obj.name = cursor.getString(0);
+			obj.count = count + " " + entry;
+			obj.search = cursor.getString(0);
+			searchList.add(obj);
 		}
 		cursor.close();
 		return searchList;
