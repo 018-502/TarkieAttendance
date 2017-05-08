@@ -17,6 +17,7 @@
     <string name="time_in">Time In</string>
     <string name="time_out">Time Out</string>
     <string name="attendance">Attendance</string>
+    <string name="entries">Entries</string>
     <string name="location">Location</string>
     <string name="total_break">Total Break</string>
     <string name="stores">Stores</string>
@@ -27,7 +28,7 @@
     <string name="hereby">I hereby declare this information to be true and correct.</string>
     <string name="tab_home">Home</string>
     <string name="tab_photos">Photos</string>
-    <string name="tab_entries">Entries</string>
+    <string name="tab_entries">@string/entries</string>
     <string name="tab_visits">Visits</string>
     <string name="tab_inventory">Inventory</string>
     <string name="inventory">INVENTORY</string>
@@ -120,6 +121,7 @@
         <item>Date</item>
         <item>Store</item>
         <item>Category</item>
+        <item>Form</item>
         <item>Status</item>
     </string-array>
 </resources>

@@ -9,14 +9,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.widget.CodePanButton;
 import com.mobileoptima.adapter.EntriesAdapter;
 import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
@@ -27,15 +30,18 @@ import com.mobileoptima.model.EntryObj;
 
 import java.util.ArrayList;
 
-public class EntriesFragment extends Fragment implements OnFragmentCallback, OnBackPressedCallback {
+public class EntriesFragment extends Fragment implements OnClickListener, OnFragmentCallback,
+		OnBackPressedCallback {
 
 	private OnHighlightEntriesCallback highlightEntriesCallback;
+	private CodePanButton btnSelectEntries, btnBackEntries;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
+	private RelativeLayout rlHeaderEntries;
 	private ArrayList<EntryObj> entryList;
+	private boolean isHighlight, isSearch;
 	private FragmentManager manager;
 	private EntriesAdapter adapter;
-	private boolean isHighlight;
 	private ListView lvEntries;
 	private SQLiteAdapter db;
 
@@ -53,6 +59,11 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.entries_layout, container, false);
 		lvEntries = (ListView) view.findViewById(R.id.lvEntries);
+		btnBackEntries = (CodePanButton) view.findViewById(R.id.btnBackEntries);
+		btnSelectEntries = (CodePanButton) view.findViewById(R.id.btnSelectEntries);
+		rlHeaderEntries = (RelativeLayout) view.findViewById(R.id.rlHeaderEntries);
+		btnBackEntries.setOnClickListener(this);
+		btnSelectEntries.setOnClickListener(this);
 		lvEntries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -87,6 +98,12 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 				}
 			}
 		});
+		if(isSearch) {
+			rlHeaderEntries.setVisibility(View.VISIBLE);
+		}
+		else {
+			rlHeaderEntries.setVisibility(View.GONE);
+		}
 		loadEntries(db);
 		return view;
 	}
@@ -122,6 +139,10 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 
 	public void setOnHighlightEntriesCallback(OnHighlightEntriesCallback highlightEntriesCallback) {
 		this.highlightEntriesCallback = highlightEntriesCallback;
+	}
+
+	public void setIsSearch(boolean isSearch) {
+		this.isSearch = isSearch;
 	}
 
 	public void select(boolean isHighlight) {
@@ -172,7 +193,7 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 			alert.setDialogTitle(R.string.submit_entries_title);
 			alert.setDialogMessage(R.string.submit_entries_message);
 			alert.setOnFragmentCallback(this);
-			alert.setPositiveButton("Yes", new View.OnClickListener() {
+			alert.setPositiveButton("Yes", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					manager.popBackStack();
@@ -199,7 +220,7 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 					}
 				}
 			});
-			alert.setNegativeButton("Cancel", new View.OnClickListener() {
+			alert.setNegativeButton("Cancel", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					manager.popBackStack();
@@ -247,6 +268,23 @@ public class EntriesFragment extends Fragment implements OnFragmentCallback, OnB
 		if(!hidden) {
 			MainActivity main = (MainActivity) getActivity();
 			main.setOnBackPressedCallback(this);
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch(view.getId()) {
+			case R.id.btnBackEntries:
+				onBackPressed();
+				break;
+			case R.id.btnSelectEntries:
+				if(isHighlight) {
+					select(true);
+				}
+				else {
+					submit();
+				}
+				break;
 		}
 	}
 }

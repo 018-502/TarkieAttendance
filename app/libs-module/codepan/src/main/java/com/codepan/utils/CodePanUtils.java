@@ -1725,6 +1725,12 @@ public class CodePanUtils {
 		}
 	}
 
+	public static boolean isTablet(Context context) {
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+		float widthDp = metrics.widthPixels / metrics.density;
+		return widthDp >= 600;
+	}
+
 	public static int getMaxWidth(Context context) {
 		DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 		return metrics.widthPixels;

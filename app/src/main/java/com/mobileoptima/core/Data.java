@@ -652,6 +652,25 @@ public class Data {
 		return searchList;
 	}
 
+	public static ArrayList<SearchObj> searchEntriesByForm(SQLiteAdapter db) {
+		ArrayList<SearchObj> searchList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
+		String e = Tables.getName(TB.ENTRIES);
+		String f = Tables.getName(TB.FORMS);
+		String query = "SELECT f.name, COUNT(e.ID) FROM " + e + " e, " + f + " f WHERE " +
+				"e.empID = '" + empID + "' AND f.ID = e.formID GROUP BY f.ID " +
+				"ORDER BY f.name";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			SearchObj search = new SearchObj();
+			search.name = cursor.getString(0);
+			search.count = cursor.getInt(1) + " Entries";
+			searchList.add(search);
+		}
+		cursor.close();
+		return searchList;
+	}
+
 	public static ArrayList<SearchObj> searchEntriesByStatus(SQLiteAdapter db) {
 		ArrayList<SearchObj> searchList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);

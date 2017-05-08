@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -76,21 +77,32 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 				vDivider.setVisibility(View.VISIBLE);
 				break;
 			case EntriesSearchType.STORE:
+			case EntriesSearchType.FORM:
 				flSearchItem.setVisibility(View.VISIBLE);
 				rlDateSearchItem.setVisibility(View.GONE);
 				vDivider.setVisibility(View.VISIBLE);
 				break;
 			case EntriesSearchType.CATEGORY:
-				flSearchItem.setVisibility(View.GONE);
-				rlDateSearchItem.setVisibility(View.GONE);
-				vDivider.setVisibility(View.GONE);
-				break;
 			case EntriesSearchType.STATUS:
 				flSearchItem.setVisibility(View.GONE);
 				rlDateSearchItem.setVisibility(View.GONE);
 				vDivider.setVisibility(View.GONE);
 				break;
 		}
+		lvSearchItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+				EntriesFragment entries = new EntriesFragment();
+				entries.setIsSearch(true);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, entries);
+				transaction.hide(getParentFragment());
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+		});
 		loadItems(db);
 		return view;
 	}
@@ -128,6 +140,9 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 							break;
 						case EntriesSearchType.CATEGORY:
 							searchList = Data.searchEntriesByCategory(db);
+							break;
+						case EntriesSearchType.FORM:
+							searchList = Data.searchEntriesByForm(db);
 							break;
 						case EntriesSearchType.STATUS:
 							searchList = Data.searchEntriesByStatus(db);

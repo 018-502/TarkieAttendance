@@ -21,7 +21,7 @@ import com.mobileoptima.model.StoreObj;
 
 public class SelectStoreFragment extends Fragment implements OnClickListener, OnSelectStoreCallback {
 
-	private CodePanButton btnSelectStore, btnOkStore;
+	private CodePanButton btnSelectStore, btnCancelStore, btnOkStore;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private FragmentManager manager;
@@ -41,9 +41,11 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.select_store_layout, container, false);
+		btnCancelStore = (CodePanButton) view.findViewById(R.id.btnCancelStore);
 		btnSelectStore = (CodePanButton) view.findViewById(R.id.btnSelectStore);
 		btnOkStore = (CodePanButton) view.findViewById(R.id.btnOkStore);
 		btnSelectStore.setOnClickListener(this);
+		btnCancelStore.setOnClickListener(this);
 		btnOkStore.setOnClickListener(this);
 		StoreObj store = TarkieLib.getDefaultStore(db);
 		if(store != null) {
@@ -89,6 +91,9 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 				else {
 					CodePanUtils.alertToast(getActivity(), "Please select a store.");
 				}
+				break;
+			case R.id.btnCancelStore:
+				manager.popBackStack();
 				break;
 		}
 	}
