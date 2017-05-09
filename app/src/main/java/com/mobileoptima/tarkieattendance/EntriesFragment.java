@@ -80,23 +80,18 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				EntryObj obj = entryList.get(i);
 				if(!obj.isHighlight) {
-					if(!obj.isSubmit) {
-						FormFragment form = new FormFragment();
-						form.setEntry(obj);
-						form.setOnFragmentCallback(EntriesFragment.this);
-						form.setOnSaveEntryCallback(EntriesFragment.this);
-						form.setOnOverrideCallback(overrideCallback);
-						transaction = manager.beginTransaction();
-						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-						transaction.add(R.id.rlMain, form, Tag.FORM);
-						transaction.hide(EntriesFragment.this);
-						transaction.addToBackStack(null);
-						transaction.commit();
-					}
-					else {
-						CodePanUtils.alertToast(getActivity(), "This entry has already been submitted.");
-					}
+					FormFragment form = new FormFragment();
+					form.setEntry(obj);
+					form.setOnFragmentCallback(EntriesFragment.this);
+					form.setOnSaveEntryCallback(EntriesFragment.this);
+					form.setOnOverrideCallback(overrideCallback);
+					transaction = manager.beginTransaction();
+					transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+							R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+					transaction.add(R.id.rlMain, form, Tag.FORM);
+					transaction.hide(EntriesFragment.this);
+					transaction.addToBackStack(null);
+					transaction.commit();
 				}
 				else {
 					if(!TarkieLib.hasUnfilledUpFields(db, obj.ID)) {

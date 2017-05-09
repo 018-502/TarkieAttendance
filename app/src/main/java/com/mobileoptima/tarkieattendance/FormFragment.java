@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -41,6 +42,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	private FragmentTransaction transaction;
 	private RelativeLayout rlOptionsForm;
 	private ArrayList<PageObj> pageList;
+	private FrameLayout flOptionsForm;
 	private FragmentManager manager;
 	private CodePanLabel tvForm;
 	private ViewGroup container;
@@ -80,6 +82,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 		btnCancelForm = (CodePanButton) view.findViewById(R.id.btnCancelForm);
 		btnDeleteForm = (CodePanButton) view.findViewById(R.id.btnDeleteForm);
 		btnOptionsForm = (CodePanButton) view.findViewById(R.id.btnOptionsForm);
+		flOptionsForm = (FrameLayout) view.findViewById(R.id.flOptionsForm);
 		btnNextForm = (CodePanButton) view.findViewById(R.id.btnNextForm);
 		btnBackForm = (CodePanButton) view.findViewById(R.id.btnBackForm);
 		btnSaveForm = (CodePanButton) view.findViewById(R.id.btnSaveForm);
@@ -111,7 +114,12 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 				btnNextForm.setText(R.string.finish);
 			}
 		}
-		if(entry == null) {
+		if(entry != null) {
+			if(entry.isSubmit) {
+				flOptionsForm.setVisibility(View.INVISIBLE);
+			}
+		}
+		else {
 			llDeleteForm.setVisibility(View.GONE);
 		}
 		this.container = container;
@@ -189,72 +197,79 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 						transaction.commit();
 					}
 					else {
-						boolean hasRequired = false;
-						for(PageObj page : pageList) {
-							final int position = pageList.indexOf(page);
-							final int p = position + 1;
-							if(position <= index) {
-								FieldObj field = TarkieLib.getUnfilledUpField(page.fieldList);
-								if(field != null) {
-									final AlertDialogFragment alert = new AlertDialogFragment();
-									alert.setDialogTitle("Required Field");
-									if(field.name != null && !field.name.isEmpty()) {
-										String message = "\"" + field.name + "\" is required on page " + p + ".";
-										alert.setDialogMessage(message);
-										String font = getActivity().getResources().getString(R.string.proxima_nova_bold);
-										ArrayList<SpannableMap> list = new ArrayList<>();
-										int length = field.name.length() + 2;
-										list.add(new SpannableMap(getActivity(), font, 0, length));
-										alert.setSpannableList(list);
-									}
-									alert.setOnFragmentCallback(this);
-									alert.setPositiveButton("Page " + p, new OnClickListener() {
-										@Override
-										public void onClick(View view) {
-											manager.popBackStack();
-											int x = pageList.size() - position - 1;
-											for(int i = 0; i < x; i++) {
-												decrementPage();
-												manager.popBackStack();
-											}
+						if(entry == null || !entry.isSubmit) {
+							boolean hasRequired = false;
+							for(PageObj page : pageList) {
+								final int position = pageList.indexOf(page);
+								final int p = position + 1;
+								if(position <= index) {
+									FieldObj field = TarkieLib.getUnfilledUpField(page.fieldList);
+									if(field != null) {
+										final AlertDialogFragment alert = new AlertDialogFragment();
+										alert.setDialogTitle("Required Field");
+										if(field.name != null && !field.name.isEmpty()) {
+											String message = "\"" + field.name + "\" is required on page " + p + ".";
+											alert.setDialogMessage(message);
+											String font = getActivity().getResources().getString(R.string.proxima_nova_bold);
+											ArrayList<SpannableMap> list = new ArrayList<>();
+											int length = field.name.length() + 2;
+											list.add(new SpannableMap(getActivity(), font, 0, length));
+											alert.setSpannableList(list);
 										}
-									});
-									transaction = manager.beginTransaction();
-									transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-											R.anim.fade_in, R.anim.fade_out);
-									transaction.add(R.id.rlMain, alert);
-									transaction.addToBackStack(null);
-									transaction.commit();
-									hasRequired = true;
-									break;
+										alert.setOnFragmentCallback(this);
+										alert.setPositiveButton("Page " + p, new OnClickListener() {
+											@Override
+											public void onClick(View view) {
+												manager.popBackStack();
+												int x = pageList.size() - position - 1;
+												for(int i = 0; i < x; i++) {
+													decrementPage();
+													manager.popBackStack();
+												}
+											}
+										});
+										transaction = manager.beginTransaction();
+										transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+												R.anim.fade_in, R.anim.fade_out);
+										transaction.add(R.id.rlMain, alert);
+										transaction.addToBackStack(null);
+										transaction.commit();
+										hasRequired = true;
+										break;
+									}
 								}
 							}
+							if(!hasRequired) {
+								final AlertDialogFragment alert = new AlertDialogFragment();
+								alert.setDialogTitle(R.string.submit_entry_title);
+								alert.setDialogMessage(R.string.submit_entry_message);
+								alert.setOnFragmentCallback(this);
+								alert.setPositiveButton("Submit", new OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										manager.popBackStack();
+										saveEntry(true);
+									}
+								});
+								alert.setNegativeButton("Save", new OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										manager.popBackStack();
+										saveEntry(false);
+									}
+								});
+								transaction = manager.beginTransaction();
+								transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+										R.anim.fade_in, R.anim.fade_out);
+								transaction.add(R.id.rlMain, alert);
+								transaction.addToBackStack(null);
+								transaction.commit();
+							}
 						}
-						if(!hasRequired) {
-							final AlertDialogFragment alert = new AlertDialogFragment();
-							alert.setDialogTitle(R.string.submit_entry_title);
-							alert.setDialogMessage(R.string.submit_entry_message);
-							alert.setOnFragmentCallback(this);
-							alert.setPositiveButton("Submit", new OnClickListener() {
-								@Override
-								public void onClick(View view) {
-									manager.popBackStack();
-									saveEntry(true);
-								}
-							});
-							alert.setNegativeButton("Save", new OnClickListener() {
-								@Override
-								public void onClick(View view) {
-									manager.popBackStack();
-									saveEntry(false);
-								}
-							});
-							transaction = manager.beginTransaction();
-							transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-									R.anim.fade_in, R.anim.fade_out);
-							transaction.add(R.id.rlMain, alert);
-							transaction.addToBackStack(null);
-							transaction.commit();
+						else {
+							if(saveEntryCallback != null) {
+								saveEntryCallback.onSaveEntry();
+							}
 						}
 					}
 				}

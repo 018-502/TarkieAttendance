@@ -40,6 +40,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="clear">Clear</string>
+    <string name="back">Back</string>
     <string name="next">Next</string>
     <string name="delete">Delete</string>
     <string name="settings">Settings</string>
@@ -114,6 +115,9 @@
     <string name="submit_entry_message">Do you want to finalize and submit this entry?</string>
     <string name="unsubmitted_entries_title">Unsubmitted Entries</string>
     <string name="unsubmitted_entries_message">You still have unsubmitted entries, please finalize and submit first.</string>
+    <string name="location_acquired">Location Acquired</string>
+    <string name="signature_captured">Signature Captured</string>
+    <string name="time_captured">Date &amp; Time Captured</string>
 
     <string-array name="tab_search_entries">
         <item>Date</item>

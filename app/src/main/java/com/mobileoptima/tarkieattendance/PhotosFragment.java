@@ -56,7 +56,7 @@ public class PhotosFragment extends Fragment {
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 				ImagePreviewFragment imagePreview = new ImagePreviewFragment();
 				imagePreview.setImageList(imageList, position);
-				imagePreview.setIsDeletable(false);
+				imagePreview.setDeletable(false);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);

@@ -80,7 +80,7 @@
             android:text="SUBMITTED"
             android:textColor="@color/green_pri"
             android:textSize="@dimen/fifteen"
-            codePan:typeface="@string/proxima_nova_light"/>
+            codePan:typeface="@string/proxima_nova_mid"/>
 
         <com.codepan.widget.CodePanLabel
             android:id="@+id/tvDateEntries"

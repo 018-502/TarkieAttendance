@@ -27,6 +27,7 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -71,6 +72,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.codepan.R;
@@ -1685,7 +1687,6 @@ public class CodePanUtils {
 
 	public static Bitmap getBitmapThumbnails(Context context, String folderName, String fileName, int size) {
 		String path = context.getDir(folderName, Context.MODE_PRIVATE).getPath() + "/" + fileName;
-		//String path = Environment.getExternalStorageDirectory() + "/" + folderName + "/" +fileName;
 		File image = new File(path);
 		BitmapFactory.Options bounds = new BitmapFactory.Options();
 		bounds.inJustDecodeBounds = true;
@@ -2229,5 +2230,11 @@ public class CodePanUtils {
 			return text.substring(0, 1).toUpperCase() + text.substring(1);
 		}
 		return null;
+	}
+
+	public static boolean isViewVisible(ScrollView sv, View v) {
+		Rect rect = new Rect();
+		sv.getHitRect(rect);
+		return v.getLocalVisibleRect(rect);
 	}
 }

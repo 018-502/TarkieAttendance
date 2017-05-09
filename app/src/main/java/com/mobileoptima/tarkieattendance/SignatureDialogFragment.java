@@ -26,10 +26,11 @@ public class SignatureDialogFragment extends Fragment implements View.OnClickLis
 	private CodePanButton btnCancelSignatureDialog, btnSaveSignatureDialog;
 	private OnFragmentCallback fragmentCallback;
 	private CodePanLabel tvTitleSignatureDialog;
+	private SignatureView svSignatureDialog;
 	private OnClearCallback clearCallback;
 	private OnSignCallback signCallback;
-	private SignatureView svSignatureDialog;
 	private ImageView ivSignatureDialog;
+	private boolean isEditable;
 	private SQLiteAdapter db;
 	private String photoID;
 	private String title;
@@ -70,7 +71,13 @@ public class SignatureDialogFragment extends Fragment implements View.OnClickLis
 			ivSignatureDialog.setImageBitmap(bitmap);
 			ivSignatureDialog.setVisibility(View.VISIBLE);
 			svSignatureDialog.setVisibility(View.GONE);
-			btnSaveSignatureDialog.setText(R.string.clear);
+			if(isEditable) {
+				btnSaveSignatureDialog.setText(R.string.clear);
+			}
+			else {
+				btnSaveSignatureDialog.setVisibility(View.GONE);
+				btnCancelSignatureDialog.setText(R.string.back);
+			}
 		}
 		return view;
 	}
@@ -130,6 +137,10 @@ public class SignatureDialogFragment extends Fragment implements View.OnClickLis
 
 	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {
 		this.fragmentCallback = fragmentCallback;
+	}
+
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
 	}
 
 	public void setOnSignCallback(OnSignCallback signCallback) {

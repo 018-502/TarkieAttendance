@@ -155,7 +155,7 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 		this.fragmentCallback = fragmentCallback;
 	}
 
-	public void setIsDeletable(boolean isDeletable) {
+	public void setDeletable(boolean isDeletable) {
 		this.isDeletable = isDeletable;
 	}
 
