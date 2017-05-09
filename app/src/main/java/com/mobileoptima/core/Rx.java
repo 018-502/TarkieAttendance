@@ -691,6 +691,87 @@ public class Rx {
 		return result;
 	}
 
+	public static boolean getConvention(SQLiteAdapter db, OnErrorCallback errorCallback) {
+		boolean result = false;
+		boolean hasData = false;
+		final int INDENT = 4;
+		final int TIMEOUT = 5000;
+		String action = "get-naming-convention";
+		String url = App.WEB_API + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			paramsObj.put("api_key", apiKey);
+			params = paramsObj.toString(INDENT);
+			response = CodePanUtils.doHttpGet(url, paramsObj, TIMEOUT);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					int recNo = initObj.getInt("recno");
+					if(status.equals("ok")) {
+						hasData = recNo > 0;
+						result = recNo == 0;
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+			if(hasData) {
+				SQLiteBinder binder = new SQLiteBinder(db);
+				String table = Tables.getName(Tables.TB.CONVENTION);
+				binder.truncate(table);
+				try {
+					SQLiteQuery query = new SQLiteQuery();
+					JSONArray dataArray = responseObj.getJSONArray("data");
+					for(int d = 0; d < dataArray.length(); d++) {
+						JSONObject dataObj = dataArray.getJSONObject(d);
+						JSONArray nameArray = dataObj.names();
+						for(int n = 0; n < nameArray.length(); n++) {
+							String name = nameArray.getString(n);
+							query.clearAll();
+							query.add(new FieldValue("name", name));
+							query.add(new FieldValue("convention", dataObj.getString(name)));
+							binder.insert(table, query);
+						}
+					}
+					result = binder.finish();
+				}
+				catch(JSONException je) {
+					je.printStackTrace();
+					if(errorCallback != null) {
+						errorCallback.onError(je.getMessage(), params, response, false);
+					}
+					binder.finish();
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
 	public static boolean getStores(SQLiteAdapter db, OnErrorCallback errorCallback) {
 		boolean result = false;
 		boolean hasData = false;

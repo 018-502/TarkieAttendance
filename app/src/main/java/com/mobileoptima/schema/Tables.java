@@ -14,6 +14,7 @@ public class Tables {
 		EMPLOYEE,
 		BREAK,
 		STORES,
+		CONVENTION,
 		TIME_IN,
 		TIME_OUT,
 		BREAK_IN,
@@ -96,6 +97,12 @@ public class Tables {
 				query.add(new Field("address", DataType.TEXT));
 				query.add(new Field("radius", DataType.TEXT));
 				query.add(new Field("isDefault", 0));
+				break;
+			case CONVENTION:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("name", DataType.TEXT));
+				query.add(new Field("convention", DataType.TEXT));
 				break;
 			case TIME_IN:
 				query.clearAll();
@@ -335,6 +342,9 @@ public class Tables {
 				break;
 			case STORES:
 				name = "stores_tb";
+				break;
+			case CONVENTION:
+				name = "convention_tb";
 				break;
 			case TIME_IN:
 				name = "time_in_tb";

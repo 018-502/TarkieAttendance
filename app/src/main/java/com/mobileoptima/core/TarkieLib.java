@@ -17,6 +17,7 @@ import com.codepan.model.GpsObj;
 import com.codepan.model.TimeObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.Incident;
 import com.mobileoptima.model.AnswerObj;
@@ -43,6 +44,7 @@ import java.util.ArrayList;
 import static com.codepan.database.SQLiteQuery.DataType;
 import static com.mobileoptima.schema.Tables.TB.ANSWERS;
 import static com.mobileoptima.schema.Tables.TB.COMPANY;
+import static com.mobileoptima.schema.Tables.TB.CONVENTION;
 import static com.mobileoptima.schema.Tables.TB.CREDENTIALS;
 import static com.mobileoptima.schema.Tables.TB.EMPLOYEE;
 import static com.mobileoptima.schema.Tables.TB.ENTRIES;
@@ -140,6 +142,7 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.EMPLOYEE));
 		db.execQuery(Tables.create(TB.BREAK));
 		db.execQuery(Tables.create(TB.STORES));
+		db.execQuery(Tables.create(TB.CONVENTION));
 		db.execQuery(Tables.create(TB.TIME_IN));
 		db.execQuery(Tables.create(TB.TIME_OUT));
 		db.execQuery(Tables.create(TB.BREAK_IN));
@@ -261,6 +264,16 @@ public class TarkieLib {
 		String table = Tables.getName(CREDENTIALS);
 		String query = "SELECT empID FROM " + table + " WHERE ID = 1";
 		return db.getString(query);
+	}
+
+	public static String getConvention(SQLiteAdapter db, String name) {
+		String table = Tables.getName(CONVENTION);
+		String query = "SELECT convention FROM " + table + " WHERE name = '" + name + "'";
+		String convention = db.getString(query);
+		if(convention != null && convention.equalsIgnoreCase(Convention.DEFAULT)) {
+			convention = name;
+		}
+		return convention;
 	}
 
 	public static EmployeeObj getEmployee(SQLiteAdapter db, String empID) {

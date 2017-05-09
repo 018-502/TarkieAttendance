@@ -24,11 +24,16 @@ import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
+import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.StoresAdapter;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.core.Data;
+import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.StoreObj;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -41,15 +46,16 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	private OnSelectStoreCallback selectStoreCallback;
 	private int visibleItem, totalItem, firstVisible;
 	private OnFragmentCallback fragmentCallback;
+	private String search, start, convention;
 	private FragmentTransaction transaction;
 	private CodePanTextField etSearchStores;
 	private ArrayList<StoreObj> storeList;
+	private CodePanLabel tvTitleStores;
 	private CodePanButton btnBackStores;
 	private Handler inputFinishHandler;
 	private ImageView ivLoadingStores;
 	private FragmentManager manager;
 	private StoresAdapter adapter;
-	private String search, start;
 	private ListView lvStores;
 	private SQLiteAdapter db;
 	private Animation anim;
@@ -92,11 +98,16 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
+		convention = TarkieLib.getConvention(db, Convention.STORES);
+		if(convention != null) {
+			convention = StringUtils.capitalize(convention);
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.stores_layout, container, false);
+		tvTitleStores = (CodePanLabel) view.findViewById(R.id.tvTitleStores);
 		etSearchStores = (CodePanTextField) view.findViewById(R.id.etSearchStores);
 		btnBackStores = (CodePanButton) view.findViewById(R.id.btnBackStores);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
@@ -154,6 +165,9 @@ public class StoresFragment extends Fragment implements OnClickListener {
 			public void afterTextChanged(Editable s) {
 			}
 		});
+		if(convention != null) {
+			tvTitleStores.setText(convention);
+		}
 		loadStores(db, search);
 		return view;
 	}

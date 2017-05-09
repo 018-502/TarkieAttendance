@@ -13,8 +13,10 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
+import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.StoreObj;
@@ -25,6 +27,8 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private FragmentManager manager;
+	private CodePanLabel tvNameForm;
+	private String convention;
 	private SQLiteAdapter db;
 	private StoreObj store;
 	private GpsObj gps;
@@ -36,11 +40,16 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
+		convention = TarkieLib.getConvention(db, Convention.STORES);
+		if(convention != null) {
+			convention = convention.toUpperCase();
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.select_store_layout, container, false);
+		tvNameForm = (CodePanLabel) view.findViewById(R.id.tvNameForm);
 		btnCancelStore = (CodePanButton) view.findViewById(R.id.btnCancelStore);
 		btnSelectStore = (CodePanButton) view.findViewById(R.id.btnSelectStore);
 		btnOkStore = (CodePanButton) view.findViewById(R.id.btnOkStore);
@@ -51,6 +60,10 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 		if(store != null) {
 			btnSelectStore.setText(store.name);
 			this.store = store;
+		}
+		if(convention != null) {
+			String title = "SELECT " + convention;
+			tvNameForm.setText(title);
 		}
 		return view;
 	}

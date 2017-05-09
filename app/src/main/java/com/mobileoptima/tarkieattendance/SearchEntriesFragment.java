@@ -22,8 +22,12 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.SlidingTabLayout;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSearchItemCallback;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.EntriesSearchType;
+import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.SearchObj;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -69,6 +73,10 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener,
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
+		String convention = TarkieLib.getConvention(db, Convention.STORES);
+		if(convention != null) {
+			tabItems[1] = StringUtils.capitalize(convention);
+		}
 	}
 
 	@Nullable

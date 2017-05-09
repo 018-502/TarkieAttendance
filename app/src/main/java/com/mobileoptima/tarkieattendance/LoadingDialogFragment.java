@@ -110,7 +110,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 		String title = null;
 		switch(action) {
 			case AUTHORIZE_DEVICE:
-				setMax(8);
+				setMax(9);
 				successMsg = "Authorization successful.";
 				failedMsg = "Failed to authorize the device.";
 				title = "Authorizing Device";
@@ -128,7 +128,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				login(db, username, password);
 				break;
 			case UPDATE_MASTER_FILE:
-				setMax(9);
+				setMax(10);
 				successMsg = "Update master list successful.";
 				failedMsg = "Failed to update master file.";
 				title = "Updating Master File";
@@ -179,6 +179,11 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 					}
 					if(result) {
 						result = Rx.getCompany(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getConvention(db, getErrorCallback());
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
 					}
@@ -265,6 +270,11 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 					result = Rx.getCompany(db, getErrorCallback());
 					Thread.sleep(250);
 					handler.sendMessage(handler.obtainMessage());
+					if(result) {
+						result = Rx.getConvention(db, getErrorCallback());
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
 					if(result) {
 						result = Rx.getStores(db, getErrorCallback());
 						Thread.sleep(250);
