@@ -3,7 +3,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/five"
+    android:paddingTop="@dimen/ten">
 
     <com.codepan.widget.CodePanLabel
         android:id="@+id/tvTitleSec"
@@ -14,7 +16,7 @@
         android:paddingLeft="@dimen/ten"
         android:paddingRight="@dimen/ten"
         android:paddingStart="@dimen/ten"
-        android:paddingTop="@dimen/fifteen"
+        android:paddingTop="@dimen/five"
         android:textColor="@color/gray_pri"
         android:textSize="@dimen/eighteen"
         codePan:typeface="@string/proxima_nova_bold"/>
@@ -31,7 +33,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vDividerSec"
-        android:paddingBottom="@dimen/five"
         android:paddingEnd="@dimen/ten"
         android:paddingLeft="@dimen/ten"
         android:paddingRight="@dimen/ten"

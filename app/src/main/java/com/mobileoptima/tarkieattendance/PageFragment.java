@@ -131,8 +131,14 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 						view = inflater.inflate(R.layout.field_section_layout, container, false);
 						CodePanLabel tvTitleSec = (CodePanLabel) view.findViewById(R.id.tvTitleSec);
 						final CodePanLabel tvDescSec = (CodePanLabel) view.findViewById(R.id.tvDescSec);
-						tvTitleSec.setText(field.name);
-						if(field.description != null) {
+						if(field.name != null && !field.name.isEmpty()) {
+							tvTitleSec.setText(field.name);
+							tvTitleSec.setVisibility(View.VISIBLE);
+						}
+						else {
+							tvTitleSec.setVisibility(View.GONE);
+						}
+						if(field.description != null && !field.description.isEmpty()) {
 							tvDescSec.setText(field.description);
 							tvDescSec.setVisibility(View.VISIBLE);
 						}
@@ -462,8 +468,7 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 					case FieldType.GPS:
 						view = inflater.inflate(R.layout.field_gps_layout, container, false);
 						final CodePanLabel tvStatusGps = (CodePanLabel) view.findViewById(R.id.tvStatusGps);
-						final CodePanLabel tvLatitudeGps = (CodePanLabel) view.findViewById(R.id.tvLatitudeGps);
-						final CodePanLabel tvLongitudeGps = (CodePanLabel) view.findViewById(R.id.tvLongitudeGps);
+						final CodePanLabel tvResultGps = (CodePanLabel) view.findViewById(R.id.tvResultGps);
 						CodePanLabel tvQuestionGps = (CodePanLabel) view.findViewById(R.id.tvQuestionGps);
 						CodePanButton btnGetGps = (CodePanButton) view.findViewById(R.id.btnGetGps);
 						if(field.isRequired) {
@@ -476,13 +481,10 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 							String array[] = answer.value.split(",");
 							if(array.length == 2) {
 								String status = "Location Acquired";
-								String latitude = "Latitude: " + array[0];
-								String longitude = "Longitude: " + array[1];
+								String result = array[0] + ", " + array[1];
+								tvResultGps.setText(result);
 								tvStatusGps.setText(status);
-								tvLatitudeGps.setText(latitude);
-								tvLongitudeGps.setText(longitude);
-								tvLatitudeGps.setVisibility(View.VISIBLE);
-								tvLongitudeGps.setVisibility(View.VISIBLE);
+								tvResultGps.setVisibility(View.VISIBLE);
 							}
 						}
 						btnGetGps.setOnClickListener(new OnClickListener() {
@@ -495,13 +497,10 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 										@Override
 										public void onGpsFixed(GpsObj gps) {
 											String status = "Location Acquired";
-											String latitude = "Latitude: " + gps.latitude;
-											String longitude = "Longitude: " + gps.longitude;
+											String result = gps.latitude + ", " + gps.longitude;
 											tvStatusGps.setText(status);
-											tvLatitudeGps.setText(latitude);
-											tvLongitudeGps.setText(longitude);
-											tvLatitudeGps.setVisibility(View.VISIBLE);
-											tvLongitudeGps.setVisibility(View.VISIBLE);
+											tvResultGps.setText(result);
+											tvResultGps.setVisibility(View.VISIBLE);
 											answer.value = gps.latitude + "," + gps.longitude;
 											withChanges = true;
 										}
@@ -584,12 +583,14 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 						btnGetTime.setOnClickListener(new OnClickListener() {
 							@Override
 							public void onClick(View view) {
-								String time = CodePanUtils.getTime();
-								String date = CodePanUtils.getDate();
-								String result = "Time: " + date + " " + time;
+								String dTime = CodePanUtils.getTime();
+								String dDate = CodePanUtils.getDate();
+								String date = CodePanUtils.getCalendarDate(dDate, false, true);
+								String time = CodePanUtils.getNormalTime(dTime, false);
+								String result = date + " " + time;
 								tvResultTime.setText(result);
 								tvResultTime.setVisibility(View.VISIBLE);
-								answer.value = date + "," + time;
+								answer.value = dDate + "," + dTime;
 								withChanges = true;
 							}
 						});

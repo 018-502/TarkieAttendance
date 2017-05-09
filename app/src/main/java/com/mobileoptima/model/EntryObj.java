@@ -11,6 +11,7 @@ public class EntryObj {
 	public String dateSubmitted;
 	public String timeSubmitted;
 	public String syncBatchID;
+	public StoreObj store;
 	public FormObj form;
 	public ArrayList<FieldObj> fieldList;
 	public boolean isFromWeb;

@@ -57,7 +57,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 				holder.tvTitleEntries = (CodePanLabel) view.findViewById(R.id.tvTitleEntries);
 				holder.tvDateEntries = (CodePanLabel) view.findViewById(R.id.tvDateEntries);
 				holder.tvStatusEntries = (CodePanLabel) view.findViewById(R.id.tvStatusEntries);
-				holder.tvFormEntries = (CodePanLabel) view.findViewById(R.id.tvFormEntries);
+				holder.tvStoreEntries = (CodePanLabel) view.findViewById(R.id.tvStoreEntries);
 				holder.tvReferenceNoEntries = (CodePanLabel) view.findViewById(R.id.tvReferenceNoEntries);
 				holder.cbEntries = (CheckBox) view.findViewById(R.id.cbEntries);
 				view.setTag(holder);
@@ -65,11 +65,15 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 			else {
 				holder = (ViewHolder) view.getTag();
 			}
-			if(obj.form.name != null) {
+			if(obj.form != null) {
 				holder.tvTitleEntries.setText(obj.form.name);
 			}
-			if(obj.form.name != null) {
-				holder.tvFormEntries.setText(obj.form.name);
+			if(obj.store != null) {
+				holder.tvStoreEntries.setText(obj.store.name);
+				holder.tvStoreEntries.setVisibility(View.VISIBLE);
+			}
+			else {
+				holder.tvStoreEntries.setVisibility(View.GONE);
 			}
 			if(obj.isSubmit) {
 				holder.tvStatusEntries.setTextColor(green);
@@ -105,7 +109,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 		private CodePanLabel tvTitleEntries;
 		private CodePanLabel tvStatusEntries;
 		private CodePanLabel tvDateEntries;
-		private CodePanLabel tvFormEntries;
+		private CodePanLabel tvStoreEntries;
 		private CodePanLabel tvReferenceNoEntries;
 		private CheckBox cbEntries;
 	}

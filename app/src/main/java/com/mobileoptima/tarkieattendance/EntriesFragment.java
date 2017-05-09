@@ -206,6 +206,14 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 			if(highlightEntriesCallback != null) {
 				highlightEntriesCallback.onHighlightEntries(isHighlight);
 			}
+			if(search != null) {
+				if(isHighlight) {
+					btnSelectEntries.setText(R.string.submit);
+				}
+				else {
+					btnSelectEntries.setText(R.string.select);
+				}
+			}
 		}
 		lvEntries.invalidate();
 		adapter.notifyDataSetChanged();
@@ -262,6 +270,9 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 						select(false);
 						MainActivity main = (MainActivity) getActivity();
 						main.updateSyncCount();
+						if(search != null) {
+							main.reloadEntries();
+						}
 						CodePanUtils.alertToast(getActivity(), "Entries has been successfully submitted.");
 					}
 					else {
@@ -329,11 +340,9 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 				break;
 			case R.id.btnSelectEntries:
 				if(!isHighlight) {
-					btnSelectEntries.setText(R.string.submit);
 					select(true);
 				}
 				else {
-					btnSelectEntries.setText(R.string.select);
 					submit();
 				}
 				break;

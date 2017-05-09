@@ -43,12 +43,12 @@
             codePan:typeface="@string/proxima_nova_bold"/>
 
         <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvFormEntries"
+            android:id="@+id/tvStoreEntries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="DCWR"
             android:textColor="@color/gray_qua"
             android:textSize="@dimen/fifteen"
+            android:visibility="gone"
             codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanLabel

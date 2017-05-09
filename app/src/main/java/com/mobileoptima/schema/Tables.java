@@ -27,7 +27,8 @@ public class Tables {
 		FIELDS,
 		CHOICES,
 		ENTRIES,
-		ANSWERS
+		ANSWERS,
+		ENTRY_TASK
 	}
 
 	public static String create(TB tb) {
@@ -300,6 +301,13 @@ public class Tables {
 				query.add(new Field("fieldID", DataType.INTEGER));
 				query.add(new Field("isUpdate", 0));
 				break;
+			case ENTRY_TASK:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("entryID", DataType.INTEGER));
+				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("isTag", 1));
+				break;
 		}
 		return query.createTable(getName(tb));
 	}
@@ -369,6 +377,9 @@ public class Tables {
 				break;
 			case ANSWERS:
 				name = "answers_tb";
+				break;
+			case ENTRY_TASK:
+				name = "entry_task_tb";
 				break;
 		}
 		return name;
