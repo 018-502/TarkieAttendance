@@ -3,20 +3,31 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:background="@color/blue_pri"
     android:clickable="true">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:paddingBottom="@dimen/thirty">
+        android:orientation="vertical"
+        android:gravity="center">
 
         <ImageView
-            android:layout_width="@dimen/one_hundred_fifty_three"
-            android:layout_height="@dimen/seventy"
-            android:background="@drawable/ic_logo"/>
+            android:id="@+id/ivLogoSplash"
+            android:layout_width="@dimen/one_hundred"
+            android:layout_height="@dimen/seventy_seven"
+            android:src="@drawable/ic_logo"/>
 
-    </FrameLayout>
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sevie"
+            android:textColor="@color/white"
+            android:textSize="@dimen/thirty_five"
+            codePan:typeface="@string/nexa_book_mid"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Tarsie</string>
+    <string name="app_name">Sevie</string>
+    <string name="sevie">sevie</string>
     <string name="dialog_title_font">@string/proxima_nova_semi_bold</string>
     <string name="menu">Menu</string>
     <string name="menu_time_in">@string/time_in</string>
@@ -73,6 +74,10 @@
     <string name="yes">Yes</string>
     <string name="affix_signature">Please affix your signature below.</string>
     <string name="last_synced">LAST SYNCED:</string>
+    <string name="no_photos_title">No Photos</string>
+    <string name="no_entries_title">No Entries</string>
+    <string name="no_photos_message">View photos of your tasks and entries.</string>
+    <string name="no_entries_message">Manage and submit entries.</string>
     <string name="upgrade_title">Upgrade to Use this Feature</string>
     <string name="upgrade_not_available">This feature is not available on your current subscription.</string>
     <string name="upgrade_contact">To avail this feature, simply upgrade by contacting Tarkie.</string>

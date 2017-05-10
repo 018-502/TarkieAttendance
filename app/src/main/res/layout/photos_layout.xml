@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:padding="@dimen/thirty"
     android:clickable="true">
 
     <GridView
@@ -17,5 +19,46 @@
         android:scrollbarSize="@dimen/three"
         android:scrollbarThumbVertical="@color/black_trans_thirty"
         android:verticalSpacing="@dimen/three"/>
+
+    <RelativeLayout
+        android:id="@+id/rlPhotos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="@dimen/one_hundred"
+                android:layout_height="@dimen/eighty_five"
+                android:src="@drawable/ic_photos_placeholder"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/twenty_five"
+                android:text="@string/no_photos_title"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_bold"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/twenty_five"
+                android:gravity="center"
+                android:text="@string/no_photos_message"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </RelativeLayout>

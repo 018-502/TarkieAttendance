@@ -29,10 +29,10 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!--<ImageView-->
-                <!--android:layout_width="@dimen/seventeen"-->
-                <!--android:layout_height="@dimen/twenty_one"-->
-                <!--android:src="@drawable/ic_time"/>-->
+            <ImageView
+                android:layout_width="@dimen/twenty_two"
+                android:layout_height="@dimen/nineteen"
+                android:src="@drawable/ic_time"/>
 
             <com.codepan.widget.CodePanLabel
                 android:id="@+id/tvStatusTime"

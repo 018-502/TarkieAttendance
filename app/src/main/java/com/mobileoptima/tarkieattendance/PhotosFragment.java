@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
@@ -26,6 +27,7 @@ public class PhotosFragment extends Fragment {
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
+	private RelativeLayout rlPhotos;
 	private FragmentManager manager;
 	private PhotosAdapter adapter;
 	private int spacing, numCol;
@@ -46,6 +48,7 @@ public class PhotosFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.photos_layout, container, false);
+		rlPhotos = (RelativeLayout) view.findViewById(R.id.rlPhotos);
 		gvPhotos = (GridView) view.findViewById(R.id.gvPhotos);
 		gvPhotos.setNumColumns(numCol);
 		gvPhotos.setVerticalSpacing(spacing);
@@ -88,6 +91,12 @@ public class PhotosFragment extends Fragment {
 	Handler handler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
+			if(imageList != null && imageList.isEmpty()) {
+				rlPhotos.setVisibility(View.VISIBLE);
+			}
+			else {
+				rlPhotos.setVisibility(View.GONE);
+			}
 			adapter = new PhotosAdapter(getActivity(), imageList);
 			gvPhotos.setAdapter(adapter);
 			return true;
