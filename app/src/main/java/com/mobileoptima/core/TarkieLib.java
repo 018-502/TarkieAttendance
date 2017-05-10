@@ -1033,7 +1033,7 @@ public class TarkieLib {
 		String empID = getEmployeeID(db);
 		String table = Tables.getName(TB.ENTRIES);
 		String query = "SELECT ID FROM " + table + " WHERE timeInID = '" + timeInID + "' " +
-				"AND empID = '" + empID + "' AND isSubmit = 0";
+				"AND empID = '" + empID + "' AND isSubmit = 0 AND isDelete = 0";
 		return db.isRecordExists(query);
 	}
 
