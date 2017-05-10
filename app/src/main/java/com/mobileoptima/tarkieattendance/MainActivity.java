@@ -53,6 +53,7 @@ import com.mobileoptima.core.TimeSecurity;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.EmployeeObj;
+import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.service.MainService;
 
@@ -1245,11 +1246,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	@Override
-	public void onSaveEntry() {
-		manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
+	public void onSaveEntry(EntryObj entry) {
+		setTab(TabType.ENTRIES);
 		updateSyncCount();
 		reloadEntries();
 		reloadPhotos();
-		setTab(TabType.ENTRIES);
 	}
 }

@@ -24,6 +24,7 @@ import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.EntriesAdapter;
+import com.mobileoptima.callback.Interface.OnDeleteEntryCallback;
 import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
@@ -35,10 +36,8 @@ import com.mobileoptima.model.SearchObj;
 
 import java.util.ArrayList;
 
-import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
-
 public class EntriesFragment extends Fragment implements OnClickListener, OnFragmentCallback,
-		OnBackPressedCallback, OnSaveEntryCallback {
+		OnBackPressedCallback, OnSaveEntryCallback, OnDeleteEntryCallback {
 
 	private OnHighlightEntriesCallback highlightEntriesCallback;
 	private boolean isHighlight, inOtherFragment, isMultiple;
@@ -50,10 +49,10 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	private CodePanLabel tvTitleEntries;
 	private FragmentManager manager;
 	private EntriesAdapter adapter;
+	private int type, position;
 	private ListView lvEntries;
 	private SearchObj search;
 	private SQLiteAdapter db;
-	private int type;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -80,18 +79,22 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				EntryObj obj = entryList.get(i);
 				if(!obj.isHighlight) {
-					FormFragment form = new FormFragment();
-					form.setEntry(obj);
-					form.setOnFragmentCallback(EntriesFragment.this);
-					form.setOnSaveEntryCallback(EntriesFragment.this);
-					form.setOnOverrideCallback(overrideCallback);
-					transaction = manager.beginTransaction();
-					transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-							R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-					transaction.add(R.id.rlMain, form, Tag.FORM);
-					transaction.hide(EntriesFragment.this);
-					transaction.addToBackStack(null);
-					transaction.commit();
+					if(!CodePanUtils.isOnBackStack(getActivity(), Tag.FORM)) {
+						FormFragment form = new FormFragment();
+						form.setEntry(obj);
+						form.setOnFragmentCallback(EntriesFragment.this);
+						form.setOnSaveEntryCallback(EntriesFragment.this);
+						form.setOnDeleteEntryCallback(EntriesFragment.this);
+						form.setOnOverrideCallback(overrideCallback);
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+						transaction.add(R.id.rlMain, form, Tag.FORM);
+						transaction.hide(EntriesFragment.this);
+						transaction.addToBackStack(null);
+						transaction.commit();
+						position = i;
+					}
 				}
 				else {
 					if(!TarkieLib.hasUnfilledUpFields(db, obj.ID)) {
@@ -344,17 +347,28 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 		}
 	}
 
-	@Override
-	public void onSaveEntry() {
+	private void update() {
 		MainActivity main = (MainActivity) getActivity();
 		main.updateSyncCount();
-		main.reloadEntries();
 		main.reloadPhotos();
 		if(search != null) {
-			manager.popBackStack();
+			main.reloadEntries();
 		}
-		else {
-			manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
-		}
+	}
+
+	@Override
+	public void onSaveEntry(EntryObj entry) {
+		entryList.set(position, entry);
+		lvEntries.invalidate();
+		adapter.notifyDataSetChanged();
+		update();
+	}
+
+	@Override
+	public void onDeleteEntry(EntryObj entry) {
+		entryList.remove(entry);
+		lvEntries.invalidate();
+		adapter.notifyDataSetChanged();
+		update();
 	}
 }

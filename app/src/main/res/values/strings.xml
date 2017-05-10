@@ -58,6 +58,7 @@
     <string name="submitted">SUBMITTED</string>
     <string name="draft">DRAFT</string>
     <string name="new_form">NEW FORM</string>
+    <string name="deleted">DELETED</string>
     <string name="photos_taken">Photos Taken</string>
     <string name="retake">Retake</string>
     <string name="take_photo">Take Photo</string>

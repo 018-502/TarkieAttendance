@@ -351,10 +351,6 @@ public class Data {
 						case Status.DRAFT:
 							query.add(new Condition("isSubmit", false));
 							break;
-						case Status.DELETED:
-							query.removeCondition(0);
-							query.add(new Condition("e.isDelete", true));
-							break;
 						case Status.SUBMITTED:
 							query.add(new Condition("isSubmit", true));
 							break;
@@ -364,9 +360,9 @@ public class Data {
 		}
 		String e = Tables.getName(TB.ENTRIES);
 		String f = Tables.getName(TB.FORMS);
-		String sql = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, f.logoUrl " +
-				"FROM " + e + " e, " + f + " f WHERE f.ID = e.formID AND " + query.getConditions() + " " +
-				"ORDER BY e.ID DESC";
+		String sql = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, " +
+				"f.logoUrl FROM " + e + " e, " + f + " f WHERE f.ID = e.formID " +
+				"AND " + query.getConditions() + " ORDER BY e.ID DESC";
 		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
@@ -638,7 +634,7 @@ public class Data {
 		String table = Tables.getName(TB.ENTRIES);
 		String query = "SELECT dDate, COUNT(ID) FROM " + table + " WHERE dDate " +
 				"BETWEEN '" + startDate + "' AND '" + endDate + "' AND empID = '" + empID + "' " +
-				"GROUP BY dDate ORDER BY dDate DESC";
+				"AND isDelete = 0 GROUP BY dDate ORDER BY dDate DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			SearchObj obj = new SearchObj();
@@ -660,8 +656,8 @@ public class Data {
 		String e = Tables.getName(TB.ENTRIES);
 		String f = Tables.getName(TB.FORMS);
 		String query = "SELECT f.category, COUNT(e.ID) FROM " + e + " e, " + f + " f WHERE " +
-				"e.empID = '" + empID + "' AND f.ID = e.formID GROUP BY f.category " +
-				"ORDER BY f.category";
+				"e.empID = '" + empID + "' AND f.ID = e.formID AND e.isDelete = 0 " +
+				"GROUP BY f.category ORDER BY f.category";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			SearchObj obj = new SearchObj();
@@ -681,6 +677,7 @@ public class Data {
 		String empID = TarkieLib.getEmployeeID(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new Condition("e.empID", empID));
+		query.add(new Condition("e.isDelete", false));
 		if(search != null) {
 			query.add(new Condition("f.name", search, Operator.LIKE));
 		}
@@ -708,11 +705,11 @@ public class Data {
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.ENTRIES);
 		String query = "SELECT CASE " +
-				"WHEN isDelete = 1 THEN '" + Status.DELETED + "' " +
 				"WHEN isSubmit = 1 THEN '" + Status.SUBMITTED + "' " +
 				"WHEN isSubmit = 0 THEN '" + Status.DRAFT + "' " +
 				"END AS status, COUNT(ID) FROM " + table + " " +
-				"WHERE empID = '" + empID + "' GROUP BY status";
+				"WHERE empID = '" + empID + "' AND isDelete = 0 " +
+				"GROUP BY status";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			SearchObj obj = new SearchObj();

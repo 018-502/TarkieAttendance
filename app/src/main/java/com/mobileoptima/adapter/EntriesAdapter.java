@@ -24,7 +24,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 	private ArrayList<EntryObj> items;
 	private LayoutInflater inflater;
 	private ImageLoader imageLoader;
-	private int orange, green;
+	private int orange, green, red;
 
 	public EntriesAdapter(Context context, ArrayList<EntryObj> items) {
 		super(context, 0, items);
@@ -33,6 +33,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 		Resources res = context.getResources();
 		this.orange = res.getColor(R.color.orange_pri);
 		this.green = res.getColor(R.color.green_pri);
+		this.red = res.getColor(R.color.red_pri);
 		this.imageLoader = ImageLoader.getInstance();
 		if(!imageLoader.isInited()) {
 			imageLoader.init(ImageLoaderConfiguration.createDefault(context));
@@ -81,13 +82,20 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 				holder.cbEntries.setVisibility(View.GONE);
 			}
 			else {
-				holder.tvStatusEntries.setTextColor(orange);
-				holder.tvStatusEntries.setText(R.string.draft);
-				if(obj.isHighlight) {
-					holder.cbEntries.setVisibility(View.VISIBLE);
-					holder.cbEntries.setChecked(obj.isCheck);
+				if(!obj.isDelete) {
+					holder.tvStatusEntries.setTextColor(orange);
+					holder.tvStatusEntries.setText(R.string.draft);
+					if(obj.isHighlight) {
+						holder.cbEntries.setVisibility(View.VISIBLE);
+						holder.cbEntries.setChecked(obj.isCheck);
+					}
+					else {
+						holder.cbEntries.setVisibility(View.GONE);
+					}
 				}
 				else {
+					holder.tvStatusEntries.setTextColor(red);
+					holder.tvStatusEntries.setText(R.string.deleted);
 					holder.cbEntries.setVisibility(View.GONE);
 				}
 			}

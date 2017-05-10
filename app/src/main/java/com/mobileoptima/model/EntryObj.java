@@ -16,6 +16,7 @@ public class EntryObj {
 	public ArrayList<FieldObj> fieldList;
 	public boolean isFromWeb;
 	public boolean isSubmit;
+	public boolean isDelete;
 	public boolean isCheck;
 	public boolean isHighlight;
 }

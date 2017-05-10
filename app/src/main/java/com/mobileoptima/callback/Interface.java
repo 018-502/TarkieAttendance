@@ -3,6 +3,7 @@ package com.mobileoptima.callback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
@@ -76,6 +77,10 @@ public class Interface {
 	}
 
 	public interface OnSaveEntryCallback {
-		void onSaveEntry();
+		void onSaveEntry(EntryObj entry);
+	}
+
+	public interface OnDeleteEntryCallback {
+		void onDeleteEntry(EntryObj entry);
 	}
 }

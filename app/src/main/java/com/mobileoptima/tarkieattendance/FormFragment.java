@@ -19,6 +19,7 @@ import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
+import com.mobileoptima.callback.Interface.OnDeleteEntryCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.core.Data;
@@ -36,6 +37,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	private CodePanButton btnNextForm, btnBackForm, btnSaveForm, btnCancelForm,
 			btnDeleteForm, btnOptionsForm;
 	private LinearLayout llPageForm, llDeleteForm;
+	private OnDeleteEntryCallback deleteEntryCallback;
 	private OnSaveEntryCallback saveEntryCallback;
 	private OnFragmentCallback fragmentCallback;
 	private OnOverrideCallback overrideCallback;
@@ -268,7 +270,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 						}
 						else {
 							if(saveEntryCallback != null) {
-								saveEntryCallback.onSaveEntry();
+								saveEntryCallback.onSaveEntry(entry);
 							}
 						}
 					}
@@ -315,18 +317,23 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 				}
 			}
 		}
-		boolean result = false;
 		if(entry != null) {
-			result = TarkieLib.updateEntry(db, entry.ID, fieldList, isSubmit);
-			CodePanUtils.alertToast(getActivity(), "Entry has been has successfully updated.");
+			entry.isSubmit = isSubmit;
+			boolean result = TarkieLib.updateEntry(db, entry.ID, fieldList, isSubmit);
+			if(result) {
+				CodePanUtils.alertToast(getActivity(), "Entry has been has successfully updated.");
+			}
 		}
 		else {
-			result = TarkieLib.saveEntry(db, form.ID, fieldList, isSubmit);
-			CodePanUtils.alertToast(getActivity(), "Entry has been has successfully saved.");
+			boolean result = TarkieLib.saveEntry(db, form.ID, fieldList, isSubmit);
+			if(result) {
+				CodePanUtils.alertToast(getActivity(), "Entry has been has successfully saved.");
+			}
 		}
-		if(result && saveEntryCallback != null) {
-			saveEntryCallback.onSaveEntry();
+		if(saveEntryCallback != null) {
+			saveEntryCallback.onSaveEntry(entry);
 		}
+		popAllPages();
 	}
 
 	public void cancelEntry() {
@@ -337,7 +344,8 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 		alert.setPositiveButton("Yes", new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				manager.popBackStack();
+				popAllPages();
 			}
 		});
 		alert.setNegativeButton("No", new OnClickListener() {
@@ -362,8 +370,15 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 		alert.setPositiveButton("Yes", new OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				TarkieLib.deleteEntry(db, entry.ID);
-				manager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				manager.popBackStack();
+				boolean result = TarkieLib.deleteEntry(db, entry.ID);
+				if(result) {
+					CodePanUtils.alertToast(getActivity(), "Entry has been has successfully deleted.");
+				}
+				if(deleteEntryCallback != null) {
+					deleteEntryCallback.onDeleteEntry(entry);
+				}
+				popAllPages();
 			}
 		});
 		alert.setNegativeButton("No", new OnClickListener() {
@@ -414,6 +429,10 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 		this.saveEntryCallback = saveEntryCallback;
 	}
 
+	public void setOnDeleteEntryCallback(OnDeleteEntryCallback deleteEntryCallback) {
+		this.deleteEntryCallback = deleteEntryCallback;
+	}
+
 	public PageObj getPage(String tag) {
 		for(PageObj obj : pageList) {
 			if(obj.tag.equals(tag)) {
@@ -421,6 +440,15 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 			}
 		}
 		return null;
+	}
+
+	public void popAllPages() {
+		for(PageObj page : pageList) {
+			Fragment fragment = manager.findFragmentByTag(page.tag);
+			if(fragment != null) {
+				manager.popBackStack();
+			}
+		}
 	}
 
 	@Override

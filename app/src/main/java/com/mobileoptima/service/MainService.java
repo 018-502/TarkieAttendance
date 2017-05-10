@@ -242,9 +242,9 @@ public class MainService extends Service implements LocationListener, Connection
 		if(!CodePanUtils.isThreadRunning(Process.GEO_FENCING)) {
 			checkGeoFence(db);
 		}
-		if(!CodePanUtils.isThreadRunning(Process.LOCATION)) {
-			checkLocation(db);
-		}
+//		if(!CodePanUtils.isThreadRunning(Process.LOCATION)) {
+//			checkLocation(db);
+//		}
 	}
 
 	public void checkLocation(final SQLiteAdapter db) {
