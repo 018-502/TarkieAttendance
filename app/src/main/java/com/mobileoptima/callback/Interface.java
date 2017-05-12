@@ -83,4 +83,8 @@ public class Interface {
 	public interface OnDeleteEntryCallback {
 		void onDeleteEntry(EntryObj entry);
 	}
+
+	public interface OnResultCallback{
+		void onResult(boolean result);
+	}
 }

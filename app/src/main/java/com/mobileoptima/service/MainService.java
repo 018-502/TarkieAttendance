@@ -11,9 +11,12 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat.BigTextStyle;
+import android.support.v4.app.NotificationCompat.Builder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -28,17 +31,20 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.mobileoptima.cache.SQLiteCache;
+import com.mobileoptima.callback.Interface.OnResultCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Incident;
 import com.mobileoptima.constant.Key;
 import com.mobileoptima.constant.Notification;
-import com.mobileoptima.constant.Process;
+import com.mobileoptima.constant.ProcessName;
 import com.mobileoptima.constant.Receiver;
 import com.mobileoptima.constant.RequestCode;
+import com.mobileoptima.core.Process;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.core.TimeSecurity;
 import com.mobileoptima.core.TimeSecurity.TimeSecurityType;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.tarkieattendance.R;
 
 import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
@@ -46,9 +52,10 @@ import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 public class MainService extends Service implements LocationListener, ConnectionCallbacks,
 		OnConnectionFailedListener {
 
+	private final long FASTEST_UPDATE_INTERVAL = 1000;
+	private final long AUTO_SYNC_INTERVAL = 300000;
 	private final long GEO_FENCE_INTERVAL = 60000;
 	private final long LOCATION_INTERVAL = 60000;
-	private final long FASTEST_UPDATE_INTERVAL = 1000;
 	private final long UPDATE_INTERVAL = 5000;
 	private final float ACCURACY = 100;
 
@@ -62,6 +69,7 @@ public class MainService extends Service implements LocationListener, Connection
 	private boolean isRunning;
 	private Location location;
 	private SQLiteAdapter db;
+	private Handler handler;
 	private String provider;
 
 	@Override
@@ -239,12 +247,13 @@ public class MainService extends Service implements LocationListener, Connection
 	}
 
 	public void runProcesses(SQLiteAdapter db) {
-		if(!CodePanUtils.isThreadRunning(Process.GEO_FENCING)) {
+		if(!CodePanUtils.isThreadRunning(ProcessName.GEO_FENCING)) {
 			checkGeoFence(db);
 		}
-//		if(!CodePanUtils.isThreadRunning(Process.LOCATION)) {
+//		if(!CodePanUtils.isThreadRunning(ProcessName.LOCATION)) {
 //			checkLocation(db);
 //		}
+		runAutoSyncing(db);
 	}
 
 	public void checkLocation(final SQLiteAdapter db) {
@@ -266,7 +275,7 @@ public class MainService extends Service implements LocationListener, Connection
 				}
 			}
 		});
-		bg.setName(Process.LOCATION);
+		bg.setName(ProcessName.LOCATION);
 		bg.start();
 	}
 
@@ -276,17 +285,15 @@ public class MainService extends Service implements LocationListener, Connection
 			public void run() {
 				try {
 					StoreObj store = TarkieLib.getDefaultStore(db);
-					if(TarkieLib.isTimeIn(db) && store != null) {
-						if(getGps().isValid) {
-							Location center = new Location(LocationManager.GPS_PROVIDER);
-							center.setLongitude(store.longitude);
-							center.setLatitude(store.latitude);
-							float distance = center.distanceTo(location);
-							boolean isInside = distance <= store.radius;
-							boolean result = TarkieLib.alternateIncident(db, getGps(), isInside,
-									Incident.INSIDE_GEO_FENCE, Incident.OUTSIDE_GEO_FENCE);
-							if(result) sendBroadcast(Notification.GEO_FENCE_STATUS);
-						}
+					if(store != null && getGps().isValid) {
+						Location center = new Location(LocationManager.GPS_PROVIDER);
+						center.setLongitude(store.longitude);
+						center.setLatitude(store.latitude);
+						float distance = center.distanceTo(location);
+						boolean isInside = distance <= store.radius;
+						boolean result = TarkieLib.alternateIncident(db, getGps(), isInside,
+								Incident.INSIDE_GEO_FENCE, Incident.OUTSIDE_GEO_FENCE);
+						if(result) sendBroadcast(Notification.GEO_FENCE_STATUS);
 					}
 					Thread.sleep(GEO_FENCE_INTERVAL);
 					if(isRunning) {
@@ -298,7 +305,7 @@ public class MainService extends Service implements LocationListener, Connection
 				}
 			}
 		});
-		bg.setName(Process.GEO_FENCING);
+		bg.setName(ProcessName.GEO_FENCING);
 		bg.start();
 	}
 
@@ -325,6 +332,63 @@ public class MainService extends Service implements LocationListener, Connection
 			}
 		});
 		bg.start();
+	}
+
+	public void runAutoSyncing(final SQLiteAdapter db) {
+		if(handler == null) {
+			handler = new Handler();
+			handler.postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					if(!CodePanUtils.isThreadRunning(ProcessName.SYNC_DATA)) {
+						CodePanUtils.removeNotification(MainService.this, Notification.AUTO_SYNC);
+						final Builder builder = CodePanUtils.createNotificationBuilder(MainService.this,
+								R.drawable.ic_logo_notif);
+						final int count = TarkieLib.getCountSyncTotal(db);
+						final int max = count + 2;
+						Process process = new Process(new OnResultCallback() {
+							int progress = 0;
+							@Override
+							public void onResult(boolean result) {
+								String title = null;
+								String message = null;
+								progress++;
+								sendBroadcast();
+								if(result) {
+									title = "Sevie";
+									if(progress < max) {
+										int percentage = (int) (((float) progress / (float) max) * 100);
+										percentage = percentage > 100 ? 100 : percentage;
+										message = "Syncing data " + percentage + "% in progress.";
+										builder.setProgress(max, progress, false);
+									}
+									else {
+										message = "Syncing data successful.";
+										builder.setProgress(0, 0, false);
+									}
+								}
+								else {
+									title = "Syncing Data Failed";
+									message = "Failed to sync data to the server";
+								}
+								builder.setContentTitle(title);
+								builder.setContentText(message);
+								builder.setStyle(new BigTextStyle().bigText(message));
+								CodePanUtils.setNotification(MainService.this,
+										Notification.AUTO_SYNC, builder);
+							}
+						});
+						if(CodePanUtils.hasInternet(db.getContext()) && count > 0) {
+							process.syncData(db);
+						}
+					}
+					if(isRunning) {
+						handler.postDelayed(this, AUTO_SYNC_INTERVAL);
+					}
+					Log.e("AUTO SYNC", "AUTO SYNC");
+				}
+			}, AUTO_SYNC_INTERVAL);
+		}
 	}
 
 	@Override

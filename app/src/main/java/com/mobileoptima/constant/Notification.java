@@ -8,4 +8,5 @@ public class Notification {
 	public static final int AIRPLANE_MODE_STATUS = 4;
 	public static final int TAMPERED_TIME = 5;
 	public static final int GEO_FENCE_STATUS = 6;
+	public static final int AUTO_SYNC = 7;
 }

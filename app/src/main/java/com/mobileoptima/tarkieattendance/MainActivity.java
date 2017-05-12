@@ -707,6 +707,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		return this.db;
 	}
 
+	public MainService getService() {
+		return this.service;
+	}
+
 	public void authenticate() {
 		if(!TarkieLib.isAuthorized(db)) {
 			AuthorizationFragment authorization = new AuthorizationFragment();
@@ -933,8 +937,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 							//TODO Pop-up dialog for excessive break
 							break;
 					}
-					onRefresh();
 				}
+				updateSyncCount();
+				updateLastSynced();
 			}
 		};
 	}
