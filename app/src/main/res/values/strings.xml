@@ -77,7 +77,7 @@
     <string name="no_photos_title">No Photos</string>
     <string name="no_entries_title">No Entries</string>
     <string name="no_photos_message">View photos captured from your\nvisits and entries.</string>
-    <string name="no_entries_message">Manage and submit entries.</string>
+    <string name="no_entries_message">Manage, edit and submit entries.</string>
     <string name="upgrade_title">Upgrade to Use this Feature</string>
     <string name="upgrade_not_available">This feature is not available on your current subscription.</string>
     <string name="upgrade_contact">To avail this feature, simply upgrade by contacting Tarkie.</string>

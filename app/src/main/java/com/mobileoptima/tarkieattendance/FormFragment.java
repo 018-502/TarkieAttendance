@@ -269,9 +269,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 							}
 						}
 						else {
-							if(saveEntryCallback != null) {
-								saveEntryCallback.onSaveEntry(entry);
-							}
+							popAllPages();
 						}
 					}
 				}
