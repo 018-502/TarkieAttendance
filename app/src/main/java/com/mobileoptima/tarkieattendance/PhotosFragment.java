@@ -25,9 +25,9 @@ import java.util.ArrayList;
 public class PhotosFragment extends Fragment {
 
 	private OnOverrideCallback overrideCallback;
+	private RelativeLayout rlPlaceholderPhotos;
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
-	private RelativeLayout rlPhotos;
 	private FragmentManager manager;
 	private PhotosAdapter adapter;
 	private int spacing, numCol;
@@ -48,7 +48,7 @@ public class PhotosFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.photos_layout, container, false);
-		rlPhotos = (RelativeLayout) view.findViewById(R.id.rlPhotos);
+		rlPlaceholderPhotos = (RelativeLayout) view.findViewById(R.id.rlPlaceholderPhotos);
 		gvPhotos = (GridView) view.findViewById(R.id.gvPhotos);
 		gvPhotos.setNumColumns(numCol);
 		gvPhotos.setVerticalSpacing(spacing);
@@ -91,11 +91,11 @@ public class PhotosFragment extends Fragment {
 	Handler handler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
-			if(imageList != null && imageList.isEmpty()) {
-				rlPhotos.setVisibility(View.VISIBLE);
+			if(imageList == null || imageList.isEmpty()) {
+				rlPlaceholderPhotos.setVisibility(View.VISIBLE);
 			}
 			else {
-				rlPhotos.setVisibility(View.GONE);
+				rlPlaceholderPhotos.setVisibility(View.GONE);
 			}
 			adapter = new PhotosAdapter(getActivity(), imageList);
 			gvPhotos.setAdapter(adapter);

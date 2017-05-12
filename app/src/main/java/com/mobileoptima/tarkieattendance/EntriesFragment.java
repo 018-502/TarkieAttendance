@@ -39,12 +39,12 @@ import java.util.ArrayList;
 public class EntriesFragment extends Fragment implements OnClickListener, OnFragmentCallback,
 		OnBackPressedCallback, OnSaveEntryCallback, OnDeleteEntryCallback {
 
+	private RelativeLayout rlHeaderEntries, rlPlaceholderEntries;
 	private OnHighlightEntriesCallback highlightEntriesCallback;
 	private boolean isHighlight, inOtherFragment, isMultiple;
 	private CodePanButton btnSelectEntries, btnBackEntries;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
-	private RelativeLayout rlHeaderEntries;
 	private ArrayList<EntryObj> entryList;
 	private CodePanLabel tvTitleEntries;
 	private FragmentManager manager;
@@ -67,11 +67,12 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.entries_layout, container, false);
-		lvEntries = (ListView) view.findViewById(R.id.lvEntries);
-		tvTitleEntries = (CodePanLabel) view.findViewById(R.id.tvTitleEntries);
-		btnBackEntries = (CodePanButton) view.findViewById(R.id.btnBackEntries);
+		rlPlaceholderEntries = (RelativeLayout) view.findViewById(R.id.rlPlaceholderEntries);
 		btnSelectEntries = (CodePanButton) view.findViewById(R.id.btnSelectEntries);
 		rlHeaderEntries = (RelativeLayout) view.findViewById(R.id.rlHeaderEntries);
+		tvTitleEntries = (CodePanLabel) view.findViewById(R.id.tvTitleEntries);
+		btnBackEntries = (CodePanButton) view.findViewById(R.id.btnBackEntries);
+		lvEntries = (ListView) view.findViewById(R.id.lvEntries);
 		btnBackEntries.setOnClickListener(this);
 		btnSelectEntries.setOnClickListener(this);
 		lvEntries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -158,6 +159,12 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 	Handler handler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
+			if(entryList == null || entryList.isEmpty()) {
+				rlPlaceholderEntries.setVisibility(View.VISIBLE);
+			}
+			else {
+				rlPlaceholderEntries.setVisibility(View.GONE);
+			}
 			adapter = new EntriesAdapter(getActivity(), entryList);
 			lvEntries.setAdapter(adapter);
 			return true;
