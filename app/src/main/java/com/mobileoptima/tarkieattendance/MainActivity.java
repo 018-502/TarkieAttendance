@@ -937,6 +937,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 							//TODO Pop-up dialog for excessive break
 							break;
 					}
+					checkSecurity();
 				}
 				updateSyncCount();
 				updateLastSynced();
