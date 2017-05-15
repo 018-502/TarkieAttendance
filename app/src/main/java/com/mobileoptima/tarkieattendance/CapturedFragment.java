@@ -27,6 +27,7 @@ import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.service.MainService;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
@@ -164,6 +165,8 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 			MainActivity main = (MainActivity) getActivity();
 			main.checkTimeIn();
 			main.updateSyncCount();
+			MainService service = main.getService();
+			service.syncData(db);
 			return true;
 		}
 	});

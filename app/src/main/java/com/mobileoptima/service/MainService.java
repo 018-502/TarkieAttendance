@@ -340,54 +340,57 @@ public class MainService extends Service implements LocationListener, Connection
 			handler.postDelayed(new Runnable() {
 				@Override
 				public void run() {
-					if(!CodePanUtils.isThreadRunning(ProcessName.SYNC_DATA)) {
-						CodePanUtils.removeNotification(MainService.this, Notification.AUTO_SYNC);
-						final Builder builder = CodePanUtils.createNotificationBuilder(MainService.this,
-								R.drawable.ic_logo_notif);
-						final int count = TarkieLib.getCountSyncTotal(db);
-						final int max = count + 2;
-						Process process = new Process(new OnResultCallback() {
-							int progress = 0;
-							@Override
-							public void onResult(boolean result) {
-								String title = null;
-								String message = null;
-								progress++;
-								sendBroadcast();
-								if(result) {
-									title = "Sevie";
-									if(progress < max) {
-										int percentage = (int) (((float) progress / (float) max) * 100);
-										percentage = percentage > 100 ? 100 : percentage;
-										message = "Syncing data " + percentage + "% in progress.";
-										builder.setProgress(max, progress, false);
-									}
-									else {
-										message = "Syncing data successful.";
-										builder.setProgress(0, 0, false);
-									}
-								}
-								else {
-									title = "Syncing Data Failed";
-									message = "Failed to sync data to the server";
-								}
-								builder.setContentTitle(title);
-								builder.setContentText(message);
-								builder.setStyle(new BigTextStyle().bigText(message));
-								CodePanUtils.setNotification(MainService.this,
-										Notification.AUTO_SYNC, builder);
-							}
-						});
-						if(CodePanUtils.hasInternet(db.getContext()) && count > 0) {
-							process.syncData(db);
-						}
-					}
+					syncData(db);
 					if(isRunning) {
 						handler.postDelayed(this, AUTO_SYNC_INTERVAL);
 					}
-					Log.e("AUTO SYNC", "AUTO SYNC");
 				}
 			}, AUTO_SYNC_INTERVAL);
+		}
+	}
+
+	public void syncData(SQLiteAdapter db) {
+		if(!CodePanUtils.isThreadRunning(ProcessName.SYNC_DATA)) {
+			CodePanUtils.removeNotification(MainService.this, Notification.AUTO_SYNC);
+			final Builder builder = CodePanUtils.createNotificationBuilder(MainService.this,
+					R.drawable.ic_logo_notif);
+			final int count = TarkieLib.getCountSyncTotal(db);
+			final int max = count + 2;
+			Process process = new Process(new OnResultCallback() {
+				int progress = 0;
+				@Override
+				public void onResult(boolean result) {
+					String title = null;
+					String message = null;
+					progress++;
+					sendBroadcast();
+					if(result) {
+						title = "Sevie";
+						if(progress < max) {
+							int percentage = (int) (((float) progress / (float) max) * 100);
+							percentage = percentage > 100 ? 100 : percentage;
+							message = "Syncing data " + percentage + "% in progress.";
+							builder.setProgress(max, progress, false);
+						}
+						else {
+							message = "Syncing data successful.";
+							builder.setProgress(0, 0, false);
+						}
+					}
+					else {
+						title = "Syncing Data Failed";
+						message = "Failed to sync data to the server";
+					}
+					builder.setContentTitle(title);
+					builder.setContentText(message);
+					builder.setStyle(new BigTextStyle().bigText(message));
+					CodePanUtils.setNotification(MainService.this,
+							Notification.AUTO_SYNC, builder);
+				}
+			});
+			if(CodePanUtils.hasInternet(db.getContext()) && count > 0) {
+				process.syncData(db);
+			}
 		}
 	}
 

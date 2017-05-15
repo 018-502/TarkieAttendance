@@ -29,6 +29,7 @@ import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
+import com.mobileoptima.service.MainService;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
@@ -212,6 +213,8 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 			MainActivity main = (MainActivity) getActivity();
 			main.checkTimeIn();
 			main.updateSyncCount();
+			MainService service = main.getService();
+			service.syncData(db);
 			return true;
 		}
 	});
