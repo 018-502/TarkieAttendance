@@ -28,6 +28,7 @@ import com.mobileoptima.callback.Interface.OnDeleteEntryCallback;
 import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
+import com.mobileoptima.constant.Status;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
@@ -132,6 +133,10 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 		if(search != null) {
 			rlHeaderEntries.setVisibility(View.VISIBLE);
 			tvTitleEntries.setText(search.name);
+			String search = this.search.search;
+			if(search != null && search.equals(Status.SUBMITTED)) {
+				btnSelectEntries.setVisibility(View.GONE);
+			}
 		}
 		else {
 			rlHeaderEntries.setVisibility(View.GONE);

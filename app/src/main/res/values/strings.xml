@@ -124,10 +124,11 @@
     <string name="location_acquired">Location Acquired</string>
     <string name="signature_captured">Signature Captured</string>
     <string name="time_captured">Date &amp; Time Captured</string>
-
+    <string name="time_in_required_title">Time-in Required</string>
+    <string name="time_in_required_message">Please time-in first before creating new entries.\nTo time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
     <string-array name="tab_search_entries">
         <item>Date</item>
-        <item>Store</item>
+        <!--<item>Store</item>-->
         <item>Category</item>
         <item>Form</item>
         <item>Status</item>

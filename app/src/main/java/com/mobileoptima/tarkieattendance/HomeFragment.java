@@ -1,5 +1,6 @@
 package com.mobileoptima.tarkieattendance;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -172,8 +173,31 @@ public class HomeFragment extends Fragment {
 								transaction.commit();
 							}
 							else {
-								TarkieLib.alertDialog(getActivity(), "Time-in Required",
-										"Please time-in first before creating new entries.");
+								Resources res = getResources();
+								String message = res.getString(R.string.time_in_required_message);
+								String bold = res.getString(R.string.proxima_nova_bold);
+								ArrayList<SpannableMap> list = new ArrayList<>();
+								int start = message.indexOf("'");
+								int end = message.length() - 1;
+								list.add(new SpannableMap(getActivity(), bold, start, end));
+								final AlertDialogFragment alert = new AlertDialogFragment();
+								alert.setDialogTitle(R.string.time_in_required_title);
+								alert.setDialogMessage(R.string.time_in_required_message);
+								alert.setSpannableList(list);
+								alert.setPositiveButton("OK", new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										manager.popBackStack();
+										MainActivity main = (MainActivity) getActivity();
+										main.openMenu();
+									}
+								});
+								transaction = manager.beginTransaction();
+								transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+										R.anim.fade_in, R.anim.fade_out);
+								transaction.add(R.id.rlMain, alert);
+								transaction.addToBackStack(null);
+								transaction.commit();
 							}
 						}
 					});

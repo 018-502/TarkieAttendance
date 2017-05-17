@@ -70,7 +70,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
 			tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private CodePanButton btnSyncMain, btnHomeMain, btnVisitsMain, btnInventoryMain,
-			btnPhotosMain, btnEntriesMain, btnSelectMain;
+			btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain;
 	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private OnBackPressedCallback backPressedCallback;
@@ -152,6 +152,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnPhotosMain = (CodePanButton) findViewById(R.id.btnPhotosMain);
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
 		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
+		btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
 		rlMenuMain = (RelativeLayout) findViewById(R.id.rlMenuMain);
 		rlMain = (RelativeLayout) findViewById(R.id.rlMain);
 		dlMain = (DrawerLayout) findViewById(R.id.dlMain);
@@ -164,7 +165,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		findViewById(R.id.llSettingsMain).setOnClickListener(this);
 		findViewById(R.id.llLocationsMain).setOnClickListener(this);
 		findViewById(R.id.llLogoutMain).setOnClickListener(this);
-		findViewById(R.id.btnMenuMain).setOnClickListener(this);
 		findViewById(R.id.btnSearchMain).setOnClickListener(this);
 		llTimeInMain.setOnClickListener(this);
 		btnSelectMain.setOnClickListener(this);
@@ -174,6 +174,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnPhotosMain.setOnClickListener(this);
 		btnEntriesMain.setOnClickListener(this);
 		btnSyncMain.setOnClickListener(this);
+		btnMenuMain.setOnClickListener(this);
 		int color = getResources().getColor(R.color.black_trans_twenty);
 		dlMain.setScrimColor(color);
 		init(savedInstanceState);
@@ -903,6 +904,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				PhotosFragment photos = (PhotosFragment) fragment;
 				photos.loadPhotos(db);
 			}
+		}
+	}
+
+	public void openMenu() {
+		if(btnMenuMain != null) {
+			btnMenuMain.performClick();
 		}
 	}
 

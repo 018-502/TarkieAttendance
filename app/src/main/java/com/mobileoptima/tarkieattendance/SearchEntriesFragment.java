@@ -22,12 +22,9 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.SlidingTabLayout;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSearchItemCallback;
-import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.EntriesSearchType;
-import com.mobileoptima.core.TarkieLib;
+import com.mobileoptima.constant.Tag;
 import com.mobileoptima.model.SearchObj;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -73,10 +70,10 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener,
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
-		String convention = TarkieLib.getConvention(db, Convention.STORES);
-		if(convention != null) {
-			tabItems[1] = StringUtils.capitalize(convention);
-		}
+//		String convention = TarkieLib.getConvention(db, Convention.STORES);
+//		if(convention != null) {
+//			tabItems[1] = StringUtils.capitalize(convention);
+//		}
 	}
 
 	@Nullable
@@ -88,29 +85,30 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener,
 		vpSearchEntries = (ViewPager) view.findViewById(R.id.vpSearchEntries);
 		btnBackSearchEntries.setOnClickListener(this);
 		SearchItemFragment date = new SearchItemFragment();
-		SearchItemFragment store = new SearchItemFragment();
+		//SearchItemFragment store = new SearchItemFragment();
 		SearchItemFragment category = new SearchItemFragment();
 		SearchItemFragment form = new SearchItemFragment();
 		SearchItemFragment status = new SearchItemFragment();
 		date.setOnSearchItemCallback(this);
-		store.setOnSearchItemCallback(this);
+		//store.setOnSearchItemCallback(this);
 		category.setOnSearchItemCallback(this);
 		form.setOnSearchItemCallback(this);
 		status.setOnSearchItemCallback(this);
 		date.setTabType(EntriesSearchType.DATE);
-		store.setTabType(EntriesSearchType.STORE);
+		//store.setTabType(EntriesSearchType.STORE);
 		category.setTabType(EntriesSearchType.CATEGORY);
 		form.setTabType(EntriesSearchType.FORM);
 		status.setTabType(EntriesSearchType.STATUS);
 		fragmentList.add(date);
-		fragmentList.add(store);
+		//fragmentList.add(store);
 		fragmentList.add(category);
 		fragmentList.add(form);
 		fragmentList.add(status);
 		adapter = new ViewPagerAdapter(getChildFragmentManager(), fragmentList, tabItems);
-		vpSearchEntries.setOffscreenPageLimit(4);
+		//vpSearchEntries.setOffscreenPageLimit(4);
+		vpSearchEntries.setOffscreenPageLimit(3);
 		vpSearchEntries.setAdapter(adapter);
-		boolean isTablet = CodePanUtils.isTablet(getActivity());
+		//boolean isTablet = CodePanUtils.isTablet(getActivity());
 		stlSearchEntries.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
 			@Override
 			public int getIndicatorColor(int position) {
@@ -118,7 +116,8 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener,
 			}
 		});
 		stlSearchEntries.setCustomTabView(R.layout.tab_item_layout, R.id.tvTab);
-		stlSearchEntries.setDistributeEvenly(isTablet);
+		//stlSearchEntries.setDistributeEvenly(isTablet);
+		stlSearchEntries.setDistributeEvenly(true);
 		stlSearchEntries.setViewPager(vpSearchEntries);
 		stlSearchEntries.setSelectedTypeface(bold);
 		stlSearchEntries.setSelectedColor(gray);
@@ -150,16 +149,18 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onSearchItem(SearchObj search, int type) {
-		EntriesFragment entries = new EntriesFragment();
-		entries.setType(type);
-		entries.setSearch(search);
-		entries.setOnOverrideCallback(overrideCallback);
-		transaction = manager.beginTransaction();
-		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-		transaction.add(R.id.rlMain, entries);
-		transaction.hide(this);
-		transaction.addToBackStack(null);
-		transaction.commit();
+		if(!CodePanUtils.isOnBackStack(getActivity(), Tag.SEARCH_ENTRIES)) {
+			EntriesFragment entries = new EntriesFragment();
+			entries.setType(type);
+			entries.setSearch(search);
+			entries.setOnOverrideCallback(overrideCallback);
+			transaction = manager.beginTransaction();
+			transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+					R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+			transaction.add(R.id.rlMain, entries, Tag.SEARCH_ENTRIES);
+			transaction.hide(this);
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
 	}
 }

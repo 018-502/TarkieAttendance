@@ -338,8 +338,8 @@ public class Data {
 				case EntriesSearchType.DATE:
 					query.add(new Condition("e.dDate", obj.search));
 					break;
-				case EntriesSearchType.STORE:
-					break;
+//				case EntriesSearchType.STORE:
+//					break;
 				case EntriesSearchType.CATEGORY:
 					query.add(new Condition("f.category", obj.search));
 					break;
