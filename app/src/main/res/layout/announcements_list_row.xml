@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/state_rect_trans_dark"
+    android:padding="@dimen/ten">
+
+    <ImageView
+        android:id="@+id/ivPhotoAnnouncements"
+        android:layout_width="@dimen/thirty"
+        android:layout_height="@dimen/thirty"
+        android:layout_marginEnd="@dimen/five"
+        android:layout_marginRight="@dimen/five"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_user_placeholder"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/five"
+        android:layout_marginRight="@dimen/five"
+        android:layout_toEndOf="@+id/ivPhotoAnnouncements"
+        android:layout_toLeftOf="@+id/ivNextAnnouncements"
+        android:layout_toRightOf="@+id/ivPhotoAnnouncements"
+        android:layout_toStartOf="@+id/ivNextAnnouncements"
+        android:orientation="vertical">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvSubjectAnnouncements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Attendance Reminder"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvAnnouncedByAnnouncements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dana White"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/twelve"
+                codePan:typeface="@string/proxima_nova_bold"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvAnnouncedTimeAnnouncements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" | 10:00 AM"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/twelve"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvAnnouncedDateAnnouncements"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" | Jan 23, 2017"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/twelve"
+                codePan:typeface="@string/proxima_nova_light"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/ivNextAnnouncements"
+        android:layout_width="@dimen/seven"
+        android:layout_height="@dimen/fifteen"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_next_dark"/>
+
+</RelativeLayout>
