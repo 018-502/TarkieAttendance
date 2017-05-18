@@ -69,8 +69,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
 			tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
-	private CodePanButton btnSyncMain, btnHomeMain, btnVisitsMain, btnInventoryMain,
-			btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain;
+	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnInventoryMain,
+			btnPhotosMain, btnEntriesMain, btnSelectMain;
 	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private OnBackPressedCallback backPressedCallback;
@@ -145,6 +145,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		ivEmployeeMain = (CircularImageView) findViewById(R.id.ivEmployeeMain);
 		ivTimeInMain = (ImageView) findViewById(R.id.ivTimeInMain);
 		ivTimeOutMain = (ImageView) findViewById(R.id.ivTimeOutMain);
+		btnNotificationMain = (CodePanButton) findViewById(R.id.btnNotificationMain);
 		btnSyncMain = (CodePanButton) findViewById(R.id.btnSyncMain);
 		btnHomeMain = (CodePanButton) findViewById(R.id.btnHomeMain);
 		btnVisitsMain = (CodePanButton) findViewById(R.id.btnVisitsMain);
@@ -165,6 +166,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		findViewById(R.id.llSettingsMain).setOnClickListener(this);
 		findViewById(R.id.llLocationsMain).setOnClickListener(this);
 		findViewById(R.id.llLogoutMain).setOnClickListener(this);
+		findViewById(R.id.btnMenuMain).setOnClickListener(this);
 		findViewById(R.id.btnSearchMain).setOnClickListener(this);
 		llTimeInMain.setOnClickListener(this);
 		btnSelectMain.setOnClickListener(this);
@@ -173,6 +175,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnInventoryMain.setOnClickListener(this);
 		btnPhotosMain.setOnClickListener(this);
 		btnEntriesMain.setOnClickListener(this);
+		btnNotificationMain.setOnClickListener(this);
 		btnSyncMain.setOnClickListener(this);
 		btnMenuMain.setOnClickListener(this);
 		int color = getResources().getColor(R.color.black_trans_twenty);
@@ -536,6 +539,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
+			case R.id.btnNotificationMain:
+				final AnnouncementsFragment announcements = new AnnouncementsFragment();
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, announcements);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
 			case R.id.btnSyncMain:
 				if(CodePanUtils.hasInternet(this)) {
 					int count = TarkieLib.getCountSyncTotal(db);
@@ -646,7 +658,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.HOME:
 				tvHomeMain.setEnabled(true);
 				ivHomeMain.setImageResource(R.drawable.ic_home_enabled);
-				//rlNotifMain.setVisibility(View.VISIBLE);
+				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -654,7 +666,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.VISITS:
 				tvVisitsMain.setEnabled(true);
 				ivVisitsMain.setImageResource(R.drawable.ic_visits_enabled);
-				//rlNotifMain.setVisibility(View.VISIBLE);
+				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -662,7 +674,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.INVENTORY:
 				tvInventoryMain.setEnabled(true);
 				ivInventoryMain.setImageResource(R.drawable.ic_inventory_enabled);
-				//rlNotifMain.setVisibility(View.VISIBLE);
+				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -670,7 +682,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.PHOTOS:
 				tvPhotosMain.setEnabled(true);
 				ivPhotosMain.setImageResource(R.drawable.ic_photos_enabled);
-				//rlNotifMain.setVisibility(View.VISIBLE);
+				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
@@ -678,7 +690,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case TabType.ENTRIES:
 				tvEntriesMain.setEnabled(true);
 				ivEntriesMain.setImageResource(R.drawable.ic_entries_enabled);
-				//rlNotifMain.setVisibility(View.GONE);
+				rlNotifMain.setVisibility(View.GONE);
 				rlSyncMain.setVisibility(View.GONE);
 				rlSearchMain.setVisibility(View.VISIBLE);
 				btnSelectMain.setVisibility(View.VISIBLE);

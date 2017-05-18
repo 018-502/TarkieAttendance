@@ -24,6 +24,9 @@
     <string name="stores">Stores</string>
     <string name="search">Search</string>
     <string name="search_entries">Search Entries</string>
+    <string name="announcements">Announcements</string>
+    <string name="no_announcements_title">No Announcements</string>
+    <string name="no_announcements_message"></string>
     <string name="total_work_hours">Total Work Hours</string>
     <string name="total_net_work_hours">Total Net Work Hours</string>
     <string name="hereby">I hereby declare this information to be true and correct.</string>

@@ -8,6 +8,7 @@ import com.mobileoptima.constant.EntriesSearchType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
+import com.mobileoptima.model.AnnouncementObj;
 import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
@@ -626,6 +627,56 @@ public class Data {
 		}
 		cursor.close();
 		return entryList;
+	}
+
+	public static ArrayList<AnnouncementObj> loadAnnouncements(SQLiteAdapter db) {
+		ArrayList<AnnouncementObj> announcementList = new ArrayList<>();
+		AnnouncementObj obj;
+		obj = new AnnouncementObj();
+		obj.ID = 1;
+		obj.subject = "Attendance Reminder";
+		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
+		obj.announcedDate = "2017-01-23";
+		obj.announcedTime = "10:00:00";
+		obj.announcedBy = "Dana White";
+		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
+		obj.isSeen = false;
+		obj.isActive = true;
+		announcementList.add(obj);
+		obj = new AnnouncementObj();
+		obj.ID = 2;
+		obj.subject = "Calling All Laguna Staff";
+		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
+		obj.announcedDate = "2017-01-23";
+		obj.announcedTime = "09:00:00";
+		obj.announcedBy = "Joe Schilling";
+		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
+		obj.isSeen = false;
+		obj.isActive = true;
+		announcementList.add(obj);
+		obj = new AnnouncementObj();
+		obj.ID = 3;
+		obj.subject = "Holiday Notice";
+		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
+		obj.announcedDate = "2017-01-21";
+		obj.announcedTime = "13:00:00";
+		obj.announcedBy = "Holly Holms";
+		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
+		obj.isSeen = true;
+		obj.isActive = true;
+		announcementList.add(obj);
+		obj = new AnnouncementObj();
+		obj.ID = 4;
+		obj.subject = "Submit your Reports";
+		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
+		obj.announcedDate = "2017-01-20";
+		obj.announcedTime = "18:00:00";
+		obj.announcedBy = "Paul Daley";
+		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
+		obj.isSeen = true;
+		obj.isActive = true;
+		announcementList.add(obj);
+		return announcementList;
 	}
 
 	public static ArrayList<SearchObj> searchEntriesByDate(SQLiteAdapter db, String startDate, String endDate) {

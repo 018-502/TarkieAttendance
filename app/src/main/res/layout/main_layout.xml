@@ -81,8 +81,7 @@
                     android:layout_marginEnd="@dimen/ten"
                     android:layout_marginRight="@dimen/ten"
                     android:layout_toLeftOf="@+id/rlSyncMain"
-                    android:layout_toStartOf="@+id/rlSyncMain"
-                    android:visibility="gone">
+                    android:layout_toStartOf="@+id/rlSyncMain">
 
                     <ImageView
                         android:layout_width="@dimen/twenty_one"
