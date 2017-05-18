@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:clickable="true"
+    android:orientation="vertical">
 
-</RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpVisits"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/fifty_five"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:background="@color/divider"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/ten"
+        android:text="Oct 4, 2016"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/eighteen"
+        codePan:typeface="@string/proxima_nova_bold"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:background="@color/green_pri"/>
+
+    <ListView
+        android:id="@+id/lvVisits"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbarSize="@dimen/scrollbar"
+        android:scrollbarThumbVertical="@color/scrollbar"/>
+
+</LinearLayout>

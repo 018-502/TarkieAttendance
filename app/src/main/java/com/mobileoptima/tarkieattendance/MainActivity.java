@@ -249,8 +249,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						transaction.show(old);
 					}
 					else {
-						UpgradeFragment upgrade = new UpgradeFragment();
-						transaction.add(R.id.flContainerMain, upgrade, TabType.VISITS);
+						VisitsFragment visits = new VisitsFragment();
+						transaction.add(R.id.flContainerMain, visits, TabType.VISITS);
 					}
 					if(current != null) {
 						transaction.hide(current);
