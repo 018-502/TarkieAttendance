@@ -69,8 +69,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
 			tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
-	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnInventoryMain,
-			btnPhotosMain, btnEntriesMain, btnSelectMain;
+	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain,
+			btnInventoryMain, btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain;
 	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private OnBackPressedCallback backPressedCallback;
@@ -542,8 +542,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case R.id.btnNotificationMain:
 				final AnnouncementsFragment announcements = new AnnouncementsFragment();
 				transaction = manager.beginTransaction();
-				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-						R.anim.fade_in, R.anim.fade_out);
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
 				transaction.add(R.id.rlMain, announcements);
 				transaction.addToBackStack(null);
 				transaction.commit();
