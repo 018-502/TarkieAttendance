@@ -1,7 +1,6 @@
 package com.mobileoptima.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,20 +21,16 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import java.util.ArrayList;
 
 public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
+
 	private DisplayImageOptions options;
 	private ArrayList<AnnouncementObj> items;
 	private LayoutInflater inflater;
 	private ImageLoader imageLoader;
-	private int orange, green, red;
 
 	public AnnouncementsAdapter(Context context, ArrayList<AnnouncementObj> items) {
 		super(context, 0, items);
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.items = items;
-		Resources res = context.getResources();
-		this.orange = res.getColor(R.color.orange_pri);
-		this.green = res.getColor(R.color.green_pri);
-		this.red = res.getColor(R.color.red_pri);
 		this.imageLoader = ImageLoader.getInstance();
 		if(!imageLoader.isInited()) {
 			imageLoader.init(ImageLoaderConfiguration.createDefault(context));
