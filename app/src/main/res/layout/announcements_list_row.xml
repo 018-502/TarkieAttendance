@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Dana White"
-                android:textColor="@color/gray_pri"
+                android:textColor="@color/gray_qua"
                 android:textSize="@dimen/twelve"
                 codePan:typeface="@string/proxima_nova_bold"/>
 
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" | 10:00 AM"
-                android:textColor="@color/gray_pri"
+                android:textColor="@color/gray_qua"
                 android:textSize="@dimen/twelve"
                 codePan:typeface="@string/proxima_nova_light"/>
 
@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" | Jan 23, 2017"
-                android:textColor="@color/gray_pri"
+                android:textColor="@color/gray_qua"
                 android:textSize="@dimen/twelve"
                 codePan:typeface="@string/proxima_nova_light"/>
         </LinearLayout>

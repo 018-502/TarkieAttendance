@@ -36,7 +36,7 @@
         </FrameLayout>
 
         <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvSubjectAnnouncements"
+            android:id="@+id/tvTitleAnnouncements"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -49,35 +49,47 @@
             android:textColor="@color/white"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>
-
-
-        <RelativeLayout
-            android:id="@+id/rlSearchAnnouncements"
-            android:layout_width="@dimen/header"
-            android:layout_height="@dimen/header"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true">
-
-            <ImageView
-                android:layout_width="@dimen/twenty"
-                android:layout_height="@dimen/twenty_one"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_search_light"/>
-
-            <com.codepan.widget.CodePanButton
-                android:id="@+id/btnSearchAnnouncements"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/state_rect_trans_dark"/>
-
-        </RelativeLayout>
     </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/flSearchAnnouncements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlHeaderAnnouncements"
+        android:layout_margin="@dimen/fifteen">
+
+        <com.codepan.widget.CodePanTextField
+            android:id="@+id/etSearchAnnouncements"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/state_rect_gray_sec_rad_three"
+            android:hint="@string/search"
+            android:paddingBottom="@dimen/ten"
+            android:paddingEnd="@dimen/thirty"
+            android:paddingLeft="@dimen/eight"
+            android:paddingRight="@dimen/thirty"
+            android:paddingStart="@dimen/eight"
+            android:paddingTop="@dimen/ten"
+            android:textColor="@color/gray_pri"
+            android:textColorHint="@color/gray_qua"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <ImageView
+            android:layout_width="@dimen/twenty"
+            android:layout_height="@dimen/twenty_one"
+            android:layout_gravity="end|center_vertical"
+            android:layout_marginEnd="@dimen/eight"
+            android:layout_marginRight="@dimen/eight"
+            android:src="@drawable/ic_search_dark"/>
+
+    </FrameLayout>
 
     <ListView
         android:id="@+id/lvAnnouncements"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rlHeaderAnnouncements"
+        android:layout_below="@+id/flSearchAnnouncements"
         android:divider="@color/divider"
         android:dividerHeight="@dimen/one"
         android:listSelector="@color/transparent"
@@ -88,7 +100,7 @@
         android:id="@+id/rlPlaceholderAnnouncements"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rlHeaderAnnouncements"
+        android:layout_below="@+id/flSearchAnnouncements"
         android:background="@color/white"
         android:visibility="gone">
 

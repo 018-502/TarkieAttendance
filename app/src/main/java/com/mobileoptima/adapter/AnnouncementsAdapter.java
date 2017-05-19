@@ -22,20 +22,18 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import java.util.ArrayList;
 
 public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
+
 	private DisplayImageOptions options;
 	private ArrayList<AnnouncementObj> items;
 	private LayoutInflater inflater;
 	private ImageLoader imageLoader;
-	private int orange, green, red;
+	private Typeface light, bold;
 
 	public AnnouncementsAdapter(Context context, ArrayList<AnnouncementObj> items) {
 		super(context, 0, items);
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.items = items;
 		Resources res = context.getResources();
-		this.orange = res.getColor(R.color.orange_pri);
-		this.green = res.getColor(R.color.green_pri);
-		this.red = res.getColor(R.color.red_pri);
 		this.imageLoader = ImageLoader.getInstance();
 		if(!imageLoader.isInited()) {
 			imageLoader.init(ImageLoaderConfiguration.createDefault(context));
@@ -47,6 +45,8 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 				.cacheOnDisk(true)
 				.displayer(new RoundedBitmapDisplayer(30))
 				.build();
+		light = TypefaceCache.get(context.getAssets(), res.getString(R.string.proxima_nova_light));
+		bold = TypefaceCache.get(context.getAssets(), res.getString(R.string.proxima_nova_bold));
 	}
 
 	@Override
@@ -70,15 +70,12 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 			}
 			if(obj.subject != null) {
 				holder.tvSubjectAnnouncements.setText(obj.subject);
-				String font;
 				if(obj.isSeen) {
-					font = getContext().getString(R.string.proxima_nova_mid);
+					holder.tvSubjectAnnouncements.setTypeface(light);
 				}
 				else {
-					font = getContext().getString(R.string.proxima_nova_bold);
+					holder.tvSubjectAnnouncements.setTypeface(bold);
 				}
-				Typeface typeface = TypefaceCache.get(getContext().getAssets(), font);
-				holder.tvSubjectAnnouncements.setTypeface(typeface);
 			}
 			if(obj.announcedBy != null) {
 				holder.tvAnnouncedByAnnouncements.setText(obj.announcedBy);
