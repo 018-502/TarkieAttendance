@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface;
@@ -27,7 +28,7 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 public class AnnouncementDetailsFragment extends Fragment implements OnClickListener, OnBackPressedCallback {
 	private AnnouncementObj obj;
 	private DisplayImageOptions options;
-	private ImageView ivPhotoAnnouncementDetails;
+	private CircularImageView ivPhotoAnnouncementDetails;
 	private CodePanButton btnBackAnnouncementDetails, btnDeleteAnnouncementDetails;
 	private CodePanLabel tvTitleAnnouncementDetails, tvSubjectAnnouncementDetails, tvAnnouncedByAnnouncementDetails, tvAnnouncedTimeAnnouncementDetails, tvMessageAnnouncementDetails;
 	private ImageLoader imageLoader;
@@ -51,11 +52,10 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 			imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
 		}
 		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.color.gray_qua)
-				.showImageForEmptyUri(R.color.gray_qua)
+				.showImageOnLoading(R.drawable.ic_user_placeholder)
+				.showImageForEmptyUri(R.drawable.ic_user_placeholder)
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
-				.displayer(new RoundedBitmapDisplayer(50))
 				.build();
 	}
 
@@ -65,7 +65,7 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 		btnBackAnnouncementDetails = (CodePanButton) view.findViewById(R.id.btnBackAnnouncementDetails);
 		tvTitleAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvTitleAnnouncementDetails);
 		btnDeleteAnnouncementDetails = (CodePanButton) view.findViewById(R.id.btnDeleteAnnouncementDetails);
-		ivPhotoAnnouncementDetails = (ImageView) view.findViewById(R.id.ivPhotoAnnouncementDetails);
+		ivPhotoAnnouncementDetails = (CircularImageView) view.findViewById(R.id.ivPhotoAnnouncementDetails);
 		tvSubjectAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvSubjectAnnouncementDetails);
 		tvAnnouncedByAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvAnnouncedByAnnouncementDetails);
 		tvAnnouncedTimeAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvAnnouncedTimeAnnouncementDetails);
@@ -77,7 +77,8 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 		imageLoader.displayImage(obj.announcedByImageURL, ivPhotoAnnouncementDetails, options);
 		tvSubjectAnnouncementDetails.setText(obj.subject);
 		tvAnnouncedByAnnouncementDetails.setText(obj.announcedBy);
-		tvAnnouncedTimeAnnouncementDetails.setText(" | ".concat(obj.announcedTime));
+		String time = CodePanUtils.getNormalTime(obj.announcedTime, false);
+		tvAnnouncedTimeAnnouncementDetails.setText(" | ".concat(time));
 		tvMessageAnnouncementDetails.setText(obj.message);
 		return view;
 	}

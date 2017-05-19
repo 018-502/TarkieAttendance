@@ -7,7 +7,7 @@
     android:background="@drawable/state_rect_trans_dark"
     android:padding="@dimen/ten">
 
-    <ImageView
+    <com.codepan.widget.CircularImageView
         android:id="@+id/ivPhotoAnnouncements"
         android:layout_width="@dimen/thirty"
         android:layout_height="@dimen/thirty"

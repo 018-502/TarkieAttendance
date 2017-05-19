@@ -162,6 +162,6 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 	@Override
 	public void onDeleteAnnouncement(AnnouncementObj obj) {
 		announcementsList.remove(obj);
-		lvAnnouncements.setAdapter(adapter);
+		handler.sendMessage(handler.obtainMessage());
 	}
 }
