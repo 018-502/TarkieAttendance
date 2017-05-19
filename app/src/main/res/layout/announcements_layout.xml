@@ -85,11 +85,18 @@
 
     </FrameLayout>
 
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:layout_below="@+id/flSearchAnnouncements"
+        android:background="@color/divider"/>
+
     <ListView
         android:id="@+id/lvAnnouncements"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_below="@+id/flSearchAnnouncements"
+        android:layout_below="@+id/vDivider"
         android:divider="@color/divider"
         android:dividerHeight="@dimen/one"
         android:listSelector="@color/transparent"
@@ -100,7 +107,7 @@
         android:id="@+id/rlPlaceholderAnnouncements"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/flSearchAnnouncements"
+        android:layout_below="@+id/vDivider"
         android:background="@color/white"
         android:visibility="gone">
 
