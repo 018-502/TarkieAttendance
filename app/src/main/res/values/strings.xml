@@ -59,6 +59,7 @@
     <string name="select">SELECT</string>
     <string name="submit">SUBMIT</string>
     <string name="pending">PENDING</string>
+    <string name="add_visit">ADD VISIT</string>
     <string name="camera">Camera</string>
     <string name="submitted">SUBMITTED</string>
     <string name="draft">DRAFT</string>

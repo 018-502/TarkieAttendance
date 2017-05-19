@@ -80,7 +80,6 @@
                     android:layout_height="@dimen/header"
                     android:layout_marginEnd="@dimen/ten"
                     android:layout_marginRight="@dimen/ten"
-                    android:visibility="gone"
                     android:layout_toLeftOf="@+id/rlSyncMain"
                     android:layout_toStartOf="@+id/rlSyncMain">
 
@@ -193,13 +192,61 @@
                     android:layout_marginEnd="@dimen/ten"
                     android:layout_marginRight="@dimen/ten"
                     android:background="@drawable/state_rect_white_rad_three"
-                    android:paddingBottom="@dimen/two"
-                    android:paddingEnd="@dimen/four"
-                    android:paddingLeft="@dimen/four"
-                    android:paddingRight="@dimen/four"
-                    android:paddingStart="@dimen/four"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/one"
+                    android:paddingEnd="@dimen/five"
+                    android:paddingLeft="@dimen/five"
+                    android:paddingRight="@dimen/five"
+                    android:paddingStart="@dimen/five"
                     android:paddingTop="@dimen/two"
                     android:text="@string/select"
+                    android:textColor="@color/blue_pri"
+                    android:textSize="@dimen/thirteen"
+                    android:visibility="gone"
+                    codePan:typeface="@string/proxima_nova_mid"/>
+
+                <RelativeLayout
+                    android:id="@+id/rlDateMain"
+                    android:layout_width="@dimen/header"
+                    android:layout_height="@dimen/header"
+                    android:layout_marginEnd="@dimen/five"
+                    android:layout_marginRight="@dimen/five"
+                    android:layout_toLeftOf="@+id/btnAddVisitMain"
+                    android:layout_toStartOf="@+id/btnAddVisitMain"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="@dimen/twenty"
+                        android:layout_height="@dimen/twenty_one"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/ic_calendar"/>
+
+                    <com.codepan.widget.CodePanButton
+                        android:id="@+id/btnDateMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/state_rect_trans_dark"/>
+
+                </RelativeLayout>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnAddVisitMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/ten"
+                    android:layout_marginRight="@dimen/ten"
+                    android:background="@drawable/state_rect_white_rad_three"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/one"
+                    android:paddingEnd="@dimen/five"
+                    android:paddingLeft="@dimen/five"
+                    android:paddingRight="@dimen/five"
+                    android:paddingStart="@dimen/five"
+                    android:paddingTop="@dimen/two"
+                    android:text="@string/add_visit"
                     android:textColor="@color/blue_pri"
                     android:textSize="@dimen/thirteen"
                     android:visibility="gone"

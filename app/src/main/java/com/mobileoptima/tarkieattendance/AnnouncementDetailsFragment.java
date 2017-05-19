@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.database.SQLiteAdapter;
@@ -16,16 +15,15 @@ import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
-import com.mobileoptima.callback.Interface;
 import com.mobileoptima.callback.Interface.OnDeleteAnnouncementCallback;
-import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.model.AnnouncementObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
-public class AnnouncementDetailsFragment extends Fragment implements OnClickListener, OnBackPressedCallback {
+public class AnnouncementDetailsFragment extends Fragment implements OnClickListener,
+		OnBackPressedCallback {
+
 	private AnnouncementObj obj;
 	private DisplayImageOptions options;
 	private CircularImageView ivPhotoAnnouncementDetails;

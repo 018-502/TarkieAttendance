@@ -29,17 +29,20 @@ import com.mobileoptima.model.AnnouncementObj;
 
 import java.util.ArrayList;
 
-public class AnnouncementsFragment extends Fragment implements OnClickListener, OnBackPressedCallback, OnDeleteAnnouncementCallback {
+public class AnnouncementsFragment extends Fragment implements OnClickListener,
+		OnBackPressedCallback, OnDeleteAnnouncementCallback {
+
 	private final long IDLE_TIME = 500;
+
 	private ArrayList<AnnouncementObj> announcementsList;
-	private AnnouncementsAdapter adapter;
 	private RelativeLayout rlPlaceholderAnnouncements;
-	private CodePanButton btnBackAnnouncements;
 	private CodePanTextField etSearchAnnouncements;
+	private CodePanButton btnBackAnnouncements;
 	private FragmentTransaction transaction;
-	private FragmentManager manager;
-	private ListView lvAnnouncements;
+	private AnnouncementsAdapter adapter;
 	private Handler inputFinishHandler;
+	private ListView lvAnnouncements;
+	private FragmentManager manager;
 	private SQLiteAdapter db;
 	private String search;
 	private long lastEdit;
@@ -60,8 +63,8 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 		View view = inflater.inflate(R.layout.announcements_layout, container, false);
 		btnBackAnnouncements = (CodePanButton) view.findViewById(R.id.btnBackAnnouncements);
 		etSearchAnnouncements = (CodePanTextField) view.findViewById(R.id.etSearchAnnouncements);
-		lvAnnouncements = (ListView) view.findViewById(R.id.lvAnnouncements);
 		rlPlaceholderAnnouncements = (RelativeLayout) view.findViewById(R.id.rlPlaceholderAnnouncements);
+		lvAnnouncements = (ListView) view.findViewById(R.id.lvAnnouncements);
 		btnBackAnnouncements.setOnClickListener(this);
 		etSearchAnnouncements.addTextChangedListener(new TextWatcher() {
 			@Override

@@ -14,6 +14,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.codepan.calendar.callback.Interface.OnPickDateCallback;
+import com.codepan.calendar.view.CalendarView;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
@@ -24,7 +26,7 @@ import com.mobileoptima.model.VisitsDateObj;
 
 import java.util.ArrayList;
 
-public class VisitsFragment extends Fragment {
+public class VisitsFragment extends Fragment implements OnPickDateCallback {
 
 	private final int PREVIOUS = 0;
 	private final int CURRENT = 1;
@@ -120,7 +122,7 @@ public class VisitsFragment extends Fragment {
 					llDateVisits.setBackgroundColor(green);
 					obj.isSelect = true;
 					view.setTag(obj);
-					onSelectDate(obj.date);
+					updateSelected(obj.date);
 				}
 			});
 			if(selectedDate.equals(obj.date)) {
@@ -192,9 +194,31 @@ public class VisitsFragment extends Fragment {
 		vpVisits.setCurrentItem(CURRENT, false);
 	}
 
-	private void onSelectDate(String selectedDate) {
-		this.selectedDate = selectedDate;
+	public void showCalendar() {
+		CalendarView calendar = new CalendarView();
+		calendar.setOnPickDateCallback(this);
+		calendar.setCurrentDate(selectedDate);
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+				R.anim.fade_in, R.anim.fade_out);
+		transaction.add(R.id.rlMain, calendar);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	private void updateSelected(String selectedDate) {
 		String date = CodePanUtils.getCalendarDate(selectedDate, true, true);
+		this.selectedDate = selectedDate;
 		tvSelectedVisits.setText(date);
+	}
+
+	@Override
+	public void onPickDate(String selectedDate) {
+		updateSelected(selectedDate);
+		csDate = CodePanUtils.getDateAfter(selectedDate, -2);
+		viewList = getViewList(CURRENT);
+		dateAdapter = new VisitsDateAdapter(getActivity(), viewList);
+		vpVisits.setAdapter(dateAdapter);
+		vpVisits.setCurrentItem(CURRENT, false);
 	}
 }

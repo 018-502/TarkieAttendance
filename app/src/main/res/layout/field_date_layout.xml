@@ -38,7 +38,7 @@
             android:layout_height="@dimen/twenty_one"
             android:layout_gravity="center_vertical|end"
             android:layout_margin="@dimen/ten"
-            android:src="@drawable/ic_calendar"/>
+            android:src="@drawable/ic_date"/>
 
     </FrameLayout>
 

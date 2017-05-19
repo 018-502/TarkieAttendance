@@ -70,7 +70,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
 			tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain,
-			btnInventoryMain, btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain;
+			btnInventoryMain, btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain,
+			btnAddVisitMain;
 	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private OnBackPressedCallback backPressedCallback;
@@ -153,6 +154,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnPhotosMain = (CodePanButton) findViewById(R.id.btnPhotosMain);
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
 		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
+		btnAddVisitMain = (CodePanButton) findViewById(R.id.btnAddVisitMain);
 		btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
 		rlMenuMain = (RelativeLayout) findViewById(R.id.rlMenuMain);
 		rlMain = (RelativeLayout) findViewById(R.id.rlMain);
@@ -168,8 +170,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		findViewById(R.id.llLogoutMain).setOnClickListener(this);
 		findViewById(R.id.btnMenuMain).setOnClickListener(this);
 		findViewById(R.id.btnSearchMain).setOnClickListener(this);
+		findViewById(R.id.btnDateMain).setOnClickListener(this);
 		llTimeInMain.setOnClickListener(this);
 		btnSelectMain.setOnClickListener(this);
+		btnAddVisitMain.setOnClickListener(this);
 		btnHomeMain.setOnClickListener(this);
 		btnVisitsMain.setOnClickListener(this);
 		btnInventoryMain.setOnClickListener(this);
@@ -646,6 +650,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
+			case R.id.btnDateMain:
+				if(tabType.equals(TabType.VISITS)) {
+					VisitsFragment visits = (VisitsFragment) manager.findFragmentByTag(tabType);
+					visits.showCalendar();
+				}
+				break;
 		}
 	}
 
@@ -653,6 +663,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		View rlSyncMain = findViewById(R.id.rlSyncMain);
 		View rlSearchMain = findViewById(R.id.rlSearchMain);
 		View rlNotifMain = findViewById(R.id.rlNotifMain);
+		View rlDateMain = findViewById(R.id.rlDateMain);
 		resetTab();
 		switch(tabType) {
 			case TabType.HOME:
@@ -661,15 +672,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
+				rlDateMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
+				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 			case TabType.VISITS:
 				tvVisitsMain.setEnabled(true);
 				ivVisitsMain.setImageResource(R.drawable.ic_visits_enabled);
-				rlNotifMain.setVisibility(View.VISIBLE);
-				rlSyncMain.setVisibility(View.VISIBLE);
+				rlNotifMain.setVisibility(View.GONE);
+				rlSyncMain.setVisibility(View.GONE);
 				rlSearchMain.setVisibility(View.GONE);
+				rlDateMain.setVisibility(View.VISIBLE);
 				btnSelectMain.setVisibility(View.GONE);
+				btnAddVisitMain.setVisibility(View.VISIBLE);
 				break;
 			case TabType.INVENTORY:
 				tvInventoryMain.setEnabled(true);
@@ -677,7 +692,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
+				rlDateMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
+				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 			case TabType.PHOTOS:
 				tvPhotosMain.setEnabled(true);
@@ -685,15 +702,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
+				rlDateMain.setVisibility(View.GONE);
 				btnSelectMain.setVisibility(View.GONE);
+				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 			case TabType.ENTRIES:
 				tvEntriesMain.setEnabled(true);
 				ivEntriesMain.setImageResource(R.drawable.ic_entries_enabled);
 				rlNotifMain.setVisibility(View.GONE);
 				rlSyncMain.setVisibility(View.GONE);
+				rlDateMain.setVisibility(View.GONE);
 				rlSearchMain.setVisibility(View.VISIBLE);
 				btnSelectMain.setVisibility(View.VISIBLE);
+				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 		}
 		this.tabType = tabType;
