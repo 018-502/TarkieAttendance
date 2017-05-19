@@ -144,6 +144,7 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.BREAK));
 		db.execQuery(Tables.create(TB.STORES));
 		db.execQuery(Tables.create(TB.CONVENTION));
+		db.execQuery(Tables.create(TB.GPS));
 		db.execQuery(Tables.create(TB.TIME_IN));
 		db.execQuery(Tables.create(TB.TIME_OUT));
 		db.execQuery(Tables.create(TB.BREAK_IN));
@@ -158,6 +159,9 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.CHOICES));
 		db.execQuery(Tables.create(TB.ENTRIES));
 		db.execQuery(Tables.create(TB.ANSWERS));
+		db.execQuery(Tables.create(TB.TASK));
+		db.execQuery(Tables.create(TB.CHECK_IN));
+		db.execQuery(Tables.create(TB.CHECK_OUT));
 	}
 
 	public static void updateTables(SQLiteAdapter db, int o, int n) {
@@ -221,6 +225,31 @@ public class TarkieLib {
 		table = Tables.getName(TB.FORMS);
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "gpsID";
+		table = Tables.getName(TB.TIME_IN);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "gpsID";
+		table = Tables.getName(TB.TIME_OUT);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "gpsID";
+		table = Tables.getName(TB.BREAK_IN);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "gpsID";
+		table = Tables.getName(TB.BREAK_OUT);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "gpsID";
+		table = Tables.getName(TB.INCIDENT_REPORT);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
 		}
 		binder.finish();
 	}
@@ -388,8 +417,24 @@ public class TarkieLib {
 		return db.isRecordExists(query);
 	}
 
+	public static String saveGps(SQLiteAdapter db, GpsObj gps) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("gpsDate", gps.date));
+		query.add(new FieldValue("gpsTime", gps.time));
+		query.add(new FieldValue("gpsLongitude", gps.longitude));
+		query.add(new FieldValue("gpsLatitude", gps.latitude));
+		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
+		query.add(new FieldValue("withGpsHistory", gps.withHistory));
+		query.add(new FieldValue("isGpsValid", gps.isValid));
+		String gpsID = binder.insert(Tables.getName(TB.GPS), query);
+		binder.finish();
+		return gpsID;
+	}
+
 	public static boolean saveTimeIn(SQLiteAdapter db, String photo, GpsObj gps, StoreObj store) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
@@ -403,11 +448,7 @@ public class TarkieLib {
 		query.add(new FieldValue("gpsDate", gps.date));
 		query.add(new FieldValue("gpsTime", gps.time));
 		query.add(new FieldValue("storeID", store.ID));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		binder.insert(Tables.getName(TB.TIME_IN), query);
@@ -417,6 +458,7 @@ public class TarkieLib {
 	public static boolean saveTimeOut(SQLiteAdapter db, String dDate, String dTime,
 									  String photo, String signature, GpsObj gps) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String syncBatchID = getSyncBatchID(db);
@@ -426,15 +468,9 @@ public class TarkieLib {
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("photo", photo));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("signature", signature));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		String timeOutID = binder.insert(Tables.getName(TB.TIME_OUT), query);
@@ -448,6 +484,7 @@ public class TarkieLib {
 
 	public static boolean saveBreakIn(SQLiteAdapter db, GpsObj gps, BreakObj obj) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String dDate = CodePanUtils.getDate();
@@ -458,13 +495,7 @@ public class TarkieLib {
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		query.add(new FieldValue("breakID", obj.ID));
@@ -475,6 +506,7 @@ public class TarkieLib {
 
 	public static boolean saveBreakOut(SQLiteAdapter db, GpsObj gps, BreakInObj in) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String dDate = CodePanUtils.getDate();
@@ -485,13 +517,7 @@ public class TarkieLib {
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		query.add(new FieldValue("timeInID", timeInID));
@@ -508,18 +534,13 @@ public class TarkieLib {
 	public static boolean saveIncident(SQLiteAdapter db, GpsObj gps, int incidentID,
 									   int value) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String syncBatchID = getSyncBatchID(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("empID", empID));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		query.add(new FieldValue("incidentID", incidentID));
 		query.add(new FieldValue("timeInID", timeInID));
@@ -542,18 +563,13 @@ public class TarkieLib {
 	public static boolean saveIncident(SQLiteAdapter db, GpsObj gps, int incidentID,
 									   String value) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String syncBatchID = getSyncBatchID(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("empID", empID));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		query.add(new FieldValue("incidentID", incidentID));
 		query.add(new FieldValue("timeInID", timeInID));
@@ -575,18 +591,13 @@ public class TarkieLib {
 
 	public static boolean saveIncident(SQLiteAdapter db, GpsObj gps, int incidentID) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String syncBatchID = getSyncBatchID(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("empID", empID));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
-		query.add(new FieldValue("gpsLongitude", gps.longitude));
-		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		query.add(new FieldValue("incidentID", incidentID));
 		query.add(new FieldValue("timeInID", timeInID));

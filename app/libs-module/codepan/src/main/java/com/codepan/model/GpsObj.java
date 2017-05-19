@@ -2,6 +2,7 @@ package com.codepan.model;
 
 public class GpsObj {
 
+	public String ID;
 	public String date;
 	public String time;
 	public double longitude;

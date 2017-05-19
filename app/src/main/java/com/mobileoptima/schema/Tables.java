@@ -15,6 +15,7 @@ public class Tables {
 		BREAK,
 		STORES,
 		CONVENTION,
+		GPS,
 		TIME_IN,
 		TIME_OUT,
 		BREAK_IN,
@@ -29,7 +30,10 @@ public class Tables {
 		CHOICES,
 		ENTRIES,
 		ANSWERS,
-		ENTRY_TASK
+		ENTRY_TASK,
+		TASK,
+		CHECK_IN,
+		CHECK_OUT
 	}
 
 	public static String create(TB tb) {
@@ -104,14 +108,8 @@ public class Tables {
 				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("convention", DataType.TEXT));
 				break;
-			case TIME_IN:
-				query.clearAll();
+			case GPS:
 				query.add(new Field("ID", true));
-				query.add(new Field("dDate", DataType.TEXT));
-				query.add(new Field("dTime", DataType.TEXT));
-				query.add(new Field("empID", DataType.INTEGER));
-				query.add(new Field("storeID", DataType.INTEGER));
-				query.add(new Field("photo", DataType.TEXT));
 				query.add(new Field("gpsDate", DataType.TEXT));
 				query.add(new Field("gpsTime", DataType.TEXT));
 				query.add(new Field("gpsLongitude", DataType.TEXT));
@@ -119,6 +117,16 @@ public class Tables {
 				query.add(new Field("isGpsEnabled", DataType.INTEGER));
 				query.add(new Field("withGpsHistory", DataType.INTEGER));
 				query.add(new Field("isGpsValid", DataType.INTEGER));
+				break;
+			case TIME_IN:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
+				query.add(new Field("photo", DataType.TEXT));
+				query.add(new Field("empID", DataType.INTEGER));
+				query.add(new Field("storeID", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("batteryLevel", DataType.INTEGER));
 				query.add(new Field("syncBatchID", DataType.TEXT));
 				query.add(new Field("isPhotoUpload", 0));
@@ -133,13 +141,7 @@ public class Tables {
 				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("photo", DataType.TEXT));
 				query.add(new Field("signature", DataType.TEXT));
-				query.add(new Field("gpsDate", DataType.TEXT));
-				query.add(new Field("gpsTime", DataType.TEXT));
-				query.add(new Field("gpsLongitude", DataType.TEXT));
-				query.add(new Field("gpsLatitude", DataType.TEXT));
-				query.add(new Field("isGpsEnabled", DataType.INTEGER));
-				query.add(new Field("withGpsHistory", DataType.INTEGER));
-				query.add(new Field("isGpsValid", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("batteryLevel", DataType.INTEGER));
 				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("syncBatchID", DataType.TEXT));
@@ -153,13 +155,7 @@ public class Tables {
 				query.add(new Field("dDate", DataType.TEXT));
 				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("empID", DataType.INTEGER));
-				query.add(new Field("gpsDate", DataType.TEXT));
-				query.add(new Field("gpsTime", DataType.TEXT));
-				query.add(new Field("gpsLongitude", DataType.TEXT));
-				query.add(new Field("gpsLatitude", DataType.TEXT));
-				query.add(new Field("isGpsEnabled", DataType.INTEGER));
-				query.add(new Field("withGpsHistory", DataType.INTEGER));
-				query.add(new Field("isGpsValid", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("batteryLevel", DataType.INTEGER));
 				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("syncBatchID", DataType.TEXT));
@@ -173,13 +169,7 @@ public class Tables {
 				query.add(new Field("dDate", DataType.TEXT));
 				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("empID", DataType.INTEGER));
-				query.add(new Field("gpsDate", DataType.TEXT));
-				query.add(new Field("gpsTime", DataType.TEXT));
-				query.add(new Field("gpsLongitude", DataType.TEXT));
-				query.add(new Field("gpsLatitude", DataType.TEXT));
-				query.add(new Field("isGpsEnabled", DataType.INTEGER));
-				query.add(new Field("withGpsHistory", DataType.INTEGER));
-				query.add(new Field("isGpsValid", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("batteryLevel", DataType.INTEGER));
 				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("syncBatchID", DataType.TEXT));
@@ -197,13 +187,7 @@ public class Tables {
 				query.add(new Field("dDate", DataType.TEXT));
 				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("empID", DataType.INTEGER));
-				query.add(new Field("gpsDate", DataType.TEXT));
-				query.add(new Field("gpsTime", DataType.TEXT));
-				query.add(new Field("gpsLongitude", DataType.TEXT));
-				query.add(new Field("gpsLatitude", DataType.TEXT));
-				query.add(new Field("isGpsEnabled", DataType.INTEGER));
-				query.add(new Field("withGpsHistory", DataType.INTEGER));
-				query.add(new Field("isGpsValid", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("incidentID", DataType.INTEGER));
 				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("syncBatchID", DataType.TEXT));
@@ -315,6 +299,60 @@ public class Tables {
 				query.add(new Field("taskID", DataType.INTEGER));
 				query.add(new Field("isTag", 1));
 				break;
+			case TASK:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("storeID", DataType.INTEGER));
+				query.add(new Field("empID", DataType.INTEGER));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
+				query.add(new Field("scheduleDate", DataType.TEXT));
+				query.add(new Field("syncBatchID", DataType.TEXT));
+				query.add(new Field("webTaskID", DataType.TEXT));
+				query.add(new Field("notesLimit", DataType.INTEGER));
+				query.add(new Field("notes", DataType.TEXT));
+				query.add(new Field("taskPriority", DataType.TEXT));
+				query.add(new Field("taskStatus", DataType.TEXT));
+				query.add(new Field("isSync", 0));
+				query.add(new Field("isFromWeb", 0));
+				query.add(new Field("isCheckIn", 0));
+				query.add(new Field("isCheckOut", 0));
+				query.add(new Field("isUpdate", 0));
+				query.add(new Field("isWebUpdate", 0));
+				query.add(new Field("isDelete", 0));
+				query.add(new Field("isWebDelete", 0));
+				break;
+			case CHECK_IN:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
+				query.add(new Field("empID", DataType.INTEGER));
+				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("timeInID", DataType.INTEGER));
+				query.add(new Field("batteryLevel", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
+				query.add(new Field("syncBatchID", DataType.TEXT));
+				query.add(new Field("photo", DataType.TEXT));
+				query.add(new Field("isSync", 0));
+				query.add(new Field("isUpload", 0));
+				break;
+			case CHECK_OUT:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
+				query.add(new Field("empID", DataType.INTEGER));
+				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("timeInID", DataType.INTEGER));
+				query.add(new Field("checkInID", DataType.INTEGER));
+				query.add(new Field("batteryLevel", DataType.INTEGER));
+				query.add(new Field("gpsID", DataType.INTEGER));
+				query.add(new Field("syncBatchID", DataType.TEXT));
+				query.add(new Field("photo", DataType.TEXT));
+				query.add(new Field("isSync", 0));
+				query.add(new Field("isUpload", 0));
+				break;
 		}
 		return query.createTable(getName(tb));
 	}
@@ -345,6 +383,9 @@ public class Tables {
 				break;
 			case CONVENTION:
 				name = "convention_tb";
+				break;
+			case GPS:
+				name = "gps_tb";
 				break;
 			case TIME_IN:
 				name = "time_in_tb";
@@ -390,6 +431,15 @@ public class Tables {
 				break;
 			case ENTRY_TASK:
 				name = "entry_task_tb";
+				break;
+			case TASK:
+				name = "task_tb";
+				break;
+			case CHECK_IN:
+				name = "check_in_tb";
+				break;
+			case CHECK_OUT:
+				name = "check_out_tb";
 				break;
 		}
 		return name;

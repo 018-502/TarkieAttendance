@@ -3,6 +3,7 @@ package com.mobileoptima.core;
 import com.codepan.database.Condition;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.EntriesSearchType;
 import com.mobileoptima.constant.FieldType;
@@ -385,9 +386,11 @@ public class Data {
 
 	public static ArrayList<TimeInObj> loadTimeInSync(SQLiteAdapter db) {
 		ArrayList<TimeInObj> timeInList = new ArrayList<>();
-		String table = Tables.getName(TB.TIME_IN);
-		String query = "SELECT ID, empID, dDate, dTime, gpsDate, gpsTime, gpsLongitude, " +
-				"gpsLatitude, syncBatchID, storeID FROM " + table + " WHERE isSync = 0";
+		String g = Tables.getName(TB.GPS);
+		String i = Tables.getName(TB.TIME_IN);
+		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, i.storeID, g.gpsDate, " +
+				"g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + i + " i, " + g + " g " +
+				"WHERE i.isSync = 0 AND g.ID = i.gpsID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TimeInObj in = new TimeInObj();
@@ -395,12 +398,14 @@ public class Data {
 			in.empID = cursor.getString(1);
 			in.dDate = cursor.getString(2);
 			in.dTime = cursor.getString(3);
-			in.gpsDate = cursor.getString(4);
-			in.gpsTime = cursor.getString(5);
-			in.gpsLongitude = cursor.getDouble(6);
-			in.gpsLatitude = cursor.getDouble(7);
-			in.syncBatchID = cursor.getString(8);
-			in.storeID = cursor.getString(9);
+			in.syncBatchID = cursor.getString(4);
+			in.storeID = cursor.getString(5);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(6);
+			gps.time = cursor.getString(7);
+			gps.longitude = cursor.getDouble(8);
+			gps.latitude = cursor.getDouble(9);
+			in.gps = gps;
 			timeInList.add(in);
 		}
 		cursor.close();
@@ -409,9 +414,11 @@ public class Data {
 
 	public static ArrayList<TimeOutObj> loadTimeOutSync(SQLiteAdapter db) {
 		ArrayList<TimeOutObj> timeOutList = new ArrayList<>();
-		String table = Tables.getName(TB.TIME_OUT);
-		String query = "SELECT ID, empID, dDate, dTime, gpsDate, gpsTime, gpsLongitude, " +
-				"gpsLatitude, syncBatchID, timeInID FROM " + table + " WHERE isSync = 0";
+		String g = Tables.getName(TB.GPS);
+		String o = Tables.getName(TB.TIME_OUT);
+		String query = "SELECT o.ID, o.empID, o.dDate, o.dTime, o.syncBatchID, o.timeInID, " +
+				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + g + " g " +
+				"WHERE o.isSync = 0 AND g.ID = o.gpsID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TimeOutObj out = new TimeOutObj();
@@ -419,12 +426,14 @@ public class Data {
 			out.empID = cursor.getString(1);
 			out.dDate = cursor.getString(2);
 			out.dTime = cursor.getString(3);
-			out.gpsDate = cursor.getString(4);
-			out.gpsTime = cursor.getString(5);
-			out.gpsLongitude = cursor.getDouble(6);
-			out.gpsLatitude = cursor.getDouble(7);
-			out.syncBatchID = cursor.getString(8);
-			out.timeInID = cursor.getString(9);
+			out.syncBatchID = cursor.getString(4);
+			out.timeInID = cursor.getString(5);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(6);
+			gps.time = cursor.getString(7);
+			gps.longitude = cursor.getDouble(8);
+			gps.latitude = cursor.getDouble(9);
+			out.gps = gps;
 			timeOutList.add(out);
 		}
 		cursor.close();
@@ -433,9 +442,11 @@ public class Data {
 
 	public static ArrayList<BreakInObj> loadBreakInSync(SQLiteAdapter db) {
 		ArrayList<BreakInObj> breakInList = new ArrayList<>();
-		String table = Tables.getName(TB.BREAK_IN);
-		String query = "SELECT ID, empID, dDate, dTime, gpsDate, gpsTime, gpsLongitude, " +
-				"gpsLatitude, syncBatchID FROM " + table + " WHERE isSync = 0";
+		String g = Tables.getName(TB.GPS);
+		String i = Tables.getName(TB.BREAK_IN);
+		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, g.gpsDate, " +
+				"g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + i + " i, " + g + " g " +
+				"WHERE i.isSync = 0 AND g.ID = i.gpsID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			BreakInObj in = new BreakInObj();
@@ -443,11 +454,13 @@ public class Data {
 			in.empID = cursor.getString(1);
 			in.dDate = cursor.getString(2);
 			in.dTime = cursor.getString(3);
-			in.gpsDate = cursor.getString(4);
-			in.gpsTime = cursor.getString(5);
-			in.gpsLongitude = cursor.getDouble(6);
-			in.gpsLatitude = cursor.getDouble(7);
-			in.syncBatchID = cursor.getString(8);
+			in.syncBatchID = cursor.getString(4);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(5);
+			gps.time = cursor.getString(6);
+			gps.longitude = cursor.getDouble(7);
+			gps.latitude = cursor.getDouble(8);
+			in.gps = gps;
 			breakInList.add(in);
 		}
 		cursor.close();
@@ -456,9 +469,11 @@ public class Data {
 
 	public static ArrayList<BreakOutObj> loadBreakOutSync(SQLiteAdapter db) {
 		ArrayList<BreakOutObj> breakOutList = new ArrayList<>();
-		String table = Tables.getName(TB.BREAK_OUT);
-		String query = "SELECT ID, empID, dDate, dTime, gpsDate, gpsTime, gpsLongitude, " +
-				"gpsLatitude, syncBatchID, breakInID FROM " + table + " WHERE isSync = 0";
+		String g = Tables.getName(TB.GPS);
+		String o = Tables.getName(TB.BREAK_OUT);
+		String query = "SELECT o.ID, o.empID, o.dDate, o.dTime, o.syncBatchID, o.breakInID, " +
+				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + g + " g " +
+				"WHERE o.isSync = 0 AND g.ID = o.gpsID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			BreakOutObj out = new BreakOutObj();
@@ -466,12 +481,14 @@ public class Data {
 			out.empID = cursor.getString(1);
 			out.dDate = cursor.getString(2);
 			out.dTime = cursor.getString(3);
-			out.gpsDate = cursor.getString(4);
-			out.gpsTime = cursor.getString(5);
-			out.gpsLongitude = cursor.getDouble(6);
-			out.gpsLatitude = cursor.getDouble(7);
-			out.syncBatchID = cursor.getString(8);
-			out.breakInID = cursor.getString(9);
+			out.syncBatchID = cursor.getString(4);
+			out.breakInID = cursor.getString(5);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(6);
+			gps.time = cursor.getString(7);
+			gps.longitude = cursor.getDouble(8);
+			gps.latitude = cursor.getDouble(9);
+			out.gps = gps;
 			breakOutList.add(out);
 		}
 		cursor.close();
@@ -480,9 +497,11 @@ public class Data {
 
 	public static ArrayList<IncidentReportObj> loadIncidentReportSync(SQLiteAdapter db) {
 		ArrayList<IncidentReportObj> incidentReportList = new ArrayList<>();
-		String table = Tables.getName(TB.INCIDENT_REPORT);
-		String query = "SELECT ID, empID, dDate, dTime, incidentID, value, gpsDate, gpsTime, " +
-				"gpsLongitude, gpsLatitude, syncBatchID FROM " + table + " WHERE isSync = 0";
+		String g = Tables.getName(TB.GPS);
+		String a = Tables.getName(TB.INCIDENT_REPORT);
+		String query = "SELECT a.ID, a.empID, a.dDate, a.dTime, a.incidentID, a.value, a.syncBatchID, " +
+				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + a + " a, " + g + " g " +
+				"WHERE a.isSync = 0 AND g.ID = a.gpsID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			IncidentReportObj ir = new IncidentReportObj();
@@ -493,11 +512,13 @@ public class Data {
 			ir.dTime = cursor.getString(3);
 			ir.incidentID = cursor.getString(4);
 			ir.value = value != null ? value : "on";
-			ir.gpsDate = cursor.getString(6);
-			ir.gpsTime = cursor.getString(7);
-			ir.gpsLongitude = cursor.getDouble(8);
-			ir.gpsLatitude = cursor.getDouble(9);
-			ir.syncBatchID = cursor.getString(10);
+			ir.syncBatchID = cursor.getString(6);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(7);
+			gps.time = cursor.getString(8);
+			gps.longitude = cursor.getDouble(9);
+			gps.latitude = cursor.getDouble(10);
+			ir.gps = gps;
 			incidentReportList.add(ir);
 		}
 		cursor.close();

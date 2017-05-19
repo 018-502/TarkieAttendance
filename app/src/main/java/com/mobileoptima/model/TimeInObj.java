@@ -1,16 +1,15 @@
 package com.mobileoptima.model;
 
+import com.codepan.model.GpsObj;
+
 public class TimeInObj {
 
 	public String ID;
 	public String empID;
 	public String dTime;
 	public String dDate;
-	public String gpsDate;
-	public String gpsTime;
 	public String storeID;
 	public String syncBatchID;
 	public boolean isTimeOut;
-	public double gpsLongitude;
-	public double gpsLatitude;
+	public GpsObj gps;
 }

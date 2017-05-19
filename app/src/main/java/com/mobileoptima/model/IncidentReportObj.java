@@ -1,5 +1,7 @@
 package com.mobileoptima.model;
 
+import com.codepan.model.GpsObj;
+
 public class IncidentReportObj {
 
 	public String ID;
@@ -7,10 +9,7 @@ public class IncidentReportObj {
 	public String dTime;
 	public String empID;
 	public String value;
-	public String gpsDate;
-	public String gpsTime;
 	public String incidentID;
 	public String syncBatchID;
-	public double gpsLongitude;
-	public double gpsLatitude;
+	public GpsObj gps;
 }
