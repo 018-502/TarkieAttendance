@@ -17,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanTextField;
@@ -29,7 +28,7 @@ import com.mobileoptima.model.AnnouncementObj;
 
 import java.util.ArrayList;
 
-public class AnnouncementsFragment extends Fragment implements OnClickListener, OnBackPressedCallback, OnDeleteAnnouncementCallback {
+public class AnnouncementsFragment extends Fragment implements OnClickListener, OnDeleteAnnouncementCallback {
 	private final long IDLE_TIME = 500;
 	private ArrayList<AnnouncementObj> announcementsList;
 	private AnnouncementsAdapter adapter;
@@ -49,7 +48,6 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 		super.onCreate(savedInstanceState);
 		inputFinishHandler = new Handler();
 		MainActivity main = (MainActivity) getActivity();
-		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -83,10 +81,8 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 		lvAnnouncements.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				Bundle bundle = new Bundle();
-				bundle.putSerializable("Announcement", announcementsList.get(i));
 				AnnouncementDetailsFragment announcementDetails = new AnnouncementDetailsFragment();
-				announcementDetails.setArguments(bundle);
+				announcementDetails.setAnnouncement(announcementsList.get(i));
 				announcementDetails.setOnDeleteAnnouncementCallback(AnnouncementsFragment.this);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
@@ -134,18 +130,10 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 	});
 
 	@Override
-	public void onBackPressed() {
-		int count = manager.getBackStackEntryCount();
-		if(count > 0) {
-			manager.popBackStack();
-		}
-	}
-
-	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
 			case R.id.btnBackAnnouncements:
-				onBackPressed();
+				manager.popBackStack();
 				break;
 		}
 	}

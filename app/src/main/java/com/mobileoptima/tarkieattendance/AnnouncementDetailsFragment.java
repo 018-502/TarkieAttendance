@@ -8,24 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
-import com.mobileoptima.callback.Interface;
 import com.mobileoptima.callback.Interface.OnDeleteAnnouncementCallback;
-import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.model.AnnouncementObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
-public class AnnouncementDetailsFragment extends Fragment implements OnClickListener, OnBackPressedCallback {
+public class AnnouncementDetailsFragment extends Fragment implements OnClickListener {
 	private AnnouncementObj obj;
 	private DisplayImageOptions options;
 	private CircularImageView ivPhotoAnnouncementDetails;
@@ -41,12 +36,9 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		MainActivity main = (MainActivity) getActivity();
-		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
-		Bundle bundle = getArguments();
-		obj = (AnnouncementObj) bundle.getSerializable("Announcement");
 		this.imageLoader = ImageLoader.getInstance();
 		if(!imageLoader.isInited()) {
 			imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
@@ -83,23 +75,19 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 		return view;
 	}
 
-	public void setOnDeleteAnnouncementCallback(OnDeleteAnnouncementCallback deleteAnnouncementCallback) {
-		this.deleteAnnouncementCallback = deleteAnnouncementCallback;
+	public void setAnnouncement(AnnouncementObj obj) {
+		this.obj = obj;
 	}
 
-	@Override
-	public void onBackPressed() {
-		int count = manager.getBackStackEntryCount();
-		if(count > 0) {
-			manager.popBackStack();
-		}
+	public void setOnDeleteAnnouncementCallback(OnDeleteAnnouncementCallback deleteAnnouncementCallback) {
+		this.deleteAnnouncementCallback = deleteAnnouncementCallback;
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
 			case R.id.btnBackAnnouncementDetails:
-				onBackPressed();
+				manager.popBackStack();
 				break;
 			case R.id.btnDeleteAnnouncementDetails:
 				final AlertDialogFragment alert = new AlertDialogFragment();
