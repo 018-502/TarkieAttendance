@@ -1,8 +1,6 @@
 package com.mobileoptima.model;
 
-import java.io.Serializable;
-
-public class AnnouncementObj implements Serializable {
+public class AnnouncementObj {
 	public int ID;
 	public String subject;
 	public String message;
