@@ -2,6 +2,7 @@ package com.mobileoptima.callback;
 
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
+import com.mobileoptima.model.AnnouncementObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ImageObj;
@@ -58,6 +59,10 @@ public class Interface {
 
 	public interface OnDeletePhotoCallback {
 		void onDeletePhoto(int position);
+	}
+
+	public interface OnDeleteAnnouncementCallback {
+		void onDeleteAnnouncement(AnnouncementObj obj);
 	}
 
 	public interface OnCameraDoneCallback {

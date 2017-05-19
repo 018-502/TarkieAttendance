@@ -1,6 +1,7 @@
 package com.mobileoptima.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 
 import com.codepan.cache.TypefaceCache;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.model.AnnouncementObj;
 import com.mobileoptima.tarkieattendance.R;
@@ -26,22 +28,25 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 	private ArrayList<AnnouncementObj> items;
 	private LayoutInflater inflater;
 	private ImageLoader imageLoader;
+	private Typeface light, bold;
 
 	public AnnouncementsAdapter(Context context, ArrayList<AnnouncementObj> items) {
 		super(context, 0, items);
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.items = items;
+		Resources res = context.getResources();
 		this.imageLoader = ImageLoader.getInstance();
 		if(!imageLoader.isInited()) {
 			imageLoader.init(ImageLoaderConfiguration.createDefault(context));
 		}
 		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.color.gray_qua)
-				.showImageForEmptyUri(R.color.gray_qua)
+				.showImageOnLoading(R.drawable.ic_user_placeholder)
+				.showImageForEmptyUri(R.drawable.ic_user_placeholder)
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
-				.displayer(new RoundedBitmapDisplayer(30))
 				.build();
+		light = TypefaceCache.get(context.getAssets(), res.getString(R.string.proxima_nova_light));
+		bold = TypefaceCache.get(context.getAssets(), res.getString(R.string.proxima_nova_bold));
 	}
 
 	@Override
@@ -53,7 +58,7 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 			if(view == null) {
 				view = inflater.inflate(R.layout.announcements_list_row, parent, false);
 				holder = new ViewHolder();
-				holder.ivPhotoAnnouncements = (ImageView) view.findViewById(R.id.ivPhotoAnnouncements);
+				holder.ivPhotoAnnouncements = (CircularImageView) view.findViewById(R.id.ivPhotoAnnouncements);
 				holder.tvSubjectAnnouncements = (CodePanLabel) view.findViewById(R.id.tvSubjectAnnouncements);
 				holder.tvAnnouncedByAnnouncements = (CodePanLabel) view.findViewById(R.id.tvAnnouncedByAnnouncements);
 				holder.tvAnnouncedTimeAnnouncements = (CodePanLabel) view.findViewById(R.id.tvAnnouncedTimeAnnouncements);
@@ -65,22 +70,19 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 			}
 			if(obj.subject != null) {
 				holder.tvSubjectAnnouncements.setText(obj.subject);
-				String font;
 				if(obj.isSeen) {
-					font = getContext().getString(R.string.proxima_nova_mid);
+					holder.tvSubjectAnnouncements.setTypeface(light);
 				}
 				else {
-					font = getContext().getString(R.string.proxima_nova_bold);
+					holder.tvSubjectAnnouncements.setTypeface(bold);
 				}
-				Typeface typeface = TypefaceCache.get(getContext().getAssets(), font);
-				holder.tvSubjectAnnouncements.setTypeface(typeface);
 			}
 			if(obj.announcedBy != null) {
 				holder.tvAnnouncedByAnnouncements.setText(obj.announcedBy);
 				imageLoader.displayImage(obj.announcedByImageURL, holder.ivPhotoAnnouncements, options);
 			}
 			if(obj.announcedTime != null) {
-				String time = CodePanUtils.formatTime(obj.announcedTime);
+				String time = CodePanUtils.getNormalTime(obj.announcedTime, false);
 				holder.tvAnnouncedTimeAnnouncements.setText(" | ".concat(time));
 			}
 			if(obj.announcedDate != null) {
@@ -92,7 +94,7 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 	}
 
 	private class ViewHolder {
-		private ImageView ivPhotoAnnouncements;
+		private CircularImageView ivPhotoAnnouncements;
 		private CodePanLabel tvSubjectAnnouncements;
 		private CodePanLabel tvAnnouncedByAnnouncements;
 		private CodePanLabel tvAnnouncedTimeAnnouncements;

@@ -3,6 +3,7 @@ package com.mobileoptima.tarkieattendance;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,8 +13,11 @@ import android.widget.ImageView;
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
+import com.mobileoptima.callback.Interface;
+import com.mobileoptima.callback.Interface.OnDeleteAnnouncementCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.model.AnnouncementObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -24,13 +28,13 @@ import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 public class AnnouncementDetailsFragment extends Fragment implements OnClickListener, OnBackPressedCallback {
 	private AnnouncementObj obj;
 	private DisplayImageOptions options;
-	private ImageView ivPhotoAnnouncementDetails;
+	private CircularImageView ivPhotoAnnouncementDetails;
 	private CodePanButton btnBackAnnouncementDetails, btnDeleteAnnouncementDetails;
-	private CodePanLabel tvSubjectAnnouncementDetails, tvAnnouncedByAnnouncementDetails, tvAnnouncedTimeAnnouncementDetails, tvMessageAnnouncementDetails;
-	private OnOverrideCallback overrideCallback;
-	private CodePanLabel tvTitleAnnouncementDetails;
+	private CodePanLabel tvTitleAnnouncementDetails, tvSubjectAnnouncementDetails, tvAnnouncedByAnnouncementDetails, tvAnnouncedTimeAnnouncementDetails, tvMessageAnnouncementDetails;
 	private ImageLoader imageLoader;
 	private FragmentManager manager;
+	private OnDeleteAnnouncementCallback deleteAnnouncementCallback;
+	private FragmentTransaction transaction;
 	private SQLiteAdapter db;
 
 	@Override
@@ -48,11 +52,10 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 			imageLoader.init(ImageLoaderConfiguration.createDefault(getActivity()));
 		}
 		options = new DisplayImageOptions.Builder()
-				.showImageOnLoading(R.color.gray_qua)
-				.showImageForEmptyUri(R.color.gray_qua)
+				.showImageOnLoading(R.drawable.ic_user_placeholder)
+				.showImageForEmptyUri(R.drawable.ic_user_placeholder)
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
-				.displayer(new RoundedBitmapDisplayer(50))
 				.build();
 	}
 
@@ -62,7 +65,7 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 		btnBackAnnouncementDetails = (CodePanButton) view.findViewById(R.id.btnBackAnnouncementDetails);
 		tvTitleAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvTitleAnnouncementDetails);
 		btnDeleteAnnouncementDetails = (CodePanButton) view.findViewById(R.id.btnDeleteAnnouncementDetails);
-		ivPhotoAnnouncementDetails = (ImageView) view.findViewById(R.id.ivPhotoAnnouncementDetails);
+		ivPhotoAnnouncementDetails = (CircularImageView) view.findViewById(R.id.ivPhotoAnnouncementDetails);
 		tvSubjectAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvSubjectAnnouncementDetails);
 		tvAnnouncedByAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvAnnouncedByAnnouncementDetails);
 		tvAnnouncedTimeAnnouncementDetails = (CodePanLabel) view.findViewById(R.id.tvAnnouncedTimeAnnouncementDetails);
@@ -74,13 +77,14 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 		imageLoader.displayImage(obj.announcedByImageURL, ivPhotoAnnouncementDetails, options);
 		tvSubjectAnnouncementDetails.setText(obj.subject);
 		tvAnnouncedByAnnouncementDetails.setText(obj.announcedBy);
-		tvAnnouncedTimeAnnouncementDetails.setText(" | ".concat(obj.announcedTime));
+		String time = CodePanUtils.getNormalTime(obj.announcedTime, false);
+		tvAnnouncedTimeAnnouncementDetails.setText(" | ".concat(time));
 		tvMessageAnnouncementDetails.setText(obj.message);
 		return view;
 	}
 
-	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
-		this.overrideCallback = overrideCallback;
+	public void setOnDeleteAnnouncementCallback(OnDeleteAnnouncementCallback deleteAnnouncementCallback) {
+		this.deleteAnnouncementCallback = deleteAnnouncementCallback;
 	}
 
 	@Override
@@ -98,6 +102,31 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 				onBackPressed();
 				break;
 			case R.id.btnDeleteAnnouncementDetails:
+				final AlertDialogFragment alert = new AlertDialogFragment();
+				alert.setDialogTitle(R.string.delete_announcement_title);
+				alert.setDialogMessage(R.string.delete_announcement_message);
+				alert.setNegativeButton("Cancel", new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						manager.popBackStack();
+					}
+				});
+				alert.setPositiveButton("Yes", new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						if(deleteAnnouncementCallback != null) {
+							deleteAnnouncementCallback.onDeleteAnnouncement(obj);
+						}
+						manager.popBackStack();
+						manager.popBackStack();
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, alert);
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
 		}
 	}

@@ -629,7 +629,7 @@ public class Data {
 		return entryList;
 	}
 
-	public static ArrayList<AnnouncementObj> loadAnnouncements(SQLiteAdapter db) {
+	public static ArrayList<AnnouncementObj> loadAnnouncements(SQLiteAdapter db, String search) {
 		ArrayList<AnnouncementObj> announcementList = new ArrayList<>();
 		AnnouncementObj obj;
 		obj = new AnnouncementObj();
@@ -642,7 +642,9 @@ public class Data {
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = false;
 		obj.isActive = true;
-		announcementList.add(obj);
+		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
+			announcementList.add(obj);
+		}
 		obj = new AnnouncementObj();
 		obj.ID = 2;
 		obj.subject = "Calling All Laguna Staff";
@@ -653,7 +655,9 @@ public class Data {
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = false;
 		obj.isActive = true;
-		announcementList.add(obj);
+		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
+			announcementList.add(obj);
+		}
 		obj = new AnnouncementObj();
 		obj.ID = 3;
 		obj.subject = "Holiday Notice";
@@ -664,7 +668,9 @@ public class Data {
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = true;
 		obj.isActive = true;
-		announcementList.add(obj);
+		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
+			announcementList.add(obj);
+		}
 		obj = new AnnouncementObj();
 		obj.ID = 4;
 		obj.subject = "Submit your Reports";
@@ -675,7 +681,9 @@ public class Data {
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = true;
 		obj.isActive = true;
-		announcementList.add(obj);
+		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
+			announcementList.add(obj);
+		}
 		return announcementList;
 	}
 

@@ -7,6 +7,8 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -18,28 +20,34 @@ import android.widget.RelativeLayout;
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.CodePanButton;
+import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.AnnouncementsAdapter;
-import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnDeleteAnnouncementCallback;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.AnnouncementObj;
 
 import java.util.ArrayList;
 
-public class AnnouncementsFragment extends Fragment implements OnClickListener, OnBackPressedCallback {
+public class AnnouncementsFragment extends Fragment implements OnClickListener, OnBackPressedCallback, OnDeleteAnnouncementCallback {
+	private final long IDLE_TIME = 500;
 	private ArrayList<AnnouncementObj> announcementsList;
 	private AnnouncementsAdapter adapter;
 	private RelativeLayout rlPlaceholderAnnouncements;
-	private CodePanButton btnBackAnnouncements, btnSearchAnnouncements;
-	private OnOverrideCallback overrideCallback;
+	private CodePanButton btnBackAnnouncements;
+	private CodePanTextField etSearchAnnouncements;
 	private FragmentTransaction transaction;
 	private FragmentManager manager;
 	private ListView lvAnnouncements;
+	private Handler inputFinishHandler;
 	private SQLiteAdapter db;
+	private String search;
+	private long lastEdit;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		inputFinishHandler = new Handler();
 		MainActivity main = (MainActivity) getActivity();
 		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
@@ -51,11 +59,27 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.announcements_layout, container, false);
 		btnBackAnnouncements = (CodePanButton) view.findViewById(R.id.btnBackAnnouncements);
-		btnSearchAnnouncements = (CodePanButton) view.findViewById(R.id.btnSearchAnnouncements);
+		etSearchAnnouncements = (CodePanTextField) view.findViewById(R.id.etSearchAnnouncements);
 		lvAnnouncements = (ListView) view.findViewById(R.id.lvAnnouncements);
 		rlPlaceholderAnnouncements = (RelativeLayout) view.findViewById(R.id.rlPlaceholderAnnouncements);
 		btnBackAnnouncements.setOnClickListener(this);
-		btnSearchAnnouncements.setOnClickListener(this);
+		etSearchAnnouncements.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence cs, int i, int i1, int i2) {
+				search = cs.toString();
+				lastEdit = System.currentTimeMillis();
+				inputFinishHandler.removeCallbacks(inputFinishChecker);
+				inputFinishHandler.postDelayed(inputFinishChecker, IDLE_TIME);
+			}
+
+			@Override
+			public void afterTextChanged(Editable editable) {
+			}
+		});
 		lvAnnouncements.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -63,7 +87,7 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 				bundle.putSerializable("Announcement", announcementsList.get(i));
 				AnnouncementDetailsFragment announcementDetails = new AnnouncementDetailsFragment();
 				announcementDetails.setArguments(bundle);
-				announcementDetails.setOnOverrideCallback(overrideCallback);
+				announcementDetails.setOnDeleteAnnouncementCallback(AnnouncementsFragment.this);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -73,6 +97,7 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 				transaction.commit();
 			}
 		});
+		search = "";
 		loadAnnouncements(db);
 		return view;
 	}
@@ -82,7 +107,7 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 			@Override
 			public void run() {
 				try {
-					announcementsList = Data.loadAnnouncements(db);
+					announcementsList = Data.loadAnnouncements(db, search);
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -108,10 +133,6 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 		}
 	});
 
-	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
-		this.overrideCallback = overrideCallback;
-	}
-
 	@Override
 	public void onBackPressed() {
 		int count = manager.getBackStackEntryCount();
@@ -126,8 +147,21 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 			case R.id.btnBackAnnouncements:
 				onBackPressed();
 				break;
-			case R.id.btnSearchAnnouncements:
-				break;
 		}
+	}
+
+	private Runnable inputFinishChecker = new Runnable() {
+		@Override
+		public void run() {
+			if(System.currentTimeMillis() > lastEdit + IDLE_TIME - 500) {
+				loadAnnouncements(db);
+			}
+		}
+	};
+
+	@Override
+	public void onDeleteAnnouncement(AnnouncementObj obj) {
+		announcementsList.remove(obj);
+		handler.sendMessage(handler.obtainMessage());
 	}
 }

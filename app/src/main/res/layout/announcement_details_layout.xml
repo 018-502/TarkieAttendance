@@ -85,7 +85,7 @@
             android:padding="@dimen/twenty"
             android:background="@color/gray_sec">
 
-            <ImageView
+            <com.codepan.widget.CircularImageView
                 android:id="@+id/ivPhotoAnnouncementDetails"
                 android:layout_width="@dimen/fifty"
                 android:layout_height="@dimen/fifty"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="Attendance Reminder"
                     android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/sixteen"
+                    android:textSize="@dimen/eighteen"
                     codePan:typeface="@string/proxima_nova_bold"/>
 
                 <com.codepan.widget.CodePanLabel
@@ -116,7 +116,7 @@
                     android:layout_below="@+id/tvSubjectAnnouncementDetails"
                     android:text="Dana White"
                     android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/sixteen"
+                    android:textSize="@dimen/eighteen"
                     codePan:typeface="@string/proxima_nova_light"/>
 
                 <com.codepan.widget.CodePanLabel
@@ -128,7 +128,7 @@
                     android:layout_toRightOf="@+id/tvAnnouncedByAnnouncementDetails"
                     android:text=" | 10:00 AM"
                     android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/sixteen"
+                    android:textSize="@dimen/eighteen"
                     codePan:typeface="@string/proxima_nova_light"/>
             </RelativeLayout>
         </RelativeLayout>
@@ -140,6 +140,7 @@
             android:layout_height="wrap_content"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
             android:textColor="@color/gray_pri"
+            android:lineSpacingExtra="@dimen/two"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>
     </LinearLayout>
