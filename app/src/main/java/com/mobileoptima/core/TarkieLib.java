@@ -229,27 +229,27 @@ public class TarkieLib {
 		column = "gpsID";
 		table = Tables.getName(TB.TIME_IN);
 		if(!db.isColumnExists(table, column)) {
-			binder.addColumn(table, column, 0);
+			binder.addColumn(table, DataType.INTEGER, column);
 		}
 		column = "gpsID";
 		table = Tables.getName(TB.TIME_OUT);
 		if(!db.isColumnExists(table, column)) {
-			binder.addColumn(table, column, 0);
+			binder.addColumn(table, DataType.INTEGER, column);
 		}
 		column = "gpsID";
 		table = Tables.getName(TB.BREAK_IN);
 		if(!db.isColumnExists(table, column)) {
-			binder.addColumn(table, column, 0);
+			binder.addColumn(table, DataType.INTEGER, column);
 		}
 		column = "gpsID";
 		table = Tables.getName(TB.BREAK_OUT);
 		if(!db.isColumnExists(table, column)) {
-			binder.addColumn(table, column, 0);
+			binder.addColumn(table, DataType.INTEGER, column);
 		}
 		column = "gpsID";
 		table = Tables.getName(TB.INCIDENT_REPORT);
 		if(!db.isColumnExists(table, column)) {
-			binder.addColumn(table, column, 0);
+			binder.addColumn(table, DataType.INTEGER, column);
 		}
 		binder.finish();
 	}
