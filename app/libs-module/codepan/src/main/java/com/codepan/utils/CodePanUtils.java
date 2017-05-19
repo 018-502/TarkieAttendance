@@ -1126,8 +1126,8 @@ public class CodePanUtils {
 		return value;
 	}
 
-	public static String getDay(String date, String time) {
-		long timestamp = dateTimeToMillis(date, time);
+	public static String getDay(String date) {
+		long timestamp = dateTimeToMillis(date, "00:00:00");
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(timestamp);
 		return String.format(Locale.ENGLISH, "%tA", cal);

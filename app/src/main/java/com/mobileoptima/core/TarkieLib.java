@@ -32,6 +32,7 @@ import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
+import com.mobileoptima.model.VisitsDateObj;
 import com.mobileoptima.schema.Tables;
 import com.mobileoptima.schema.Tables.TB;
 import com.mobileoptima.tarkieattendance.AlertDialogFragment;
@@ -1195,5 +1196,16 @@ public class TarkieLib {
 			cursor.close();
 		}
 		return webPhotoIDs;
+	}
+
+	public static ArrayList<VisitsDateObj> getVisitsDate(String date, int noOfDays) {
+		ArrayList<VisitsDateObj> visitsDateList = new ArrayList<>();
+		for(int i = 0; i < noOfDays; i++) {
+			VisitsDateObj obj = new VisitsDateObj();
+			obj.date = CodePanUtils.getDateAfter(date, i);
+			obj.day = CodePanUtils.getDay(obj.date);
+			visitsDateList.add(obj);
+		}
+		return visitsDateList;
 	}
 }

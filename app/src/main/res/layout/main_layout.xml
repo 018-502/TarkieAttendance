@@ -80,6 +80,7 @@
                     android:layout_height="@dimen/header"
                     android:layout_marginEnd="@dimen/ten"
                     android:layout_marginRight="@dimen/ten"
+                    android:visibility="gone"
                     android:layout_toLeftOf="@+id/rlSyncMain"
                     android:layout_toStartOf="@+id/rlSyncMain">
 
