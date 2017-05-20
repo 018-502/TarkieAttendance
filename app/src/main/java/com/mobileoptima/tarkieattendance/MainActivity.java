@@ -66,14 +66,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
 		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback {
 
+	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
-	private CodePanLabel tvHomeMain, tvVisitsMain, tvInventoryMain, tvPhotosMain, tvEntriesMain,
-			tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain,
-			btnInventoryMain, btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain,
-			btnAddVisitMain;
-	private ImageView ivHomeMain, ivVisitsMain, ivInventoryMain, ivPhotosMain, ivEntriesMain;
+			btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
+	private View vHomeMain, vVisitsMain, vPhotosMain, vEntriesMain;
 	private OnBackPressedCallback backPressedCallback;
 	private LocalBroadcastManager broadcastManager;
 	private ImageView ivTimeInMain, ivTimeOutMain;
@@ -128,16 +126,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main_layout);
 		manager = getSupportFragmentManager();
-		ivHomeMain = (ImageView) findViewById(R.id.ivHomeMain);
-		ivVisitsMain = (ImageView) findViewById(R.id.ivVisitsMain);
-		ivInventoryMain = (ImageView) findViewById(R.id.ivInventoryMain);
-		ivPhotosMain = (ImageView) findViewById(R.id.ivPhotosMain);
-		ivEntriesMain = (ImageView) findViewById(R.id.ivEntriesMain);
-		tvHomeMain = (CodePanLabel) findViewById(R.id.tvHomeMain);
-		tvVisitsMain = (CodePanLabel) findViewById(R.id.tvVisitsMain);
-		tvInventoryMain = (CodePanLabel) findViewById(R.id.tvInventoryMain);
-		tvPhotosMain = (CodePanLabel) findViewById(R.id.tvPhotosMain);
-		tvEntriesMain = (CodePanLabel) findViewById(R.id.tvEntriesMain);
 		tvTimeInMain = (CodePanLabel) findViewById(R.id.tvTimeInMain);
 		tvSyncMain = (CodePanLabel) findViewById(R.id.tvSyncMain);
 		tvLastSyncMain = (CodePanLabel) findViewById(R.id.tvLastSyncMain);
@@ -150,16 +138,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnSyncMain = (CodePanButton) findViewById(R.id.btnSyncMain);
 		btnHomeMain = (CodePanButton) findViewById(R.id.btnHomeMain);
 		btnVisitsMain = (CodePanButton) findViewById(R.id.btnVisitsMain);
-		btnInventoryMain = (CodePanButton) findViewById(R.id.btnInventoryMain);
 		btnPhotosMain = (CodePanButton) findViewById(R.id.btnPhotosMain);
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
 		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
 		btnAddVisitMain = (CodePanButton) findViewById(R.id.btnAddVisitMain);
 		btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
+		llTimeInMain = (LinearLayout) findViewById(R.id.llTimeInMain);
 		rlMenuMain = (RelativeLayout) findViewById(R.id.rlMenuMain);
 		rlMain = (RelativeLayout) findViewById(R.id.rlMain);
 		dlMain = (DrawerLayout) findViewById(R.id.dlMain);
-		llTimeInMain = (LinearLayout) findViewById(R.id.llTimeInMain);
+		vHomeMain = findViewById(R.id.vHomeMain);
+		vVisitsMain = findViewById(R.id.vVisitsMain);
+		vPhotosMain = findViewById(R.id.vPhotosMain);
+		vEntriesMain = findViewById(R.id.vEntriesMain);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
 		findViewById(R.id.llUpdateMasterFileMain).setOnClickListener(this);
@@ -176,7 +167,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnAddVisitMain.setOnClickListener(this);
 		btnHomeMain.setOnClickListener(this);
 		btnVisitsMain.setOnClickListener(this);
-		btnInventoryMain.setOnClickListener(this);
 		btnPhotosMain.setOnClickListener(this);
 		btnEntriesMain.setOnClickListener(this);
 		btnNotificationMain.setOnClickListener(this);
@@ -262,25 +252,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					transaction.commit();
 				}
 				setTabType(TabType.VISITS);
-				break;
-			case R.id.btnInventoryMain:
-				if(!tabType.equals(TabType.INVENTORY)) {
-					Fragment current = manager.findFragmentByTag(tabType);
-					Fragment old = manager.findFragmentByTag(TabType.INVENTORY);
-					transaction = manager.beginTransaction();
-					if(old != null) {
-						transaction.show(old);
-					}
-					else {
-						UpgradeFragment upgrade = new UpgradeFragment();
-						transaction.add(R.id.flContainerMain, upgrade, TabType.INVENTORY);
-					}
-					if(current != null) {
-						transaction.hide(current);
-					}
-					transaction.commit();
-				}
-				setTabType(TabType.INVENTORY);
 				break;
 			case R.id.btnPhotosMain:
 				if(!tabType.equals(TabType.PHOTOS)) {
@@ -670,11 +641,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		View rlSearchMain = findViewById(R.id.rlSearchMain);
 		View rlNotifMain = findViewById(R.id.rlNotifMain);
 		View rlDateMain = findViewById(R.id.rlDateMain);
-		resetTab();
+		vHomeMain.setVisibility(View.GONE);
+		vVisitsMain.setVisibility(View.GONE);
+		vPhotosMain.setVisibility(View.GONE);
+		vEntriesMain.setVisibility(View.GONE);
 		switch(tabType) {
 			case TabType.HOME:
-				tvHomeMain.setEnabled(true);
-				ivHomeMain.setImageResource(R.drawable.ic_home_enabled);
+				vHomeMain.setVisibility(View.VISIBLE);
 				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
@@ -683,8 +656,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 			case TabType.VISITS:
-				tvVisitsMain.setEnabled(true);
-				ivVisitsMain.setImageResource(R.drawable.ic_visits_enabled);
+				vVisitsMain.setVisibility(View.VISIBLE);
 				rlNotifMain.setVisibility(View.GONE);
 				rlSyncMain.setVisibility(View.GONE);
 				rlSearchMain.setVisibility(View.GONE);
@@ -692,19 +664,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				btnSelectMain.setVisibility(View.GONE);
 				btnAddVisitMain.setVisibility(View.VISIBLE);
 				break;
-			case TabType.INVENTORY:
-				tvInventoryMain.setEnabled(true);
-				ivInventoryMain.setImageResource(R.drawable.ic_inventory_enabled);
-				rlNotifMain.setVisibility(View.VISIBLE);
-				rlSyncMain.setVisibility(View.VISIBLE);
-				rlSearchMain.setVisibility(View.GONE);
-				rlDateMain.setVisibility(View.GONE);
-				btnSelectMain.setVisibility(View.GONE);
-				btnAddVisitMain.setVisibility(View.GONE);
-				break;
 			case TabType.PHOTOS:
-				tvPhotosMain.setEnabled(true);
-				ivPhotosMain.setImageResource(R.drawable.ic_photos_enabled);
+				vPhotosMain.setVisibility(View.VISIBLE);
 				rlNotifMain.setVisibility(View.VISIBLE);
 				rlSyncMain.setVisibility(View.VISIBLE);
 				rlSearchMain.setVisibility(View.GONE);
@@ -713,8 +674,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 			case TabType.ENTRIES:
-				tvEntriesMain.setEnabled(true);
-				ivEntriesMain.setImageResource(R.drawable.ic_entries_enabled);
+				vEntriesMain.setVisibility(View.VISIBLE);
 				rlNotifMain.setVisibility(View.GONE);
 				rlSyncMain.setVisibility(View.GONE);
 				rlDateMain.setVisibility(View.GONE);
@@ -724,19 +684,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				break;
 		}
 		this.tabType = tabType;
-	}
-
-	public void resetTab() {
-		tvHomeMain.setEnabled(false);
-		tvVisitsMain.setEnabled(false);
-		tvInventoryMain.setEnabled(false);
-		tvPhotosMain.setEnabled(false);
-		tvEntriesMain.setEnabled(false);
-		ivHomeMain.setImageResource(R.drawable.ic_home_disabled);
-		ivVisitsMain.setImageResource(R.drawable.ic_visits_disabled);
-		ivInventoryMain.setImageResource(R.drawable.ic_inventory_disabled);
-		ivPhotosMain.setImageResource(R.drawable.ic_photos_disabled);
-		ivEntriesMain.setImageResource(R.drawable.ic_entries_disabled);
 	}
 
 	public RelativeLayout getMainParent() {
@@ -959,9 +906,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				break;
 			case TabType.VISITS:
 				btnVisitsMain.performClick();
-				break;
-			case TabType.INVENTORY:
-				btnInventoryMain.performClick();
 				break;
 			case TabType.PHOTOS:
 				btnPhotosMain.performClick();
