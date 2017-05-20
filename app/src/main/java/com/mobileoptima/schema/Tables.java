@@ -30,7 +30,8 @@ public class Tables {
 		CHOICES,
 		ENTRIES,
 		ANSWERS,
-		ENTRY_TASK,
+		TASK_FORM,
+		TASK_ENTRY,
 		TASK,
 		CHECK_IN,
 		CHECK_OUT
@@ -292,10 +293,16 @@ public class Tables {
 				query.add(new Field("fieldID", DataType.INTEGER));
 				query.add(new Field("isUpdate", 0));
 				break;
-			case ENTRY_TASK:
+			case TASK_ENTRY:
 				query.clearAll();
 				query.add(new Field("ID", true));
 				query.add(new Field("entryID", DataType.INTEGER));
+				query.add(new Field("taskID", DataType.INTEGER));
+				break;
+			case TASK_FORM:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("formID", DataType.INTEGER));
 				query.add(new Field("taskID", DataType.INTEGER));
 				query.add(new Field("isTag", 1));
 				break;
@@ -311,8 +318,8 @@ public class Tables {
 				query.add(new Field("webTaskID", DataType.TEXT));
 				query.add(new Field("notesLimit", DataType.INTEGER));
 				query.add(new Field("notes", DataType.TEXT));
-				query.add(new Field("taskPriority", DataType.TEXT));
-				query.add(new Field("taskStatus", DataType.TEXT));
+				query.add(new Field("priority", DataType.TEXT));
+				query.add(new Field("status", DataType.TEXT));
 				query.add(new Field("isSync", 0));
 				query.add(new Field("isFromWeb", 0));
 				query.add(new Field("isCheckIn", 0));
@@ -429,8 +436,11 @@ public class Tables {
 			case ANSWERS:
 				name = "answers_tb";
 				break;
-			case ENTRY_TASK:
-				name = "entry_task_tb";
+			case TASK_ENTRY:
+				name = "task_entry_tb";
+				break;
+			case TASK_FORM:
+				name = "task_form_tb";
 				break;
 			case TASK:
 				name = "task_tb";

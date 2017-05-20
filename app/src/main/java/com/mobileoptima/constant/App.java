@@ -2,7 +2,8 @@ package com.mobileoptima.constant;
 
 public class App {
 
-	public static final String WEB_HOST = "http://www.getnoove.com/";
+	public static final String WEB_HOST = "http://www.sandbox.sevieapp.com/";
+	//public static final String WEB_HOST = "http://www.getnoove.com/";
 	//public static final String WEB_HOST = "http://tarsie.local/";
 	public static final String WEB_FILES = WEB_HOST + "FILES/1.0/";
 	public static final String WEB_API = WEB_HOST + "API/1.0/";

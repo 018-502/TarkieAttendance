@@ -23,8 +23,6 @@ public class AddVisitFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.add_visit_layout, container, false);
-
-
 		return view;
 	}
 }

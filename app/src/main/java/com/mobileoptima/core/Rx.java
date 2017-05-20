@@ -9,6 +9,7 @@ import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.schema.Tables;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -235,8 +236,10 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String coID = dataObj.getString("company_id");
-						String company = CodePanUtils.handleUniCode(dataObj.getString("company_name"));
-						String address = CodePanUtils.handleUniCode(dataObj.getString("address"));
+						String company = dataObj.getString("company_name");
+						String address = dataObj.getString("address");
+						company = CodePanUtils.handleUniCode(company);
+						address = CodePanUtils.handleUniCode(address);
 						query.clearAll();
 						query.add(new FieldValue("ID", coID));
 						query.add(new FieldValue("name", company));
@@ -325,7 +328,8 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String incidentID = dataObj.getString("alert_type_id");
-						String name = CodePanUtils.handleUniCode(dataObj.getString("alert_type"));
+						String name = dataObj.getString("alert_type");
+						name = CodePanUtils.handleUniCode(name);
 						query.clearAll();
 						query.add(new FieldValue("ID", incidentID));
 						query.add(new FieldValue("name", name));
@@ -497,10 +501,14 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String empID = dataObj.getString("employee_id");
-						String firstName = CodePanUtils.handleUniCode(dataObj.getString("firstname"));
-						String lastName = CodePanUtils.handleUniCode(dataObj.getString("lastname"));
-						String employeeNo = CodePanUtils.handleUniCode(dataObj.getString("employee_number"));
-						//String imageUrl = CodePanUtils.handleUniCode(dataObj.getString("profile_picture"));
+						String firstName = dataObj.getString("firstname");
+						String lastName = dataObj.getString("lastname");
+						String employeeNo = dataObj.getString("employee_number");
+						//String imageUrl = dataObj.getString("profile_picture");
+						firstName = CodePanUtils.handleUniCode(firstName);
+						lastName = CodePanUtils.handleUniCode(lastName);
+						employeeNo = CodePanUtils.handleUniCode(employeeNo);
+						//imageUrl = CodePanUtils.handleUniCode(imageUrl);
 						//CodePanUtils.clearImageUrl(db.getContext(), imageUrl);
 						query.clearAll();
 						query.add(new FieldValue("ID", empID));
@@ -664,7 +672,8 @@ public class Rx {
 					JSONArray dataArray = responseObj.getJSONArray("data");
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
-						String name = CodePanUtils.handleUniCode(dataObj.getString("break_name"));
+						String name = dataObj.getString("break_name");
+						name = CodePanUtils.handleUniCode(name);
 						query.clearAll();
 						query.add(new FieldValue("ID", dataObj.getString("break_id")));
 						query.add(new FieldValue("duration", dataObj.getInt("duration")));
@@ -824,8 +833,10 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String storeID = dataObj.getString("store_id");
-						String name = CodePanUtils.handleUniCode(dataObj.getString("store_name"));
-						String address = CodePanUtils.handleUniCode(dataObj.getString("address"));
+						String name = dataObj.getString("store_name");
+						String address = dataObj.getString("address");
+						name = CodePanUtils.handleUniCode(name);
+						address = CodePanUtils.handleUniCode(address);
 						query.clearAll();
 						query.add(new FieldValue("ID", storeID));
 						query.add(new FieldValue("name", name));
@@ -915,10 +926,13 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String formID = dataObj.getString("form_id");
-						String name = CodePanUtils.handleUniCode(dataObj.getString("form_name"));
-						String description = CodePanUtils.handleUniCode(dataObj.getString("form_description"));
-						String category = CodePanUtils.handleUniCode(dataObj.getString("form_type"));
+						String name = dataObj.getString("form_name");
+						String description = dataObj.getString("form_description");
+						String category = dataObj.getString("form_type");
 						String logoUrl = dataObj.getString("form_logo");
+						name = CodePanUtils.handleUniCode(name);
+						description = CodePanUtils.handleUniCode(description);
+						category = CodePanUtils.handleUniCode(category);
 						CodePanUtils.clearImageUrl(db.getContext(), logoUrl);
 						query.clearAll();
 						query.add(new FieldValue("ID", formID));
@@ -1012,9 +1026,11 @@ public class Rx {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String fieldID = dataObj.getString("field_id");
 						String type = dataObj.getString("field_type");
-						String name = CodePanUtils.handleUniCode(dataObj.getString("field_name"));
-						String uniCode = CodePanUtils.handleUniCode(dataObj.getString("field_description"));
-						String description = CodePanUtils.handleHTMLEntities(uniCode, false);
+						String name = dataObj.getString("field_name");
+						String description = dataObj.getString("field_description");
+						name = CodePanUtils.handleUniCode(name);
+						description = CodePanUtils.handleUniCode(description);
+						description = CodePanUtils.handleHTMLEntities(description, false);
 						query.clearAll();
 						query.add(new FieldValue("ID", fieldID));
 						query.add(new FieldValue("name", name));
@@ -1086,9 +1102,9 @@ public class Rx {
 		try {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
-			String employeeID = TarkieLib.getEmployeeID(db);
+			String empID = TarkieLib.getEmployeeID(db);
 			paramsObj.put("api_key", apiKey);
-			paramsObj.put("employee_id", employeeID);
+			paramsObj.put("employee_id", empID);
 			paramsObj.put("get_details", "yes");
 			params = paramsObj.toString(INDENT);
 			response = CodePanUtils.doHttpGet(url, paramsObj, TIMEOUT);
@@ -1129,7 +1145,7 @@ public class Rx {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String webEntryID = dataObj.getString("enterdata_id");
 						query.clearAll();
-						query.add(new FieldValue("empID", employeeID));
+						query.add(new FieldValue("empID", empID));
 						query.add(new FieldValue("formID", dataObj.getString("form_id")));
 						query.add(new FieldValue("dDate", dataObj.getString("date_created")));
 						query.add(new FieldValue("dTime", dataObj.getString("time_created")));
@@ -1168,6 +1184,135 @@ public class Rx {
 									String answerID = db.getString(sql);
 									binder.update(table, query, answerID);
 								}
+							}
+						}
+					}
+					result = binder.finish();
+				}
+				catch(JSONException je) {
+					je.printStackTrace();
+					if(errorCallback != null) {
+						errorCallback.onError(je.getMessage(), params, response, false);
+					}
+					binder.finish();
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
+	public static boolean getTasks(SQLiteAdapter db, OnErrorCallback errorCallback) {
+		boolean result = false;
+		boolean hasData = false;
+		final int INDENT = 4;
+		final int TIMEOUT = 5000;
+		String action = "get-itinerary";
+		String url = App.WEB_API + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			String empID = TarkieLib.getEmployeeID(db);
+			String start = CodePanUtils.getDate();
+			String end = CodePanUtils.getDateAfter(start, 15);
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("emp_id", empID);
+			paramsObj.put("date_start", start);
+			paramsObj.put("date_end", end);
+			params = paramsObj.toString(INDENT);
+			response = CodePanUtils.doHttpGet(url, paramsObj, TIMEOUT);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					int recNo = initObj.getInt("recno");
+					if(status.equals("ok")) {
+						hasData = recNo > 0;
+						result = recNo == 0;
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+			if(hasData) {
+				SQLiteBinder binder = new SQLiteBinder(db);
+				String t = Tables.getName(Tables.TB.TASK);
+				String tf = Tables.getName(Tables.TB.TASK_FORM);
+				try {
+					SQLiteQuery query = new SQLiteQuery();
+					JSONArray dataArray = responseObj.getJSONArray("data");
+					for(int d = 0; d < dataArray.length(); d++) {
+						JSONObject dataObj = dataArray.getJSONObject(d);
+						String webTaskID = dataObj.getString("itinerary_id");
+						String notes = dataObj.getString("notes");
+						notes = CodePanUtils.handleUniCode(notes);
+						notes = CodePanUtils.handleHTMLEntities(notes, false);
+						String unescapeNotes = StringEscapeUtils.unescapeHtml4(notes);
+						int notesLimit = 0;
+						if(unescapeNotes != null) {
+							notesLimit = unescapeNotes.replace("''", "'").length();
+						}
+						query.clearAll();
+						query.add(new FieldValue("notes", notes));
+						query.add(new FieldValue("notesLimit", notesLimit));
+						query.add(new FieldValue("storeID", dataObj.getString("client_id")));
+						query.add(new FieldValue("scheduleDate", dataObj.getString("date_scheduled")));
+						query.add(new FieldValue("priority", dataObj.getString("priority")));
+						String sql = "SELECT ID FROM " + t + " WHERE webTaskID = '" + webTaskID + "'";
+						String taskID = null;
+						if(!db.isRecordExists(sql)) {
+							String dDate = CodePanUtils.getDate();
+							String dTime = CodePanUtils.getTime();
+							query.add(new FieldValue("dDate", dDate));
+							query.add(new FieldValue("dTime", dTime));
+							query.add(new FieldValue("webTaskID", webTaskID));
+							query.add(new FieldValue("isUpdate", true));
+							query.add(new FieldValue("isWebUpdate", true));
+							query.add(new FieldValue("isFromWeb", true));
+							query.add(new FieldValue("isSync", true));
+							taskID = binder.insert(t, query);
+						}
+						else {
+							taskID = db.getString(sql);
+							binder.update(t, query, taskID);
+						}
+						JSONArray formArray = dataObj.getJSONArray("forms");
+						for(int f = 0; f < formArray.length(); f++) {
+							JSONObject formObj = formArray.getJSONObject(f);
+							String formID = formObj.getString("form_id");
+							query.clearAll();
+							query.add(new FieldValue("taskID", taskID));
+							query.add(new FieldValue("formID", formID));
+							sql = "SELECT ID FROM " + tf + " WHERE taskID = '" + taskID + "' AND " +
+									"formID = '" + formID + "'";
+							if(!db.isRecordExists(sql)) {
+								binder.insert(tf, query);
+							}
+							else {
+								query.add(new FieldValue("isTag", true));
+								binder.update(tf, query);
 							}
 						}
 					}

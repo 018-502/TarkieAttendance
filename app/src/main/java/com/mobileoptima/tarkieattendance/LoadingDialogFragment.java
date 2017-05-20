@@ -109,7 +109,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				process.authorizeDevice(db, authorizationCode, deviceID);
 				break;
 			case LOGIN:
-				setMax(5);
+				setMax(6);
 				successMsg = "Login successful.";
 				failedMsg = "Failed to login.";
 				title = "Validating Account";
@@ -118,7 +118,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				process.login(db, username, password);
 				break;
 			case UPDATE_MASTER_FILE:
-				setMax(10);
+				setMax(11);
 				successMsg = "Update master list successful.";
 				failedMsg = "Failed to update master file.";
 				title = "Updating Master File";

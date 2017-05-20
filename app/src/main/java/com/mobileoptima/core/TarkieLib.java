@@ -161,6 +161,8 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.ENTRIES));
 		db.execQuery(Tables.create(TB.ANSWERS));
 		db.execQuery(Tables.create(TB.TASK));
+		db.execQuery(Tables.create(TB.TASK_ENTRY));
+		db.execQuery(Tables.create(TB.TASK_FORM));
 		db.execQuery(Tables.create(TB.CHECK_IN));
 		db.execQuery(Tables.create(TB.CHECK_OUT));
 	}
@@ -446,8 +448,6 @@ public class TarkieLib {
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("photo", photo));
-		query.add(new FieldValue("gpsDate", gps.date));
-		query.add(new FieldValue("gpsTime", gps.time));
 		query.add(new FieldValue("storeID", store.ID));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("batteryLevel", battery));

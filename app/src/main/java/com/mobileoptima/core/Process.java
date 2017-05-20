@@ -113,6 +113,11 @@ public class Process {
 						handler.sendMessage(handler.obtainMessage());
 					}
 					if(result) {
+						result = Rx.getTasks(db, errorCallback);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
 						result = Rx.getServerTime(db, errorCallback);
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
@@ -173,6 +178,11 @@ public class Process {
 					}
 					if(result) {
 						result = Rx.getEntries(db, errorCallback);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
+						result = Rx.getTasks(db, errorCallback);
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
 					}
