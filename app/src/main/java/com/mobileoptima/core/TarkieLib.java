@@ -639,6 +639,7 @@ public class TarkieLib {
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("notes", notes));
 		query.add(new FieldValue("storeID", store.ID));
 		query.add(new FieldValue("scheduleDate", scheduleDate));
