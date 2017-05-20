@@ -78,13 +78,13 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 			}
 			if(obj.isSubmit) {
 				holder.tvStatusEntries.setTextColor(green);
-				holder.tvStatusEntries.setText(R.string.submitted);
+				holder.tvStatusEntries.setText(R.string.submitted_caps);
 				holder.cbEntries.setVisibility(View.GONE);
 			}
 			else {
 				if(!obj.isDelete) {
 					holder.tvStatusEntries.setTextColor(orange);
-					holder.tvStatusEntries.setText(R.string.draft);
+					holder.tvStatusEntries.setText(R.string.draft_caps);
 					if(obj.isHighlight) {
 						holder.cbEntries.setVisibility(View.VISIBLE);
 						holder.cbEntries.setChecked(obj.isCheck);
@@ -95,7 +95,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 				}
 				else {
 					holder.tvStatusEntries.setTextColor(red);
-					holder.tvStatusEntries.setText(R.string.deleted);
+					holder.tvStatusEntries.setText(R.string.deleted_caps);
 					holder.cbEntries.setVisibility(View.GONE);
 				}
 			}
@@ -107,7 +107,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 				holder.tvReferenceNoEntries.setText(obj.referenceNo);
 			}
 			else {
-				holder.tvReferenceNoEntries.setText(R.string.pending);
+				holder.tvReferenceNoEntries.setText(R.string.pending_caps);
 			}
 		}
 		return view;

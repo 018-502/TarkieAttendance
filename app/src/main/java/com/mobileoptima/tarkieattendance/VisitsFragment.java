@@ -33,10 +33,10 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 	private final int NEXT = 2;
 	private final int NO_OF_DAYS = 5;
 
-	private View previous, next, current;
 	private FragmentTransaction transaction;
 	private CodePanLabel tvSelectedVisits;
 	private VisitsDateAdapter dateAdapter;
+	private View previous, next, current;
 	private String csDate, selectedDate;
 	private int lastPosition = CURRENT;
 	private ArrayList<View> viewList;
@@ -220,5 +220,15 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 		dateAdapter = new VisitsDateAdapter(getActivity(), viewList);
 		vpVisits.setAdapter(dateAdapter);
 		vpVisits.setCurrentItem(CURRENT, false);
+	}
+
+	public void addVisit() {
+		AddVisitFragment addVisit = new AddVisitFragment();
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+		transaction.add(R.id.rlMain, addVisit);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 }

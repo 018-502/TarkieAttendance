@@ -20,6 +20,7 @@ import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.Incident;
+import com.mobileoptima.constant.TaskPriority;
 import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
@@ -626,6 +627,24 @@ public class TarkieLib {
 		query.add(new FieldValue("accuracy", gps.accuracy));
 		query.add(new FieldValue("provider", provider));
 		binder.insert(Tables.getName(TB.LOCATION), query);
+		return binder.finish();
+	}
+
+	public static boolean saveTask(SQLiteAdapter db, StoreObj store, String scheduleDate, String notes) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String empID = getEmployeeID(db);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("notes", notes));
+		query.add(new FieldValue("storeID", store.ID));
+		query.add(new FieldValue("scheduleDate", scheduleDate));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		query.add(new FieldValue("taskPriority", TaskPriority.NORMAL));
+		binder.insert(Tables.getName(TB.TASK), query);
 		return binder.finish();
 	}
 

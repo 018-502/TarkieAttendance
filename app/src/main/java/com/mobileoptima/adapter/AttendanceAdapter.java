@@ -24,7 +24,7 @@ public class AttendanceAdapter extends ArrayAdapter<AttendanceObj> {
 	public AttendanceAdapter(Context context, ArrayList<AttendanceObj> items) {
 		super(context, 0, items);
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.timeOut = context.getResources().getString(R.string.no_out);
+		this.timeOut = context.getResources().getString(R.string.no_out_caps);
 		this.items = items;
 	}
 

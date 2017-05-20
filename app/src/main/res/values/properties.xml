@@ -7,4 +7,5 @@
     <dimen name="header">@dimen/forty_five</dimen>
     <dimen name="scrollbar">@dimen/three</dimen>
     <dimen name="signature_height">@dimen/two_hundred</dimen>
+    <string name="dialog_title_font">@string/proxima_nova_semi_bold</string>
 </resources>

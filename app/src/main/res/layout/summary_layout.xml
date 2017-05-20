@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="@string/no_in"
+                    android:text="@string/no_in_caps"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/seventeen"
                     codePan:typeface="@string/proxima_nova_bold"/>
@@ -133,7 +133,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:text="@string/no_out"
+                    android:text="@string/no_out_caps"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/seventeen"
                     codePan:typeface="@string/proxima_nova_bold"/>

@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/eight"
                 android:layout_marginStart="@dimen/eight"
-                android:text="@string/breaks"
+                android:text="@string/breaks_caps"
                 android:textColor="@color/gray_pri"
                 android:textSize="@dimen/seventeen"
                 codePan:typeface="@string/proxima_nova_light"/>

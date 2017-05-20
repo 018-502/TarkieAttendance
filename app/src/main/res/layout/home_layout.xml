@@ -69,7 +69,7 @@
                     android:paddingRight="@dimen/eight"
                     android:paddingStart="@dimen/eight"
                     android:paddingTop="@dimen/twelve"
-                    android:text="@string/inventory"
+                    android:text="@string/inventory_caps"
                     android:textColor="@color/white"
                     android:textSize="@dimen/seventeen"
                     codePan:typeface="@string/proxima_nova_bold"/>
@@ -101,7 +101,7 @@
                     android:paddingRight="@dimen/eight"
                     android:paddingStart="@dimen/eight"
                     android:paddingTop="@dimen/twelve"
-                    android:text="@string/app_forms"
+                    android:text="@string/app_forms_caps"
                     android:textColor="@color/white"
                     android:textSize="@dimen/seventeen"
                     codePan:typeface="@string/proxima_nova_bold"/>

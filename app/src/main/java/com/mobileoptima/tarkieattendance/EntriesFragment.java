@@ -218,10 +218,10 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 			}
 			if(search != null) {
 				if(isHighlight) {
-					btnSelectEntries.setText(R.string.submit);
+					btnSelectEntries.setText(R.string.submit_caps);
 				}
 				else {
-					btnSelectEntries.setText(R.string.select);
+					btnSelectEntries.setText(R.string.select_caps);
 				}
 			}
 		}

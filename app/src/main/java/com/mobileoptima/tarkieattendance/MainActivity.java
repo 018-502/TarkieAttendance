@@ -656,6 +656,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					visits.showCalendar();
 				}
 				break;
+			case R.id.btnAddVisitMain:
+				if(tabType.equals(TabType.VISITS)) {
+					VisitsFragment visits = (VisitsFragment) manager.findFragmentByTag(tabType);
+					visits.addVisit();
+				}
+				break;
 		}
 	}
 
@@ -1279,10 +1285,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	public void onHighlightEntries(boolean isHighlight) {
 		if(isHighlight) {
-			btnSelectMain.setText(R.string.submit);
+			btnSelectMain.setText(R.string.submit_caps);
 		}
 		else {
-			btnSelectMain.setText(R.string.select);
+			btnSelectMain.setText(R.string.select_caps);
 		}
 	}
 
