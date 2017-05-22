@@ -809,6 +809,7 @@ public class Data {
 
 	public static ArrayList<TaskObj> loadTasks(SQLiteAdapter db, String date) {
 		ArrayList<TaskObj> taskList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
 		String t = Tables.getName(TB.TASK);
 		String s = Tables.getName(TB.STORES);
 		String i = Tables.getName(TB.CHECK_IN);
@@ -816,7 +817,8 @@ public class Data {
 		String query = "SELECT t.ID, t.name, t.notes, s.ID, s.name, s.address, i.ID, i.dDate, i.dTime, " +
 				"o.ID, o.dDate, o.dTime FROM " + t + " as t LEFT JOIN " + i + " as i ON i.taskID = t.ID " +
 				"LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s " +
-				"ON s.ID = t.storeID WHERE t.scheduleDate = '" + date + "'";
+				"ON s.ID = t.storeID WHERE t.startDate >= '" + date + "' AND " +
+				"t.endDate <= '" + date + "' AND empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TaskObj task = new TaskObj();

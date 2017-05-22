@@ -20,7 +20,6 @@ import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.Incident;
-import com.mobileoptima.constant.TaskPriority;
 import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
@@ -649,7 +648,6 @@ public class TarkieLib {
 		query.add(new FieldValue("storeID", store.ID));
 		query.add(new FieldValue("scheduleDate", scheduleDate));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		query.add(new FieldValue("taskPriority", TaskPriority.NORMAL));
 		binder.insert(Tables.getName(TB.TASK), query);
 		return binder.finish();
 	}

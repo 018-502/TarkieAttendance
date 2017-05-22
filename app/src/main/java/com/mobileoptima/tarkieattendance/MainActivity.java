@@ -764,6 +764,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		updateSyncCount();
 		updateLastSynced();
 		reloadForms();
+		reloadVisits();
 		reloadEntries();
 	}
 
@@ -879,6 +880,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				EntriesFragment entries = (EntriesFragment) fragment;
 				entries.select(false);
 				entries.loadEntries(db);
+			}
+		}
+	}
+
+	public void reloadVisits() {
+		if(!isPause) {
+			Fragment fragment = manager.findFragmentByTag(TabType.VISITS);
+			if(fragment != null) {
+				VisitsFragment visits = (VisitsFragment) fragment;
+				String date = visits.getSelectedDate();
+				if(date != null) {
+					visits.loadVisits(db, date);
+				}
 			}
 		}
 	}

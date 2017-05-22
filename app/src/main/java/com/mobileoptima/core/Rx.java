@@ -1281,15 +1281,13 @@ public class Rx {
 						query.add(new FieldValue("notes", notes));
 						query.add(new FieldValue("notesLimit", notesLimit));
 						query.add(new FieldValue("storeID", dataObj.getString("client_id")));
-						query.add(new FieldValue("scheduleDate", dataObj.getString("date_scheduled")));
-						query.add(new FieldValue("priority", dataObj.getString("priority")));
+						query.add(new FieldValue("startDate", dataObj.getString("start_date")));
+						query.add(new FieldValue("endDate", dataObj.getString("end_date")));
 						String sql = "SELECT ID FROM " + t + " WHERE webTaskID = '" + webTaskID + "'";
 						String taskID = null;
 						if(!db.isRecordExists(sql)) {
-							String dDate = CodePanUtils.getDate();
-							String dTime = CodePanUtils.getTime();
-							query.add(new FieldValue("dDate", dDate));
-							query.add(new FieldValue("dTime", dTime));
+							query.add(new FieldValue("dateCreated", dataObj.getString("date_created")));
+							query.add(new FieldValue("timeCreated", dataObj.getString("time_created")));
 							query.add(new FieldValue("webTaskID", webTaskID));
 							query.add(new FieldValue("isUpdate", true));
 							query.add(new FieldValue("isWebUpdate", true));

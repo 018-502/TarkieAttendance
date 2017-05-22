@@ -312,14 +312,14 @@ public class Tables {
 				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("storeID", DataType.INTEGER));
 				query.add(new Field("empID", DataType.INTEGER));
-				query.add(new Field("dDate", DataType.TEXT));
-				query.add(new Field("dTime", DataType.TEXT));
-				query.add(new Field("scheduleDate", DataType.TEXT));
+				query.add(new Field("dateCreated", DataType.TEXT));
+				query.add(new Field("timeCreated", DataType.TEXT));
+				query.add(new Field("startDate", DataType.TEXT));
+				query.add(new Field("endDate", DataType.TEXT));
 				query.add(new Field("syncBatchID", DataType.TEXT));
 				query.add(new Field("webTaskID", DataType.TEXT));
 				query.add(new Field("notesLimit", DataType.INTEGER));
 				query.add(new Field("notes", DataType.TEXT));
-				query.add(new Field("priority", DataType.TEXT));
 				query.add(new Field("status", DataType.TEXT));
 				query.add(new Field("isSync", 0));
 				query.add(new Field("isFromWeb", 0));

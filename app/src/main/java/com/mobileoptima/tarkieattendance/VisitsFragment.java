@@ -233,6 +233,10 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 		vpVisits.setCurrentItem(CURRENT, false);
 	}
 
+	public String getSelectedDate() {
+		return this.selectedDate;
+	}
+
 	public void addVisit() {
 		AddVisitFragment addVisit = new AddVisitFragment();
 		transaction = manager.beginTransaction();
