@@ -1280,6 +1280,7 @@ public class Rx {
 						query.add(new FieldValue("name", name));
 						query.add(new FieldValue("notes", notes));
 						query.add(new FieldValue("notesLimit", notesLimit));
+						query.add(new FieldValue("empID", dataObj.getString("employee_id")));
 						query.add(new FieldValue("storeID", dataObj.getString("client_id")));
 						query.add(new FieldValue("startDate", dataObj.getString("start_date")));
 						query.add(new FieldValue("endDate", dataObj.getString("end_date")));

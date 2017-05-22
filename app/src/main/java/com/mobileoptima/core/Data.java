@@ -816,9 +816,8 @@ public class Data {
 		String o = Tables.getName(TB.CHECK_OUT);
 		String query = "SELECT t.ID, t.name, t.notes, s.ID, s.name, s.address, i.ID, i.dDate, i.dTime, " +
 				"o.ID, o.dDate, o.dTime FROM " + t + " as t LEFT JOIN " + i + " as i ON i.taskID = t.ID " +
-				"LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s " +
-				"ON s.ID = t.storeID WHERE t.startDate >= '" + date + "' AND " +
-				"t.endDate <= '" + date + "' AND empID = '" + empID + "'";
+				"LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s ON s.ID = t.storeID " +
+				"WHERE '" + date + "' BETWEEN t.startDate AND t.endDate AND t.empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TaskObj task = new TaskObj();
