@@ -64,6 +64,7 @@
     <string name="app_forms_caps">APP FORMS</string>
     <string name="breaks_caps">BREAKS</string>
     <string name="save_caps">SAVE</string>
+    <string name="active_caps">ACTIVE</string>
     <string name="add_visit">Add Visit</string>
     <string name="camera">Camera</string>
     <string name="photos_taken">Photos Taken</string>

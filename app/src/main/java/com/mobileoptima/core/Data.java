@@ -15,6 +15,8 @@ import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.BreakOutObj;
+import com.mobileoptima.model.CheckInObj;
+import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
@@ -26,6 +28,7 @@ import com.mobileoptima.model.LocationObj;
 import com.mobileoptima.model.PageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.schema.Tables;
@@ -802,5 +805,51 @@ public class Data {
 		}
 		cursor.close();
 		return searchList;
+	}
+
+	public static ArrayList<TaskObj> loadTasks(SQLiteAdapter db, String date) {
+		ArrayList<TaskObj> taskList = new ArrayList<>();
+		String t = Tables.getName(TB.TASK);
+		String s = Tables.getName(TB.STORES);
+		String i = Tables.getName(TB.CHECK_IN);
+		String o = Tables.getName(TB.CHECK_OUT);
+		String query = "SELECT t.ID, t.name, t.notes, s.ID, s.name, s.address, i.ID, i.dDate, i.dTime, " +
+				"o.ID, o.dDate, o.dTime FROM " + t + " as t LEFT JOIN " + i + " as i ON i.taskID = t.ID " +
+				"LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s " +
+				"ON s.ID = t.storeID WHERE t.scheduleDate = '" + date + "'";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(0);
+			task.name = cursor.getString(1);
+			task.notes = cursor.getString(2);
+			String storeID = cursor.getString(3);
+			if(storeID != null) {
+				StoreObj store = new StoreObj();
+				store.ID = storeID;
+				store.name = cursor.getString(4);
+				store.address = cursor.getString(5);
+				task.store = store;
+			}
+			String checkInID = cursor.getString(6);
+			if(checkInID != null) {
+				CheckInObj in = new CheckInObj();
+				in.ID = checkInID;
+				in.dDate = cursor.getString(7);
+				in.dTime = cursor.getString(8);
+				task.in = in;
+			}
+			String checkOutID = cursor.getString(9);
+			if(checkOutID != null) {
+				CheckOutObj out = new CheckOutObj();
+				out.ID = checkOutID;
+				out.dDate = cursor.getString(10);
+				out.dTime = cursor.getString(11);
+				task.out = out;
+			}
+			taskList.add(task);
+		}
+		cursor.close();
+		return taskList;
 	}
 }

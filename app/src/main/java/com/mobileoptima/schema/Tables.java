@@ -309,6 +309,7 @@ public class Tables {
 			case TASK:
 				query.clearAll();
 				query.add(new Field("ID", true));
+				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("storeID", DataType.INTEGER));
 				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("dDate", DataType.TEXT));

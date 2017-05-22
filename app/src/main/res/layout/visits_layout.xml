@@ -36,6 +36,9 @@
         android:id="@+id/lvVisits"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:divider="@color/divider"
+        android:dividerHeight="@dimen/one"
+        android:listSelector="@drawable/state_rect_trans_dark"
         android:scrollbarSize="@dimen/scrollbar"
         android:scrollbarThumbVertical="@color/scrollbar"/>
 

@@ -1266,15 +1266,18 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String webTaskID = dataObj.getString("itinerary_id");
+						String name = dataObj.getString("client_name");
 						String notes = dataObj.getString("notes");
 						notes = CodePanUtils.handleUniCode(notes);
 						notes = CodePanUtils.handleHTMLEntities(notes, false);
+						name = CodePanUtils.handleUniCode(name);
 						String unescapeNotes = StringEscapeUtils.unescapeHtml4(notes);
 						int notesLimit = 0;
 						if(unescapeNotes != null) {
 							notesLimit = unescapeNotes.replace("''", "'").length();
 						}
 						query.clearAll();
+						query.add(new FieldValue("name", name));
 						query.add(new FieldValue("notes", notes));
 						query.add(new FieldValue("notesLimit", notesLimit));
 						query.add(new FieldValue("storeID", dataObj.getString("client_id")));

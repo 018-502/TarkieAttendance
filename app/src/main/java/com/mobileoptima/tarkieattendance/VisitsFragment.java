@@ -3,6 +3,8 @@ package com.mobileoptima.tarkieattendance;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.codepan.calendar.callback.Interface.OnPickDateCallback;
 import com.codepan.calendar.view.CalendarView;
@@ -20,8 +23,11 @@ import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
+import com.mobileoptima.adapter.VisitsAdapter;
 import com.mobileoptima.adapter.VisitsDateAdapter;
+import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.VisitsDateObj;
 
 import java.util.ArrayList;
@@ -38,12 +44,15 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 	private VisitsDateAdapter dateAdapter;
 	private View previous, next, current;
 	private String csDate, selectedDate;
+	private ArrayList<TaskObj> taskList;
 	private int lastPosition = CURRENT;
 	private ArrayList<View> viewList;
 	private FragmentManager manager;
+	private VisitsAdapter adapter;
 	private int green, blue, gray;
 	private ViewGroup container;
 	private ViewPager vpVisits;
+	private ListView lvVisits;
 	private SQLiteAdapter db;
 
 	@Override
@@ -68,6 +77,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 		View view = inflater.inflate(R.layout.visits_layout, container, false);
 		tvSelectedVisits = (CodePanLabel) view.findViewById(R.id.tvSelectedVisits);
 		vpVisits = (ViewPager) view.findViewById(R.id.vpVisits);
+		lvVisits = (ListView) view.findViewById(R.id.lvVisits);
 		viewList = getViewList(lastPosition);
 		dateAdapter = new VisitsDateAdapter(getActivity(), viewList);
 		vpVisits.setAdapter(dateAdapter);
@@ -210,6 +220,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 		String date = CodePanUtils.getCalendarDate(selectedDate, true, true);
 		this.selectedDate = selectedDate;
 		tvSelectedVisits.setText(date);
+		loadVisits(db, selectedDate);
 	}
 
 	@Override
@@ -231,4 +242,29 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
+
+	public void loadVisits(final SQLiteAdapter db, final String date) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					taskList = Data.loadTasks(db, date);
+					handler.sendMessage(handler.obtainMessage());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message message) {
+			adapter = new VisitsAdapter(getActivity(), taskList);
+			lvVisits.setAdapter(adapter);
+			return true;
+		}
+	});
 }

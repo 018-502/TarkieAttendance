@@ -254,6 +254,11 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.INTEGER, column);
 		}
+		column = "name";
+		table = Tables.getName(TB.TASK);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
 		binder.finish();
 	}
 

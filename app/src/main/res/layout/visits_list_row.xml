@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/twelve"
+    android:paddingEnd="@dimen/ten"
+    android:paddingLeft="@dimen/ten"
+    android:paddingRight="@dimen/ten"
+    android:paddingStart="@dimen/ten"
+    android:paddingTop="@dimen/twelve">
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvNameVisits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textColor="@color/gray_pri"
+        android:textSize="@dimen/seventeen"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/tvStatusVisits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/active_caps"
+        android:textColor="@color/orange_pri"
+        android:textSize="@dimen/sixteen"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+</RelativeLayout>
