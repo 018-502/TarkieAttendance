@@ -2,8 +2,6 @@ package com.mobileoptima.tarkieattendance;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,14 +20,11 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
+import com.mobileoptima.callback.Interface.OnTimeInCallback;
+import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
-import com.mobileoptima.core.TarkieLib;
-import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.StoreObj;
-import com.mobileoptima.service.MainService;
-
-import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 
 public class CapturedFragment extends Fragment implements OnClickListener,
 		OnBackPressedCallback, OnFragmentCallback {
@@ -37,13 +32,14 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 	private CodePanButton btnBackCaptured, btnRetakeCaptured, btnUsePhotoCaptured;
 	private OnRetakeCameraCallback retakeCameraCallback;
 	private OnOverrideCallback overrideCallback;
+	private OnTimeOutCallback timeOutCallback;
+	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
 	private CodePanLabel tvTitleCaptured;
 	private String date, time, photo;
 	private FragmentManager manager;
 	private ImageView ivCaptured;
 	private SQLiteAdapter db;
-	private boolean result;
 	private StoreObj store;
 	private GpsObj gps;
 	private int type;
@@ -114,62 +110,19 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 			case R.id.btnUsePhotoCaptured:
 				switch(type) {
 					case ImageType.TIME_IN:
-						saveTimeIn();
+						if(timeInCallback != null) {
+							timeInCallback.onTimeIn(gps, store, photo);
+						}
 						break;
 					case ImageType.TIME_OUT:
-						String timeInID = TarkieLib.getTimeInID(db);
-						AttendanceObj attendance = TarkieLib.getAttendance(db, timeInID);
-						attendance.out.dDate = date;
-						attendance.out.dTime = time;
-						SummaryFragment summary = new SummaryFragment();
-						summary.setAttendance(attendance);
-						summary.setGps(gps);
-						summary.setImage(photo);
-						summary.setIsTimeOut(true);
-						summary.setOnOverrideCallback(overrideCallback);
-						transaction = manager.beginTransaction();
-						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-						transaction.add(R.id.rlMain, summary);
-						transaction.hide(this);
-						transaction.addToBackStack(null);
-						transaction.commit();
+						if(timeOutCallback != null) {
+							timeOutCallback.onTimeOut(gps, date, time, photo);
+						}
 						break;
 				}
 				break;
 		}
 	}
-
-	public void saveTimeIn() {
-		Thread bg = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					result = TarkieLib.saveTimeIn(db, photo, gps, store);
-					handler.sendMessage(handler.obtainMessage());
-				}
-				catch(Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		bg.start();
-	}
-
-	Handler handler = new Handler(new Handler.Callback() {
-		@Override
-		public boolean handleMessage(Message message) {
-			CodePanUtils.alertToast(getActivity(), result ?
-					"Time-in successful" : "Failed to save time-in.");
-			manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
-			MainActivity main = (MainActivity) getActivity();
-			main.checkTimeIn();
-			main.updateSyncCount();
-			MainService service = main.getService();
-			service.syncData(db);
-			return true;
-		}
-	});
 
 	public void setImage(String fileName) {
 		this.photo = fileName;
@@ -201,6 +154,14 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 
 	public void setOnRetakeCameraCallback(OnRetakeCameraCallback retakeCameraCallback) {
 		this.retakeCameraCallback = retakeCameraCallback;
+	}
+
+	public void setOnTimeInCallback(OnTimeInCallback timeInCallback) {
+		this.timeInCallback = timeInCallback;
+	}
+
+	public void setOnTimeOutCallback(OnTimeOutCallback timeOutCallback) {
+		this.timeOutCallback = timeOutCallback;
 	}
 
 	@Override

@@ -1250,4 +1250,14 @@ public class TarkieLib {
 		}
 		return visitsDateList;
 	}
+
+	public static boolean isSettingsActive(SQLiteAdapter db, String code) {
+		String groupID = getGroupID(db);
+		String s = Tables.getName(TB.SETTINGS);
+		String sg = Tables.getName(TB.SETTINGS_GROUP);
+		String query = "SELECT sg.value FROM " + s + " s, " + sg + " sg WHERE " +
+				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
+				"AND s.code = '" + code + "'";
+		return db.getInt(query) == 1;
+	}
 }

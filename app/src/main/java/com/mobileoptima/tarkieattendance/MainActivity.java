@@ -8,7 +8,10 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.IBinder;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -39,6 +42,8 @@ import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnMultiUpdateCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
+import com.mobileoptima.callback.Interface.OnTimeInCallback;
+import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.DialogTag;
@@ -48,8 +53,10 @@ import com.mobileoptima.constant.Module.Action;
 import com.mobileoptima.constant.Notification;
 import com.mobileoptima.constant.RequestCode;
 import com.mobileoptima.constant.TabType;
+import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.core.TimeSecurity;
+import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.EmployeeObj;
@@ -60,11 +67,16 @@ import com.mobileoptima.service.MainService;
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 import static com.mobileoptima.callback.Interface.OnInitializeCallback;
 import static com.mobileoptima.callback.Interface.OnLoginCallback;
+import static com.mobileoptima.constant.Settings.*;
 
 public class MainActivity extends FragmentActivity implements OnClickListener, OnRefreshCallback,
 		OnOverrideCallback, OnLoginCallback, OnInitializeCallback, ServiceConnection,
 		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
-		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback {
+		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback,
+		OnTimeInCallback, OnTimeOutCallback {
+
+	private final int SUCCESS = 1;
+	private final int FAILED = 0;
 
 	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
@@ -336,18 +348,27 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 							@Override
 							public void onClick(View view) {
 								manager.popBackStack();
-								CameraFragment camera = new CameraFragment();
-								camera.setGps(getGps());
-								camera.setOnOverrideCallback(MainActivity.this);
-								camera.setImageType(ImageType.TIME_OUT);
-								camera.setDate(CodePanUtils.getDate());
-								camera.setTime(CodePanUtils.getTime());
-								transaction = manager.beginTransaction();
-								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-								transaction.add(R.id.rlMain, camera);
-								transaction.addToBackStack(null);
-								transaction.commit();
+								String date = CodePanUtils.getDate();
+								String time = CodePanUtils.getTime();
+								GpsObj gps = getGps();
+								if(TarkieLib.isSettingsActive(db, PHOTO_AT_END_DAY)) {
+									CameraFragment camera = new CameraFragment();
+									camera.setGps(gps);
+									camera.setDate(date);
+									camera.setTime(time);
+									camera.setImageType(ImageType.TIME_OUT);
+									camera.setOnTimeOutCallback(MainActivity.this);
+									camera.setOnOverrideCallback(MainActivity.this);
+									transaction = manager.beginTransaction();
+									transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+											R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+									transaction.add(R.id.rlMain, camera);
+									transaction.addToBackStack(null);
+									transaction.commit();
+								}
+								else {
+									onTimeOut(gps, date, time, null);
+								}
 							}
 						});
 						alert.setNegativeButton("Cancel", new OnClickListener() {
@@ -1204,6 +1225,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public void onGpsFixed(GpsObj gps) {
 		SelectStoreFragment select = new SelectStoreFragment();
 		select.setGps(gps);
+		select.setOnTimeInCallback(this);
 		select.setOnOverrideCallback(this);
 		transaction = manager.beginTransaction();
 		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
@@ -1261,5 +1283,69 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		updateSyncCount();
 		reloadEntries();
 		reloadPhotos();
+	}
+
+	@Override
+	public void onTimeIn(final GpsObj gps, final StoreObj store, final String photo) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					boolean result = TarkieLib.saveTimeIn(db, photo, gps, store);
+					timeInHandler.sendMessage(timeInHandler.
+							obtainMessage(result ? SUCCESS : FAILED));
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler timeInHandler = new Handler(new Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch(msg.what) {
+				case SUCCESS:
+					CodePanUtils.alertToast(MainActivity.this, "Time-in successful");
+					manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
+					checkTimeIn();
+					updateSyncCount();
+					service.syncData(db);
+					break;
+				case FAILED:
+					CodePanUtils.alertToast(MainActivity.this, "Failed to save time-in.");
+					break;
+			}
+			return true;
+		}
+	});
+
+	@Override
+	public void onTimeOut(GpsObj gps, String date, String time, String photo) {
+		Fragment captured = manager.findFragmentByTag(Tag.CAPTURED);
+		String timeInID = TarkieLib.getTimeInID(db);
+		AttendanceObj attendance = TarkieLib.getAttendance(db, timeInID);
+		attendance.out.dDate = date;
+		attendance.out.dTime = time;
+		SummaryFragment summary = new SummaryFragment();
+		summary.setAttendance(attendance);
+		summary.setGps(gps);
+		summary.setImage(photo);
+		summary.setIsTimeOut(true);
+		summary.setOnOverrideCallback(this);
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+		if(captured != null) {
+			transaction.add(R.id.rlMain, summary);
+			transaction.hide(captured);
+		}
+		else {
+			transaction.replace(R.id.rlMain, summary);
+		}
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 }

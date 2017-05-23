@@ -21,8 +21,9 @@ import com.mobileoptima.model.TaskObj;
 
 import java.util.ArrayList;
 
-public class VisitDetailsFragment extends Fragment {
+public class VisitDetailsFragment extends Fragment implements OnClickListener {
 
+	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
 	private CodePanTextField etNotesVisitDetails;
 	private LinearLayout llFormsVisitDetails;
@@ -46,6 +47,12 @@ public class VisitDetailsFragment extends Fragment {
 		tvAddressVisitDetails = (CodePanLabel) view.findViewById(R.id.tvAddressVisitDetails);
 		etNotesVisitDetails = (CodePanTextField) view.findViewById(R.id.etNotesVisitDetails);
 		llFormsVisitDetails = (LinearLayout) view.findViewById(R.id.llFormsVisitDetails);
+		btnBackVisitDetails = (CodePanButton) view.findViewById(R.id.btnBackVisitDetails);
+		btnCheckInVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckInVisitDetails);
+		btnCheckOutVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckOutVisitDetails);
+		btnBackVisitDetails.setOnClickListener(this);
+		btnCheckInVisitDetails.setOnClickListener(this);
+		btnCheckOutVisitDetails.setOnClickListener(this);
 		this.container = container;
 		if(task != null) {
 			StoreObj store = task.store;
@@ -79,7 +86,7 @@ public class VisitDetailsFragment extends Fragment {
 		@Override
 		public boolean handleMessage(Message message) {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			for(FormObj form: formList) {
+			for(FormObj form : formList) {
 				View view = inflater.inflate(R.layout.visit_details_form_item, container, false);
 				CodePanLabel tvVisitDetailsForm = (CodePanLabel) view.findViewById(R.id.tvVisitDetailsForm);
 				CodePanButton btnVisitDetailsForm = (CodePanButton) view.findViewById(R.id.btnVisitDetailsForm);
@@ -97,5 +104,15 @@ public class VisitDetailsFragment extends Fragment {
 
 	public void setTask(TaskObj task) {
 		this.task = task;
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch(view.getId()) {
+			case R.id.btnCheckInVisitDetails:
+				break;
+			case R.id.btnCheckOutVisitDetails:
+				break;
+		}
 	}
 }

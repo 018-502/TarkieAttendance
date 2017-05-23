@@ -3,6 +3,7 @@ package com.mobileoptima.tarkieattendance;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -204,7 +205,7 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 		this.overrideCallback = overrideCallback;
 	}
 
-	Handler handler = new Handler(new Handler.Callback() {
+	Handler handler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
 			CodePanUtils.alertToast(getActivity(), result ?

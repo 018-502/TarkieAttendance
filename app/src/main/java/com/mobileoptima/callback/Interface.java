@@ -89,7 +89,15 @@ public class Interface {
 		void onDeleteEntry(EntryObj entry);
 	}
 
-	public interface OnResultCallback{
+	public interface OnResultCallback {
 		void onResult(boolean result);
+	}
+
+	public interface OnTimeInCallback {
+		void onTimeIn(GpsObj gps, StoreObj store, String photo);
+	}
+
+	public interface OnTimeOutCallback {
+		void onTimeOut(GpsObj gps, String date, String time, String photo);
 	}
 }

@@ -22,7 +22,10 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.FocusIndicatorView;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
+import com.mobileoptima.callback.Interface.OnTimeInCallback;
+import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.constant.Tag;
 import com.mobileoptima.model.StoreObj;
 
 public class CameraFragment extends Fragment implements OnClickListener, OnCaptureCallback,
@@ -35,6 +38,8 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private CodePanButton btnCaptureCamera, btnSwitchCamera, btnBackCamera;
 	private int cameraSelection, maxWidth, maxHeight;
 	private OnOverrideCallback overrideCallback;
+	private OnTimeOutCallback timeOutCallback;
+	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
 	private CameraSurfaceView surfaceView;
 	private FocusIndicatorView dvCamera;
@@ -113,13 +118,15 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 		captured.setTime(time);
 		captured.setStore(store);
 		captured.setImageType(type);
+		captured.setOnTimeInCallback(timeInCallback);
+		captured.setOnTimeOutCallback(timeOutCallback);
 		captured.setOnOverrideCallback(overrideCallback);
 		captured.setOnRetakeCameraCallback(this);
 		captured.setImage(fileName);
 		transaction = manager.beginTransaction();
 		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-		transaction.add(R.id.rlMain, captured);
+		transaction.add(R.id.rlMain, captured, Tag.CAPTURED);
 		transaction.hide(this);
 		transaction.addToBackStack(null);
 		transaction.commit();
@@ -189,5 +196,13 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 		transaction.add(R.id.rlMain, alert);
 		transaction.addToBackStack(null);
 		transaction.commit();
+	}
+
+	public void setOnTimeInCallback(OnTimeInCallback timeInCallback) {
+		this.timeInCallback = timeInCallback;
+	}
+
+	public void setOnTimeOutCallback(OnTimeOutCallback timeOutCallback) {
+		this.timeOutCallback = timeOutCallback;
 	}
 }
