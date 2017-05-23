@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -105,6 +106,20 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 				if(state == ViewPager.SCROLL_STATE_IDLE) {
 					switchItem(lastPosition);
 				}
+			}
+		});
+		lvVisits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+				TaskObj task = taskList.get(i);
+				VisitDetailsFragment details = new VisitDetailsFragment();
+				details.setTask(task);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, details);
+				transaction.addToBackStack(null);
+				transaction.commit();
 			}
 		});
 		return view;

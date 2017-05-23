@@ -19,13 +19,15 @@
         android:id="@+id/hsvPhoto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvQuestionPhoto"
         android:cacheColorHint="@color/white"
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="@dimen/forty"
         android:requiresFadingEdge="horizontal"
         android:scrollbarSize="0dp"
-        android:scrollbarThumbHorizontal="@color/transparent">
+        android:scrollbarThumbHorizontal="@color/transparent"
+        android:layout_below="@+id/tvQuestionPhoto"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <LinearLayout
             android:layout_width="wrap_content"
