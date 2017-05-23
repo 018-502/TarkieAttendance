@@ -14,4 +14,5 @@ public class TaskObj {
 	public StoreObj store;
 	public CheckInObj in;
 	public CheckOutObj out;
+	public int notesLimit;
 }

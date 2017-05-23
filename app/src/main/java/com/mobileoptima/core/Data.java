@@ -80,6 +80,24 @@ public class Data {
 		return formList;
 	}
 
+	public static ArrayList<FormObj> loadForms(SQLiteAdapter db, String taskID) {
+		ArrayList<FormObj> formList = new ArrayList<>();
+		String f = Tables.getName(TB.FORMS);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String query = "SELECT f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf WHERE " +
+				"f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			FormObj obj = new FormObj();
+			obj.ID = cursor.getString(0);
+			obj.name = cursor.getString(1);
+			obj.logoUrl = cursor.getString(2);
+			formList.add(obj);
+		}
+		cursor.close();
+		return formList;
+	}
+
 	public static ArrayList<BreakObj> loadBreaks(SQLiteAdapter db) {
 		ArrayList<BreakObj> breakList = new ArrayList<>();
 		String table = Tables.getName(TB.BREAK);
@@ -814,38 +832,40 @@ public class Data {
 		String s = Tables.getName(TB.STORES);
 		String i = Tables.getName(TB.CHECK_IN);
 		String o = Tables.getName(TB.CHECK_OUT);
-		String query = "SELECT t.ID, t.name, t.notes, s.ID, s.name, s.address, i.ID, i.dDate, i.dTime, " +
-				"o.ID, o.dDate, o.dTime FROM " + t + " as t LEFT JOIN " + i + " as i ON i.taskID = t.ID " +
-				"LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s ON s.ID = t.storeID " +
-				"WHERE '" + date + "' BETWEEN t.startDate AND t.endDate AND t.empID = '" + empID + "'";
+		String query = "SELECT t.ID, t.name, t.notes, t.notesLimit, s.ID, s.name, s.address, i.ID, " +
+				"i.dDate, i.dTime, o.ID, o.dDate, o.dTime FROM " + t + " as t LEFT JOIN " + i + " as i " +
+				"ON i.taskID = t.ID LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s " +
+				"ON s.ID = t.storeID WHERE '" + date + "' BETWEEN t.startDate AND t.endDate " +
+				"AND t.empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TaskObj task = new TaskObj();
 			task.ID = cursor.getString(0);
 			task.name = cursor.getString(1);
 			task.notes = cursor.getString(2);
-			String storeID = cursor.getString(3);
+			task.notesLimit = cursor.getInt(3);
+			String storeID = cursor.getString(4);
 			if(storeID != null) {
 				StoreObj store = new StoreObj();
 				store.ID = storeID;
-				store.name = cursor.getString(4);
-				store.address = cursor.getString(5);
+				store.name = cursor.getString(5);
+				store.address = cursor.getString(6);
 				task.store = store;
 			}
-			String checkInID = cursor.getString(6);
+			String checkInID = cursor.getString(7);
 			if(checkInID != null) {
 				CheckInObj in = new CheckInObj();
 				in.ID = checkInID;
-				in.dDate = cursor.getString(7);
-				in.dTime = cursor.getString(8);
+				in.dDate = cursor.getString(8);
+				in.dTime = cursor.getString(9);
 				task.in = in;
 			}
-			String checkOutID = cursor.getString(9);
+			String checkOutID = cursor.getString(10);
 			if(checkOutID != null) {
 				CheckOutObj out = new CheckOutObj();
 				out.ID = checkOutID;
-				out.dDate = cursor.getString(10);
-				out.dTime = cursor.getString(11);
+				out.dDate = cursor.getString(11);
+				out.dTime = cursor.getString(12);
 				task.out = out;
 			}
 			taskList.add(task);
