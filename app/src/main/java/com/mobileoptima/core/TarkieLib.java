@@ -51,10 +51,10 @@ import static com.mobileoptima.schema.Tables.TB.EMPLOYEE;
 import static com.mobileoptima.schema.Tables.TB.ENTRIES;
 import static com.mobileoptima.schema.Tables.TB.FIELDS;
 import static com.mobileoptima.schema.Tables.TB.PHOTO;
+import static com.mobileoptima.schema.Tables.TB.SETTINGS;
 import static com.mobileoptima.schema.Tables.TB.SYNC_BATCH;
 
 public class TarkieLib {
-
 	public static void alertDialog(final FragmentActivity activity, String title, String message,
 								   OnFragmentCallback callback) {
 		final FragmentManager manager = activity.getSupportFragmentManager();
@@ -164,6 +164,8 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.TASK_FORM));
 		db.execQuery(Tables.create(TB.CHECK_IN));
 		db.execQuery(Tables.create(TB.CHECK_OUT));
+		db.execQuery(Tables.create(SETTINGS));
+		db.execQuery(Tables.create(TB.SETTINGS_GROUP));
 	}
 
 	public static void updateTables(SQLiteAdapter db, int o, int n) {
@@ -311,6 +313,12 @@ public class TarkieLib {
 			convention = name;
 		}
 		return convention;
+	}
+
+	public static String getSettingsID(SQLiteAdapter db, String code) {
+		String table = Tables.getName(SETTINGS);
+		String query = "SELECT ID FROM " + table + " WHERE code = '" + code + "'";
+		return db.getString(query);
 	}
 
 	public static EmployeeObj getEmployee(SQLiteAdapter db, String empID) {

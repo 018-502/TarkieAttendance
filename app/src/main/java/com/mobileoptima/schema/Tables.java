@@ -34,7 +34,9 @@ public class Tables {
 		TASK_ENTRY,
 		TASK,
 		CHECK_IN,
-		CHECK_OUT
+		CHECK_OUT,
+		SETTINGS,
+		SETTINGS_GROUP
 	}
 
 	public static String create(TB tb) {
@@ -361,6 +363,18 @@ public class Tables {
 				query.add(new Field("isSync", 0));
 				query.add(new Field("isUpload", 0));
 				break;
+			case SETTINGS:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("code", DataType.TEXT));
+				break;
+			case SETTINGS_GROUP:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("settingsID", DataType.INTEGER));
+				query.add(new Field("groupID", DataType.INTEGER));
+				query.add(new Field("value", DataType.TEXT));
+				break;
 		}
 		return query.createTable(getName(tb));
 	}
@@ -451,6 +465,12 @@ public class Tables {
 				break;
 			case CHECK_OUT:
 				name = "check_out_tb";
+				break;
+			case SETTINGS:
+				name = "settings_tb";
+				break;
+			case SETTINGS_GROUP:
+				name = "settings_group_tb";
 				break;
 		}
 		return name;

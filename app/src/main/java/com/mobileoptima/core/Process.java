@@ -191,6 +191,11 @@ public class Process {
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
 					}
+					if(result) {
+						result = Rx.getSettings(db, errorCallback);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
 				}
 				catch(Exception e) {
 					e.printStackTrace();
