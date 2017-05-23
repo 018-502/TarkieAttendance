@@ -100,7 +100,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 		String title = null;
 		switch(action) {
 			case AUTHORIZE_DEVICE:
-				setMax(9);
+				setMax(10);
 				successMsg = "Authorization successful.";
 				failedMsg = "Failed to authorize the device.";
 				title = "Authorizing Device";
@@ -109,7 +109,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				process.authorizeDevice(db, authorizationCode, deviceID);
 				break;
 			case LOGIN:
-				setMax(6);
+				setMax(7);
 				successMsg = "Login successful.";
 				failedMsg = "Failed to login.";
 				title = "Validating Account";
