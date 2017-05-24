@@ -84,9 +84,9 @@ public class SplashFragment extends Fragment implements OnPermissionGrantedCallb
 		public boolean handleMessage(Message msg) {
 			if(!isPause) {
 				manager.popBackStack();
-			}
-			if(initializeCallback != null) {
-				initializeCallback.onInitialize(db);
+				if(initializeCallback != null) {
+					initializeCallback.onInitialize(db);
+				}
 			}
 			return true;
 		}
