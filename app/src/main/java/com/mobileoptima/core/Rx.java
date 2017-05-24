@@ -1291,9 +1291,9 @@ public class Rx {
 							query.add(new FieldValue("dateCreated", dataObj.getString("date_created")));
 							query.add(new FieldValue("timeCreated", dataObj.getString("time_created")));
 							query.add(new FieldValue("webTaskID", webTaskID));
-							query.add(new FieldValue("isUpdate", true));
 							query.add(new FieldValue("isWebUpdate", true));
 							query.add(new FieldValue("isFromWeb", true));
+							query.add(new FieldValue("isUpdate", true));
 							query.add(new FieldValue("isSync", true));
 							taskID = binder.insert(t, query);
 						}

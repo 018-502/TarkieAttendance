@@ -443,21 +443,21 @@ public class Data {
 		String g = Tables.getName(TB.GPS);
 		String o = Tables.getName(TB.TIME_OUT);
 		String i = Tables.getName(TB.TIME_IN);
-		String query = "SELECT o.ID, o.empID, o.dDate, o.dTime, o.syncBatchID, i.ID, i.syncBatchID, " +
+		String query = "SELECT o.ID, o.dDate, o.dTime, o.syncBatchID, i.ID, i.syncBatchID, i.empID, " +
 				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + i + " i, " +
 				g + " g WHERE o.isSync = 0 AND g.ID = o.gpsID AND i.ID = o.timeInID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TimeOutObj out = new TimeOutObj();
 			out.ID = cursor.getString(0);
-			EmployeeObj emp = new EmployeeObj();
-			emp.ID = cursor.getString(1);
-			out.dDate = cursor.getString(2);
-			out.dTime = cursor.getString(3);
-			out.syncBatchID = cursor.getString(4);
+			out.dDate = cursor.getString(1);
+			out.dTime = cursor.getString(2);
+			out.syncBatchID = cursor.getString(3);
 			TimeInObj in = new TimeInObj();
-			in.ID = cursor.getString(5);
-			in.syncBatchID = cursor.getString(6);
+			in.ID = cursor.getString(4);
+			in.syncBatchID = cursor.getString(5);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(6);
 			in.emp = emp;
 			out.timeIn = in;
 			GpsObj gps = new GpsObj();
@@ -504,28 +504,30 @@ public class Data {
 	public static ArrayList<BreakOutObj> loadBreakOutSync(SQLiteAdapter db) {
 		ArrayList<BreakOutObj> breakOutList = new ArrayList<>();
 		String g = Tables.getName(TB.GPS);
+		String i = Tables.getName(TB.BREAK_IN);
 		String o = Tables.getName(TB.BREAK_OUT);
-		String query = "SELECT o.ID, o.empID, o.dDate, o.dTime, o.syncBatchID, o.breakInID, " +
-				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + g + " g " +
-				"WHERE o.isSync = 0 AND g.ID = o.gpsID";
+		String query = "SELECT o.ID, o.dDate, o.dTime, o.syncBatchID, i.ID, i.syncBatchID, i.empID, " +
+				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + i + " i, " +
+				g + " g WHERE o.isSync = 0 AND g.ID = o.gpsID AND i.ID = o.breakInID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			BreakOutObj out = new BreakOutObj();
 			out.ID = cursor.getString(0);
-			EmployeeObj emp = new EmployeeObj();
-			emp.ID = cursor.getString(1);
-			out.dDate = cursor.getString(2);
-			out.dTime = cursor.getString(3);
-			out.syncBatchID = cursor.getString(4);
+			out.dDate = cursor.getString(1);
+			out.dTime = cursor.getString(2);
+			out.syncBatchID = cursor.getString(3);
 			BreakInObj in = new BreakInObj();
-			in.ID = cursor.getString(5);
+			in.ID = cursor.getString(4);
+			in.syncBatchID = cursor.getString(5);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(6);
 			in.emp = emp;
 			out.breakIn = in;
 			GpsObj gps = new GpsObj();
-			gps.date = cursor.getString(6);
-			gps.time = cursor.getString(7);
-			gps.longitude = cursor.getDouble(8);
-			gps.latitude = cursor.getDouble(9);
+			gps.date = cursor.getString(7);
+			gps.time = cursor.getString(8);
+			gps.longitude = cursor.getDouble(9);
+			gps.latitude = cursor.getDouble(10);
 			out.gps = gps;
 			breakOutList.add(out);
 		}

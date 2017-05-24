@@ -97,13 +97,11 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/state_rect_green_pri"
+                    android:gravity="center"
                     android:text="@string/check_in"
                     android:textColor="@color/white"
                     android:textSize="@dimen/eighteen"
-                    codePan:backgroundDisabled="@color/gray_oct"
-                    codePan:backgroundEnabled="@color/green_pri"
-                    codePan:backgroundPressed="@color/green_sec"
-                    codePan:enableStatePressed="true"
                     codePan:typeface="@string/proxima_nova_light"/>
 
                 <com.codepan.widget.CodePanButton
@@ -111,13 +109,11 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:background="@drawable/state_rect_gray_qui"
+                    android:gravity="center"
                     android:text="@string/check_out"
                     android:textColor="@color/white"
                     android:textSize="@dimen/eighteen"
-                    codePan:backgroundDisabled="@color/gray_qui"
-                    codePan:backgroundEnabled="@color/green_pri"
-                    codePan:backgroundPressed="@color/green_sec"
-                    codePan:enableStatePressed="true"
                     codePan:typeface="@string/proxima_nova_light"/>
 
             </LinearLayout>
