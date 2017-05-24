@@ -6,11 +6,13 @@ public class TaskObj {
 	public String name;
 	public String empID;
 	public String notes;
-	public String startDate;
 	public String endDate;
+	public StoreObj store;
+	public int notesLimit;
+	public String startDate;
 	public String dateCreated;
 	public String timeCreated;
 	public String syncBatchID;
-	public StoreObj store;
-	public int notesLimit;
+	public boolean isCheckIn;
+	public boolean isCheckOut;
 }

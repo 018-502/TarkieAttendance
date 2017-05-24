@@ -21,6 +21,7 @@ import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.FocusIndicatorView;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
+import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
@@ -40,6 +41,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private CodePanButton btnCaptureCamera, btnSwitchCamera, btnBackCamera;
 	private int cameraSelection, maxWidth, maxHeight;
 	private OnOverrideCallback overrideCallback;
+	private OnCheckOutCallback checkOutCallback;
 	private OnCheckInCallback checkInCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
@@ -218,5 +220,9 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 
 	public void setOnCheckInCallback(OnCheckInCallback checkInCallback) {
 		this.checkInCallback = checkInCallback;
+	}
+
+	public void setOnCheckOutCallback(OnCheckOutCallback checkOutCallback) {
+		this.checkOutCallback = checkOutCallback;
 	}
 }

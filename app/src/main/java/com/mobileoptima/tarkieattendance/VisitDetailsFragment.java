@@ -12,8 +12,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
-import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
@@ -30,7 +30,7 @@ import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.StoreObj;
-import com.mobileoptima.model.TaskObj;
+import com.mobileoptima.model.VisitObj;
 
 import java.util.ArrayList;
 
@@ -41,18 +41,20 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
 	private CodePanTextField etNotesVisitDetails;
 	private OnOverrideCallback overrideCallback;
+	private OnRefreshCallback refreshCallback;
 	private LinearLayout llFormsVisitDetails;
 	private FragmentTransaction transaction;
 	private ArrayList<FormObj> formList;
 	private FragmentManager manager;
 	private ViewGroup container;
+	private MainActivity main;
 	private SQLiteAdapter db;
-	private TaskObj task;
+	private VisitObj visit;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		MainActivity main = (MainActivity) getActivity();
+		main = (MainActivity) getActivity();
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -72,14 +74,25 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		btnCheckInVisitDetails.setOnClickListener(this);
 		btnCheckOutVisitDetails.setOnClickListener(this);
 		this.container = container;
-		if(task != null) {
-			StoreObj store = task.store;
+		if(visit != null) {
+			StoreObj store = visit.store;
 			if(store != null) {
 				tvStoreVisitDetails.setText(store.name);
 				tvAddressVisitDetails.setText(store.address);
 			}
-			etNotesVisitDetails.setText(task.notes);
-			loadForms(db, task.ID);
+			if(visit.isCheckIn) {
+				CheckInObj in = visit.in;
+				setCheckInTime(in.dTime);
+			}
+			if(visit.isCheckOut) {
+				CheckOutObj out = visit.out;
+				setCheckOutTime(out.dTime);
+			}
+			else {
+				btnCheckOutVisitDetails.setEnabled(visit.isCheckIn);
+			}
+			etNotesVisitDetails.setText(visit.notes);
+			loadForms(db, visit.ID);
 		}
 		return view;
 	}
@@ -120,39 +133,89 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		}
 	});
 
-	public void setTask(TaskObj task) {
-		this.task = task;
+	public void setVisit(VisitObj visit) {
+		this.visit = visit;
+	}
+
+	public void setCheckInTime(String time) {
+		String in = "IN - " + CodePanUtils.getNormalTime(time, false);
+		btnCheckInVisitDetails.setText(in);
+		btnCheckInVisitDetails.setEnabled(false);
+	}
+
+	public void setCheckOutTime(String time) {
+		String out = "OUT - " + CodePanUtils.getNormalTime(time, false);
+		btnCheckOutVisitDetails.setText(out);
+		btnCheckOutVisitDetails.setEnabled(false);
 	}
 
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
+			case R.id.btnBackVisitDetails:
+				manager.popBackStack();
+				break;
 			case R.id.btnCheckInVisitDetails:
-				MainActivity main = (MainActivity) getActivity();
-				GpsObj gps = main.getGps();
-				if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_IN_PHOTO)) {
-					CameraFragment camera = new CameraFragment();
-					camera.setGps(gps);
-					camera.setTask(task);
-					camera.setOnCheckInCallback(this);
-					camera.setImageType(ImageType.CHECK_IN);
-					camera.setOnOverrideCallback(overrideCallback);
-					transaction = manager.beginTransaction();
-					transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-							R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-					transaction.add(R.id.rlMain, camera);
-					transaction.addToBackStack(null);
-					transaction.commit();
-				}
-				else {
-					CheckInObj in = new CheckInObj();
-					in.gps = gps;
-					in.task = task;
-					onCheckIn(in);
+				if(!visit.isCheckIn) {
+					String date = CodePanUtils.getDate();
+					String time = CodePanUtils.getTime();
+					if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_IN_PHOTO)) {
+						CameraFragment camera = new CameraFragment();
+						camera.setDate(date);
+						camera.setTime(time);
+						camera.setTask(visit);
+						camera.setGps(main.getGps());
+						camera.setOnCheckInCallback(this);
+						camera.setImageType(ImageType.CHECK_IN);
+						camera.setOnOverrideCallback(overrideCallback);
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+						transaction.add(R.id.rlMain, camera);
+						transaction.addToBackStack(null);
+						transaction.commit();
+					}
+					else {
+						CheckInObj in = new CheckInObj();
+						in.gps = main.getGps();
+						in.dDate = date;
+						in.dTime = time;
+						in.task = visit;
+						onCheckIn(in);
+					}
 				}
 				break;
 			case R.id.btnCheckOutVisitDetails:
-				if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_OUT_PHOTO)) {
+				if(!visit.isCheckOut) {
+					String date = CodePanUtils.getDate();
+					String time = CodePanUtils.getTime();
+					if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_OUT_PHOTO)) {
+						CameraFragment camera = new CameraFragment();
+						camera.setDate(date);
+						camera.setTime(time);
+						camera.setTask(visit);
+						camera.setGps(main.getGps());
+						camera.setOnCheckOutCallback(this);
+						camera.setImageType(ImageType.CHECK_OUT);
+						camera.setOnOverrideCallback(overrideCallback);
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+						transaction.add(R.id.rlMain, camera);
+						transaction.addToBackStack(null);
+						transaction.commit();
+					}
+					else {
+						CheckOutObj out = new CheckOutObj();
+						out.gps = main.getGps();
+						out.dDate = date;
+						out.dTime = time;
+						CheckInObj in = new CheckInObj();
+						in.ID = TarkieLib.getCheckInID(db);
+						in.task = visit;
+						out.checkIn = in;
+						onCheckOut(out);
+					}
 				}
 				break;
 		}
@@ -164,9 +227,10 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveCheckIn(db, in.gps, in.task, in.photo);
+					boolean result = TarkieLib.saveCheckIn(db, in.gps, in.task, in.dDate,
+							in.dTime, in.photo);
 					checkInHandler.sendMessage(checkInHandler
-							.obtainMessage(result ? Result.SUCCESS : Result.FAILED));
+							.obtainMessage(result ? Result.SUCCESS : Result.FAILED, in));
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -181,12 +245,61 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		public boolean handleMessage(Message msg) {
 			switch(msg.what) {
 				case Result.SUCCESS:
-					CodePanUtils.alertToast(getActivity(), "Check-in successful");
-					MainActivity main = (MainActivity) getActivity();
+					CheckInObj in = (CheckInObj) msg.obj;
+					visit.in = in;
+					visit.isCheckIn = true;
+					setCheckInTime(in.dTime);
+					btnCheckOutVisitDetails.setEnabled(true);
 					main.updateSyncCount();
+					if(refreshCallback != null) {
+						refreshCallback.onRefresh();
+					}
+					CodePanUtils.alertToast(getActivity(), "Check-in successful");
 					break;
 				case Result.FAILED:
 					CodePanUtils.alertToast(getActivity(), "Failed to save check-in.");
+					break;
+			}
+			return true;
+		}
+	});
+
+	@Override
+	public void onCheckOut(final CheckOutObj out) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					boolean result = TarkieLib.saveCheckOut(db, out.gps, out.checkIn, out.dDate,
+							out.dTime, out.photo);
+					checkOutHandler.sendMessage(checkOutHandler
+							.obtainMessage(result ? Result.SUCCESS : Result.FAILED, out));
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler checkOutHandler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch(msg.what) {
+				case Result.SUCCESS:
+					CheckOutObj out = (CheckOutObj) msg.obj;
+					visit.out = out;
+					visit.isCheckOut = true;
+					setCheckOutTime(out.dTime);
+					main.updateSyncCount();
+					if(refreshCallback != null) {
+						refreshCallback.onRefresh();
+					}
+					CodePanUtils.alertToast(getActivity(), "Check-out successful");
+					break;
+				case Result.FAILED:
+					CodePanUtils.alertToast(getActivity(), "Failed to save check-out.");
 					break;
 			}
 			return true;
@@ -197,7 +310,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		this.overrideCallback = overrideCallback;
 	}
 
-	@Override
-	public void onCheckOut(CheckOutObj out) {
+	public void setOnRefreshCallback(OnRefreshCallback refreshCallback) {
+		this.refreshCallback = refreshCallback;
 	}
 }

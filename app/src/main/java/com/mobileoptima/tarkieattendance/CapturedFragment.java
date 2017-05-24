@@ -19,13 +19,16 @@ import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
+import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
 import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
+import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.CheckInObj;
+import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
@@ -37,6 +40,7 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 	private CodePanButton btnBackCaptured, btnRetakeCaptured, btnUsePhotoCaptured;
 	private OnRetakeCameraCallback retakeCameraCallback;
 	private OnOverrideCallback overrideCallback;
+	private OnCheckOutCallback checkOutCallback;
 	private OnCheckInCallback checkInCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
@@ -95,6 +99,12 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 			case ImageType.TIME_OUT:
 				tvTitleCaptured.setText(R.string.time_out);
 				break;
+			case ImageType.CHECK_IN:
+				tvTitleCaptured.setText(R.string.check_in);
+				break;
+			case ImageType.CHECK_OUT:
+				tvTitleCaptured.setText(R.string.check_out);
+				break;
 		}
 		return view;
 	}
@@ -140,11 +150,25 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 							CheckInObj in = new CheckInObj();
 							in.gps = gps;
 							in.task = task;
+							in.dDate = date;
+							in.dTime = time;
 							in.photo = photo;
 							checkInCallback.onCheckIn(in);
 						}
 						break;
 					case ImageType.CHECK_OUT:
+						if(checkOutCallback != null) {
+							CheckOutObj out = new CheckOutObj();
+							out.gps = gps;
+							out.dDate = date;
+							out.dTime = time;
+							out.photo = photo;
+							CheckInObj in = new CheckInObj();
+							in.ID = TarkieLib.getCheckInID(db);
+							in.task = task;
+							out.checkIn = in;
+							checkOutCallback.onCheckOut(out);
+						}
 						break;
 				}
 				break;
@@ -197,6 +221,10 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 
 	public void setOnCheckInCallback(OnCheckInCallback checkInCallback) {
 		this.checkInCallback = checkInCallback;
+	}
+
+	public void setOnCheckOutCallback(OnCheckOutCallback checkOutCallback) {
+		this.checkOutCallback = checkOutCallback;
 	}
 
 	@Override

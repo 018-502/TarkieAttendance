@@ -846,18 +846,18 @@ public class Data {
 		return searchList;
 	}
 
-	public static ArrayList<VisitObj> loadTasks(SQLiteAdapter db, String date) {
+	public static ArrayList<VisitObj> loadVisits(SQLiteAdapter db, String date) {
 		ArrayList<VisitObj> visitList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String t = Tables.getName(TB.TASK);
 		String s = Tables.getName(TB.STORES);
 		String i = Tables.getName(TB.CHECK_IN);
 		String o = Tables.getName(TB.CHECK_OUT);
-		String query = "SELECT t.ID, t.name, t.notes, t.notesLimit, s.ID, s.name, s.address, i.ID, " +
-				"i.dDate, i.dTime, o.ID, o.dDate, o.dTime FROM " + t + " as t LEFT JOIN " + i + " as i " +
-				"ON i.taskID = t.ID LEFT JOIN " + o + " as o ON o.taskID = t.ID LEFT JOIN " + s + " as s " +
-				"ON s.ID = t.storeID WHERE '" + date + "' BETWEEN t.startDate AND t.endDate " +
-				"AND t.empID = '" + empID + "'";
+		String query = "SELECT t.ID, t.name, t.notes, t.notesLimit, t.isCheckIn, t.isCheckOut, " +
+				"s.ID, s.name, s.address, i.ID, i.dDate, i.dTime, o.ID, o.dDate, o.dTime " +
+				"FROM " + t + " as t LEFT JOIN " + i + " as i ON i.taskID = t.ID LEFT JOIN " + o + " as o " +
+				"ON o.checkInID = i.ID LEFT JOIN " + s + " as s ON s.ID = t.storeID WHERE '" + date + "' " +
+				"BETWEEN t.startDate AND t.endDate AND t.empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			VisitObj visit = new VisitObj();
@@ -865,28 +865,30 @@ public class Data {
 			visit.name = cursor.getString(1);
 			visit.notes = cursor.getString(2);
 			visit.notesLimit = cursor.getInt(3);
-			String storeID = cursor.getString(4);
+			visit.isCheckIn = cursor.getInt(4) == 1;
+			visit.isCheckOut = cursor.getInt(5) == 1;
+			String storeID = cursor.getString(6);
 			if(storeID != null) {
 				StoreObj store = new StoreObj();
 				store.ID = storeID;
-				store.name = cursor.getString(5);
-				store.address = cursor.getString(6);
+				store.name = cursor.getString(7);
+				store.address = cursor.getString(8);
 				visit.store = store;
 			}
-			String checkInID = cursor.getString(7);
-			if(checkInID != null) {
+			String checkInID = cursor.getString(9);
+			if(checkInID != null && visit.isCheckIn) {
 				CheckInObj in = new CheckInObj();
 				in.ID = checkInID;
-				in.dDate = cursor.getString(8);
-				in.dTime = cursor.getString(9);
+				in.dDate = cursor.getString(10);
+				in.dTime = cursor.getString(11);
 				visit.in = in;
 			}
-			String checkOutID = cursor.getString(10);
-			if(checkOutID != null) {
+			String checkOutID = cursor.getString(12);
+			if(checkOutID != null && visit.isCheckOut) {
 				CheckOutObj out = new CheckOutObj();
 				out.ID = checkOutID;
-				out.dDate = cursor.getString(11);
-				out.dTime = cursor.getString(12);
+				out.dDate = cursor.getString(13);
+				out.dTime = cursor.getString(14);
 				visit.out = out;
 			}
 			visitList.add(visit);

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
@@ -55,13 +56,15 @@ public class VisitsAdapter extends ArrayAdapter<VisitObj> {
 			}
 			else {
 				String status = null;
-				if(obj.in != null) {
+				if(obj.in != null && obj.isCheckIn) {
 					CheckInObj in = obj.in;
-					status = in.dTime + " - ";
+					String time = CodePanUtils.getNormalTime(in.dTime, false);
+					status = time + " - ";
 				}
-				if(obj.out != null) {
+				if(obj.out != null && obj.isCheckOut) {
 					CheckOutObj out = obj.out;
-					status += out.dTime;
+					String time = CodePanUtils.getNormalTime(out.dTime, false);
+					status += time;
 				}
 				else {
 					status += "NO OUT";
