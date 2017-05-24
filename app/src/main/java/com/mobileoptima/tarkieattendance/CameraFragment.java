@@ -20,6 +20,7 @@ import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.FocusIndicatorView;
+import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
@@ -27,6 +28,7 @@ import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 
 public class CameraFragment extends Fragment implements OnClickListener, OnCaptureCallback,
 		OnRetakeCameraCallback, OnCameraErrorCallback {
@@ -38,6 +40,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private CodePanButton btnCaptureCamera, btnSwitchCamera, btnBackCamera;
 	private int cameraSelection, maxWidth, maxHeight;
 	private OnOverrideCallback overrideCallback;
+	private OnCheckInCallback checkInCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
@@ -47,6 +50,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private FrameLayout flCamera;
 	private String date, time;
 	private StoreObj store;
+	private TaskObj task;
 	private View vCamera;
 	private GpsObj gps;
 	private int type;
@@ -116,10 +120,12 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 		captured.setGps(gps);
 		captured.setDate(date);
 		captured.setTime(time);
+		captured.setTask(task);
 		captured.setStore(store);
 		captured.setImageType(type);
 		captured.setOnTimeInCallback(timeInCallback);
 		captured.setOnTimeOutCallback(timeOutCallback);
+		captured.setOnCheckInCallback(checkInCallback);
 		captured.setOnOverrideCallback(overrideCallback);
 		captured.setOnRetakeCameraCallback(this);
 		captured.setImage(fileName);
@@ -147,6 +153,10 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 
 	public void setGps(GpsObj gps) {
 		this.gps = gps;
+	}
+
+	public void setTask(TaskObj task) {
+		this.task = task;
 	}
 
 	public void setTime(String time) {
@@ -204,5 +214,9 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 
 	public void setOnTimeOutCallback(OnTimeOutCallback timeOutCallback) {
 		this.timeOutCallback = timeOutCallback;
+	}
+
+	public void setOnCheckInCallback(OnCheckInCallback checkInCallback) {
+		this.checkInCallback = checkInCallback;
 	}
 }

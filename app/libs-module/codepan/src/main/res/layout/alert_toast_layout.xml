@@ -17,6 +17,6 @@
         android:gravity="center"
         android:padding="@dimen/twelve"
         android:background="@drawable/toast_background"
-        codePan:typeface="@string/helvetica_neue_light"/>
+        codePan:typeface="@string/proxima_nova_light"/>
     
 </RelativeLayout>

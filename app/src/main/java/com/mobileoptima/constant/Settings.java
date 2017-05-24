@@ -3,12 +3,12 @@ package com.mobileoptima.constant;
 public class Settings {
 
 	//ATTENDANCE - Start Day/End Day
-	public static final String CLIENT_AT_START_DAY = "SetAtt-001-01";
-	public static final String MULTIPLE_START_DAY = "SetAtt-001-02";
-	public static final String PHOTO_AT_START_DAY = "SetAtt-001-03";
-	public static final String PHOTO_AT_END_DAY = "SetAtt-001-04";
-	public static final String ODOMETER_AT_START_AND_END_DAY = "SetAtt-001-05";
-	public static final String SIGNATURE_AT_END_DAY = "SetAtt-001-06";
+	public static final String TIME_IN_CLIENT = "SetAtt-001-01";
+	public static final String MULTIPLE_TIME_IN = "SetAtt-001-02";
+	public static final String TIME_IN_PHOTO = "SetAtt-001-03";
+	public static final String TIME_OUT_PHOTO = "SetAtt-001-04";
+	public static final String ODOMETER_PHOTO = "SetAtt-001-05";
+	public static final String TIME_OUT_SIGNATURE = "SetAtt-001-06";
 
 	//ATTENDANCE - Leaves/Rest Days
 	public static final String ADD_EDIT_LEAVES = "SetAtt-002-01";

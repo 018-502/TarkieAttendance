@@ -42,6 +42,7 @@ import com.mobileoptima.callback.Interface.OnHighlightEntriesCallback;
 import com.mobileoptima.callback.Interface.OnMultiUpdateCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
+import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
 import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
@@ -52,6 +53,7 @@ import com.mobileoptima.constant.Key;
 import com.mobileoptima.constant.Module.Action;
 import com.mobileoptima.constant.Notification;
 import com.mobileoptima.constant.RequestCode;
+import com.mobileoptima.constant.Result;
 import com.mobileoptima.constant.TabType;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.TarkieLib;
@@ -67,16 +69,15 @@ import com.mobileoptima.service.MainService;
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 import static com.mobileoptima.callback.Interface.OnInitializeCallback;
 import static com.mobileoptima.callback.Interface.OnLoginCallback;
-import static com.mobileoptima.constant.Settings.*;
+import static com.mobileoptima.constant.Settings.TIME_IN_CLIENT;
+import static com.mobileoptima.constant.Settings.TIME_IN_PHOTO;
+import static com.mobileoptima.constant.Settings.TIME_OUT_PHOTO;
 
 public class MainActivity extends FragmentActivity implements OnClickListener, OnRefreshCallback,
 		OnOverrideCallback, OnLoginCallback, OnInitializeCallback, ServiceConnection,
 		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
 		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback,
-		OnTimeInCallback, OnTimeOutCallback {
-
-	private final int SUCCESS = 1;
-	private final int FAILED = 0;
+		OnTimeInCallback, OnTimeOutCallback, OnSelectStoreCallback {
 
 	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
@@ -259,6 +260,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					}
 					else {
 						VisitsFragment visits = new VisitsFragment();
+						visits.setOnOverrideCallback(this);
 						transaction.add(R.id.flContainerMain, visits, TabType.VISITS);
 					}
 					if(current != null) {
@@ -373,7 +375,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 								String date = CodePanUtils.getDate();
 								String time = CodePanUtils.getTime();
 								GpsObj gps = getGps();
-								if(TarkieLib.isSettingsActive(db, PHOTO_AT_END_DAY)) {
+								if(TarkieLib.isSettingsEnabled(db, TIME_OUT_PHOTO)) {
 									CameraFragment camera = new CameraFragment();
 									camera.setGps(gps);
 									camera.setDate(date);
@@ -1255,16 +1257,50 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	@Override
 	public void onGpsFixed(GpsObj gps) {
-		SelectStoreFragment select = new SelectStoreFragment();
-		select.setGps(gps);
-		select.setOnTimeInCallback(this);
-		select.setOnOverrideCallback(this);
-		transaction = manager.beginTransaction();
-		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-				R.anim.fade_in, R.anim.fade_out);
-		transaction.add(R.id.rlMain, select);
-		transaction.addToBackStack(null);
-		transaction.commit();
+		if(TarkieLib.isSettingsEnabled(db, TIME_IN_CLIENT)) {
+			SelectStoreFragment select = new SelectStoreFragment();
+			select.setGps(gps);
+			select.setOnSelectStoreCallback(this);
+			transaction = manager.beginTransaction();
+			transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+					R.anim.fade_in, R.anim.fade_out);
+			transaction.add(R.id.rlMain, select, Tag.SELECT_STORE);
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
+		else {
+			onSelectStore(null);
+		}
+	}
+
+	@Override
+	public void onSelectStore(StoreObj store) {
+		GpsObj gps = getGps();
+		setDefaultStore(store);
+		if(TarkieLib.isSettingsEnabled(db, TIME_IN_PHOTO)) {
+			Fragment fragment = manager.findFragmentByTag(Tag.SELECT_STORE);
+			CameraFragment camera = new CameraFragment();
+			camera.setGps(gps);
+			camera.setStore(store);
+			camera.setImageType(ImageType.TIME_IN);
+			camera.setOnTimeInCallback(this);
+			camera.setOnOverrideCallback(this);
+			transaction = manager.beginTransaction();
+			transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+					R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+			if(fragment != null) {
+				transaction.add(R.id.rlMain, camera);
+				transaction.hide(fragment);
+			}
+			else {
+				transaction.replace(R.id.rlMain, camera);
+			}
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
+		else {
+			onTimeIn(gps, store, null);
+		}
 	}
 
 	@Override
@@ -1323,9 +1359,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveTimeIn(db, photo, gps, store);
+					boolean result = TarkieLib.saveTimeIn(db, gps, store, photo);
 					timeInHandler.sendMessage(timeInHandler.
-							obtainMessage(result ? SUCCESS : FAILED));
+							obtainMessage(result ? Result.SUCCESS : Result.FAILED));
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -1339,14 +1375,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		@Override
 		public boolean handleMessage(Message msg) {
 			switch(msg.what) {
-				case SUCCESS:
+				case Result.SUCCESS:
 					CodePanUtils.alertToast(MainActivity.this, "Time-in successful");
 					manager.popBackStack(null, POP_BACK_STACK_INCLUSIVE);
 					checkTimeIn();
 					updateSyncCount();
 					service.syncData(db);
 					break;
-				case FAILED:
+				case Result.FAILED:
 					CodePanUtils.alertToast(MainActivity.this, "Failed to save time-in.");
 					break;
 			}

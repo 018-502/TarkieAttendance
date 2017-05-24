@@ -30,6 +30,7 @@ import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.model.VisitsDateObj;
@@ -447,7 +448,7 @@ public class TarkieLib {
 		return gpsID;
 	}
 
-	public static boolean saveTimeIn(SQLiteAdapter db, String photo, GpsObj gps, StoreObj store) {
+	public static boolean saveTimeIn(SQLiteAdapter db, GpsObj gps, StoreObj store, String photo) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
@@ -460,16 +461,18 @@ public class TarkieLib {
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("photo", photo));
-		query.add(new FieldValue("storeID", store.ID));
 		query.add(new FieldValue("gpsID", gpsID));
+		if(store != null) {
+			query.add(new FieldValue("storeID", store.ID));
+		}
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		binder.insert(Tables.getName(TB.TIME_IN), query);
 		return binder.finish();
 	}
 
-	public static boolean saveTimeOut(SQLiteAdapter db, String dDate, String dTime,
-									  String photo, String signature, GpsObj gps) {
+	public static boolean saveTimeOut(SQLiteAdapter db, GpsObj gps, String dDate, String dTime,
+									  String photo, String signature) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
@@ -642,7 +645,8 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean saveTask(SQLiteAdapter db, StoreObj store, String scheduleDate, String notes) {
+	public static boolean saveTask(SQLiteAdapter db, StoreObj store, String startDate,
+								   String endDate, String notes) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String empID = getEmployeeID(db);
 		String dDate = CodePanUtils.getDate();
@@ -654,9 +658,54 @@ public class TarkieLib {
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("notes", notes));
 		query.add(new FieldValue("storeID", store.ID));
-		query.add(new FieldValue("scheduleDate", scheduleDate));
+		query.add(new FieldValue("startDate", startDate));
+		query.add(new FieldValue("endDate", endDate));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		binder.insert(Tables.getName(TB.TASK), query);
+		return binder.finish();
+	}
+
+	public static boolean saveCheckIn(SQLiteAdapter db, GpsObj gps, TaskObj task, String photo) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
+		String empID = getEmployeeID(db);
+		String timeInID = getTimeInID(db);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("gpsID", gpsID));
+		query.add(new FieldValue("photo", photo));
+		query.add(new FieldValue("taskID", task.ID));
+		query.add(new FieldValue("timeInID", timeInID));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		binder.insert(Tables.getName(TB.CHECK_IN), query);
+		return binder.finish();
+	}
+
+	public static boolean saveCheckOut(SQLiteAdapter db, GpsObj gps, TaskObj task, String photo,
+									   String checkInID) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
+		String empID = getEmployeeID(db);
+		String timeInID = getTimeInID(db);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("gpsID", gpsID));
+		query.add(new FieldValue("photo", photo));
+		query.add(new FieldValue("taskID", task.ID));
+		query.add(new FieldValue("timeInID", timeInID));
+		query.add(new FieldValue("checkInID", checkInID));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		binder.insert(Tables.getName(TB.CHECK_OUT), query);
 		return binder.finish();
 	}
 
@@ -1251,7 +1300,7 @@ public class TarkieLib {
 		return visitsDateList;
 	}
 
-	public static boolean isSettingsActive(SQLiteAdapter db, String code) {
+	public static boolean isSettingsEnabled(SQLiteAdapter db, String code) {
 		String groupID = getGroupID(db);
 		String s = Tables.getName(TB.SETTINGS);
 		String sg = Tables.getName(TB.SETTINGS_GROUP);

@@ -14,21 +14,15 @@ import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
-import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
-import com.mobileoptima.callback.Interface.OnTimeInCallback;
 import com.mobileoptima.constant.Convention;
-import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.StoreObj;
-
-import static com.mobileoptima.constant.Settings.PHOTO_AT_START_DAY;
 
 public class SelectStoreFragment extends Fragment implements OnClickListener, OnSelectStoreCallback {
 
 	private CodePanButton btnSelectStore, btnCancelStore, btnOkStore;
-	private OnOverrideCallback overrideCallback;
-	private OnTimeInCallback timeInCallback;
+	private OnSelectStoreCallback selectStoreCallback;
 	private FragmentTransaction transaction;
 	private FragmentManager manager;
 	private CodePanLabel tvNameForm;
@@ -89,29 +83,8 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 			case R.id.btnOkStore:
 				if(store != null) {
 					boolean result = TarkieLib.setDefaultStore(db, store.ID);
-					if(result) {
-						if(TarkieLib.isSettingsActive(db, PHOTO_AT_START_DAY)) {
-							MainActivity main = (MainActivity) getActivity();
-							main.setDefaultStore(store);
-							CameraFragment camera = new CameraFragment();
-							camera.setGps(gps);
-							camera.setStore(store);
-							camera.setImageType(ImageType.TIME_IN);
-							camera.setOnTimeInCallback(timeInCallback);
-							camera.setOnOverrideCallback(overrideCallback);
-							transaction = manager.beginTransaction();
-							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-							transaction.add(R.id.rlMain, camera);
-							transaction.hide(this);
-							transaction.addToBackStack(null);
-							transaction.commit();
-						}
-						else {
-							if(timeInCallback != null) {
-								timeInCallback.onTimeIn(gps, store, null);
-							}
-						}
+					if(result && selectStoreCallback != null) {
+						selectStoreCallback.onSelectStore(store);
 					}
 				}
 				else {
@@ -128,17 +101,13 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 		this.gps = gps;
 	}
 
-	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
-		this.overrideCallback = overrideCallback;
-	}
-
 	@Override
 	public void onSelectStore(StoreObj store) {
 		btnSelectStore.setText(store.name);
 		this.store = store;
 	}
 
-	public void setOnTimeInCallback(OnTimeInCallback timeInCallback) {
-		this.timeInCallback = timeInCallback;
+	public void setOnSelectStoreCallback(OnSelectStoreCallback selectStoreCallback) {
+		this.selectStoreCallback = selectStoreCallback;
 	}
 }

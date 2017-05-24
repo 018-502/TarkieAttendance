@@ -18,6 +18,7 @@ import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
+import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
@@ -25,6 +26,7 @@ import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 
 public class CapturedFragment extends Fragment implements OnClickListener,
 		OnBackPressedCallback, OnFragmentCallback {
@@ -32,6 +34,7 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 	private CodePanButton btnBackCaptured, btnRetakeCaptured, btnUsePhotoCaptured;
 	private OnRetakeCameraCallback retakeCameraCallback;
 	private OnOverrideCallback overrideCallback;
+	private OnCheckInCallback checkInCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
@@ -41,6 +44,7 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 	private ImageView ivCaptured;
 	private SQLiteAdapter db;
 	private StoreObj store;
+	private TaskObj task;
 	private GpsObj gps;
 	private int type;
 
@@ -119,6 +123,13 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 							timeOutCallback.onTimeOut(gps, date, time, photo);
 						}
 						break;
+					case ImageType.CHECK_IN:
+						if(checkInCallback != null) {
+							checkInCallback.onCheckIn(gps, task, photo);
+						}
+						break;
+					case ImageType.CHECK_OUT:
+						break;
 				}
 				break;
 		}
@@ -138,6 +149,10 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 
 	public void setGps(GpsObj gps) {
 		this.gps = gps;
+	}
+
+	public void setTask(TaskObj task) {
+		this.task = task;
 	}
 
 	public void setTime(String time) {
@@ -162,6 +177,10 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 
 	public void setOnTimeOutCallback(OnTimeOutCallback timeOutCallback) {
 		this.timeOutCallback = timeOutCallback;
+	}
+
+	public void setOnCheckInCallback(OnCheckInCallback checkInCallback) {
+		this.checkInCallback = checkInCallback;
 	}
 
 	@Override

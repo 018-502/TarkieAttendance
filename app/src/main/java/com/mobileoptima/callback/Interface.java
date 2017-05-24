@@ -8,6 +8,7 @@ import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 
 import java.util.ArrayList;
 
@@ -99,5 +100,9 @@ public class Interface {
 
 	public interface OnTimeOutCallback {
 		void onTimeOut(GpsObj gps, String date, String time, String photo);
+	}
+
+	public interface OnCheckInCallback {
+		void onCheckIn(GpsObj gps, TaskObj task, String photo);
 	}
 }

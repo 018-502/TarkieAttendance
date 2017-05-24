@@ -190,7 +190,7 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 			public void run() {
 				try {
 					TimeOutObj out = attendance.out;
-					result = TarkieLib.saveTimeOut(db, out.dDate, out.dTime, photo, signature, gps);
+					result = TarkieLib.saveTimeOut(db, gps, out.dDate, out.dTime, photo, signature);
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {

@@ -26,6 +26,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.VisitsAdapter;
 import com.mobileoptima.adapter.VisitsDateAdapter;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.TaskObj;
@@ -40,6 +41,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 	private final int NEXT = 2;
 	private final int NO_OF_DAYS = 5;
 
+	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private CodePanLabel tvSelectedVisits;
 	private VisitsDateAdapter dateAdapter;
@@ -114,6 +116,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 				TaskObj task = taskList.get(i);
 				VisitDetailsFragment details = new VisitDetailsFragment();
 				details.setTask(task);
+				details.setOnOverrideCallback(overrideCallback);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -286,4 +289,8 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 			return true;
 		}
 	});
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
+	}
 }
