@@ -25,6 +25,7 @@ import com.mobileoptima.callback.Interface.OnTimeInCallback;
 import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
+import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
@@ -136,7 +137,11 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 						break;
 					case ImageType.CHECK_IN:
 						if(checkInCallback != null) {
-							checkInCallback.onCheckIn(gps, task, photo);
+							CheckInObj in = new CheckInObj();
+							in.gps = gps;
+							in.task = task;
+							in.photo = photo;
+							checkInCallback.onCheckIn(in);
 						}
 						break;
 					case ImageType.CHECK_OUT:
