@@ -377,6 +377,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
+                    <View
+                        android:id="@+id/vExpenseMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/black_trans_ten"
+                        android:visibility="gone"/>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -422,6 +429,13 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:visibility="gone">
+
+                    <View
+                        android:id="@+id/vInventoryMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/black_trans_ten"
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

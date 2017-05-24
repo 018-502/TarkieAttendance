@@ -82,8 +82,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnPhotosMain,
 			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain, btnExpenseMain;
+	private View vHomeMain, vVisitsMain, vPhotosMain, vEntriesMain, vExpenseMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
-	private View vHomeMain, vVisitsMain, vPhotosMain, vEntriesMain;
 	private OnBackPressedCallback backPressedCallback;
 	private LocalBroadcastManager broadcastManager;
 	private ImageView ivTimeInMain, ivTimeOutMain;
@@ -164,6 +164,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vVisitsMain = findViewById(R.id.vVisitsMain);
 		vPhotosMain = findViewById(R.id.vPhotosMain);
 		vEntriesMain = findViewById(R.id.vEntriesMain);
+		vExpenseMain = findViewById(R.id.vExpenseMain);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
 		findViewById(R.id.llUpdateMasterFileMain).setOnClickListener(this);
@@ -309,6 +310,23 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				setTabType(TabType.ENTRIES);
 				break;
 			case R.id.btnExpenseMain:
+				if(!tabType.equals(TabType.EXPENSE)) {
+					Fragment current = manager.findFragmentByTag(tabType);
+					Fragment old = manager.findFragmentByTag(TabType.EXPENSE);
+					transaction = manager.beginTransaction();
+					if(old != null) {
+						transaction.show(old);
+					}
+					else {
+						UpgradeFragment upgrade = new UpgradeFragment();
+						transaction.add(R.id.flContainerMain, upgrade, TabType.EXPENSE);
+					}
+					if(current != null) {
+						transaction.hide(current);
+					}
+					transaction.commit();
+				}
+				setTabType(TabType.EXPENSE);
 				break;
 			case R.id.btnMenuMain:
 				if(dlMain.isDrawerOpen(rlMenuMain)) {
@@ -670,6 +688,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vVisitsMain.setVisibility(View.GONE);
 		vPhotosMain.setVisibility(View.GONE);
 		vEntriesMain.setVisibility(View.GONE);
+		vExpenseMain.setVisibility(View.GONE);
 		switch(tabType) {
 			case TabType.HOME:
 				vHomeMain.setVisibility(View.VISIBLE);
@@ -705,6 +724,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlDateMain.setVisibility(View.GONE);
 				rlSearchMain.setVisibility(View.VISIBLE);
 				btnSelectMain.setVisibility(View.VISIBLE);
+				btnAddVisitMain.setVisibility(View.GONE);
+				break;
+			case TabType.EXPENSE:
+				vExpenseMain.setVisibility(View.VISIBLE);
+				rlNotifMain.setVisibility(View.VISIBLE);
+				rlSyncMain.setVisibility(View.VISIBLE);
+				rlSearchMain.setVisibility(View.GONE);
+				rlDateMain.setVisibility(View.GONE);
+				btnSelectMain.setVisibility(View.GONE);
 				btnAddVisitMain.setVisibility(View.GONE);
 				break;
 		}
