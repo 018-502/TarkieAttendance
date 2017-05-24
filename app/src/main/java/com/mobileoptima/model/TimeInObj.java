@@ -5,11 +5,12 @@ import com.codepan.model.GpsObj;
 public class TimeInObj {
 
 	public String ID;
-	public String empID;
+	public GpsObj gps;
 	public String dTime;
 	public String dDate;
-	public String storeID;
-	public String syncBatchID;
+	public String photo;
+	public StoreObj store;
+	public EmployeeObj emp;
 	public boolean isTimeOut;
-	public GpsObj gps;
+	public String syncBatchID;
 }

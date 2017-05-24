@@ -27,6 +27,8 @@ import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
+import com.mobileoptima.model.TimeInObj;
+import com.mobileoptima.model.TimeOutObj;
 
 public class CapturedFragment extends Fragment implements OnClickListener,
 		OnBackPressedCallback, OnFragmentCallback {
@@ -115,12 +117,21 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 				switch(type) {
 					case ImageType.TIME_IN:
 						if(timeInCallback != null) {
-							timeInCallback.onTimeIn(gps, store, photo);
+							TimeInObj in = new TimeInObj();
+							in.gps = gps;
+							in.store = store;
+							in.photo = photo;
+							timeInCallback.onTimeIn(in);
 						}
 						break;
 					case ImageType.TIME_OUT:
 						if(timeOutCallback != null) {
-							timeOutCallback.onTimeOut(gps, date, time, photo);
+							TimeOutObj out = new TimeOutObj();
+							out.gps = gps;
+							out.dDate = date;
+							out.dTime = time;
+							out.photo = photo;
+							timeOutCallback.onTimeOut(out);
 						}
 						break;
 					case ImageType.CHECK_IN:

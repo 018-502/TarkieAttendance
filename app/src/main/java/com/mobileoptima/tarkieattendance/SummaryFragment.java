@@ -110,9 +110,9 @@ public class SummaryFragment extends Fragment implements OnClickListener, OnBack
 
 	public void computeSummary() {
 		if(attendance != null) {
-			TimeInObj in = attendance.in;
 			TimeOutObj out = attendance.out;
-			if(in != null && out != null) {
+			TimeInObj in = out.timeIn;
+			if(in != null) {
 				long millisIn = CodePanUtils.dateTimeToMillis(in.dDate, in.dTime);
 				long millisOut = CodePanUtils.dateTimeToMillis(out.dDate, out.dTime);
 				long totalBreak = attendance.totalBreak;

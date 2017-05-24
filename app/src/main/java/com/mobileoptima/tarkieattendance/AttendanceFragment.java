@@ -21,6 +21,7 @@ import com.mobileoptima.adapter.AttendanceAdapter;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.AttendanceObj;
 import com.mobileoptima.model.TimeInObj;
+import com.mobileoptima.model.TimeOutObj;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,8 @@ public class AttendanceFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				AttendanceObj attendance = attendanceList.get(i);
-				TimeInObj in = attendance.in;
+				TimeOutObj out = attendance.out;
+				TimeInObj in = out.timeIn;
 				if(in != null && in.isTimeOut) {
 					SummaryFragment summary = new SummaryFragment();
 					summary.setAttendance(attendance);

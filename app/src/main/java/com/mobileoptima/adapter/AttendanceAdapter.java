@@ -44,9 +44,9 @@ public class AttendanceAdapter extends ArrayAdapter<AttendanceObj> {
 			else {
 				holder = (ViewHolder) view.getTag();
 			}
-			if(obj.in != null && obj.out != null) {
-				TimeInObj in = obj.in;
+			if(obj.out != null) {
 				TimeOutObj out = obj.out;
+				TimeInObj in = out.timeIn;
 				String dateIn = CodePanUtils.getCalendarDate(in.dDate, false, true);
 				holder.tvDateAttendance.setText(dateIn);
 				String timeIn = CodePanUtils.getNormalTime(in.dTime, false);

@@ -5,11 +5,12 @@ import com.codepan.model.GpsObj;
 public class IncidentReportObj {
 
 	public String ID;
+	public GpsObj gps;
 	public String dDate;
 	public String dTime;
-	public String empID;
 	public String value;
-	public String incidentID;
+	public EmployeeObj emp;
+	public TimeInObj timeIn;
+	public IncidentObj incident;
 	public String syncBatchID;
-	public GpsObj gps;
 }

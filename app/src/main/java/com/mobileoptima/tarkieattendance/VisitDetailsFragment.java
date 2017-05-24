@@ -19,12 +19,15 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
+import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Result;
 import com.mobileoptima.constant.Settings;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
+import com.mobileoptima.model.CheckInObj;
+import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
@@ -32,7 +35,7 @@ import com.mobileoptima.model.TaskObj;
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
-		OnCheckInCallback {
+		OnCheckInCallback, OnCheckOutCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
@@ -142,23 +145,28 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					transaction.commit();
 				}
 				else {
-					onCheckIn(gps, task, null);
+					CheckInObj in = new CheckInObj();
+					in.gps = gps;
+					in.task = task;
+					onCheckIn(in);
 				}
 				break;
 			case R.id.btnCheckOutVisitDetails:
+				if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_OUT_PHOTO)) {
+				}
 				break;
 		}
 	}
 
 	@Override
-	public void onCheckIn(final GpsObj gps, final TaskObj task, final String photo) {
+	public void onCheckIn(final CheckInObj in) {
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveCheckIn(db, gps, task, photo);
-					checkInHandler.sendMessage(checkInHandler.
-							obtainMessage(result ? Result.SUCCESS : Result.FAILED));
+					boolean result = TarkieLib.saveCheckIn(db, in.gps, in.task, in.photo);
+					checkInHandler.sendMessage(checkInHandler
+							.obtainMessage(result ? Result.SUCCESS : Result.FAILED));
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -187,5 +195,9 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
 		this.overrideCallback = overrideCallback;
+	}
+
+	@Override
+	public void onCheckOut(CheckOutObj out) {
 	}
 }

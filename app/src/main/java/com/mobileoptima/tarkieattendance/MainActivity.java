@@ -64,6 +64,8 @@ import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TimeInObj;
+import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.service.MainService;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
@@ -391,7 +393,11 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 									transaction.commit();
 								}
 								else {
-									onTimeOut(gps, date, time, null);
+									TimeOutObj out = new TimeOutObj();
+									out.gps = gps;
+									out.dDate = date;
+									out.dTime = time;
+									onTimeOut(out);
 								}
 							}
 						});
@@ -1299,7 +1305,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			transaction.commit();
 		}
 		else {
-			onTimeIn(gps, store, null);
+			TimeInObj in = new TimeInObj();
+			in.gps = gps;
+			in.store = store;
+			onTimeIn(in);
 		}
 	}
 
@@ -1354,12 +1363,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	@Override
-	public void onTimeIn(final GpsObj gps, final StoreObj store, final String photo) {
+	public void onTimeIn(final TimeInObj in) {
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveTimeIn(db, gps, store, photo);
+					boolean result = TarkieLib.saveTimeIn(db, in.gps, in.store, in.photo);
 					timeInHandler.sendMessage(timeInHandler.
 							obtainMessage(result ? Result.SUCCESS : Result.FAILED));
 				}
@@ -1391,17 +1400,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	});
 
 	@Override
-	public void onTimeOut(GpsObj gps, String date, String time, String photo) {
+	public void onTimeOut(final TimeOutObj out) {
 		Fragment captured = manager.findFragmentByTag(Tag.CAPTURED);
 		String timeInID = TarkieLib.getTimeInID(db);
 		AttendanceObj attendance = TarkieLib.getAttendance(db, timeInID);
-		attendance.out.dDate = date;
-		attendance.out.dTime = time;
+		attendance.out.dDate = out.dDate;
+		attendance.out.dTime = out.dTime;
 		SummaryFragment summary = new SummaryFragment();
-		summary.setAttendance(attendance);
-		summary.setGps(gps);
-		summary.setImage(photo);
+		summary.setGps(out.gps);
+		summary.setImage(out.photo);
 		summary.setIsTimeOut(true);
+		summary.setAttendance(attendance);
 		summary.setOnOverrideCallback(this);
 		transaction = manager.beginTransaction();
 		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,

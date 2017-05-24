@@ -5,11 +5,9 @@ import com.codepan.model.GpsObj;
 public class BreakOutObj {
 
 	public String ID;
-	public String empID;
+	public GpsObj gps;
 	public String dTime;
 	public String dDate;
-	public String breakInID;
-	public String timeInID;
+	public BreakInObj breakIn;
 	public String syncBatchID;
-	public GpsObj gps;
 }

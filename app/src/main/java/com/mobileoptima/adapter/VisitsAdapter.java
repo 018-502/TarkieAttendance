@@ -10,18 +10,18 @@ import android.widget.ArrayAdapter;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
-import com.mobileoptima.model.TaskObj;
+import com.mobileoptima.model.VisitObj;
 import com.mobileoptima.tarkieattendance.R;
 
 import java.util.ArrayList;
 
-public class VisitsAdapter extends ArrayAdapter<TaskObj> {
+public class VisitsAdapter extends ArrayAdapter<VisitObj> {
 
-	private ArrayList<TaskObj> items;
+	private ArrayList<VisitObj> items;
 	private LayoutInflater inflater;
 	private int orange, green;
 
-	public VisitsAdapter(Context context, ArrayList<TaskObj> items) {
+	public VisitsAdapter(Context context, ArrayList<VisitObj> items) {
 		super(context, 0, items);
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.items = items;
@@ -34,7 +34,7 @@ public class VisitsAdapter extends ArrayAdapter<TaskObj> {
 	public View getView(final int position, final View convertView, final ViewGroup parent) {
 		View view = convertView;
 		ViewHolder holder;
-		final TaskObj obj = items.get(position);
+		final VisitObj obj = items.get(position);
 		if(obj != null) {
 			if(view == null) {
 				view = inflater.inflate(R.layout.visits_list_row, parent, false);

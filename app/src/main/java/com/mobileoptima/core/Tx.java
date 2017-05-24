@@ -8,14 +8,18 @@ import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
 import com.codepan.database.SQLiteQuery;
+import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakOutObj;
+import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.IncidentObj;
 import com.mobileoptima.model.IncidentReportObj;
+import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.schema.Tables;
@@ -40,15 +44,18 @@ public class Tx {
 		try {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
+			GpsObj gps = in.gps;
+			EmployeeObj emp = in.emp;
+			StoreObj store = in.store;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_in", in.dDate);
 			paramsObj.put("time_in", in.dTime);
-			paramsObj.put("gps_date", in.gps.date);
-			paramsObj.put("gps_time", in.gps.time);
-			paramsObj.put("latitude", in.gps.latitude);
-			paramsObj.put("longitude", in.gps.longitude);
-			paramsObj.put("store_id", in.storeID);
-			paramsObj.put("employee_id", in.empID);
+			paramsObj.put("gps_date", gps.date);
+			paramsObj.put("gps_time", gps.time);
+			paramsObj.put("latitude", gps.latitude);
+			paramsObj.put("longitude", gps.longitude);
+			paramsObj.put("store_id", store.ID);
+			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", in.ID);
 			paramsObj.put("sync_batch_id", in.syncBatchID);
 			params = paramsObj.toString(INDENT);
@@ -100,19 +107,21 @@ public class Tx {
 		try {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
-			String syncBatchID = TarkieLib.getSyncBatchID(db, TB.TIME_IN, out.timeInID);
+			GpsObj gps = out.gps;
+			TimeInObj in = out.timeIn;
+			EmployeeObj emp = in.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);
-			paramsObj.put("gps_date", out.gps.date);
-			paramsObj.put("gps_time", out.gps.time);
-			paramsObj.put("latitude", out.gps.latitude);
-			paramsObj.put("longitude", out.gps.longitude);
-			paramsObj.put("employee_id", out.empID);
+			paramsObj.put("gps_date", gps.date);
+			paramsObj.put("gps_time", gps.time);
+			paramsObj.put("latitude", gps.latitude);
+			paramsObj.put("longitude", gps.longitude);
+			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", out.ID);
 			paramsObj.put("sync_batch_id", out.syncBatchID);
-			paramsObj.put("local_record_id_in", out.timeInID);
-			paramsObj.put("sync_batch_id_in", syncBatchID);
+			paramsObj.put("local_record_id_in", in.ID);
+			paramsObj.put("sync_batch_id_in", in.syncBatchID);
 			params = paramsObj.toString(INDENT);
 			response = CodePanUtils.doHttpPost(url, paramsObj, TIMEOUT);
 			CodePanUtils.logHttpRequest(params, response);
@@ -162,6 +171,7 @@ public class Tx {
 		try {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
+			EmployeeObj emp = in.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_in", in.dDate);
 			paramsObj.put("time_in", in.dTime);
@@ -169,7 +179,7 @@ public class Tx {
 			paramsObj.put("gps_time", in.gps.time);
 			paramsObj.put("latitude", in.gps.latitude);
 			paramsObj.put("longitude", in.gps.longitude);
-			paramsObj.put("employee_id", in.empID);
+			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", in.ID);
 			paramsObj.put("sync_batch_id", in.syncBatchID);
 			params = paramsObj.toString(INDENT);
@@ -221,7 +231,8 @@ public class Tx {
 		try {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
-			String syncBatchID = TarkieLib.getSyncBatchID(db, TB.BREAK_IN, out.breakInID);
+			BreakInObj in = out.breakIn;
+			EmployeeObj emp = in.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);
@@ -229,11 +240,11 @@ public class Tx {
 			paramsObj.put("gps_time", out.gps.time);
 			paramsObj.put("latitude", out.gps.latitude);
 			paramsObj.put("longitude", out.gps.longitude);
-			paramsObj.put("employee_id", out.empID);
+			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", out.ID);
 			paramsObj.put("sync_batch_id", out.syncBatchID);
-			paramsObj.put("local_record_id_in", out.breakInID);
-			paramsObj.put("sync_batch_id_in", syncBatchID);
+			paramsObj.put("local_record_id_in", in.ID);
+			paramsObj.put("sync_batch_id_in", in.syncBatchID);
 			params = paramsObj.toString(INDENT);
 			response = CodePanUtils.doHttpPost(url, paramsObj, TIMEOUT);
 			CodePanUtils.logHttpRequest(params, response);
@@ -283,6 +294,8 @@ public class Tx {
 		try {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
+			EmployeeObj emp = ir.emp;
+			IncidentObj incident = ir.incident;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date", ir.dDate);
 			paramsObj.put("time", ir.dTime);
@@ -290,10 +303,10 @@ public class Tx {
 			paramsObj.put("gps_time", ir.gps.time);
 			paramsObj.put("latitude", ir.gps.latitude);
 			paramsObj.put("longitude", ir.gps.longitude);
-			paramsObj.put("employee_id", ir.empID);
+			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", ir.ID);
 			paramsObj.put("sync_batch_id", ir.syncBatchID);
-			paramsObj.put("alert_type_id", ir.incidentID);
+			paramsObj.put("alert_type_id", incident.ID);
 			paramsObj.put("value", ir.value);
 			params = paramsObj.toString(INDENT);
 			response = CodePanUtils.doHttpPost(url, paramsObj, TIMEOUT);

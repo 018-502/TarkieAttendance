@@ -12,7 +12,5 @@ public class TaskObj {
 	public String timeCreated;
 	public String syncBatchID;
 	public StoreObj store;
-	public CheckInObj in;
-	public CheckOutObj out;
 	public int notesLimit;
 }

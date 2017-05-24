@@ -3,12 +3,15 @@ package com.mobileoptima.callback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.mobileoptima.model.AnnouncementObj;
+import com.mobileoptima.model.CheckInObj;
+import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
-import com.mobileoptima.model.TaskObj;
+import com.mobileoptima.model.TimeInObj;
+import com.mobileoptima.model.TimeOutObj;
 
 import java.util.ArrayList;
 
@@ -95,14 +98,18 @@ public class Interface {
 	}
 
 	public interface OnTimeInCallback {
-		void onTimeIn(GpsObj gps, StoreObj store, String photo);
+		void onTimeIn(TimeInObj in);
 	}
 
 	public interface OnTimeOutCallback {
-		void onTimeOut(GpsObj gps, String date, String time, String photo);
+		void onTimeOut(TimeOutObj out);
 	}
 
 	public interface OnCheckInCallback {
-		void onCheckIn(GpsObj gps, TaskObj task, String photo);
+		void onCheckIn(CheckInObj in);
+	}
+
+	public interface OnCheckOutCallback {
+		void onCheckOut(CheckOutObj out);
 	}
 }

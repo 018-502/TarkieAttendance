@@ -18,19 +18,21 @@ import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.IncidentObj;
 import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.InventoryObj;
 import com.mobileoptima.model.LocationObj;
 import com.mobileoptima.model.PageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
-import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
+import com.mobileoptima.model.VisitObj;
 import com.mobileoptima.schema.Tables;
 import com.mobileoptima.schema.Tables.TB;
 
@@ -138,8 +140,7 @@ public class Data {
 			out.dDate = cursor.getString(5);
 			out.dTime = cursor.getString(6);
 			out.signature = cursor.getString(7);
-			out.timeInID = timeInID;
-			attendance.in = in;
+			out.timeIn = in;
 			attendance.out = out;
 			attendance.totalBreak = totalBreak;
 			attendanceList.add(attendance);
@@ -416,11 +417,15 @@ public class Data {
 		while(cursor.moveToNext()) {
 			TimeInObj in = new TimeInObj();
 			in.ID = cursor.getString(0);
-			in.empID = cursor.getString(1);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(1);
+			in.emp = emp;
 			in.dDate = cursor.getString(2);
 			in.dTime = cursor.getString(3);
 			in.syncBatchID = cursor.getString(4);
-			in.storeID = cursor.getString(5);
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(5);
+			in.store = store;
 			GpsObj gps = new GpsObj();
 			gps.date = cursor.getString(6);
 			gps.time = cursor.getString(7);
@@ -437,23 +442,29 @@ public class Data {
 		ArrayList<TimeOutObj> timeOutList = new ArrayList<>();
 		String g = Tables.getName(TB.GPS);
 		String o = Tables.getName(TB.TIME_OUT);
-		String query = "SELECT o.ID, o.empID, o.dDate, o.dTime, o.syncBatchID, o.timeInID, " +
-				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + g + " g " +
-				"WHERE o.isSync = 0 AND g.ID = o.gpsID";
+		String i = Tables.getName(TB.TIME_IN);
+		String query = "SELECT o.ID, o.empID, o.dDate, o.dTime, o.syncBatchID, i.ID, i.syncBatchID, " +
+				"g.gpsDate, g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + o + " o, " + i + " i, " +
+				g + " g WHERE o.isSync = 0 AND g.ID = o.gpsID AND i.ID = o.timeInID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TimeOutObj out = new TimeOutObj();
 			out.ID = cursor.getString(0);
-			out.empID = cursor.getString(1);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(1);
 			out.dDate = cursor.getString(2);
 			out.dTime = cursor.getString(3);
 			out.syncBatchID = cursor.getString(4);
-			out.timeInID = cursor.getString(5);
+			TimeInObj in = new TimeInObj();
+			in.ID = cursor.getString(5);
+			in.syncBatchID = cursor.getString(6);
+			in.emp = emp;
+			out.timeIn = in;
 			GpsObj gps = new GpsObj();
-			gps.date = cursor.getString(6);
-			gps.time = cursor.getString(7);
-			gps.longitude = cursor.getDouble(8);
-			gps.latitude = cursor.getDouble(9);
+			gps.date = cursor.getString(7);
+			gps.time = cursor.getString(8);
+			gps.longitude = cursor.getDouble(9);
+			gps.latitude = cursor.getDouble(10);
 			out.gps = gps;
 			timeOutList.add(out);
 		}
@@ -472,7 +483,9 @@ public class Data {
 		while(cursor.moveToNext()) {
 			BreakInObj in = new BreakInObj();
 			in.ID = cursor.getString(0);
-			in.empID = cursor.getString(1);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(1);
+			in.emp = emp;
 			in.dDate = cursor.getString(2);
 			in.dTime = cursor.getString(3);
 			in.syncBatchID = cursor.getString(4);
@@ -499,11 +512,15 @@ public class Data {
 		while(cursor.moveToNext()) {
 			BreakOutObj out = new BreakOutObj();
 			out.ID = cursor.getString(0);
-			out.empID = cursor.getString(1);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(1);
 			out.dDate = cursor.getString(2);
 			out.dTime = cursor.getString(3);
 			out.syncBatchID = cursor.getString(4);
-			out.breakInID = cursor.getString(5);
+			BreakInObj in = new BreakInObj();
+			in.ID = cursor.getString(5);
+			in.emp = emp;
+			out.breakIn = in;
 			GpsObj gps = new GpsObj();
 			gps.date = cursor.getString(6);
 			gps.time = cursor.getString(7);
@@ -528,10 +545,14 @@ public class Data {
 			IncidentReportObj ir = new IncidentReportObj();
 			String value = cursor.getString(5);
 			ir.ID = cursor.getString(0);
-			ir.empID = cursor.getString(1);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(1);
+			ir.emp = emp;
 			ir.dDate = cursor.getString(2);
 			ir.dTime = cursor.getString(3);
-			ir.incidentID = cursor.getString(4);
+			IncidentObj incident = new IncidentObj();
+			incident.ID = cursor.getString(4);
+			ir.incident = incident;
 			ir.value = value != null ? value : "on";
 			ir.syncBatchID = cursor.getString(6);
 			GpsObj gps = new GpsObj();
@@ -825,8 +846,8 @@ public class Data {
 		return searchList;
 	}
 
-	public static ArrayList<TaskObj> loadTasks(SQLiteAdapter db, String date) {
-		ArrayList<TaskObj> taskList = new ArrayList<>();
+	public static ArrayList<VisitObj> loadTasks(SQLiteAdapter db, String date) {
+		ArrayList<VisitObj> visitList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String t = Tables.getName(TB.TASK);
 		String s = Tables.getName(TB.STORES);
@@ -839,18 +860,18 @@ public class Data {
 				"AND t.empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			TaskObj task = new TaskObj();
-			task.ID = cursor.getString(0);
-			task.name = cursor.getString(1);
-			task.notes = cursor.getString(2);
-			task.notesLimit = cursor.getInt(3);
+			VisitObj visit = new VisitObj();
+			visit.ID = cursor.getString(0);
+			visit.name = cursor.getString(1);
+			visit.notes = cursor.getString(2);
+			visit.notesLimit = cursor.getInt(3);
 			String storeID = cursor.getString(4);
 			if(storeID != null) {
 				StoreObj store = new StoreObj();
 				store.ID = storeID;
 				store.name = cursor.getString(5);
 				store.address = cursor.getString(6);
-				task.store = store;
+				visit.store = store;
 			}
 			String checkInID = cursor.getString(7);
 			if(checkInID != null) {
@@ -858,7 +879,7 @@ public class Data {
 				in.ID = checkInID;
 				in.dDate = cursor.getString(8);
 				in.dTime = cursor.getString(9);
-				task.in = in;
+				visit.in = in;
 			}
 			String checkOutID = cursor.getString(10);
 			if(checkOutID != null) {
@@ -866,11 +887,11 @@ public class Data {
 				out.ID = checkOutID;
 				out.dDate = cursor.getString(11);
 				out.dTime = cursor.getString(12);
-				task.out = out;
+				visit.out = out;
 			}
-			taskList.add(task);
+			visitList.add(visit);
 		}
 		cursor.close();
-		return taskList;
+		return visitList;
 	}
 }

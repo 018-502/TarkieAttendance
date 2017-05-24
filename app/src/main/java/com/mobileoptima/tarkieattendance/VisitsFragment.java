@@ -30,6 +30,7 @@ import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.TaskObj;
+import com.mobileoptima.model.VisitObj;
 import com.mobileoptima.model.VisitsDateObj;
 
 import java.util.ArrayList;
@@ -45,9 +46,9 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 	private FragmentTransaction transaction;
 	private CodePanLabel tvSelectedVisits;
 	private VisitsDateAdapter dateAdapter;
+	private ArrayList<VisitObj> visitList;
 	private View previous, next, current;
 	private String csDate, selectedDate;
-	private ArrayList<TaskObj> taskList;
 	private int lastPosition = CURRENT;
 	private ArrayList<View> viewList;
 	private FragmentManager manager;
@@ -113,7 +114,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 		lvVisits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				TaskObj task = taskList.get(i);
+				TaskObj task = visitList.get(i);
 				VisitDetailsFragment details = new VisitDetailsFragment();
 				details.setTask(task);
 				details.setOnOverrideCallback(overrideCallback);
@@ -270,7 +271,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 			@Override
 			public void run() {
 				try {
-					taskList = Data.loadTasks(db, date);
+					visitList = Data.loadTasks(db, date);
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -284,7 +285,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 	Handler handler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
-			adapter = new VisitsAdapter(getActivity(), taskList);
+			adapter = new VisitsAdapter(getActivity(), visitList);
 			lvVisits.setAdapter(adapter);
 			return true;
 		}

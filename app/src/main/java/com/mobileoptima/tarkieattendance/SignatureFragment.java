@@ -84,9 +84,9 @@ public class SignatureFragment extends Fragment implements OnClickListener {
 							CodePanUtils.deleteFile(getActivity(), App.FOLDER, signature);
 						}
 						if(attendance != null) {
-							TimeInObj in = attendance.in;
 							TimeOutObj out = attendance.out;
-							if(in != null && out != null && !isTimeOut) {
+							TimeInObj in = out.timeIn;
+							if(in != null && !isTimeOut) {
 								out.signature = fileName;
 								result = TarkieLib.updateSignature(db, out);
 								if(result) {

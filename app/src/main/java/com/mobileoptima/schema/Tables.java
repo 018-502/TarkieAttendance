@@ -141,7 +141,6 @@ public class Tables {
 				query.add(new Field("ID", true));
 				query.add(new Field("dDate", DataType.TEXT));
 				query.add(new Field("dTime", DataType.TEXT));
-				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("photo", DataType.TEXT));
 				query.add(new Field("signature", DataType.TEXT));
 				query.add(new Field("gpsID", DataType.INTEGER));
@@ -171,10 +170,8 @@ public class Tables {
 				query.add(new Field("ID", true));
 				query.add(new Field("dDate", DataType.TEXT));
 				query.add(new Field("dTime", DataType.TEXT));
-				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("batteryLevel", DataType.INTEGER));
-				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("syncBatchID", DataType.TEXT));
 				query.add(new Field("breakInID", DataType.INTEGER));
 				query.add(new Field("isSync", 0));
@@ -352,9 +349,6 @@ public class Tables {
 				query.add(new Field("ID", true));
 				query.add(new Field("dDate", DataType.TEXT));
 				query.add(new Field("dTime", DataType.TEXT));
-				query.add(new Field("empID", DataType.INTEGER));
-				query.add(new Field("taskID", DataType.INTEGER));
-				query.add(new Field("timeInID", DataType.INTEGER));
 				query.add(new Field("checkInID", DataType.INTEGER));
 				query.add(new Field("batteryLevel", DataType.INTEGER));
 				query.add(new Field("gpsID", DataType.INTEGER));
