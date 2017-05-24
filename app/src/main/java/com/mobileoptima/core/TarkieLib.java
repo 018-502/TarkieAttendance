@@ -695,8 +695,8 @@ public class TarkieLib {
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("photo", photo));
 		query.add(new FieldValue("taskID", task.ID));
-		query.add(new FieldValue("battery", battery));
 		query.add(new FieldValue("timeInID", timeInID));
+		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		String checkInID = binder.insert(Tables.getName(TB.CHECK_IN), query);
 		if(checkInID != null) {
@@ -719,13 +719,14 @@ public class TarkieLib {
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("photo", photo));
 		query.add(new FieldValue("checkInID", in.ID));
-		query.add(new FieldValue("battery", battery));
+		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		String checkOutID = binder.insert(Tables.getName(TB.CHECK_OUT), query);
 		if(checkOutID != null) {
 			TaskObj task = in.task;
 			query.clearAll();
 			query.add(new FieldValue("isCheckOut", true));
+			query.add(new FieldValue("status", task.status));
 			binder.update(Tables.getName(TB.TASK), query, task.ID);
 		}
 		return binder.finish();
@@ -1328,6 +1329,7 @@ public class TarkieLib {
 		String query = "SELECT sg.value FROM " + s + " s, " + sg + " sg WHERE " +
 				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
 				"AND s.code = '" + code + "'";
-		return db.getInt(query) == 1;
+		//return db.getInt(query) == 1;
+		return true;
 	}
 }

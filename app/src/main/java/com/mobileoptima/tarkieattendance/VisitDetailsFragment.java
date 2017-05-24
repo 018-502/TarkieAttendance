@@ -156,33 +156,39 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				manager.popBackStack();
 				break;
 			case R.id.btnCheckInVisitDetails:
-				if(!visit.isCheckIn) {
-					String date = CodePanUtils.getDate();
-					String time = CodePanUtils.getTime();
-					if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_IN_PHOTO)) {
-						CameraFragment camera = new CameraFragment();
-						camera.setDate(date);
-						camera.setTime(time);
-						camera.setTask(visit);
-						camera.setGps(main.getGps());
-						camera.setOnCheckInCallback(this);
-						camera.setImageType(ImageType.CHECK_IN);
-						camera.setOnOverrideCallback(overrideCallback);
-						transaction = manager.beginTransaction();
-						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-						transaction.add(R.id.rlMain, camera);
-						transaction.addToBackStack(null);
-						transaction.commit();
+				if(TarkieLib.isTimeIn(db)) {
+					if(!visit.isCheckIn) {
+						String date = CodePanUtils.getDate();
+						String time = CodePanUtils.getTime();
+						if(TarkieLib.isSettingsEnabled(db, Settings.CHECK_IN_PHOTO)) {
+							CameraFragment camera = new CameraFragment();
+							camera.setDate(date);
+							camera.setTime(time);
+							camera.setTask(visit);
+							camera.setGps(main.getGps());
+							camera.setOnCheckInCallback(this);
+							camera.setImageType(ImageType.CHECK_IN);
+							camera.setOnOverrideCallback(overrideCallback);
+							transaction = manager.beginTransaction();
+							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+							transaction.add(R.id.rlMain, camera);
+							transaction.addToBackStack(null);
+							transaction.commit();
+						}
+						else {
+							CheckInObj in = new CheckInObj();
+							in.gps = main.getGps();
+							in.dDate = date;
+							in.dTime = time;
+							in.task = visit;
+							onCheckIn(in);
+						}
 					}
-					else {
-						CheckInObj in = new CheckInObj();
-						in.gps = main.getGps();
-						in.dDate = date;
-						in.dTime = time;
-						in.task = visit;
-						onCheckIn(in);
-					}
+				}
+				else {
+					TarkieLib.alertDialog(getActivity(), R.string.time_in_required_title,
+							R.string.time_in_required_visit_message);
 				}
 				break;
 			case R.id.btnCheckOutVisitDetails:

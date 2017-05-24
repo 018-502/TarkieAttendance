@@ -174,7 +174,7 @@ public class HomeFragment extends Fragment {
 							}
 							else {
 								Resources res = getResources();
-								String message = res.getString(R.string.time_in_required_message);
+								String message = res.getString(R.string.time_in_required_form_message);
 								String bold = res.getString(R.string.proxima_nova_bold);
 								ArrayList<SpannableMap> list = new ArrayList<>();
 								int start = message.indexOf("'");
@@ -182,7 +182,7 @@ public class HomeFragment extends Fragment {
 								list.add(new SpannableMap(getActivity(), bold, start, end));
 								final AlertDialogFragment alert = new AlertDialogFragment();
 								alert.setDialogTitle(R.string.time_in_required_title);
-								alert.setDialogMessage(R.string.time_in_required_message);
+								alert.setDialogMessage(R.string.time_in_required_form_message);
 								alert.setSpannableList(list);
 								alert.setPositiveButton("OK", new View.OnClickListener() {
 									@Override

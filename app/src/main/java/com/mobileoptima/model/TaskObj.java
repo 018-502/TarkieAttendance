@@ -7,6 +7,7 @@ public class TaskObj {
 	public String empID;
 	public String notes;
 	public String endDate;
+	public String status;
 	public StoreObj store;
 	public int notesLimit;
 	public String startDate;
