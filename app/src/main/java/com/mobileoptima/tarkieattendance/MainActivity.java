@@ -80,8 +80,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 
 	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
-	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain,
-			btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain;
+	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnPhotosMain,
+			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain, btnExpenseMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private View vHomeMain, vVisitsMain, vPhotosMain, vEntriesMain;
 	private OnBackPressedCallback backPressedCallback;
@@ -152,6 +152,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnVisitsMain = (CodePanButton) findViewById(R.id.btnVisitsMain);
 		btnPhotosMain = (CodePanButton) findViewById(R.id.btnPhotosMain);
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
+		btnExpenseMain = (CodePanButton) findViewById(R.id.btnExpenseMain);
 		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
 		btnAddVisitMain = (CodePanButton) findViewById(R.id.btnAddVisitMain);
 		btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
@@ -181,6 +182,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnVisitsMain.setOnClickListener(this);
 		btnPhotosMain.setOnClickListener(this);
 		btnEntriesMain.setOnClickListener(this);
+		btnExpenseMain.setOnClickListener(this);
 		btnNotificationMain.setOnClickListener(this);
 		btnSyncMain.setOnClickListener(this);
 		btnMenuMain.setOnClickListener(this);
@@ -305,6 +307,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					transaction.commit();
 				}
 				setTabType(TabType.ENTRIES);
+				break;
+			case R.id.btnExpenseMain:
 				break;
 			case R.id.btnMenuMain:
 				if(dlMain.isDrawerOpen(rlMenuMain)) {

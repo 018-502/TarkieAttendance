@@ -375,6 +375,51 @@
                 <FrameLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <FrameLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/thirty">
+
+                            <ImageView
+                                android:id="@+id/ivExpenseMain"
+                                android:layout_width="@dimen/twenty_seven"
+                                android:layout_height="@dimen/twenty_seven"
+                                android:layout_gravity="center_horizontal|bottom"
+                                android:src="@drawable/ic_expense"/>
+
+                        </FrameLayout>
+
+                        <com.codepan.widget.CodePanLabel
+                            android:id="@+id/tvExpenseMain"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/two"
+                            android:text="@string/tab_expense"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/twelve"
+                            codePan:typeface="@string/proxima_nova_mid"/>
+
+                    </LinearLayout>
+
+                    <com.codepan.widget.CodePanButton
+                        android:id="@+id/btnExpenseMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/state_rect_trans_dark"/>
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:visibility="gone">
 

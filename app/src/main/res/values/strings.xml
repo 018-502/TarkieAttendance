@@ -39,6 +39,7 @@
     <string name="tab_entries">@string/entries</string>
     <string name="tab_visits">@string/visits</string>
     <string name="tab_inventory">Inventory</string>
+    <string name="tab_expense">Expense</string>
     <string name="press_done">To finish, press \"Done\".</string>
     <string name="done">Done</string>
     <string name="finish">Finish</string>
