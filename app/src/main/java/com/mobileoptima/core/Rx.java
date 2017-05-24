@@ -1,7 +1,5 @@
 package com.mobileoptima.core;
 
-import android.util.Log;
-
 import com.codepan.callback.Interface.OnErrorCallback;
 import com.codepan.database.Condition;
 import com.codepan.database.FieldValue;
@@ -1316,8 +1314,9 @@ public class Rx {
 								binder.insert(tf, query);
 							}
 							else {
+								String taskFormID = db.getString(sql);
 								query.add(new FieldValue("isTag", true));
-								binder.update(tf, query);
+								binder.update(tf, query, taskFormID);
 							}
 						}
 					}
