@@ -43,7 +43,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 	private final int NO_OF_DAYS = 5;
 
 	private OnOverrideCallback overrideCallback;
-	private String csDate, selectedDate, today;
+	private String csDate, selectedDate, initDate;
 	private FragmentTransaction transaction;
 	private CodePanLabel tvSelectedVisits;
 	private VisitsDateAdapter dateAdapter;
@@ -63,9 +63,9 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		String date = CodePanUtils.getDate();
-		today = today != null ? today : date;
-		csDate = CodePanUtils.getDateAfter(today, -1);
-		selectedDate = today;
+		initDate = initDate != null ? initDate : date;
+		csDate = CodePanUtils.getDateAfter(initDate, -1);
+		selectedDate = initDate;
 		Resources res = getResources();
 		green = res.getColor(R.color.green_pri);
 		blue = res.getColor(R.color.blue_pri);
@@ -303,7 +303,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 		adapter.notifyDataSetChanged();
 	}
 
-	public void setToday(String date) {
-		this.today = date;
+	public void setInitDate(String date) {
+		this.initDate = date;
 	}
 }
