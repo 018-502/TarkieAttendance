@@ -110,6 +110,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@drawable/state_rect_green_pri_gray_qui"
+                    android:enabled="false"
                     android:gravity="center"
                     android:text="@string/check_out"
                     android:textColor="@color/white"

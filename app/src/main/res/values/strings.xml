@@ -144,7 +144,7 @@
     <string name="time_captured">Date &amp; Time Captured</string>
     <string name="time_in_required_title">Time-in Required</string>
     <string name="time_in_required_form_message">Please time-in first before creating new entries. To time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
-    <string name="time_in_required_visit_message">Please time-in before you check-in.</string>
+    <string name="time_in_required_visit_message">Please time-in first before you check-in.</string>
     <string-array name="tab_search_entries">
         <item>Date</item>
         <!--<item>Store</item>-->

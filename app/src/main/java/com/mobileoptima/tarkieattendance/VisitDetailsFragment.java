@@ -6,6 +6,8 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -63,6 +65,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.visit_details_layout, container, false);
+		this.container = container;
 		tvStoreVisitDetails = (CodePanLabel) view.findViewById(R.id.tvStoreVisitDetails);
 		tvAddressVisitDetails = (CodePanLabel) view.findViewById(R.id.tvAddressVisitDetails);
 		etNotesVisitDetails = (CodePanTextField) view.findViewById(R.id.etNotesVisitDetails);
@@ -73,7 +76,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		btnBackVisitDetails.setOnClickListener(this);
 		btnCheckInVisitDetails.setOnClickListener(this);
 		btnCheckOutVisitDetails.setOnClickListener(this);
-		this.container = container;
 		if(visit != null) {
 			StoreObj store = visit.store;
 			if(store != null) {
@@ -92,6 +94,36 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				btnCheckOutVisitDetails.setEnabled(visit.isCheckIn);
 			}
 			etNotesVisitDetails.setText(visit.notes);
+			etNotesVisitDetails.addTextChangedListener(new TextWatcher() {
+				String lastText = null;
+
+				@Override
+				public void beforeTextChanged(CharSequence cs, int start, int count, int after) {
+					lastText = cs.toString();
+				}
+
+				@Override
+				public void onTextChanged(CharSequence cs, int start, int before, int count) {
+					if(visit.isFromWeb && visit.notes != null && !visit.notes.isEmpty()) {
+						String text = cs.toString();
+						String originalText = visit.notes.substring(0, visit.notesLimit);
+						if(text.length() < visit.notesLimit) {
+							etNotesVisitDetails.setText(visit.notes.substring(0, visit.notesLimit));
+							etNotesVisitDetails.setSelection(visit.notesLimit);
+						}
+						else {
+							if(!text.startsWith(originalText)) {
+								etNotesVisitDetails.setText(lastText);
+								etNotesVisitDetails.setSelection(visit.notesLimit);
+							}
+						}
+					}
+				}
+
+				@Override
+				public void afterTextChanged(Editable e) {
+				}
+			});
 			loadForms(db, visit.ID);
 		}
 		return view;
@@ -147,6 +179,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		String out = "OUT - " + CodePanUtils.getNormalTime(time, false);
 		btnCheckOutVisitDetails.setText(out);
 		btnCheckOutVisitDetails.setEnabled(false);
+		btnCheckInVisitDetails.setBackgroundResource(R.drawable.state_rect_green_pri_gray_qui);
+		btnCheckOutVisitDetails.setBackgroundResource(R.drawable.state_rect_green_pri_gray_oct);
 	}
 
 	@Override

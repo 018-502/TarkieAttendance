@@ -14,6 +14,7 @@ public class TaskObj {
 	public String dateCreated;
 	public String timeCreated;
 	public String syncBatchID;
+	public boolean isFromWeb;
 	public boolean isCheckIn;
 	public boolean isCheckOut;
 }

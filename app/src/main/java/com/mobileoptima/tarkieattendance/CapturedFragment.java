@@ -154,6 +154,8 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 							in.dTime = time;
 							in.photo = photo;
 							checkInCallback.onCheckIn(in);
+							manager.popBackStack();
+							manager.popBackStack();
 						}
 						break;
 					case ImageType.CHECK_OUT:
@@ -168,6 +170,8 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 							in.task = task;
 							out.checkIn = in;
 							checkOutCallback.onCheckOut(out);
+							manager.popBackStack();
+							manager.popBackStack();
 						}
 						break;
 				}

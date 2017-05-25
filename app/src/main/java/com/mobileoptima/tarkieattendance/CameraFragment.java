@@ -128,6 +128,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 		captured.setOnTimeInCallback(timeInCallback);
 		captured.setOnTimeOutCallback(timeOutCallback);
 		captured.setOnCheckInCallback(checkInCallback);
+		captured.setOnCheckOutCallback(checkOutCallback);
 		captured.setOnOverrideCallback(overrideCallback);
 		captured.setOnRetakeCameraCallback(this);
 		captured.setImage(fileName);
