@@ -707,8 +707,8 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean saveCheckOut(SQLiteAdapter db, GpsObj gps, CheckInObj in,
-									   String dDate, String dTime, String photo) {
+	public static boolean saveCheckOut(SQLiteAdapter db, GpsObj gps, CheckInObj in, String dDate,
+									   String dTime, String photo, String status, String notes) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String syncBatchID = getSyncBatchID(db);
@@ -726,7 +726,16 @@ public class TarkieLib {
 			TaskObj task = in.task;
 			query.clearAll();
 			query.add(new FieldValue("isCheckOut", true));
-			query.add(new FieldValue("status", task.status));
+			query.add(new FieldValue("status", status));
+			if(task.notes != null) {
+				if(notes != null && !notes.isEmpty()) {
+					task.notes += notes;
+				}
+			}
+			else {
+				task.notes = notes;
+			}
+			query.add(new FieldValue("notes", task.notes));
 			binder.update(Tables.getName(TB.TASK), query, task.ID);
 		}
 		return binder.finish();
@@ -1329,7 +1338,7 @@ public class TarkieLib {
 		String query = "SELECT sg.value FROM " + s + " s, " + sg + " sg WHERE " +
 				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
 				"AND s.code = '" + code + "'";
-		//return db.getInt(query) == 1;
-		return true;
+		return db.getInt(query) == 1;
+		//return true;
 	}
 }

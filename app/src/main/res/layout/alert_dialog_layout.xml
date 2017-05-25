@@ -60,7 +60,7 @@
                 android:paddingLeft="@dimen/five"
                 android:paddingRight="@dimen/five"
                 android:paddingTop="@dimen/ten"
-                android:text="No"
+                android:text="@string/no"
                 android:textColor="@color/white"
                 android:textSize="@dimen/eighteen"
                 android:visibility="visible"

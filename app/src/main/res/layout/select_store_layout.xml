@@ -87,7 +87,7 @@
                 android:layout_marginTop="@dimen/fifteen"
                 android:background="@drawable/state_rect_green_pri_rad_five"
                 android:padding="@dimen/ten"
-                android:text="@string/ok_cap"
+                android:text="@string/ok_caps"
                 android:textColor="@color/white"
                 android:textSize="@dimen/seventeen"
                 codePan:typeface="@string/proxima_nova_bold"/>

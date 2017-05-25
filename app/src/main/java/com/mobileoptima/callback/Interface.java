@@ -10,6 +10,7 @@ import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 
@@ -111,5 +112,9 @@ public class Interface {
 
 	public interface OnCheckOutCallback {
 		void onCheckOut(CheckOutObj out);
+	}
+
+	public interface OnSelectStatusCallback {
+		void onSelectStatus(TaskStatusObj status);
 	}
 }

@@ -26,7 +26,7 @@
     <string name="stores">Stores</string>
     <string name="search">Search</string>
     <string name="notes">Notes</string>
-    <string name="notes_placeholder">Tap to add notes...</string>
+    <string name="notes_placeholder">Tap to add notes…</string>
     <string name="search_entries">Search Entries</string>
     <string name="announcements">Announcements</string>
     <string name="no_announcements_title">No Announcements</string>
@@ -58,7 +58,7 @@
     <string name="check_out">Check-out</string>
     <string name="forms">Forms</string>
     <string name="add_form">Add Form</string>
-    <string name="ok_cap">OK</string>
+    <string name="ok_caps">OK</string>
     <string name="no_in_caps">NO IN</string>
     <string name="no_out_caps">NO OUT</string>
     <string name="select_caps">SELECT</string>
@@ -145,6 +145,8 @@
     <string name="time_in_required_title">Time-in Required</string>
     <string name="time_in_required_form_message">Please time-in first before creating new entries. To time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
     <string name="time_in_required_visit_message">Please time-in first before you check-in.</string>
+    <string name="visit_checking_out">You are checking-out at</string>
+    <string name="visit_select_status">Please choose the status\nof your visit:</string>
     <string-array name="tab_search_entries">
         <item>Date</item>
         <!--<item>Store</item>-->

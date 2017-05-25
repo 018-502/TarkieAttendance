@@ -9,6 +9,7 @@ import com.mobileoptima.constant.EntriesSearchType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
+import com.mobileoptima.constant.TaskStatus;
 import com.mobileoptima.model.AnnouncementObj;
 import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.AttendanceObj;
@@ -30,6 +31,7 @@ import com.mobileoptima.model.LocationObj;
 import com.mobileoptima.model.PageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.model.VisitObj;
@@ -898,5 +900,22 @@ public class Data {
 		}
 		cursor.close();
 		return visitList;
+	}
+
+	public static ArrayList<TaskStatusObj> loadStatus(SQLiteAdapter db) {
+		ArrayList<TaskStatusObj> statusList = new ArrayList<>();
+		TaskStatusObj completed = new TaskStatusObj();
+		completed.code = TaskStatus.COMPLETED;
+		completed.name = "Completed";
+		TaskStatusObj incomplete = new TaskStatusObj();
+		incomplete.code = TaskStatus.INCOMPLETE;
+		incomplete.name = "Incomplete";
+		TaskStatusObj cancelled = new TaskStatusObj();
+		cancelled.code = TaskStatus.CANCELLED;
+		cancelled.name = "Cancelled";
+		statusList.add(completed);
+		statusList.add(incomplete);
+		statusList.add(cancelled);
+		return statusList;
 	}
 }

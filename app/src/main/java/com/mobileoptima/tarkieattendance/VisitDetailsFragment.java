@@ -23,6 +23,7 @@ import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSelectStatusCallback;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Result;
 import com.mobileoptima.constant.Settings;
@@ -32,12 +33,13 @@ import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.VisitObj;
 
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
-		OnCheckInCallback, OnCheckOutCallback {
+		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
@@ -50,6 +52,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private FragmentManager manager;
 	private ViewGroup container;
 	private MainActivity main;
+	private CheckOutObj out;
 	private SQLiteAdapter db;
 	private VisitObj visit;
 
@@ -207,6 +210,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
 							transaction.add(R.id.rlMain, camera);
+							transaction.hide(this);
 							transaction.addToBackStack(null);
 							transaction.commit();
 						}
@@ -242,6 +246,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
 						transaction.add(R.id.rlMain, camera);
+						transaction.hide(this);
 						transaction.addToBackStack(null);
 						transaction.commit();
 					}
@@ -306,12 +311,41 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onCheckOut(final CheckOutObj out) {
+		this.out = out;
+		VisitStatusFragment status = new VisitStatusFragment();
+		status.setStore(visit.store);
+		status.setHasNotes(hasNotes());
+		status.setOnSelectStatusCallback(this);
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+				R.anim.fade_in, R.anim.fade_out);
+		transaction.add(R.id.rlMain, status);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	public boolean hasNotes() {
+		String notes = etNotesVisitDetails.getText().toString().trim();
+		int length = notes.length();
+		return !notes.isEmpty() && length > visit.notesLimit;
+	}
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
+	}
+
+	public void setOnRefreshCallback(OnRefreshCallback refreshCallback) {
+		this.refreshCallback = refreshCallback;
+	}
+
+	@Override
+	public void onSelectStatus(final TaskStatusObj status) {
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
 					boolean result = TarkieLib.saveCheckOut(db, out.gps, out.checkIn, out.dDate,
-							out.dTime, out.photo);
+							out.dTime, out.photo, status.code, status.notes);
 					checkOutHandler.sendMessage(checkOutHandler
 							.obtainMessage(result ? Result.SUCCESS : Result.FAILED, out));
 				}
@@ -336,6 +370,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					if(refreshCallback != null) {
 						refreshCallback.onRefresh();
 					}
+					etNotesVisitDetails.setText(visit.notes);
 					CodePanUtils.alertToast(getActivity(), "Check-out successful");
 					break;
 				case Result.FAILED:
@@ -345,12 +380,4 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			return true;
 		}
 	});
-
-	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
-		this.overrideCallback = overrideCallback;
-	}
-
-	public void setOnRefreshCallback(OnRefreshCallback refreshCallback) {
-		this.refreshCallback = refreshCallback;
-	}
 }
