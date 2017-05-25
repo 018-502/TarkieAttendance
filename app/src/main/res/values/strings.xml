@@ -147,6 +147,8 @@
     <string name="time_in_required_visit_message">Please time-in first before you check-in.</string>
     <string name="visit_checking_out">You are checking-out at</string>
     <string name="visit_select_status">Please choose the status\nof your visit:</string>
+    <string name="currently_check_in_title">Currently Checked-in</string>
+    <string name="currently_check_in_message">You are currently checked-in at $title. Please check-out first before ending your day.</string>
     <string-array name="tab_search_entries">
         <item>Date</item>
         <!--<item>Store</item>-->

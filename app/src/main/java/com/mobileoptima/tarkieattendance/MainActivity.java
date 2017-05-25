@@ -33,6 +33,7 @@ import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CircularImageView;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
@@ -67,6 +68,8 @@ import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.service.MainService;
+
+import java.util.ArrayList;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
 import static com.mobileoptima.callback.Interface.OnInitializeCallback;
@@ -366,63 +369,98 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					}
 				}
 				else {
-					if(!TarkieLib.hasUnsubmittedEntries(db)) {
-						final AlertDialogFragment alert = new AlertDialogFragment();
-						alert.setDialogTitle("Confirm Time-out");
-						alert.setDialogMessage("Do you want to time-out?");
-						alert.setPositiveButton("Yes", new OnClickListener() {
-							@Override
-							public void onClick(View view) {
-								manager.popBackStack();
-								String date = CodePanUtils.getDate();
-								String time = CodePanUtils.getTime();
-								GpsObj gps = getGps();
-								if(TarkieLib.isSettingsEnabled(db, TIME_OUT_PHOTO)) {
-									CameraFragment camera = new CameraFragment();
-									camera.setGps(gps);
-									camera.setDate(date);
-									camera.setTime(time);
-									camera.setImageType(ImageType.TIME_OUT);
-									camera.setOnTimeOutCallback(MainActivity.this);
-									camera.setOnOverrideCallback(MainActivity.this);
-									transaction = manager.beginTransaction();
-									transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-											R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-									transaction.add(R.id.rlMain, camera);
-									transaction.addToBackStack(null);
-									transaction.commit();
+					if(!TarkieLib.isCheckIn(db)) {
+						if(!TarkieLib.hasUnsubmittedEntries(db)) {
+							final AlertDialogFragment alert = new AlertDialogFragment();
+							alert.setDialogTitle("Confirm Time-out");
+							alert.setDialogMessage("Do you want to time-out?");
+							alert.setPositiveButton("Yes", new OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									manager.popBackStack();
+									String date = CodePanUtils.getDate();
+									String time = CodePanUtils.getTime();
+									GpsObj gps = getGps();
+									if(TarkieLib.isSettingsEnabled(db, TIME_OUT_PHOTO)) {
+										CameraFragment camera = new CameraFragment();
+										camera.setGps(gps);
+										camera.setDate(date);
+										camera.setTime(time);
+										camera.setImageType(ImageType.TIME_OUT);
+										camera.setOnTimeOutCallback(MainActivity.this);
+										camera.setOnOverrideCallback(MainActivity.this);
+										transaction = manager.beginTransaction();
+										transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+												R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+										transaction.add(R.id.rlMain, camera);
+										transaction.addToBackStack(null);
+										transaction.commit();
+									}
+									else {
+										TimeOutObj out = new TimeOutObj();
+										out.gps = gps;
+										out.dDate = date;
+										out.dTime = time;
+										onTimeOut(out);
+									}
 								}
-								else {
-									TimeOutObj out = new TimeOutObj();
-									out.gps = gps;
-									out.dDate = date;
-									out.dTime = time;
-									onTimeOut(out);
+							});
+							alert.setNegativeButton("Cancel", new OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									manager.popBackStack();
 								}
-							}
-						});
-						alert.setNegativeButton("Cancel", new OnClickListener() {
-							@Override
-							public void onClick(View view) {
-								manager.popBackStack();
-							}
-						});
-						transaction = manager.beginTransaction();
-						transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-								R.anim.fade_in, R.anim.fade_out);
-						transaction.add(R.id.rlMain, alert);
-						transaction.addToBackStack(null);
-						transaction.commit();
+							});
+							transaction = manager.beginTransaction();
+							transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+									R.anim.fade_in, R.anim.fade_out);
+							transaction.add(R.id.rlMain, alert);
+							transaction.addToBackStack(null);
+							transaction.commit();
+						}
+						else {
+							final AlertDialogFragment alert = new AlertDialogFragment();
+							alert.setDialogTitle(R.string.unsubmitted_entries_title);
+							alert.setDialogMessage(R.string.unsubmitted_entries_message);
+							alert.setPositiveButton("View", new OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									manager.popBackStack();
+									setTab(TabType.ENTRIES);
+								}
+							});
+							alert.setNegativeButton("Cancel", new OnClickListener() {
+								@Override
+								public void onClick(View view) {
+									manager.popBackStack();
+								}
+							});
+							transaction = manager.beginTransaction();
+							transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+									R.anim.fade_in, R.anim.fade_out);
+							transaction.add(R.id.rlMain, alert);
+							transaction.addToBackStack(null);
+							transaction.commit();
+						}
 					}
 					else {
+						String title = TarkieLib.getPendingVisit(db);
+						String message = getString(R.string.currently_check_in_message);
+						String font = getString(R.string.proxima_nova_bold);
+						int start = message.indexOf("$");
+						int end = start + title.length();
+						message = message.replace("$title", title);
+						ArrayList<SpannableMap> list = new ArrayList<>();
+						list.add(new SpannableMap(this, font, start, end));
 						final AlertDialogFragment alert = new AlertDialogFragment();
-						alert.setDialogTitle(R.string.unsubmitted_entries_title);
-						alert.setDialogMessage(R.string.unsubmitted_entries_message);
+						alert.setDialogTitle(R.string.currently_check_in_title);
+						alert.setSpannableList(list);
+						alert.setDialogMessage(message);
 						alert.setPositiveButton("View", new OnClickListener() {
 							@Override
 							public void onClick(View view) {
 								manager.popBackStack();
-								setTab(TabType.ENTRIES);
+								setTab(TabType.VISITS);
 							}
 						});
 						alert.setNegativeButton("Cancel", new OnClickListener() {

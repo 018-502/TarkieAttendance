@@ -422,6 +422,16 @@ public class TarkieLib {
 		return db.isRecordExists(query);
 	}
 
+	public static String getPendingVisit(SQLiteAdapter db) {
+		String empID = getEmployeeID(db);
+		String t = Tables.getName(TB.TASK);
+		String i = Tables.getName(TB.CHECK_IN);
+		String query = "SELECT t.name FROM " + i + " i, " + t + " t WHERE t.isCheckIn = 1 " +
+				"AND t.isCheckOut = 0 AND i.empID = '" + empID + "' AND i.taskID = t.ID " +
+				"ORDER BY i.ID DESC LIMIT 1";
+		return db.getString(query);
+	}
+
 	public static boolean hasBreak(SQLiteAdapter db) {
 		String table = Tables.getName(TB.BREAK);
 		String query = "SELECT ID FROM " + table;
