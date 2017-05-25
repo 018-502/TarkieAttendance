@@ -26,9 +26,9 @@ public class Settings {
 	public static final String RESCHEDULE_VISITS = "SetIti-001-02";
 	public static final String DELETE_VISITS = "SetIti-001-03";
 	public static final String PARALLEL_CHECK_IN_AND_OUT = "SetIti-001-04";
-	public static final String REQUIRE_NOTES_IN_VISITS = "SetIti-001-05";
+	public static final String NOTES_IN_VISITS = "SetIti-001-05";
 	public static final String EDIT_VISIT_AFTER_CHECK_OUT = "SetIti-001-06";
-	public static final String REQUIRE_NOTES_FOR_INCOMPLETE_VISITS = "SetIti-001-07";
+	public static final String NOTES_FOR_INCOMPLETE_VISITS = "SetIti-001-07";
 
 	//ITINERARY - Photos
 	public static final String CHECK_IN_PHOTO = "SetIti-002-01";

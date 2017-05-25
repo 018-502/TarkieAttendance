@@ -15,7 +15,12 @@
         android:background="@drawable/bg_rect_white_rad_ten"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/twenty">
+        android:paddingBottom="@dimen/fifteen"
+        android:paddingEnd="@dimen/twenty"
+        android:paddingLeft="@dimen/twenty"
+        android:paddingRight="@dimen/twenty"
+        android:paddingStart="@dimen/twenty"
+        android:paddingTop="@dimen/twenty">
 
         <com.codepan.widget.CodePanLabel
             android:layout_width="wrap_content"
@@ -76,9 +81,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/fifteen"
-            android:hint="@string/notes_placeholder"
             android:background="@drawable/state_rect_gray_sen_rad_three"
             android:gravity="start|top"
+            android:hint="@string/notes_placeholder"
             android:inputType="textCapSentences|textMultiLine"
             android:minHeight="@dimen/ninety"
             android:padding="@dimen/ten"

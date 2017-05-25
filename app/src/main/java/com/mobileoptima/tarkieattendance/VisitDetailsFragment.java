@@ -325,9 +325,11 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	}
 
 	public boolean hasNotes() {
-		String notes = etNotesVisitDetails.getText().toString().trim();
-		int length = notes.length();
-		return !notes.isEmpty() && length > visit.notesLimit;
+		if(visit.notes != null) {
+			int length = visit.notes.length();
+			return length > visit.notesLimit;
+		}
+		return false;
 	}
 
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {

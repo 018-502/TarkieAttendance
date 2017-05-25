@@ -729,7 +729,7 @@ public class TarkieLib {
 			query.add(new FieldValue("status", status));
 			if(task.notes != null) {
 				if(notes != null && !notes.isEmpty()) {
-					task.notes += notes;
+					task.notes += " " + notes;
 				}
 			}
 			else {
@@ -1338,7 +1338,7 @@ public class TarkieLib {
 		String query = "SELECT sg.value FROM " + s + " s, " + sg + " sg WHERE " +
 				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
 				"AND s.code = '" + code + "'";
-		return db.getInt(query) == 1;
-		//return true;
+		//return db.getInt(query) == 1;
+		return true;
 	}
 }

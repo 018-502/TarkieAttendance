@@ -18,8 +18,10 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.callback.Interface.OnSelectStatusCallback;
+import com.mobileoptima.constant.Settings;
 import com.mobileoptima.constant.TaskStatus;
 import com.mobileoptima.core.Data;
+import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskStatusObj;
 
@@ -74,7 +76,8 @@ public class VisitStatusFragment extends Fragment implements OnClickListener {
 			public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 				status = statusList.get(i);
 				if(!hasNotes) {
-					if(status.code.equals(TaskStatus.INCOMPLETE)) {
+					if(TarkieLib.isSettingsEnabled(db, Settings.NOTES_FOR_INCOMPLETE_VISITS)
+							&& status.code.equals(TaskStatus.INCOMPLETE)) {
 						if(etNotesVisitStatus.getVisibility() == View.GONE) {
 							CodePanUtils.expandView(etNotesVisitStatus, true);
 						}
