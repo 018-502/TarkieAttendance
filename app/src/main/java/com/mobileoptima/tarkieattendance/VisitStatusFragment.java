@@ -109,6 +109,7 @@ public class VisitStatusFragment extends Fragment implements OnClickListener {
 			case R.id.btnOkVisitStatus:
 				if(status != null) {
 					String notes = etNotesVisitStatus.getText().toString().trim();
+					notes = notes.replace("'", "''");
 					if(hasNotes || !isNotesRequired || !notes.isEmpty()) {
 						manager.popBackStack();
 						status.notes = notes;
