@@ -88,7 +88,7 @@ public class VisitStatusFragment extends Fragment implements OnClickListener {
 						if(etNotesVisitStatus.getVisibility() == View.VISIBLE) {
 							CodePanUtils.collapseView(etNotesVisitStatus, true);
 						}
-						isNotesRequired = true;
+						isNotesRequired = false;
 					}
 				}
 			}

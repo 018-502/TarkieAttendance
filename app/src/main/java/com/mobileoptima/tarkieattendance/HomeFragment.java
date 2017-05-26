@@ -146,6 +146,7 @@ public class HomeFragment extends Fragment {
 								public void onRefresh() {
 									MainActivity main = (MainActivity) getActivity();
 									main.reloadVisits();
+									loadSchedule(db);
 								}
 							});
 							transaction = manager.beginTransaction();
