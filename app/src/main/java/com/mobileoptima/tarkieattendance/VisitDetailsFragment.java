@@ -2,6 +2,7 @@ package com.mobileoptima.tarkieattendance;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -41,7 +42,8 @@ import java.util.ArrayList;
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback {
 
-	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails;
+	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
+			btnSaveVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
 	private CodePanTextField etNotesVisitDetails;
 	private OnOverrideCallback overrideCallback;
@@ -50,7 +52,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private FragmentTransaction transaction;
 	private ArrayList<FormObj> formList;
 	private FragmentManager manager;
-	private ViewGroup container;
 	private MainActivity main;
 	private CheckOutObj out;
 	private SQLiteAdapter db;
@@ -68,7 +69,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.visit_details_layout, container, false);
-		this.container = container;
 		tvStoreVisitDetails = (CodePanLabel) view.findViewById(R.id.tvStoreVisitDetails);
 		tvAddressVisitDetails = (CodePanLabel) view.findViewById(R.id.tvAddressVisitDetails);
 		etNotesVisitDetails = (CodePanTextField) view.findViewById(R.id.etNotesVisitDetails);
@@ -76,6 +76,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		btnBackVisitDetails = (CodePanButton) view.findViewById(R.id.btnBackVisitDetails);
 		btnCheckInVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckInVisitDetails);
 		btnCheckOutVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckOutVisitDetails);
+		btnSaveVisitDetails = (CodePanButton) view.findViewById(R.id.btnSaveVisitDetails);
+		btnSaveVisitDetails.setOnClickListener(this);
 		btnBackVisitDetails.setOnClickListener(this);
 		btnCheckInVisitDetails.setOnClickListener(this);
 		btnCheckOutVisitDetails.setOnClickListener(this);
@@ -148,21 +150,26 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		bg.start();
 	}
 
-	Handler formsHandler = new Handler(new Handler.Callback() {
+	Handler formsHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
+			llFormsVisitDetails.removeAllViews();
 			LayoutInflater inflater = getActivity().getLayoutInflater();
-			for(FormObj form : formList) {
-				View view = inflater.inflate(R.layout.visit_details_form_item, container, false);
-				CodePanLabel tvVisitDetailsForm = (CodePanLabel) view.findViewById(R.id.tvVisitDetailsForm);
-				CodePanButton btnVisitDetailsForm = (CodePanButton) view.findViewById(R.id.btnVisitDetailsForm);
-				tvVisitDetailsForm.setText(form.name);
-				btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View view) {
-					}
-				});
-				llFormsVisitDetails.addView(view);
+			View view = getView();
+			if(view != null) {
+				ViewGroup container = (ViewGroup) view.getParent();
+				for(FormObj form : formList) {
+					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
+					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
+					CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
+					tvVisitDetailsForm.setText(form.name);
+					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+						}
+					});
+					llFormsVisitDetails.addView(child);
+				}
 			}
 			return true;
 		}
@@ -263,6 +270,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					}
 				}
 				break;
+			case R.id.btnSaveVisitDetails:
+				break;
 		}
 	}
 
@@ -285,7 +294,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		bg.start();
 	}
 
-	Handler checkInHandler = new Handler(new Handler.Callback() {
+	Handler checkInHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
 			switch(msg.what) {
@@ -295,7 +304,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					visit.isCheckIn = true;
 					setCheckInTime(in.dTime);
 					btnCheckOutVisitDetails.setEnabled(true);
-					main.updateSyncCount();
 					if(refreshCallback != null) {
 						refreshCallback.onRefresh();
 					}
@@ -359,7 +367,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		bg.start();
 	}
 
-	Handler checkOutHandler = new Handler(new Handler.Callback() {
+	Handler checkOutHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
 			switch(msg.what) {
@@ -368,7 +376,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					visit.out = out;
 					visit.isCheckOut = true;
 					setCheckOutTime(out.dTime);
-					main.updateSyncCount();
 					if(refreshCallback != null) {
 						refreshCallback.onRefresh();
 					}

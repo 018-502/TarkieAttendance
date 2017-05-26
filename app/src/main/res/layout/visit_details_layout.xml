@@ -38,15 +38,32 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/header"
-            android:layout_marginRight="@dimen/header"
-            android:layout_toEndOf="@+id/flBackVisitDetails"
-            android:layout_toRightOf="@+id/flBackVisitDetails"
             android:gravity="center"
             android:text="@string/visit"
             android:textColor="@color/white"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnSaveVisitDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:background="@drawable/state_rect_white_rad_three"
+            android:paddingBottom="@dimen/two"
+            android:paddingEnd="@dimen/ten"
+            android:paddingLeft="@dimen/ten"
+            android:paddingRight="@dimen/ten"
+            android:paddingStart="@dimen/ten"
+            android:paddingTop="@dimen/three"
+            android:text="@string/save_caps"
+            android:textColor="@color/blue_pri"
+            android:textSize="@dimen/thirteen"
+            codePan:typeface="@string/proxima_nova_mid"/>
 
     </RelativeLayout>
 

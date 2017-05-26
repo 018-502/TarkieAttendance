@@ -101,6 +101,61 @@
                     android:paddingRight="@dimen/eight"
                     android:paddingStart="@dimen/eight"
                     android:paddingTop="@dimen/twelve"
+                    android:text="@string/today_schedule_caps"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_bold"/>
+
+                <LinearLayout
+                    android:id="@+id/llScheduleHome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+                <View
+                    android:id="@+id/vDivider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/one"
+                    android:background="@color/gray_sec"/>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnNewVisitHome"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/ten"
+                    android:background="@drawable/state_rect_green_pri_rad_three"
+                    android:paddingBottom="@dimen/seven"
+                    android:paddingEnd="@dimen/thirteen"
+                    android:paddingLeft="@dimen/thirteen"
+                    android:paddingRight="@dimen/thirteen"
+                    android:paddingStart="@dimen/thirteen"
+                    android:paddingTop="@dimen/eight"
+                    android:text="@string/new_visit_caps"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fifteen"
+                android:background="@drawable/bg_rect_white_rad_five"
+                android:orientation="vertical">
+
+                <com.codepan.widget.CodePanLabel
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_rect_blue_pri_rad_top_five"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/twelve"
+                    android:paddingEnd="@dimen/eight"
+                    android:paddingLeft="@dimen/eight"
+                    android:paddingRight="@dimen/eight"
+                    android:paddingStart="@dimen/eight"
+                    android:paddingTop="@dimen/twelve"
                     android:text="@string/app_forms_caps"
                     android:textColor="@color/white"
                     android:textSize="@dimen/seventeen"

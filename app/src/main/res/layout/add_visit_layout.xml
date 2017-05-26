@@ -51,7 +51,7 @@
             codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanButton
-            android:id="@+id/btnSelectEntries"
+            android:id="@+id/btnSaveAddVisit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

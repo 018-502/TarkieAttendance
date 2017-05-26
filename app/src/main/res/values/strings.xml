@@ -71,6 +71,8 @@
     <string name="deleted_caps">DELETED</string>
     <string name="inventory_caps">INVENTORY</string>
     <string name="app_forms_caps">APP FORMS</string>
+    <string name="today_schedule_caps">TODAY\'S SCHEDULE</string>
+    <string name="new_visit_caps">NEW VISIT</string>
     <string name="breaks_caps">BREAKS</string>
     <string name="save_caps">SAVE</string>
     <string name="active_caps">ACTIVE</string>

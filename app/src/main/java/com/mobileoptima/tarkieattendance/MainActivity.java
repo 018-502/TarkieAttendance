@@ -862,6 +862,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		checkSecurity();
 		updateSyncCount();
 		updateLastSynced();
+		reloadSchedule();
 		reloadForms();
 		reloadVisits();
 		reloadEntries();
@@ -962,12 +963,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		}
 	}
 
+	public void reloadSchedule() {
+		if(!isPause) {
+			Fragment fragment = manager.findFragmentByTag(TabType.HOME);
+			if(fragment != null) {
+				HomeFragment home = (HomeFragment) fragment;
+				home.loadSchedule(db);
+			}
+		}
+	}
+
 	public void reloadForms() {
 		if(!isPause) {
 			Fragment fragment = manager.findFragmentByTag(TabType.HOME);
 			if(fragment != null) {
 				HomeFragment home = (HomeFragment) fragment;
-				home.loadItems(db);
+				home.loadForms(db);
 			}
 		}
 	}

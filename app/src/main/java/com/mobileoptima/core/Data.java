@@ -850,19 +850,25 @@ public class Data {
 		return searchList;
 	}
 
-	public static ArrayList<VisitObj> loadVisits(SQLiteAdapter db, String date) {
+	public static ArrayList<VisitObj> loadVisits(SQLiteAdapter db, String date, boolean isActive) {
 		ArrayList<VisitObj> visitList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String t = Tables.getName(TB.TASK);
 		String s = Tables.getName(TB.STORES);
 		String i = Tables.getName(TB.CHECK_IN);
 		String o = Tables.getName(TB.CHECK_OUT);
-		String query = "SELECT t.ID, t.name, t.notes, t.notesLimit, t.isCheckIn, t.isCheckOut, " +
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new Condition("t.empID", empID));
+		if(isActive) {
+			query.add(new Condition("t.isCheckOut", false));
+		}
+		String conditions = query.getConditions();
+		String sql = "SELECT t.ID, t.name, t.notes, t.notesLimit, t.isCheckIn, t.isCheckOut, " +
 				"t.isFromWeb, s.ID, s.name, s.address, i.ID, i.dDate, i.dTime, o.ID, o.dDate, o.dTime " +
 				"FROM " + t + " as t LEFT JOIN " + i + " as i ON i.taskID = t.ID LEFT JOIN " + o + " as o " +
 				"ON o.checkInID = i.ID LEFT JOIN " + s + " as s ON s.ID = t.storeID WHERE '" + date + "' " +
-				"BETWEEN t.startDate AND t.endDate AND t.empID = '" + empID + "'";
-		Cursor cursor = db.read(query);
+				"BETWEEN t.startDate AND t.endDate AND " + conditions;
+		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
 			VisitObj visit = new VisitObj();
 			visit.ID = cursor.getString(0);

@@ -3,6 +3,7 @@ package com.mobileoptima.tarkieattendance;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.SpannableMap;
@@ -22,13 +24,12 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
-import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.FormObj;
-import com.mobileoptima.model.InventoryObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.VisitObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -37,11 +38,11 @@ import java.util.ArrayList;
 
 public class HomeFragment extends Fragment {
 
-	private LinearLayout llInventoryHome, llFormHome;
-	private ArrayList<InventoryObj> inventoryList;
+	private LinearLayout llInventoryHome, llScheduleHome, llFormHome;
 	private OnSaveEntryCallback saveEntryCallback;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
+	private ArrayList<VisitObj> visitList;
 	private DisplayImageOptions options;
 	private ArrayList<FormObj> formList;
 	private CodePanLabel tvStoreHome;
@@ -72,10 +73,12 @@ public class HomeFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.home_layout, container, false);
 		llInventoryHome = (LinearLayout) view.findViewById(R.id.llInventoryHome);
+		llScheduleHome = (LinearLayout) view.findViewById(R.id.llScheduleHome);
 		llFormHome = (LinearLayout) view.findViewById(R.id.llFormHome);
 		tvStoreHome = (CodePanLabel) view.findViewById(R.id.tvStoreHome);
 		setStore(TarkieLib.getDefaultStore(db));
-		loadItems(db);
+		loadSchedule(db);
+		loadForms(db);
 		return view;
 	}
 
@@ -97,14 +100,14 @@ public class HomeFragment extends Fragment {
 		}
 	}
 
-	public void loadItems(final SQLiteAdapter db) {
+	public void loadSchedule(final SQLiteAdapter db) {
+		final String date = CodePanUtils.getDate();
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					formList = Data.loadForms(db);
-					inventoryList = Data.loadInventory(db);
-					handler.sendMessage(handler.obtainMessage());
+					visitList = Data.loadVisits(db, date, true);
+					scheduleHandler.sendMessage(scheduleHandler.obtainMessage());
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -114,43 +117,78 @@ public class HomeFragment extends Fragment {
 		bg.start();
 	}
 
-	Handler handler = new Handler(new Handler.Callback() {
+	Handler scheduleHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
-			llInventoryHome.removeAllViews();
+			llScheduleHome.removeAllViews();
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			View view = getView();
+			if(view != null) {
+				ViewGroup container = (ViewGroup) view.getParent();
+				for(final VisitObj visit : visitList) {
+					View child = inflater.inflate(R.layout.schedule_list_item, container, false);
+					CodePanLabel tvNameSchedule = (CodePanLabel) child.findViewById(R.id.tvNameSchedule);
+					CodePanLabel tvAddressSchedule = (CodePanLabel) child.findViewById(R.id.tvAddressSchedule);
+					CodePanButton btnItemSchedule = (CodePanButton) child.findViewById(R.id.btnItemSchedule);
+					tvNameSchedule.setText(visit.name);
+					if(visit.store != null) {
+						StoreObj store = visit.store;
+						tvAddressSchedule.setText(store.address);
+					}
+					btnItemSchedule.setOnClickListener(new OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							VisitDetailsFragment details = new VisitDetailsFragment();
+							details.setVisit(visit);
+							details.setOnOverrideCallback(overrideCallback);
+							details.setOnRefreshCallback(new OnRefreshCallback() {
+								@Override
+								public void onRefresh() {
+									MainActivity main = (MainActivity) getActivity();
+									main.reloadVisits();
+								}
+							});
+							transaction = manager.beginTransaction();
+							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+							transaction.add(R.id.rlMain, details);
+							transaction.addToBackStack(null);
+							transaction.commit();
+						}
+					});
+					llScheduleHome.addView(child);
+				}
+				MainActivity main = (MainActivity) getActivity();
+				main.checkBreakIn();
+			}
+			return true;
+		}
+	});
+
+	public void loadForms(final SQLiteAdapter db) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					formList = Data.loadForms(db);
+					formHandler.sendMessage(formHandler.obtainMessage());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler formHandler = new Handler(new Callback() {
+		@Override
+		public boolean handleMessage(Message message) {
 			llFormHome.removeAllViews();
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			View view = getView();
 			if(view != null) {
 				ViewGroup container = (ViewGroup) view.getParent();
-				for(final InventoryObj obj : inventoryList) {
-					View child = inflater.inflate(R.layout.home_list_item, container, false);
-					CodePanLabel tvNameHome = (CodePanLabel) child.findViewById(R.id.tvNameHome);
-					CodePanButton btnItemHome = (CodePanButton) child.findViewById(R.id.btnItemHome);
-					ImageView ivLogoHome = (ImageView) child.findViewById(R.id.ivLogoHome);
-					switch(obj.type) {
-						case InventoryType.TRACKING:
-							ivLogoHome.setImageResource(R.drawable.ic_tracking);
-							break;
-						case InventoryType.ORDERS:
-							ivLogoHome.setImageResource(R.drawable.ic_orders);
-							break;
-						case InventoryType.PULL_OUTS:
-							ivLogoHome.setImageResource(R.drawable.ic_pull_out);
-							break;
-					}
-					btnItemHome.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							upgrade();
-						}
-					});
-					if(inventoryList.indexOf(obj) == inventoryList.size() - 1) {
-						btnItemHome.setBackgroundResource(R.drawable.state_rect_trans_rad_bot_five);
-					}
-					tvNameHome.setText(obj.name);
-					llInventoryHome.addView(child);
-				}
 				for(final FormObj obj : formList) {
 					View child = inflater.inflate(R.layout.home_list_item, container, false);
 					CodePanLabel tvNameHome = (CodePanLabel) child.findViewById(R.id.tvNameHome);
@@ -207,8 +245,9 @@ public class HomeFragment extends Fragment {
 					tvNameHome.setText(obj.name);
 					llFormHome.addView(child);
 				}
+				MainActivity main = (MainActivity) getActivity();
+				main.checkBreakIn();
 			}
-			((MainActivity) getActivity()).checkBreakIn();
 			return true;
 		}
 	});

@@ -1225,8 +1225,8 @@ public class Rx {
 			String end = CodePanUtils.getDateAfter(start, 15);
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("emp_id", empID);
-			paramsObj.put("date_start", start);
-			paramsObj.put("date_end", end);
+			paramsObj.put("start_date", start);
+			paramsObj.put("end_date", end);
 			params = paramsObj.toString(INDENT);
 			response = CodePanUtils.doHttpGet(url, paramsObj, TIMEOUT);
 			CodePanUtils.logHttpRequest(params, response);

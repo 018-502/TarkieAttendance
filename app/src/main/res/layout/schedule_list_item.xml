@@ -12,7 +12,7 @@
         android:background="@color/gray_sec"/>
 
     <RelativeLayout
-        android:id="@+id/rlItemHome"
+        android:id="@+id/rlItemSchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/vDivider"
@@ -23,49 +23,50 @@
         android:paddingStart="@dimen/ten"
         android:paddingTop="@dimen/eight">
 
-        <ImageView
-            android:id="@+id/ivLogoHome"
-            android:layout_width="@dimen/thirty_eight"
-            android:layout_height="@dimen/thirty_eight"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:src="@color/gray_sec"/>
-
         <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvNameHome"
+            android:id="@+id/tvNameSchedule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/ten"
-            android:layout_marginLeft="@dimen/ten"
-            android:layout_marginRight="@dimen/ten"
-            android:layout_marginStart="@dimen/ten"
-            android:layout_toEndOf="@+id/ivLogoHome"
-            android:layout_toLeftOf="@+id/ivNextHome"
-            android:layout_toRightOf="@+id/ivLogoHome"
-            android:layout_toStartOf="@+id/ivNextHome"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/ivNextSchedule"
+            android:layout_toStartOf="@+id/ivNextSchedule"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/seventeen"
             codePan:typeface="@string/proxima_nova_semi_bold"/>
 
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvAddressSchedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/tvNameSchedule"
+            android:layout_toLeftOf="@+id/ivNextSchedule"
+            android:layout_toStartOf="@+id/ivNextSchedule"
+            android:textColor="@color/gray_qui"
+            android:textSize="@dimen/thirteen"
+            codePan:typeface="@string/proxima_nova_mid"/>
+
         <ImageView
-            android:id="@+id/ivNextHome"
+            android:id="@+id/ivNextSchedule"
             android:layout_width="@dimen/seven"
             android:layout_height="@dimen/fifteen"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/ten"
+            android:layout_marginStart="@dimen/ten"
             android:src="@drawable/ic_next_dark"/>
 
     </RelativeLayout>
 
     <com.codepan.widget.CodePanButton
-        android:id="@+id/btnItemHome"
+        android:id="@+id/btnItemSchedule"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/rlItemHome"
-        android:layout_alignTop="@+id/rlItemHome"
+        android:layout_alignBottom="@+id/rlItemSchedule"
+        android:layout_alignTop="@+id/rlItemSchedule"
         android:background="@drawable/state_rect_trans_dark"/>
 
 </RelativeLayout>

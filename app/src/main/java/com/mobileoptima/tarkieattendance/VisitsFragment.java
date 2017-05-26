@@ -273,7 +273,7 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 			@Override
 			public void run() {
 				try {
-					visitList = Data.loadVisits(db, date);
+					visitList = Data.loadVisits(db, date, false);
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -299,6 +299,9 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 
 	@Override
 	public void onRefresh() {
+		MainActivity main = (MainActivity) getActivity();
+		main.updateSyncCount();
+		main.reloadSchedule();
 		lvVisits.invalidate();
 		adapter.notifyDataSetChanged();
 	}
