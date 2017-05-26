@@ -17,4 +17,5 @@
         android:listSelector="@color/transparent"
         android:scrollbarSize="@dimen/three"
         android:scrollbarThumbVertical="@color/black_trans_forty"/>
+
 </LinearLayout>

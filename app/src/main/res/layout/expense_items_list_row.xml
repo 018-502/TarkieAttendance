@@ -27,8 +27,8 @@
             android:layout_marginRight="@dimen/five"
             android:text="Oct 20, 2016"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/eighteen"
-            codePan:typeface="@string/proxima_nova_bold"/>
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_semi_bold"/>
 
         <com.codepan.widget.CodePanLabel
             android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
             android:text="Php"
             android:textAllCaps="true"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/eighteen"
+            android:textSize="@dimen/seventeen"
             codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanLabel
@@ -53,8 +53,8 @@
             android:layout_toStartOf="@+id/ivCollapsibleExpenseItems"
             android:text="220.00"
             android:textColor="@color/gray_pri"
-            android:textSize="@dimen/eighteen"
-            codePan:typeface="@string/proxima_nova_bold"/>
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_semi_bold"/>
 
         <ImageView
             android:id="@+id/ivCollapsibleExpenseItems"
@@ -64,19 +64,14 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_down_dark"/>
-    </RelativeLayout>
 
-    <View
-        android:id="@+id/vDivider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/one"
-        android:layout_below="@+id/rlTotalExpenseItems"
-        android:background="@color/divider"/>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/llItemsExpenseItems"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/vDivider"
+        android:layout_below="@+id/rlTotalExpenseItems"
         android:orientation="vertical"/>
+
 </RelativeLayout>
