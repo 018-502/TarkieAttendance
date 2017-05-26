@@ -16,12 +16,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/state_rect_trans_dark"
-        android:paddingBottom="@dimen/ten"
+        android:paddingBottom="@dimen/eight"
         android:paddingEnd="@dimen/thirty_five"
         android:paddingLeft="@dimen/fifty"
         android:paddingRight="@dimen/thirty_five"
         android:paddingStart="@dimen/fifty"
-        android:paddingTop="@dimen/ten">
+        android:paddingTop="@dimen/eight">
 
         <com.codepan.widget.CodePanLabel
             android:id="@+id/tvExpenseTypeExpenseItems"
