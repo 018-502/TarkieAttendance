@@ -143,5 +143,10 @@
             android:lineSpacingExtra="@dimen/two"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/one"
+            android:background="@color/divider"/>
     </LinearLayout>
 </RelativeLayout>

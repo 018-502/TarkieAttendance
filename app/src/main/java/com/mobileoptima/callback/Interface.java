@@ -1,5 +1,7 @@
 package com.mobileoptima.callback;
 
+import android.view.ViewGroup;
+
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.mobileoptima.model.AnnouncementObj;

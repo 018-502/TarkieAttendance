@@ -22,7 +22,6 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.AnnouncementsAdapter;
 import com.mobileoptima.callback.Interface.OnDeleteAnnouncementCallback;
-import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.AnnouncementObj;
 
@@ -87,7 +86,7 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-				transaction.add(R.id.rlMain, announcementDetails, Tag.FORM);
+				transaction.add(R.id.rlMain, announcementDetails);
 				transaction.hide(AnnouncementsFragment.this);
 				transaction.addToBackStack(null);
 				transaction.commit();
@@ -96,6 +95,23 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 		search = "";
 		loadAnnouncements(db);
 		return view;
+	}
+
+	@Override
+	public void onClick(View view) {
+		switch(view.getId()) {
+			case R.id.btnBackAnnouncements:
+				manager.popBackStack();
+				break;
+		}
+	}
+
+	@Override
+	public void onDeleteAnnouncement(AnnouncementObj obj) {
+		announcementsList.remove(obj);
+		adapter.notifyDataSetChanged();
+		lvAnnouncements.invalidate();
+//		handler.sendMessage(handler.obtainMessage());
 	}
 
 	public void loadAnnouncements(final SQLiteAdapter db) {
@@ -129,15 +145,6 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 		}
 	});
 
-	@Override
-	public void onClick(View view) {
-		switch(view.getId()) {
-			case R.id.btnBackAnnouncements:
-				manager.popBackStack();
-				break;
-		}
-	}
-
 	private Runnable inputFinishChecker = new Runnable() {
 		@Override
 		public void run() {
@@ -146,10 +153,4 @@ public class AnnouncementsFragment extends Fragment implements OnClickListener, 
 			}
 		}
 	};
-
-	@Override
-	public void onDeleteAnnouncement(AnnouncementObj obj) {
-		announcementsList.remove(obj);
-		handler.sendMessage(handler.obtainMessage());
-	}
 }

@@ -137,6 +137,8 @@
     <string name="delete_entry_message">Are you sure you want to delete this entry?</string>
     <string name="delete_announcement_title">Delete this announcement?</string>
     <string name="delete_announcement_message">Are you sure you want to delete this announcement?</string>
+    <string name="delete_expense_title">Delete this expense?</string>
+    <string name="delete_expense_message">Are you sure you want to\ndelete this expense?\n\n</string>
     <string name="submit_entry_title">Submit Entry</string>
     <string name="submit_entry_message">Do you want to finalize and submit this entry?</string>
     <string name="unsubmitted_entries_title">Unsubmitted Entries</string>
@@ -151,6 +153,12 @@
     <string name="visit_select_status">Please choose the status\nof your visit:</string>
     <string name="currently_check_in_title">Currently Checked-in</string>
     <string name="currently_check_in_message">You are currently checked-in at $title. Please check-out first before ending your day.</string>
+    <string name="time_in_required_visit_message">Please time-in before you check-in.</string>
+    <string name="time_in_required_message">Please time-in first before creating new entries. To time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
+    <string-array name="tab_expense">
+        <item>Expense Items</item>
+        <item>Expense Reports</item>
+    </string-array>
     <string-array name="tab_search_entries">
         <item>Date</item>
         <!--<item>Store</item>-->

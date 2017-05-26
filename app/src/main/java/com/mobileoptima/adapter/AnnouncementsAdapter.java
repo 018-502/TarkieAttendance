@@ -83,11 +83,11 @@ public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
 			}
 			if(obj.announcedTime != null) {
 				String time = CodePanUtils.getNormalTime(obj.announcedTime, false);
-				holder.tvAnnouncedTimeAnnouncements.setText(" | ".concat(time));
+				holder.tvAnnouncedTimeAnnouncements.setText(" | " + time);
 			}
 			if(obj.announcedDate != null) {
 				String date = CodePanUtils.getCalendarDate(obj.announcedDate, true, true);
-				holder.tvAnnouncedDateAnnouncements.setText(" | ".concat(date));
+				holder.tvAnnouncedDateAnnouncements.setText(" | " + date);
 			}
 		}
 		return view;
