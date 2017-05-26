@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/rlTotalExpenseItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/state_rect_trans_dark"
+        android:paddingBottom="@dimen/fifteen"
+        android:paddingEnd="@dimen/ten"
+        android:paddingLeft="@dimen/ten"
+        android:paddingRight="@dimen/ten"
+        android:paddingStart="@dimen/ten"
+        android:paddingTop="@dimen/fifteen">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvDateExpenseItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginEnd="@dimen/five"
+            android:layout_marginRight="@dimen/five"
+            android:text="Oct 20, 2016"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/five"
+            android:layout_marginRight="@dimen/five"
+            android:layout_toLeftOf="@+id/tvTotalExpenseItems"
+            android:layout_toStartOf="@+id/tvTotalExpenseItems"
+            android:text="Php"
+            android:textAllCaps="true"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvTotalExpenseItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:layout_toLeftOf="@+id/ivCollapsibleExpenseItems"
+            android:layout_toStartOf="@+id/ivCollapsibleExpenseItems"
+            android:text="220.00"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_bold"/>
+
+        <ImageView
+            android:id="@+id/ivCollapsibleExpenseItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_down_dark"/>
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:layout_below="@+id/rlTotalExpenseItems"
+        android:background="@color/divider"/>
+
+    <LinearLayout
+        android:id="@+id/llItemsExpenseItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vDivider"
+        android:orientation="vertical"/>
+</RelativeLayout>

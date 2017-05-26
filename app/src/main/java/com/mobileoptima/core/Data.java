@@ -20,6 +20,9 @@ import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseItemsObj;
+import com.mobileoptima.model.ExpenseObj;
+import com.mobileoptima.model.ExpenseReportsObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
@@ -39,6 +42,7 @@ import com.mobileoptima.schema.Tables.TB;
 import net.sqlcipher.Cursor;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static com.codepan.database.Condition.Operator;
 
@@ -698,7 +702,7 @@ public class Data {
 		ArrayList<AnnouncementObj> announcementList = new ArrayList<>();
 		AnnouncementObj obj;
 		obj = new AnnouncementObj();
-		obj.ID = 1;
+		obj.ID = "1";
 		obj.subject = "Attendance Reminder";
 		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
 		obj.announcedDate = "2017-01-23";
@@ -711,7 +715,7 @@ public class Data {
 			announcementList.add(obj);
 		}
 		obj = new AnnouncementObj();
-		obj.ID = 2;
+		obj.ID = "2";
 		obj.subject = "Calling All Laguna Staff";
 		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
 		obj.announcedDate = "2017-01-23";
@@ -724,7 +728,7 @@ public class Data {
 			announcementList.add(obj);
 		}
 		obj = new AnnouncementObj();
-		obj.ID = 3;
+		obj.ID = "3";
 		obj.subject = "Holiday Notice";
 		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
 		obj.announcedDate = "2017-01-21";
@@ -737,7 +741,7 @@ public class Data {
 			announcementList.add(obj);
 		}
 		obj = new AnnouncementObj();
-		obj.ID = 4;
+		obj.ID = "4";
 		obj.subject = "Submit your Reports";
 		obj.message = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.";
 		obj.announcedDate = "2017-01-20";
@@ -750,6 +754,86 @@ public class Data {
 			announcementList.add(obj);
 		}
 		return announcementList;
+	}
+
+	public static ArrayList<ExpenseItemsObj> loadExpenseItems(SQLiteAdapter db, String date) {
+		ArrayList<ExpenseItemsObj> expenseItemsList = new ArrayList<>();
+		for(int d = 30; d >= 1; d--) {
+			ExpenseItemsObj obj = new ExpenseItemsObj();
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", d);
+			obj.totalAmount = 120 + d;
+			if(date.isEmpty() || (!date.isEmpty() && obj.dDate.equals(date))) {
+				expenseItemsList.add(obj);
+			}
+		}
+		return expenseItemsList;
+	}
+
+	public static ArrayList<ExpenseObj> loadExpense(SQLiteAdapter db, String date) {
+		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
+		ExpenseObj obj;
+		for(int e = 30; e >= 1; e--) {
+			obj = new ExpenseObj();
+			obj.ID = "1";
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
+			obj.dTime = "07:30:00";
+			obj.expenseType = "Tricycle - " + e;
+			obj.amount = 14 + e;
+			if(obj.dDate.equals(date) ){
+				expenseList.add(obj);
+			}
+			obj = new ExpenseObj();
+			obj.ID = "2";
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
+			obj.dTime = "08:00:00";
+			obj.expenseType = "Meal 1 - " + e;
+			obj.amount = 45 + e;
+			if(obj.dDate.equals(date) ){
+				expenseList.add(obj);
+			}
+			obj = new ExpenseObj();
+			obj.ID = "3";
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
+			obj.dTime = "12:00:00";
+			obj.expenseType = "Meal 2 - " + e;
+			obj.amount = 60 + e;
+			if(obj.dDate.equals(date) ){
+				expenseList.add(obj);
+			}
+			obj = new ExpenseObj();
+			obj.ID = "4";
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
+			obj.dTime = "15:00:00";
+			obj.expenseType = "Meal 3 - " + e;
+			obj.amount = 35 + e;
+			if(obj.dDate.equals(date) ){
+				expenseList.add(obj);
+			}
+			obj = new ExpenseObj();
+			obj.ID = "5";
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
+			obj.dTime = "19:00:00";
+			obj.expenseType = "Meal 4 - " + e;
+			obj.amount = 60 + e;
+			if(obj.dDate.equals(date) ){
+				expenseList.add(obj);
+			}
+			obj = new ExpenseObj();
+			obj.ID = "6";
+			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
+			obj.dTime = "20:00:00";
+			obj.expenseType = "Tricycle - " + e;
+			obj.amount = 21 + e;
+			if(obj.dDate.equals(date) ){
+				expenseList.add(obj);
+			}
+		}
+		return  expenseList;
+	}
+
+	public static ArrayList<ExpenseReportsObj> loadExpenseReports(SQLiteAdapter db, String search) {
+		ArrayList<ExpenseReportsObj> expenseReportsList = new ArrayList<>();
+		return expenseReportsList;
 	}
 
 	public static ArrayList<SearchObj> searchEntriesByDate(SQLiteAdapter db, String startDate, String endDate) {

@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
-public class AnnouncementDetailsFragment extends Fragment implements OnClickListener {
+public class ExpenseReportsDetailsFragment extends Fragment implements OnClickListener {
 	private AnnouncementObj obj;
 	private DisplayImageOptions options;
 	private CircularImageView ivPhotoAnnouncementDetails;
@@ -93,13 +93,13 @@ public class AnnouncementDetailsFragment extends Fragment implements OnClickList
 				final AlertDialogFragment alert = new AlertDialogFragment();
 				alert.setDialogTitle(R.string.delete_announcement_title);
 				alert.setDialogMessage(R.string.delete_announcement_message);
-				alert.setNegativeButton("No", new View.OnClickListener() {
+				alert.setNegativeButton("Cancel", new OnClickListener() {
 					@Override
 					public void onClick(View view) {
 						manager.popBackStack();
 					}
 				});
-				alert.setPositiveButton("Yes", new View.OnClickListener() {
+				alert.setPositiveButton("Yes", new OnClickListener() {
 					@Override
 					public void onClick(View view) {
 						if(deleteAnnouncementCallback != null) {

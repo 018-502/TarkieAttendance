@@ -1,7 +1,7 @@
 package com.mobileoptima.model;
 
 public class AnnouncementObj {
-	public int ID;
+	public String ID;
 	public String subject;
 	public String message;
 	public String announcedDate;
