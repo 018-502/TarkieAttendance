@@ -153,7 +153,6 @@
     <string name="visit_select_status">Please choose the status\nof your visit:</string>
     <string name="currently_check_in_title">Currently Checked-in</string>
     <string name="currently_check_in_message">You are currently checked-in at $title. Please check-out first before ending your day.</string>
-    <string name="time_in_required_visit_message">Please time-in before you check-in.</string>
     <string name="time_in_required_message">Please time-in first before creating new entries. To time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
     <string-array name="tab_expense">
         <item>Expense Items</item>
