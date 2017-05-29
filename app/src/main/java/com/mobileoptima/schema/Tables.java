@@ -5,40 +5,6 @@ import com.codepan.database.SQLiteQuery;
 import com.codepan.database.SQLiteQuery.DataType;
 
 public class Tables {
-
-	public enum TB {
-		API_KEY,
-		SYNC_BATCH,
-		CREDENTIALS,
-		COMPANY,
-		EMPLOYEE,
-		BREAK,
-		STORES,
-		CONVENTION,
-		GPS,
-		TIME_IN,
-		TIME_OUT,
-		BREAK_IN,
-		BREAK_OUT,
-		INCIDENT,
-		INCIDENT_REPORT,
-		TIME_SECURITY,
-		LOCATION,
-		PHOTO,
-		FORMS,
-		FIELDS,
-		CHOICES,
-		ENTRIES,
-		ANSWERS,
-		TASK_FORM,
-		TASK_ENTRY,
-		TASK,
-		CHECK_IN,
-		CHECK_OUT,
-		SETTINGS,
-		SETTINGS_GROUP
-	}
-
 	public static String create(TB tb) {
 		SQLiteQuery query = new SQLiteQuery();
 		switch(tb) {
@@ -236,6 +202,34 @@ public class Tables {
 				query.add(new Field("isUpload", 0));
 				query.add(new Field("isActive", 0));
 				break;
+			case EXPENSE:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
+				query.add(new Field("amount", DataType.TEXT));
+				query.add(new Field("expenseTypeID", DataType.INTEGER));
+				query.add(new Field("clientID", DataType.INTEGER));
+				query.add(new Field("photo", DataType.INTEGER));
+				query.add(new Field("origin", DataType.TEXT));
+				query.add(new Field("destination", DataType.TEXT));
+				query.add(new Field("notes", DataType.TEXT));
+				query.add(new Field("gpsID", DataType.INTEGER));
+				query.add(new Field("empID", DataType.INTEGER));
+				query.add(new Field("timeInID", DataType.INTEGER));
+				query.add(new Field("reportID", DataType.INTEGER));
+				query.add(new Field("syncBatchID", DataType.TEXT));
+				query.add(new Field("withOR", 0));
+				query.add(new Field("isTag", 0));
+				query.add(new Field("isSubmit", 0));
+				query.add(new Field("isUpdate", 0));
+				query.add(new Field("isDelete", 0));
+				query.add(new Field("isSync", 0));
+				query.add(new Field("isPhotoUpload", 0));
+				query.add(new Field("isWebSubmit", 0));
+				query.add(new Field("isWebUpdate", 0));
+				query.add(new Field("isWebDelete", 0));
+				break;
 			case FORMS:
 				query.clearAll();
 				query.add(new Field("ID", true));
@@ -430,6 +424,9 @@ public class Tables {
 			case PHOTO:
 				name = "photo_tb";
 				break;
+			case EXPENSE:
+				name = "expense_tb";
+				break;
 			case FORMS:
 				name = "forms_tb";
 				break;
@@ -468,5 +465,39 @@ public class Tables {
 				break;
 		}
 		return name;
+	}
+
+	public enum TB {
+		API_KEY,
+		SYNC_BATCH,
+		CREDENTIALS,
+		COMPANY,
+		EMPLOYEE,
+		BREAK,
+		STORES,
+		CONVENTION,
+		GPS,
+		TIME_IN,
+		TIME_OUT,
+		BREAK_IN,
+		BREAK_OUT,
+		INCIDENT,
+		INCIDENT_REPORT,
+		TIME_SECURITY,
+		LOCATION,
+		PHOTO,
+		EXPENSE,
+		FORMS,
+		FIELDS,
+		CHOICES,
+		ENTRIES,
+		ANSWERS,
+		TASK_FORM,
+		TASK_ENTRY,
+		TASK,
+		CHECK_IN,
+		CHECK_OUT,
+		SETTINGS,
+		SETTINGS_GROUP
 	}
 }

@@ -64,6 +64,8 @@ import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseItemsObj;
+import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
@@ -72,6 +74,7 @@ import com.mobileoptima.service.MainService;
 import java.util.ArrayList;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
+import static android.view.View.*;
 import static com.mobileoptima.callback.Interface.OnInitializeCallback;
 import static com.mobileoptima.callback.Interface.OnLoginCallback;
 import static com.mobileoptima.constant.Settings.TIME_IN_CLIENT;
@@ -188,6 +191,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnHomeMain.setOnClickListener(this);
 		btnVisitsMain.setOnClickListener(this);
 		btnExpenseMain.setOnClickListener(this);
+		btnExpenseMain.setOnLongClickListener(new OnLongClickListener() {
+			@Override
+			public boolean onLongClick(View v) {
+				GpsObj gps = getGps();
+				String dDate = CodePanUtils.getDate();
+				String dTime = CodePanUtils.getTime();
+				String expenseID = TarkieLib.saveExpense(db, dDate, dTime, gps);
+				if(!expenseID.isEmpty()) {
+					reloadExpenseItems();
+					CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " has been tagged. You may enter more details later.");
+				}
+				return true;
+			}
+		});
 		btnPhotosMain.setOnClickListener(this);
 		btnEntriesMain.setOnClickListener(this);
 		btnNotificationMain.setOnClickListener(this);
@@ -730,56 +747,56 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		View rlSearchMain = findViewById(R.id.rlSearchMain);
 		View rlNotifMain = findViewById(R.id.rlNotifMain);
 		View rlDateMain = findViewById(R.id.rlDateMain);
-		vHomeMain.setVisibility(View.GONE);
-		vVisitsMain.setVisibility(View.GONE);
-		vExpenseMain.setVisibility(View.GONE);
-		vPhotosMain.setVisibility(View.GONE);
-		vEntriesMain.setVisibility(View.GONE);
+		vHomeMain.setVisibility(GONE);
+		vVisitsMain.setVisibility(GONE);
+		vExpenseMain.setVisibility(GONE);
+		vPhotosMain.setVisibility(GONE);
+		vEntriesMain.setVisibility(GONE);
 		switch(tabType) {
 			case TabType.HOME:
-				vHomeMain.setVisibility(View.VISIBLE);
-				rlNotifMain.setVisibility(View.VISIBLE);
-				rlSyncMain.setVisibility(View.VISIBLE);
-				rlSearchMain.setVisibility(View.GONE);
-				rlDateMain.setVisibility(View.GONE);
-				btnSelectMain.setVisibility(View.GONE);
-				btnAddVisitMain.setVisibility(View.GONE);
+				vHomeMain.setVisibility(VISIBLE);
+				rlNotifMain.setVisibility(VISIBLE);
+				rlSyncMain.setVisibility(VISIBLE);
+				rlSearchMain.setVisibility(GONE);
+				rlDateMain.setVisibility(GONE);
+				btnSelectMain.setVisibility(GONE);
+				btnAddVisitMain.setVisibility(GONE);
 				break;
 			case TabType.VISITS:
-				vVisitsMain.setVisibility(View.VISIBLE);
-				rlNotifMain.setVisibility(View.GONE);
-				rlSyncMain.setVisibility(View.GONE);
-				rlSearchMain.setVisibility(View.GONE);
-				rlDateMain.setVisibility(View.VISIBLE);
-				btnSelectMain.setVisibility(View.GONE);
-				btnAddVisitMain.setVisibility(View.VISIBLE);
+				vVisitsMain.setVisibility(VISIBLE);
+				rlNotifMain.setVisibility(GONE);
+				rlSyncMain.setVisibility(GONE);
+				rlSearchMain.setVisibility(GONE);
+				rlDateMain.setVisibility(VISIBLE);
+				btnSelectMain.setVisibility(GONE);
+				btnAddVisitMain.setVisibility(VISIBLE);
 				break;
 			case TabType.EXPENSE:
-				vExpenseMain.setVisibility(View.VISIBLE);
-				rlNotifMain.setVisibility(View.VISIBLE);
-				rlSyncMain.setVisibility(View.VISIBLE);
-				rlSearchMain.setVisibility(View.GONE);
-				rlDateMain.setVisibility(View.GONE);
-				btnSelectMain.setVisibility(View.GONE);
-				btnAddVisitMain.setVisibility(View.GONE);
+				vExpenseMain.setVisibility(VISIBLE);
+				rlNotifMain.setVisibility(VISIBLE);
+				rlSyncMain.setVisibility(VISIBLE);
+				rlSearchMain.setVisibility(GONE);
+				rlDateMain.setVisibility(GONE);
+				btnSelectMain.setVisibility(GONE);
+				btnAddVisitMain.setVisibility(GONE);
 				break;
 			case TabType.PHOTOS:
-				vPhotosMain.setVisibility(View.VISIBLE);
-				rlNotifMain.setVisibility(View.VISIBLE);
-				rlSyncMain.setVisibility(View.VISIBLE);
-				rlSearchMain.setVisibility(View.GONE);
-				rlDateMain.setVisibility(View.GONE);
-				btnSelectMain.setVisibility(View.GONE);
-				btnAddVisitMain.setVisibility(View.GONE);
+				vPhotosMain.setVisibility(VISIBLE);
+				rlNotifMain.setVisibility(VISIBLE);
+				rlSyncMain.setVisibility(VISIBLE);
+				rlSearchMain.setVisibility(GONE);
+				rlDateMain.setVisibility(GONE);
+				btnSelectMain.setVisibility(GONE);
+				btnAddVisitMain.setVisibility(GONE);
 				break;
 			case TabType.ENTRIES:
-				vEntriesMain.setVisibility(View.VISIBLE);
-				rlNotifMain.setVisibility(View.GONE);
-				rlSyncMain.setVisibility(View.GONE);
-				rlDateMain.setVisibility(View.GONE);
-				rlSearchMain.setVisibility(View.VISIBLE);
-				btnSelectMain.setVisibility(View.VISIBLE);
-				btnAddVisitMain.setVisibility(View.GONE);
+				vEntriesMain.setVisibility(VISIBLE);
+				rlNotifMain.setVisibility(GONE);
+				rlSyncMain.setVisibility(GONE);
+				rlDateMain.setVisibility(GONE);
+				rlSearchMain.setVisibility(VISIBLE);
+				btnSelectMain.setVisibility(VISIBLE);
+				btnAddVisitMain.setVisibility(GONE);
 				break;
 		}
 		this.tabType = tabType;
@@ -865,7 +882,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		reloadSchedule();
 		reloadForms();
 		reloadVisits();
-		reloadExpense();
+		reloadExpenseItems();
+		reloadExpenseReports();
 		reloadEntries();
 	}
 
@@ -1008,12 +1026,22 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		}
 	}
 
-	public void reloadExpense() {
+	public void reloadExpenseItems() {
 		if(!isPause) {
 			Fragment fragment = manager.findFragmentByTag(TabType.EXPENSE);
 			if(fragment != null) {
 				ExpenseFragment expense = (ExpenseFragment) fragment;
-				expense.loadExpense(db);
+				expense.loadExpenseItems(db);
+			}
+		}
+	}
+
+	public void reloadExpenseReports() {
+		if(!isPause) {
+			Fragment fragment = manager.findFragmentByTag(TabType.EXPENSE);
+			if(fragment != null) {
+				ExpenseFragment expense = (ExpenseFragment) fragment;
+				expense.loadExpenseReports(db);
 			}
 		}
 	}
@@ -1197,14 +1225,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		Intent service = new Intent(this, MainService.class);
 		if(TarkieLib.isTimeIn(db)) {
 			tvTimeInMain.setText(R.string.time_out);
-			ivTimeInMain.setVisibility(View.GONE);
-			ivTimeOutMain.setVisibility(View.VISIBLE);
+			ivTimeInMain.setVisibility(GONE);
+			ivTimeOutMain.setVisibility(VISIBLE);
 			startService(service);
 		}
 		else {
 			tvTimeInMain.setText(R.string.time_in);
-			ivTimeInMain.setVisibility(View.VISIBLE);
-			ivTimeOutMain.setVisibility(View.GONE);
+			ivTimeInMain.setVisibility(VISIBLE);
+			ivTimeOutMain.setVisibility(GONE);
 			stopService(service);
 		}
 	}
@@ -1212,14 +1240,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	public void updateSyncCount() {
 		int count = TarkieLib.getCountSyncTotal(db);
 		if(count > 0) {
-			tvSyncMain.setVisibility(View.VISIBLE);
+			tvSyncMain.setVisibility(VISIBLE);
 			tvSyncMain.setText(String.valueOf(count));
 			int res = count > 99 ? R.dimen.eight : R.dimen.ten;
 			float textSize = getResources().getDimension(res);
 			tvSyncMain.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 		}
 		else {
-			tvSyncMain.setVisibility(View.GONE);
+			tvSyncMain.setVisibility(GONE);
 		}
 	}
 

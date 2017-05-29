@@ -9,5 +9,4 @@ public class AnnouncementObj {
 	public String announcedBy;
 	public String announcedByImageURL;
 	public boolean isSeen;
-	public boolean isActive;
 }

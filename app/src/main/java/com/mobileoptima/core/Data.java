@@ -44,12 +44,10 @@ import com.mobileoptima.schema.Tables.TB;
 import net.sqlcipher.Cursor;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static com.codepan.database.Condition.Operator;
 
 public class Data {
-
 	public static ArrayList<InventoryObj> loadInventory(SQLiteAdapter db) {
 		ArrayList<InventoryObj> inventoryList = new ArrayList<>();
 		InventoryObj tracking = new InventoryObj();
@@ -712,7 +710,6 @@ public class Data {
 		obj.announcedBy = "Dana White";
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = false;
-		obj.isActive = true;
 		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
 			announcementList.add(obj);
 		}
@@ -725,7 +722,6 @@ public class Data {
 		obj.announcedBy = "Joe Schilling";
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = false;
-		obj.isActive = true;
 		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
 			announcementList.add(obj);
 		}
@@ -738,7 +734,6 @@ public class Data {
 		obj.announcedBy = "Holly Holms";
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = true;
-		obj.isActive = true;
 		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
 			announcementList.add(obj);
 		}
@@ -751,86 +746,54 @@ public class Data {
 		obj.announcedBy = "Paul Daley";
 		obj.announcedByImageURL = "https://lh5.googleusercontent.com/-v0YTPZ5IHqM/AAAAAAAAAAI/AAAAAAAAAAA/TLQEK58tWLI/s128-c-k/photo.jpg";
 		obj.isSeen = true;
-		obj.isActive = true;
 		if(obj.subject.toLowerCase().contains(search.toLowerCase())) {
 			announcementList.add(obj);
 		}
 		return announcementList;
 	}
 
-	public static ArrayList<ExpenseItemsObj> loadExpenseItems(SQLiteAdapter db, String date) {
+	public static ArrayList<ExpenseItemsObj> loadExpenseItems(SQLiteAdapter db, String startDate, String endDate) {
 		ArrayList<ExpenseItemsObj> expenseItemsList = new ArrayList<>();
-		for(int d = 30; d >= 1; d--) {
-			ExpenseItemsObj obj = new ExpenseItemsObj();
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", d);
-			obj.totalAmount = 120 + d;
-			if(date.isEmpty() || (!date.isEmpty() && obj.dDate.equals(date))) {
-				expenseItemsList.add(obj);
-			}
+		String empID = TarkieLib.getEmployeeID(db);
+		String table = Tables.getName(TB.EXPENSE);
+		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate >= '" + startDate + "' AND dDate <= '" + endDate + "' AND empID = " + empID + " AND isDelete = 0 GROUP BY dDate";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			ExpenseItemsObj expenseItem = new ExpenseItemsObj();
+			expenseItem.dDate = cursor.getString(0);
+			expenseItem.totalAmount = cursor.getFloat(1);
+			expenseItemsList.add(expenseItem);
 		}
+		cursor.close();
 		return expenseItemsList;
 	}
 
 	public static ArrayList<ExpenseObj> loadExpense(SQLiteAdapter db, String date) {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
-		ExpenseObj obj;
-		for(int e = 30; e >= 1; e--) {
-			obj = new ExpenseObj();
-			obj.ID = "1";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "07:30:00";
-			obj.expenseType = "Tricycle - " + e;
-			obj.amount = 14 + e;
-			if(obj.dDate.equals(date) ){
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "2";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "08:00:00";
-			obj.expenseType = "Meal 1 - " + e;
-			obj.amount = 45 + e;
-			if(obj.dDate.equals(date) ){
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "3";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "12:00:00";
-			obj.expenseType = "Meal 2 - " + e;
-			obj.amount = 60 + e;
-			if(obj.dDate.equals(date) ){
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "4";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "15:00:00";
-			obj.expenseType = "Meal 3 - " + e;
-			obj.amount = 35 + e;
-			if(obj.dDate.equals(date) ){
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "5";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "19:00:00";
-			obj.expenseType = "Meal 4 - " + e;
-			obj.amount = 60 + e;
-			if(obj.dDate.equals(date) ){
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "6";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "20:00:00";
-			obj.expenseType = "Tricycle - " + e;
-			obj.amount = 21 + e;
-			if(obj.dDate.equals(date) ){
-				expenseList.add(obj);
-			}
+		String empID = TarkieLib.getEmployeeID(db);
+		String table = Tables.getName(TB.EXPENSE);
+		String query = "SELECT ID, dDate, dTime, amount, expenseTypeID, clientID, photo, origin, destination, notes, reportID, withOR, isTag, isSubmit FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			ExpenseObj obj = new ExpenseObj();
+			obj.ID = cursor.getString(0);
+			obj.dDate = cursor.getString(1);
+			obj.dTime = cursor.getString(2);
+			obj.amount = cursor.getFloat(3);
+			obj.expenseType = cursor.getString(4);
+			obj.client = cursor.getString(5);
+			obj.photo = cursor.getString(6);
+			obj.origin = cursor.getString(7);
+			obj.destination = cursor.getString(8);
+			obj.notes = cursor.getString(9);
+			obj.reportID = cursor.getString(10);
+			obj.withOR = cursor.getInt(11) == 1;
+			obj.isTag = cursor.getInt(12) == 1;
+			obj.isSubmit = cursor.getInt(13) == 1;
+			expenseList.add(obj);
 		}
-		return  expenseList;
+		cursor.close();
+		return expenseList;
 	}
 
 	public static ArrayList<ExpenseReportsObj> loadExpenseReports(SQLiteAdapter db, String search) {
