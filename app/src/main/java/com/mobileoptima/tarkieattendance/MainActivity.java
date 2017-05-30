@@ -173,6 +173,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vEntriesMain = findViewById(R.id.vEntriesMain);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
+		findViewById(R.id.llClientsMain).setOnClickListener(this);
 		findViewById(R.id.llUpdateMasterFileMain).setOnClickListener(this);
 		findViewById(R.id.llSendBackUpMain).setOnClickListener(this);
 		findViewById(R.id.llSupportMain).setOnClickListener(this);
@@ -508,6 +509,15 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				else {
 					CodePanUtils.alertToast(this, R.string.break_without_time_in);
 				}
+				break;
+			case R.id.llClientsMain:
+				dlMain.closeDrawer(rlMenuMain);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, new StoresFragment());
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
 			case R.id.llUpdateMasterFileMain:
 				dlMain.closeDrawer(rlMenuMain);

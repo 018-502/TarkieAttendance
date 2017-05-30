@@ -19,6 +19,7 @@ import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseItemsObj;
@@ -1007,5 +1008,22 @@ public class Data {
 		statusList.add(incomplete);
 		statusList.add(cancelled);
 		return statusList;
+	}
+
+	public static ArrayList<ContactObj> loadContacts(SQLiteAdapter db, String id) {
+		ArrayList<ContactObj> contactList = new ArrayList<>();
+		Cursor cursor = db.read("SELECT name, position, cellNo, phoneNo, email, birthday, remarks FROM " + Tables.getName(Tables.TB.CONTACTS) + " WHERE storeID = " + id + " AND userID = " + TarkieLib.getUserID(db));
+		while(cursor.moveToNext()) {
+			ContactObj contact = new ContactObj();
+			contact.name = cursor.getString(0);
+			contact.position = cursor.getString(1);
+			contact.cellNo = cursor.getString(2);
+			contact.phoneNo = cursor.getString(3);
+			contact.email = cursor.getString(4);
+			contact.birthday = cursor.getString(5);
+			contact.remarks = cursor.getString(6);
+			contactList.add(contact);
+		}
+		return contactList;
 	}
 }

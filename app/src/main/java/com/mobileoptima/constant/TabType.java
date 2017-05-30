@@ -8,4 +8,5 @@ public class TabType {
 	public static final String PHOTOS = "photos";
 	public static final String ENTRIES = "entries";
 	public static final String EXPENSE = "expense";
+	public static final String CLIENT = "client";
 }

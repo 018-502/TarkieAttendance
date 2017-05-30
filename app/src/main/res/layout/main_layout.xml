@@ -794,6 +794,45 @@
                         android:background="@color/gray_sec"/>
 
                     <LinearLayout
+                        android:id="@+id/llClientsMain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/state_rect_trans_dark"
+                        android:clickable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/ten">
+
+                        <FrameLayout
+                            android:layout_width="@dimen/twenty_five"
+                            android:layout_height="@dimen/twenty_five">
+
+                            <ImageView
+                                android:layout_width="@dimen/twenty_three"
+                                android:layout_height="@dimen/nineteen"
+                                android:layout_gravity="center"
+                                android:src="@drawable/ic_clients"/>
+
+                        </FrameLayout>
+
+                        <com.codepan.widget.CodePanLabel
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/eight"
+                            android:layout_marginStart="@dimen/eight"
+                            android:text="@string/menu_clients"
+                            android:textColor="@color/gray_pri"
+                            android:textSize="@dimen/seventeen"
+                            codePan:typeface="@string/proxima_nova_light"/>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/one"
+                        android:background="@color/gray_sec"/>
+
+                    <LinearLayout
                         android:id="@+id/llUpdateMasterFileMain"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

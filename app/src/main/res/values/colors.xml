@@ -18,5 +18,7 @@
     <color name="gray_oct">#808080</color>
     <color name="gray_non">#CCCCCC</color>
     <color name="gray_dec">#DFDFDF</color>
+    <color name="gray_light">#EBEBEB</color>
+    <color name="gray_medium">#6d6e71</color>
 </resources>
 

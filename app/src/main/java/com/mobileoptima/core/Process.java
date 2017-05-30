@@ -35,7 +35,7 @@ public class Process {
 			public void run() {
 				Looper.prepare();
 				try {
-					result = Rx.authorizeDevice(db, authorizationCode, deviceID, errorCallback);
+					result = Rx.authorizeDevice(db, authorizationCode, "0123456789", errorCallback);
 					Thread.sleep(250);
 					handler.sendMessage(handler.obtainMessage());
 					if(result) {

@@ -36,7 +36,8 @@ public class Tables {
 		CHECK_IN,
 		CHECK_OUT,
 		SETTINGS,
-		SETTINGS_GROUP
+		SETTINGS_GROUP,
+		CONTACTS
 	}
 
 	public static String create(TB tb) {
@@ -369,6 +370,19 @@ public class Tables {
 				query.add(new Field("groupID", DataType.INTEGER));
 				query.add(new Field("value", DataType.TEXT));
 				break;
+			case CONTACTS:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("storeID", DataType.INTEGER));
+				query.add(new Field("userID", DataType.INTEGER));
+				query.add(new Field("name", DataType.TEXT));
+				query.add(new Field("position", DataType.TEXT));
+				query.add(new Field("cellNo", DataType.TEXT));
+				query.add(new Field("phoneNo", DataType.TEXT));
+				query.add(new Field("email", DataType.TEXT));
+				query.add(new Field("birthday", DataType.TEXT));
+				query.add(new Field("remarks", DataType.TEXT));
+				break;
 		}
 		return query.createTable(getName(tb));
 	}
@@ -465,6 +479,9 @@ public class Tables {
 				break;
 			case SETTINGS_GROUP:
 				name = "settings_group_tb";
+				break;
+			case CONTACTS:
+				name = "store_contacts_tb";
 				break;
 		}
 		return name;

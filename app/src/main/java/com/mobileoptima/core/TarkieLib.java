@@ -1,9 +1,11 @@
 package com.mobileoptima.core;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 
 import com.codepan.callback.Interface.OnFragmentCallback;
@@ -16,6 +18,8 @@ import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.model.TimeObj;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.utils.SpannableMap;
+import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.FieldType;
@@ -26,6 +30,7 @@ import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
@@ -168,6 +173,7 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.CHECK_OUT));
 		db.execQuery(Tables.create(SETTINGS));
 		db.execQuery(Tables.create(TB.SETTINGS_GROUP));
+		db.execQuery(Tables.create(TB.STORES));
 	}
 
 	public static void updateTables(SQLiteAdapter db, int o, int n) {
@@ -1350,5 +1356,36 @@ public class TarkieLib {
 				"AND s.code = '" + code + "'";
 		//return db.getInt(query) == 1;
 		return true;
+	}
+
+	public static void requiredField(CodePanLabel label, String text) {
+		if(text != null) {
+			int length = text.length();
+			String name = text + "*";
+			ArrayList<SpannableMap> list = new ArrayList<>();
+			list.add(new SpannableMap(length, length + 1, Color.RED));
+			SpannableStringBuilder ssb = CodePanUtils.customizeText(list, name);
+			label.setText(ssb);
+		}
+	}
+
+	public static String getUserID(SQLiteAdapter db) {
+		return db.getString("SELECT empID FROM " + Tables.getName(Tables.TB.CREDENTIALS));
+	}
+
+	public static boolean saveNewContact(SQLiteAdapter db, ContactObj contact) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("storeID", contact.storeID));
+		query.add(new FieldValue("userID", getUserID(db)));
+		query.add(new FieldValue("name", contact.name));
+		query.add(new FieldValue("position", contact.position));
+		query.add(new FieldValue("cellNo", contact.cellNo));
+		query.add(new FieldValue("phoneNo", contact.phoneNo));
+		query.add(new FieldValue("email", contact.email));
+		query.add(new FieldValue("birthday", contact.birthday));
+		query.add(new FieldValue("remarks", contact.remarks));
+		binder.insert(Tables.getName(Tables.TB.CONTACTS), query);
+		return binder.finish();
 	}
 }
