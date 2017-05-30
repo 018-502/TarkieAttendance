@@ -33,6 +33,7 @@ public class Tables {
 		TASK_FORM,
 		TASK_ENTRY,
 		TASK,
+		TASK_PHOTO,
 		CHECK_IN,
 		CHECK_OUT,
 		SETTINGS,
@@ -305,6 +306,13 @@ public class Tables {
 				query.add(new Field("taskID", DataType.INTEGER));
 				query.add(new Field("isTag", 1));
 				break;
+			case TASK_PHOTO:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("photoID", DataType.INTEGER));
+				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("isTag", 1));
+				break;
 			case TASK:
 				query.clearAll();
 				query.add(new Field("ID", true));
@@ -429,6 +437,9 @@ public class Tables {
 				break;
 			case PHOTO:
 				name = "photo_tb";
+				break;
+			case TASK_PHOTO:
+				name = "task_photo_tb";
 				break;
 			case FORMS:
 				name = "forms_tb";

@@ -1267,7 +1267,7 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String webTaskID = dataObj.getString("itinerary_id");
-						String name = dataObj.getString("client_name");
+						String name = dataObj.getString("store_name");
 						String notes = dataObj.getString("notes");
 						notes = CodePanUtils.handleUniCode(notes);
 						notes = CodePanUtils.handleHTMLEntities(notes, false);
@@ -1282,7 +1282,7 @@ public class Rx {
 						query.add(new FieldValue("notes", notes));
 						query.add(new FieldValue("notesLimit", notesLimit));
 						query.add(new FieldValue("empID", dataObj.getString("employee_id")));
-						query.add(new FieldValue("storeID", dataObj.getString("client_id")));
+						query.add(new FieldValue("storeID", dataObj.getString("store_id")));
 						query.add(new FieldValue("startDate", dataObj.getString("start_date")));
 						query.add(new FieldValue("endDate", dataObj.getString("end_date")));
 						String sql = "SELECT ID FROM " + t + " WHERE webTaskID = '" + webTaskID + "'";

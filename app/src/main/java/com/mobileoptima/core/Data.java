@@ -32,6 +32,7 @@ import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.InventoryObj;
 import com.mobileoptima.model.LocationObj;
 import com.mobileoptima.model.PageObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskStatusObj;
@@ -340,7 +341,7 @@ public class Data {
 		return choiceList;
 	}
 
-	public static ArrayList<ImageObj> loadPhotos(SQLiteAdapter db) {
+	public static ArrayList<ImageObj> loadImages(SQLiteAdapter db) {
 		ArrayList<ImageObj> imageList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.PHOTO);
@@ -627,22 +628,22 @@ public class Data {
 		return imageList;
 	}
 
-	public static ArrayList<ImageObj> loadPhotosUpload(SQLiteAdapter db) {
-		ArrayList<ImageObj> imageList = new ArrayList<>();
+	public static ArrayList<PhotoObj> loadPhotosUpload(SQLiteAdapter db) {
+		ArrayList<PhotoObj> photoList = new ArrayList<>();
 		String table = Tables.getName(TB.PHOTO);
 		String query = "SELECT ID, fileName, syncBatchID, isSignature FROM " + table + " WHERE " +
 				"isUpload = 0 AND isDelete = 0";
 		net.sqlcipher.Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			ImageObj image = new ImageObj();
-			image.ID = cursor.getString(0);
-			image.fileName = cursor.getString(1);
-			image.syncBatchID = cursor.getString(2);
-			image.isSignature = cursor.getInt(3) == 1;
-			imageList.add(image);
+			PhotoObj photo = new PhotoObj();
+			photo.ID = cursor.getString(0);
+			photo.fileName = cursor.getString(1);
+			photo.syncBatchID = cursor.getString(2);
+			photo.isSignature = cursor.getInt(3) == 1;
+			photoList.add(photo);
 		}
 		cursor.close();
-		return imageList;
+		return photoList;
 	}
 
 	public static ArrayList<EntryObj> loadEntriesSync(SQLiteAdapter db) {

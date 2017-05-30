@@ -29,7 +29,9 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
+import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
@@ -156,6 +158,7 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.TIME_SECURITY));
 		db.execQuery(Tables.create(TB.LOCATION));
 		db.execQuery(Tables.create(TB.PHOTO));
+		db.execQuery(Tables.create(TB.TASK_PHOTO));
 		db.execQuery(Tables.create(TB.FORMS));
 		db.execQuery(Tables.create(TB.FIELDS));
 		db.execQuery(Tables.create(TB.CHOICES));
@@ -479,7 +482,7 @@ public class TarkieLib {
 		return gpsID;
 	}
 
-	public static boolean saveTimeIn(SQLiteAdapter db, GpsObj gps, StoreObj store, String photo) {
+	public static boolean saveTimeIn(SQLiteAdapter db, GpsObj gps, String storeID, String photo) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
@@ -493,9 +496,7 @@ public class TarkieLib {
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("photo", photo));
 		query.add(new FieldValue("gpsID", gpsID));
-		if(store != null) {
-			query.add(new FieldValue("storeID", store.ID));
-		}
+		query.add(new FieldValue("storeID", storeID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		binder.insert(Tables.getName(TB.TIME_IN), query);
@@ -670,8 +671,9 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean saveTask(SQLiteAdapter db, StoreObj store, String startDate,
-								   String endDate, String notes) {
+	public static boolean addTask(SQLiteAdapter db, String storeID, String startDate,
+								  String endDate, String notes, ArrayList<FormObj> formList,
+								  ArrayList<ImageObj> imageList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String empID = getEmployeeID(db);
 		String dDate = CodePanUtils.getDate();
@@ -682,15 +684,61 @@ public class TarkieLib {
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("notes", notes));
-		query.add(new FieldValue("storeID", store.ID));
+		query.add(new FieldValue("storeID", storeID));
 		query.add(new FieldValue("startDate", startDate));
 		query.add(new FieldValue("endDate", endDate));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		binder.insert(Tables.getName(TB.TASK), query);
+		String taskID = binder.insert(Tables.getName(TB.TASK), query);
+		if(taskID != null) {
+			for(FormObj form : formList) {
+				query.clearAll();
+				query.add(new FieldValue("formID", form.ID));
+				query.add(new FieldValue("taskID", taskID));
+				binder.insert(Tables.getName(TB.TASK_FORM), query);
+			}
+			for(ImageObj image : imageList) {
+				query.clearAll();
+				query.add(new FieldValue("photoID", image.ID));
+				query.add(new FieldValue("taskID", taskID));
+				binder.insert(Tables.getName(TB.TASK_FORM), query);
+			}
+		}
 		return binder.finish();
 	}
 
-	public static boolean saveCheckIn(SQLiteAdapter db, GpsObj gps, TaskObj task,
+	public static boolean editTask(SQLiteAdapter db, String storeID, String taskID, String startDate,
+								   String endDate, String notes, ArrayList<FormObj> formList,
+								   ArrayList<PhotoObj> photoList) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("notes", notes));
+		query.add(new FieldValue("storeID", storeID));
+		query.add(new FieldValue("startDate", startDate));
+		query.add(new FieldValue("endDate", endDate));
+		binder.update(Tables.getName(TB.TASK), query, taskID);
+		query.clearAll();
+		query.add(new FieldValue("isTag", false));
+		query.add(new Condition("taskID", taskID));
+		binder.update(Tables.getName(TB.TASK_FORM), query);
+		binder.update(Tables.getName(TB.TASK_PHOTO), query);
+		for(FormObj form : formList) {
+			query.clearAll();
+			query.add(new FieldValue("formID", form.ID));
+			query.add(new FieldValue("taskID", taskID));
+			query.add(new FieldValue("isTag", true));
+			binder.update(Tables.getName(TB.TASK_FORM), query);
+		}
+		for(PhotoObj photo : photoList) {
+			query.clearAll();
+			query.add(new FieldValue("photoID", photo.ID));
+			query.add(new FieldValue("taskID", taskID));
+			query.add(new FieldValue("isTag", true));
+			binder.update(Tables.getName(TB.TASK_PHOTO), query);
+		}
+		return binder.finish();
+	}
+
+	public static boolean saveCheckIn(SQLiteAdapter db, GpsObj gps, String taskID,
 									  String dDate, String dTime, String photo) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
@@ -704,7 +752,7 @@ public class TarkieLib {
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("photo", photo));
-		query.add(new FieldValue("taskID", task.ID));
+		query.add(new FieldValue("taskID", taskID));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
@@ -712,7 +760,7 @@ public class TarkieLib {
 		if(checkInID != null) {
 			query.clearAll();
 			query.add(new FieldValue("isCheckIn", true));
-			binder.update(Tables.getName(TB.TASK), query, task.ID);
+			binder.update(Tables.getName(TB.TASK), query, taskID);
 		}
 		return binder.finish();
 	}
@@ -1076,7 +1124,8 @@ public class TarkieLib {
 		return syncCount + photoCount + signatureCount;
 	}
 
-	public static boolean saveEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList, boolean isSubmit) {
+	public static boolean addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,
+								   boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
@@ -1084,10 +1133,10 @@ public class TarkieLib {
 		String syncBatchID = getSyncBatchID(db);
 		String timeInID = getTimeInID(db);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("formID", formID));
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("formID", formID));
 		query.add(new FieldValue("isSubmit", isSubmit));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
@@ -1110,7 +1159,7 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean updateEntry(SQLiteAdapter db, String entryID, ArrayList<FieldObj> fieldList, boolean isSubmit) {
+	public static boolean editEntry(SQLiteAdapter db, String entryID, ArrayList<FieldObj> fieldList, boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("isSubmit", isSubmit));
@@ -1201,11 +1250,11 @@ public class TarkieLib {
 		String syncBatchID = getSyncBatchID(db);
 		String empID = getEmployeeID(db);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("fileName", obj.fileName));
+		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("dDate", obj.dDate));
 		query.add(new FieldValue("dTime", obj.dTime));
+		query.add(new FieldValue("fileName", obj.fileName));
 		query.add(new FieldValue("isSignature", obj.isSignature));
-		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		String photoID = binder.insert(Tables.getName(PHOTO), query);
 		binder.finish();

@@ -1431,7 +1431,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveTimeIn(db, in.gps, in.store, in.photo);
+					StoreObj store = in.store;
+					String storeID = store != null ? store.ID : null;
+					boolean result = TarkieLib.saveTimeIn(db, in.gps, storeID, in.photo);
 					timeInHandler.sendMessage(timeInHandler.
 							obtainMessage(result ? Result.SUCCESS : Result.FAILED));
 				}

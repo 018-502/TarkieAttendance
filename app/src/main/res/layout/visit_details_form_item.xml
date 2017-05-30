@@ -14,7 +14,7 @@
             android:id="@+id/tvVisitDetailsForm"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center"
+            android:gravity="start|center_vertical"
             android:paddingEnd="@dimen/twelve"
             android:paddingLeft="@dimen/twelve"
             android:paddingRight="@dimen/twelve"

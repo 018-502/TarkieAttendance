@@ -34,6 +34,7 @@ import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.VisitObj;
 
@@ -281,7 +282,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveCheckIn(db, in.gps, in.task, in.dDate,
+					TaskObj task = in.task;
+					boolean result = TarkieLib.saveCheckIn(db, in.gps, task.ID, in.dDate,
 							in.dTime, in.photo);
 					checkInHandler.sendMessage(checkInHandler
 							.obtainMessage(result ? Result.SUCCESS : Result.FAILED, in));

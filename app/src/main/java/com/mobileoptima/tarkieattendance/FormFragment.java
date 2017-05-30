@@ -317,13 +317,13 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 		}
 		if(entry != null) {
 			entry.isSubmit = isSubmit;
-			boolean result = TarkieLib.updateEntry(db, entry.ID, fieldList, isSubmit);
+			boolean result = TarkieLib.editEntry(db, entry.ID, fieldList, isSubmit);
 			if(result) {
 				CodePanUtils.alertToast(getActivity(), "Entry has been has successfully updated.");
 			}
 		}
 		else {
-			boolean result = TarkieLib.saveEntry(db, form.ID, fieldList, isSubmit);
+			boolean result = TarkieLib.addEntry(db, form.ID, fieldList, isSubmit);
 			if(result) {
 				CodePanUtils.alertToast(getActivity(), "Entry has been has successfully saved.");
 			}
