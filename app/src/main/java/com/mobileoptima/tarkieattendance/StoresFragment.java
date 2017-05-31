@@ -20,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+
+import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
@@ -37,7 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
-public class StoresFragment extends Fragment implements OnClickListener {
+public class StoresFragment extends Fragment implements OnClickListener, OnRefreshCallback {
 
 	private final int LIMIT = 30;
 	private final long IDLE_TIME = 500;
@@ -51,7 +53,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	private CodePanTextField etSearchStores;
 	private ArrayList<StoreObj> storeList;
 	private CodePanLabel tvTitleStores;
-	private CodePanButton btnBackStores;
+	private CodePanButton btnBackStores, btnAddStore;
 	private Handler inputFinishHandler;
 	private ImageView ivLoadingStores;
 	private FragmentManager manager;
@@ -110,9 +112,11 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		tvTitleStores = (CodePanLabel) view.findViewById(R.id.tvTitleStores);
 		etSearchStores = (CodePanTextField) view.findViewById(R.id.etSearchStores);
 		btnBackStores = (CodePanButton) view.findViewById(R.id.btnBackStores);
+        btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
 		lvStores = (ListView) view.findViewById(R.id.lvStores);
 		btnBackStores.setOnClickListener(this);
+		view.findViewById(R.id.btnAddStore).setOnClickListener(this);
 		lvStores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -179,6 +183,8 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		});
 		if(convention != null) {
 			tvTitleStores.setText(convention);
+            convention = convention.toUpperCase();
+            btnAddStore.setText("ADD " + convention);
 		}
 		loadStores(db, search);
 		return view;
@@ -189,6 +195,16 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		switch(v.getId()) {
 			case R.id.btnBackStores:
 				manager.popBackStack();
+				break;
+			case R.id.btnAddStore:
+                AddStoreFragment storeFragment = new AddStoreFragment();
+                storeFragment.setOnRefreshCallback(this);
+                transaction = manager.beginTransaction();
+                transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+                        R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+                transaction.replace(R.id.rlStores, storeFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
 				break;
 		}
 	}
@@ -315,4 +331,9 @@ public class StoresFragment extends Fragment implements OnClickListener {
 			fragmentCallback.onFragment(isOnBackStack);
 		}
 	}
+
+    @Override
+    public void onRefresh() {
+        loadStores(db, "");
+    }
 }

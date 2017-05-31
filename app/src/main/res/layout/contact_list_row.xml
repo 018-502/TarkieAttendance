@@ -22,7 +22,7 @@
         android:layout_marginStart="@dimen/three"
         android:layout_toRightOf="@id/imgEmployee"
         android:textSize="@dimen/seventeen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_bold"/>
 
     <ImageView
@@ -45,7 +45,7 @@
         android:layout_toRightOf="@id/imgPosition"
         android:layout_below="@id/lblEmployee"
         android:textSize="@dimen/sixteen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <ImageView
@@ -68,7 +68,7 @@
         android:layout_toRightOf="@id/imgCell"
         android:layout_below="@id/lblPosition"
         android:textSize="@dimen/sixteen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <ImageView
@@ -91,7 +91,7 @@
         android:layout_toRightOf="@id/imgCell"
         android:layout_below="@id/lblCell"
         android:textSize="@dimen/sixteen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <ImageView
@@ -114,7 +114,7 @@
         android:layout_toRightOf="@id/imgEmail"
         android:layout_below="@id/lblPhone"
         android:textSize="@dimen/sixteen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <ImageView
@@ -137,7 +137,7 @@
         android:layout_toRightOf="@id/imgBirthday"
         android:layout_below="@id/lblEmail"
         android:textSize="@dimen/sixteen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <ImageView
@@ -160,7 +160,7 @@
         android:layout_toRightOf="@id/imgRemarks"
         android:layout_below="@id/lblBirthday"
         android:textSize="@dimen/sixteen"
-        android:textColor="@color/gray_medium"
+        android:textColor="@color/gray_qui"
         codePan:typeface="@string/proxima_nova_light"/>
 
     <View

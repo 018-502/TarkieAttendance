@@ -113,12 +113,11 @@
         <com.codepan.widget.CodePanLabel
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No Contacts"
             android:layout_gravity="center"
-            android:textSize="@dimen/twenty_three"
-            codePan:typeface="@string/proxima_nova_bold"
+            android:text="No Contacts"
             android:textColor="@color/gray_ter"
-            />
+            android:textSize="@dimen/twenty_three"
+            codePan:typeface="@string/proxima_nova_bold" />
 
     </FrameLayout>
 

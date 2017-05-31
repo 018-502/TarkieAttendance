@@ -268,6 +268,46 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
+		column = "syncBatchID";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "webStoreID";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "webStoreID";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "isDefault";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "isSync";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "isFromWeb";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "dDate";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "dTime";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
 		binder.finish();
 	}
 
@@ -1385,7 +1425,22 @@ public class TarkieLib {
 		query.add(new FieldValue("email", contact.email));
 		query.add(new FieldValue("birthday", contact.birthday));
 		query.add(new FieldValue("remarks", contact.remarks));
-		binder.insert(Tables.getName(Tables.TB.CONTACTS), query);
+		binder.insert(Tables.getName(TB.CONTACTS), query);
+		return binder.finish();
+	}
+
+	public static boolean addStore(SQLiteAdapter db, StoreObj obj) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		query.add(new FieldValue("name", obj.name));
+		query.add(new FieldValue("address", obj.address));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		binder.insert(Tables.getName(TB.STORES), query);
 		return binder.finish();
 	}
 }

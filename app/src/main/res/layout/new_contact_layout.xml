@@ -54,7 +54,7 @@
             android:layout_marginRight="@dimen/ten"
             android:layout_marginEnd="@dimen/ten"
             android:background="@drawable/state_rect_white_rad_three"
-            android:text="@string/save_bold"
+            android:text="@string/save_caps"
             android:textColor="@color/header"
             android:textSize="@dimen/fourteen"
             codePan:typeface="@string/proxima_nova_light" />

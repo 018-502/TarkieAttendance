@@ -2,9 +2,11 @@
     <string name="app_name">Sevie</string>
     <string name="sevie">sevie</string>
     <string name="contacts">Contacts</string>
+    <string name="add_client_normal">Add Client</string>
+    <string name="add_client_bold">ADD CLIENT</string>
     <string name="add_contact_bold">ADD CONTACT</string>
     <string name="new_contact_title">Add Contact Person</string>
-    <string name="save_bold">SAVE</string>
+    <string name="company_name">Company Name</string>
     <string name="menu">Menu</string>
     <string name="menu_time_in">@string/time_in</string>
     <string name="menu_time_out">@string/time_out</string>
@@ -29,6 +31,11 @@
     <string name="birthday_hint">dd-mm-yy</string>
     <string name="remarks">Remarks</string>
     <string name="remarks_hint">Type Remarks</string>
+    <string name="address">Address</string>
+    <string name="address_hint">Type Address</string>
+    <string name="share_with">Share with:</string>
+    <string name="me">Me</string>
+    <string name="my_team">My Team</string>
     <string name="time_in">Time In</string>
     <string name="time_out">Time Out</string>
     <string name="attendance">Attendance</string>

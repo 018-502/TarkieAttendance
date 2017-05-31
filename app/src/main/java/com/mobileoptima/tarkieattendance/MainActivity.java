@@ -48,6 +48,7 @@ import com.mobileoptima.callback.Interface.OnTimeInCallback;
 import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.DialogTag;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Key;
@@ -69,6 +70,8 @@ import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.service.MainService;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 import static android.support.v4.app.FragmentManager.POP_BACK_STACK_INCLUSIVE;
@@ -84,7 +87,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback,
 		OnTimeInCallback, OnTimeOutCallback, OnSelectStoreCallback {
 
-	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
+	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain, tvClientsMenu;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnExpenseMain, btnPhotosMain,
 			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain;
@@ -95,7 +98,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private ImageView ivTimeInMain, ivTimeOutMain;
 	private RelativeLayout rlMain, rlMenuMain;
 	private CircularImageView ivEmployeeMain;
-	private String tabType = TabType.DEFAULT;
+	private String tabType = TabType.DEFAULT, conventionClient;
 	private FragmentTransaction transaction;
 	private BroadcastReceiver receiver;
 	private LinearLayout llTimeInMain;
@@ -171,9 +174,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vExpenseMain = findViewById(R.id.vExpenseMain);
 		vPhotosMain = findViewById(R.id.vPhotosMain);
 		vEntriesMain = findViewById(R.id.vEntriesMain);
+        tvClientsMenu = (CodePanLabel) findViewById(R.id.tvClientsMenu);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
-		findViewById(R.id.llClientsMain).setOnClickListener(this);
+        findViewById(R.id.llClientsMain).setOnClickListener(this);
 		findViewById(R.id.llUpdateMasterFileMain).setOnClickListener(this);
 		findViewById(R.id.llSendBackUpMain).setOnClickListener(this);
 		findViewById(R.id.llSupportMain).setOnClickListener(this);
@@ -853,6 +857,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		registerReceiver();
 		updateSyncCount();
 		updateLastSynced();
+		setConventions();
 	}
 
 	public void setDefaultTab() {
@@ -860,6 +865,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			btnHomeMain.performClick();
 		}
 	}
+
+	public void setConventions() {
+        conventionClient = TarkieLib.getConvention(db, Convention.STORES);
+        if(conventionClient != null) {
+            conventionClient = StringUtils.capitalize(conventionClient);
+            tvClientsMenu.setText(conventionClient);
+        }
+    }
 
 	@Override
 	public void onLogin() {
