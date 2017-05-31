@@ -30,6 +30,7 @@ import com.mobileoptima.callback.Interface.OnCameraDoneCallback;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.callback.Interface.OnSelectStatusCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
@@ -40,6 +41,7 @@ import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
+import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.StoreObj;
@@ -50,7 +52,8 @@ import com.mobileoptima.model.VisitObj;
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
-		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback {
+		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback,
+		OnSaveEntryCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
 			btnSaveVisitDetails, btnAddPhotoVisitDetails;
@@ -155,7 +158,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					formList = Data.loadForms(db, taskID);
+					formList = Data.loadEntries(db, taskID);
 					formsHandler.sendMessage(formsHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -186,10 +189,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 								FormFragment form = new FormFragment();
 								form.setForm(obj);
 								form.setOnOverrideCallback(overrideCallback);
+								form.setOnSaveEntryCallback(VisitDetailsFragment.this);
 								transaction = manager.beginTransaction();
 								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-								transaction.replace(R.id.rlMain, form, Tag.FORM);
+								transaction.add(R.id.rlMain, form, Tag.FORM);
+								transaction.hide(VisitDetailsFragment.this);
 								transaction.addToBackStack(null);
 								transaction.commit();
 							}
@@ -587,5 +592,9 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			this.imageList.addAll(0, imageList);
 		}
 		updatePhotoGrid(llGridPhotoVisitDetails, this.imageList);
+	}
+
+	@Override
+	public void onSaveEntry(EntryObj entry) {
 	}
 }

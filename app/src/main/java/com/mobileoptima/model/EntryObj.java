@@ -7,16 +7,16 @@ public class EntryObj {
 	public String ID;
 	public String dDate;
 	public String dTime;
+	public FormObj form;
+	public StoreObj store;
 	public String referenceNo;
+	public String syncBatchID;
 	public String dateSubmitted;
 	public String timeSubmitted;
-	public String syncBatchID;
-	public StoreObj store;
-	public FormObj form;
-	public ArrayList<FieldObj> fieldList;
 	public boolean isFromWeb;
 	public boolean isSubmit;
 	public boolean isDelete;
 	public boolean isCheck;
 	public boolean isHighlight;
+	public ArrayList<FieldObj> fieldList;
 }

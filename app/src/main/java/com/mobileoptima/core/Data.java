@@ -89,9 +89,10 @@ public class Data {
 		return formList;
 	}
 
-	public static ArrayList<FormObj> loadForms(SQLiteAdapter db, String taskID) {
+	public static ArrayList<FormObj> loadEntries(SQLiteAdapter db, String taskID) {
 		ArrayList<FormObj> formList = new ArrayList<>();
 		String f = Tables.getName(TB.FORMS);
+		String e = Tables.getName(TB.ENTRIES);
 		String tf = Tables.getName(TB.TASK_FORM);
 		String query = "SELECT f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf WHERE " +
 				"f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
