@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.SquareImageView;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.model.ImageObj;
@@ -57,8 +58,8 @@ public class PhotosAdapter extends ArrayAdapter<ImageObj> {
 			else {
 				holder = (ViewHolder) view.getTag();
 			}
-			if(obj.bitmap != null) {
-				holder.ivPhotosItem.setImageBitmap(obj.bitmap);
+			if(obj.thumbnail != null) {
+				holder.ivPhotosItem.setImageBitmap(obj.thumbnail);
 			}
 			else {
 				holder.ivPhotosItem.setImageBitmap(null);
@@ -82,8 +83,12 @@ public class PhotosAdapter extends ArrayAdapter<ImageObj> {
 			}
 
 			@Override
-			public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-				items.get(position).bitmap = loadedImage;
+			public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+				int width = view.getWidth();
+				int height = view.getHeight();
+				ImageObj image = items.get(position);
+				image.bitmap = bitmap;
+				image.thumbnail = CodePanUtils.resizeBitmap(bitmap, width, height);
 			}
 
 			@Override

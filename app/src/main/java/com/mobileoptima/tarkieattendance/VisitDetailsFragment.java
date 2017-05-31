@@ -35,6 +35,7 @@ import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Result;
 import com.mobileoptima.constant.Settings;
+import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.CheckInObj;
@@ -62,6 +63,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private ArrayList<ImageObj> imageList;
 	private ArrayList<FormObj> formList;
 	private FragmentManager manager;
+	private boolean hasPhotoAdded;
 	private MainActivity main;
 	private CheckOutObj out;
 	private SQLiteAdapter db;
@@ -172,14 +174,29 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			if(view != null) {
 				LayoutInflater inflater = getActivity().getLayoutInflater();
 				ViewGroup container = (ViewGroup) view.getParent();
-				for(FormObj form : formList) {
+				for(final FormObj obj : formList) {
 					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
 					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
 					CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
-					tvVisitDetailsForm.setText(form.name);
+					tvVisitDetailsForm.setText(obj.name);
 					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
+							if(visit.isCheckIn) {
+								FormFragment form = new FormFragment();
+								form.setForm(obj);
+								form.setOnOverrideCallback(overrideCallback);
+								transaction = manager.beginTransaction();
+								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+								transaction.replace(R.id.rlMain, form, Tag.FORM);
+								transaction.addToBackStack(null);
+								transaction.commit();
+							}
+							else {
+								TarkieLib.alertDialog(getActivity(), R.string.check_in_required_title,
+										R.string.check_in_required_message);
+							}
 						}
 					});
 					llFormsVisitDetails.addView(child);
@@ -549,6 +566,9 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					if(refreshCallback != null) {
 						refreshCallback.onRefresh();
 					}
+					if(hasPhotoAdded) {
+						main.reloadPhotos();
+					}
 					manager.popBackStack();
 					CodePanUtils.alertToast(getActivity(), "Task has been successfully saved.");
 					break;
@@ -562,6 +582,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onCameraDone(ArrayList<ImageObj> imageList) {
+		this.hasPhotoAdded = true;
 		if(imageList != null) {
 			this.imageList.addAll(0, imageList);
 		}

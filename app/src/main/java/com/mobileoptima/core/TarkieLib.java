@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 
 import com.codepan.callback.Interface.OnFragmentCallback;
@@ -669,6 +668,24 @@ public class TarkieLib {
 		query.add(new FieldValue("accuracy", gps.accuracy));
 		query.add(new FieldValue("provider", provider));
 		binder.insert(Tables.getName(TB.LOCATION), query);
+		return binder.finish();
+	}
+
+	public static boolean addTask(SQLiteAdapter db, String storeID, String startDate, String endDate) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String empID = getEmployeeID(db);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("storeID", storeID));
+		query.add(new FieldValue("startDate", startDate));
+		query.add(new FieldValue("endDate", endDate));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		binder.insert(Tables.getName(TB.TASK), query);
 		return binder.finish();
 	}
 
@@ -1416,7 +1433,6 @@ public class TarkieLib {
 		String query = "SELECT sg.value FROM " + s + " s, " + sg + " sg WHERE " +
 				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
 				"AND s.code = '" + code + "'";
-		//return db.getInt(query) == 1;
-		return true;
+		return db.getInt(query) == 1;
 	}
 }

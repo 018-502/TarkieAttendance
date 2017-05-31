@@ -149,6 +149,8 @@
     <string name="time_in_required_title">Time-in Required</string>
     <string name="time_in_required_form_message">Please time-in first before creating new entries. To time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
     <string name="time_in_required_visit_message">Please time-in first before you check-in.</string>
+    <string name="check_in_required_title">Check-in Required</string>
+    <string name="check_in_required_message">Please check-in first before filling up forms.</string>
     <string name="visit_checking_out">You are checking-out at</string>
     <string name="visit_select_status">Please choose the status\nof your visit:</string>
     <string name="currently_check_in_title">Currently Checked-in</string>
