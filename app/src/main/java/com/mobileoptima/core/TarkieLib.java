@@ -145,10 +145,6 @@ public class TarkieLib {
 	}
 
 	public static void createTables(SQLiteAdapter db) {
-//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE));
-//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE_DEFAULT));
-//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE_FUEL_CONSUMPTION));
-//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE_FUEL_PURCHASE));
 		db.execQuery(Tables.create(TB.API_KEY));
 		db.execQuery(Tables.create(TB.SYNC_BATCH));
 		db.execQuery(Tables.create(TB.CREDENTIALS));

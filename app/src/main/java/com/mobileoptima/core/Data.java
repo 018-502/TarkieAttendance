@@ -804,62 +804,6 @@ public class Data {
 
 	public static ArrayList<ExpenseObj> loadExpense(SQLiteAdapter db, String date) {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
-		ExpenseObj obj;
-		for(int e = 30; e >= 1; e--) {
-			obj = new ExpenseObj();
-			obj.ID = "1";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "07:30:00";
-			obj.expenseType = "Tricycle - " + e;
-			obj.amount = 14 + e;
-			if(obj.dDate.equals(date)) {
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "2";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "08:00:00";
-			obj.expenseType = "Meal 1 - " + e;
-			obj.amount = 45 + e;
-			if(obj.dDate.equals(date)) {
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "3";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "12:00:00";
-			obj.expenseType = "Meal 2 - " + e;
-			obj.amount = 60 + e;
-			if(obj.dDate.equals(date)) {
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "4";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "15:00:00";
-			obj.expenseType = "Meal 3 - " + e;
-			obj.amount = 35 + e;
-			if(obj.dDate.equals(date)) {
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "5";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "19:00:00";
-			obj.expenseType = "Meal 4 - " + e;
-			obj.amount = 60 + e;
-			if(obj.dDate.equals(date)) {
-				expenseList.add(obj);
-			}
-			obj = new ExpenseObj();
-			obj.ID = "6";
-			obj.dDate = "2016-10-" + String.format(Locale.ENGLISH, "%02d", e);
-			obj.dTime = "20:00:00";
-			obj.expenseType = "Tricycle - " + e;
-			obj.amount = 21 + e;
-			if(obj.dDate.equals(date)) {
-				expenseList.add(obj);
-			}
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
 		String query = "SELECT ID, dDate, dTime, amount, typeID, storeID, notes, isTag, isSubmit FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
@@ -916,7 +860,6 @@ public class Data {
 			}
 			expenseList.add(obj);
 		}
-		return expenseList;
 		cursor.close();
 		return expenseList;
 	}
