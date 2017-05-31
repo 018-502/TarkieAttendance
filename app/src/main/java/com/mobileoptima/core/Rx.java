@@ -1035,7 +1035,7 @@ public class Rx {
 						query.clearAll();
 						query.add(new FieldValue("ID", fieldID));
 						query.add(new FieldValue("name", name));
-						query.add(new FieldValue("typeID", type));
+						query.add(new FieldValue("type", type));
 						query.add(new FieldValue("description", description));
 						query.add(new FieldValue("formID", dataObj.getString("field_form_id")));
 						query.add(new FieldValue("orderNo", dataObj.getString("field_order_number")));

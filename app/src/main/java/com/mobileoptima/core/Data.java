@@ -242,7 +242,7 @@ public class Data {
 	public static ArrayList<PageObj> loadPages(SQLiteAdapter db, String formID) {
 		ArrayList<PageObj> pageList = new ArrayList<>();
 		String table = Tables.getName(TB.FIELDS);
-		String query = "SELECT ID, orderNo FROM " + table + " WHERE typeID = '" +
+		String query = "SELECT ID, orderNo FROM " + table + " WHERE type = '" +
 				FieldType.PB + "' AND formID = '" + formID + "' AND isActive = 1 " +
 				"ORDER BY orderNo";
 		Cursor cursor = db.read(query);
@@ -293,7 +293,7 @@ public class Data {
 												 EntryObj entry, PageObj page) {
 		ArrayList<FieldObj> fieldList = new ArrayList<>();
 		String table = Tables.getName(TB.FIELDS);
-		String query = "SELECT ID, name, description, typeID, isRequired FROM " + table + " WHERE " +
+		String query = "SELECT ID, name, description, type, isRequired FROM " + table + " WHERE " +
 				"formID = '" + form.ID + "' AND orderNo BETWEEN '" + page.start + "' AND '" +
 				page.end + "' AND isActive = 1 ORDER BY orderNo";
 		Cursor cursor = db.read(query);
@@ -666,7 +666,7 @@ public class Data {
 			form.ID = cursor.getString(8);
 			entry.form = form;
 			ArrayList<FieldObj> fieldList = new ArrayList<>();
-			query = "SELECT f.ID, f.typeID, a.ID, a.value FROM " + a + " a, " + f + " f " +
+			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + a + " a, " + f + " f " +
 					"WHERE f.formID = " + form.ID + " AND a.entryID = " + entry.ID + " " +
 					"AND a.fieldID = f.ID AND f.isActive = 1 AND a.value NOT NULL";
 			Cursor c = db.read(query);

@@ -323,7 +323,7 @@ public class Tables {
 				query.add(new Field("ID", true));
 				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("description", DataType.TEXT));
-				query.add(new Field("typeID", DataType.TEXT));
+				query.add(new Field("type", DataType.TEXT));
 				query.add(new Field("formID", DataType.INTEGER));
 				query.add(new Field("orderNo", DataType.INTEGER));
 				query.add(new Field("isRequired", DataType.INTEGER));

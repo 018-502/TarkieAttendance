@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.codepan.database.SQLiteAdapter;
+import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
@@ -133,6 +134,7 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				manager.popBackStack();
 				break;
 			case R.id.btnSaveExpenseItemsDetails:
+				CodePanUtils.hideKeyboard(view, getActivity());
 				obj.notes = etNotesExpenseItemsDetails.getText().toString();
 				obj.amount = Float.parseFloat(etAmountExpenseItemsDetails.getText().toString().replace(",", ""));
 				if(obj.typeID == 1) {
