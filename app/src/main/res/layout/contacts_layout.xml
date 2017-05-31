@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:codePan="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rlContacts"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clickable="true">
+                xmlns:codePan="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rlContacts"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:clickable="true">
 
     <RelativeLayout
         android:id="@+id/rlHeaderContacts"
@@ -24,13 +24,13 @@
                 android:layout_width="@dimen/eighteen"
                 android:layout_height="@dimen/sixteen"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_back" />
+                android:src="@drawable/ic_back"/>
 
             <com.codepan.widget.CodePanButton
                 android:id="@+id/btnBackContacts"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/state_rect_trans_dark" />
+                android:background="@drawable/state_rect_trans_dark"/>
 
         </FrameLayout>
 
@@ -42,7 +42,7 @@
             android:text="@string/contacts"
             android:textColor="@color/white"
             android:textSize="@dimen/eighteen"
-            codePan:typeface="@string/proxima_nova_light" />
+            codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanButton
             android:id="@+id/btnAddContact"
@@ -57,7 +57,7 @@
             android:text="@string/add_contact_bold"
             android:textColor="@color/header"
             android:textSize="@dimen/fourteen"
-            codePan:typeface="@string/proxima_nova_light" />
+            codePan:typeface="@string/proxima_nova_light"/>
 
     </RelativeLayout>
 
@@ -84,7 +84,7 @@
                 android:maxLines="1"
                 android:textColor="@color/gray_pri"
                 android:textSize="@dimen/thirty_two"
-                codePan:typeface="@string/proxima_nova_bold" />
+                codePan:typeface="@string/proxima_nova_bold"/>
 
             <com.codepan.widget.CodePanLabel
                 android:id="@+id/lblStoreAddress"
@@ -94,14 +94,14 @@
                 android:layout_marginRight="@dimen/fifteen"
                 android:textColor="@color/gray_pri"
                 android:textSize="@dimen/seventeen"
-                codePan:typeface="@string/proxima_nova_light" />
+                codePan:typeface="@string/proxima_nova_light"/>
 
         </LinearLayout>
 
         <ListView
             android:id="@+id/lvContacts"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
@@ -117,7 +117,7 @@
             android:text="No Contacts"
             android:textColor="@color/gray_ter"
             android:textSize="@dimen/twenty_three"
-            codePan:typeface="@string/proxima_nova_bold" />
+            codePan:typeface="@string/proxima_nova_bold"/>
 
     </FrameLayout>
 

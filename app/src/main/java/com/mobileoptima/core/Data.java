@@ -782,7 +782,7 @@ public class Data {
 			obj.dTime = "07:30:00";
 			obj.expenseType = "Tricycle - " + e;
 			obj.amount = 14 + e;
-			if(obj.dDate.equals(date) ){
+			if(obj.dDate.equals(date)) {
 				expenseList.add(obj);
 			}
 			obj = new ExpenseObj();
@@ -791,7 +791,7 @@ public class Data {
 			obj.dTime = "08:00:00";
 			obj.expenseType = "Meal 1 - " + e;
 			obj.amount = 45 + e;
-			if(obj.dDate.equals(date) ){
+			if(obj.dDate.equals(date)) {
 				expenseList.add(obj);
 			}
 			obj = new ExpenseObj();
@@ -800,7 +800,7 @@ public class Data {
 			obj.dTime = "12:00:00";
 			obj.expenseType = "Meal 2 - " + e;
 			obj.amount = 60 + e;
-			if(obj.dDate.equals(date) ){
+			if(obj.dDate.equals(date)) {
 				expenseList.add(obj);
 			}
 			obj = new ExpenseObj();
@@ -809,7 +809,7 @@ public class Data {
 			obj.dTime = "15:00:00";
 			obj.expenseType = "Meal 3 - " + e;
 			obj.amount = 35 + e;
-			if(obj.dDate.equals(date) ){
+			if(obj.dDate.equals(date)) {
 				expenseList.add(obj);
 			}
 			obj = new ExpenseObj();
@@ -818,7 +818,7 @@ public class Data {
 			obj.dTime = "19:00:00";
 			obj.expenseType = "Meal 4 - " + e;
 			obj.amount = 60 + e;
-			if(obj.dDate.equals(date) ){
+			if(obj.dDate.equals(date)) {
 				expenseList.add(obj);
 			}
 			obj = new ExpenseObj();
@@ -827,11 +827,11 @@ public class Data {
 			obj.dTime = "20:00:00";
 			obj.expenseType = "Tricycle - " + e;
 			obj.amount = 21 + e;
-			if(obj.dDate.equals(date) ){
+			if(obj.dDate.equals(date)) {
 				expenseList.add(obj);
 			}
 		}
-		return  expenseList;
+		return expenseList;
 	}
 
 	public static ArrayList<ExpenseReportsObj> loadExpenseReports(SQLiteAdapter db, String search) {

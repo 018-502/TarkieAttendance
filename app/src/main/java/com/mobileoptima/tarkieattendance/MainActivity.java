@@ -174,10 +174,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vExpenseMain = findViewById(R.id.vExpenseMain);
 		vPhotosMain = findViewById(R.id.vPhotosMain);
 		vEntriesMain = findViewById(R.id.vEntriesMain);
-        tvClientsMenu = (CodePanLabel) findViewById(R.id.tvClientsMenu);
+		tvClientsMenu = (CodePanLabel) findViewById(R.id.tvClientsMenu);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
-        findViewById(R.id.llClientsMain).setOnClickListener(this);
+		findViewById(R.id.llClientsMain).setOnClickListener(this);
 		findViewById(R.id.llUpdateMasterFileMain).setOnClickListener(this);
 		findViewById(R.id.llSendBackUpMain).setOnClickListener(this);
 		findViewById(R.id.llSupportMain).setOnClickListener(this);
@@ -867,12 +867,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	public void setConventions() {
-        conventionClient = TarkieLib.getConvention(db, Convention.STORES);
-        if(conventionClient != null) {
-            conventionClient = StringUtils.capitalize(conventionClient);
-            tvClientsMenu.setText(conventionClient);
-        }
-    }
+		conventionClient = TarkieLib.getConvention(db, Convention.STORES);
+		if(conventionClient != null) {
+			conventionClient = StringUtils.capitalize(conventionClient);
+			tvClientsMenu.setText(conventionClient);
+		}
+	}
 
 	@Override
 	public void onLogin() {

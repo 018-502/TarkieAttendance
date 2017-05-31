@@ -8,7 +8,7 @@ import com.mobileoptima.constant.Key;
 import com.mobileoptima.constant.Receiver;
 import com.mobileoptima.service.MainService;
 
-public class TimeChangeReceiver extends BroadcastReceiver{
+public class TimeChangeReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {

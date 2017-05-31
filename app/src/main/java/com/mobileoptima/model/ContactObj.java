@@ -5,13 +5,13 @@ package com.mobileoptima.model;
  */
 
 public class ContactObj {
-    public String ID;
-    public String storeID;
-    public String name;
-    public String position;
-    public String cellNo;
-    public String phoneNo;
-    public String email;
-    public String birthday;
-    public String remarks;
+	public String ID;
+	public String storeID;
+	public String name;
+	public String position;
+	public String cellNo;
+	public String phoneNo;
+	public String email;
+	public String birthday;
+	public String remarks;
 }

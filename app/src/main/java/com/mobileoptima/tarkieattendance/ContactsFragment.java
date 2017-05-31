@@ -28,87 +28,87 @@ import java.util.ArrayList;
 
 public class ContactsFragment extends Fragment implements OnClickListener, Interface.OnRefreshCallback {
 
-    private FrameLayout flNoContacts;
-    private ListView lvContacts;
-    private FragmentTransaction transaction;
-    private FragmentManager manager;
-    private ArrayList<ContactObj> contactList;
-    private SQLiteAdapter db;
-    public String strStoreID;
-    public String strName;
-    public String strAddress;
+	private FrameLayout flNoContacts;
+	private ListView lvContacts;
+	private FragmentTransaction transaction;
+	private FragmentManager manager;
+	private ArrayList<ContactObj> contactList;
+	private SQLiteAdapter db;
+	public String strStoreID;
+	public String strName;
+	public String strAddress;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        MainActivity main = (MainActivity) getActivity();
-        manager = main.getSupportFragmentManager();
-        db = main.getDatabase();
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		MainActivity main = (MainActivity) getActivity();
+		manager = main.getSupportFragmentManager();
+		db = main.getDatabase();
+	}
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.contacts_layout, container, false);
-        view.findViewById(R.id.btnAddContact).setOnClickListener(this);
-        view.findViewById(R.id.btnBackContacts).setOnClickListener(this);
-        CodePanLabel lblStoreName = (CodePanLabel) view.findViewById(R.id.lblStoreName);
-        lblStoreName.setText(strName);
-        CodePanLabel lblStoreAddress = (CodePanLabel) view.findViewById(R.id.lblStoreAddress);
-        lblStoreAddress.setText(strAddress);
-        lvContacts = (ListView) view.findViewById(R.id.lvContacts);
-        loadContacts(db);
-        return view;
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.contacts_layout, container, false);
+		view.findViewById(R.id.btnAddContact).setOnClickListener(this);
+		view.findViewById(R.id.btnBackContacts).setOnClickListener(this);
+		CodePanLabel lblStoreName = (CodePanLabel) view.findViewById(R.id.lblStoreName);
+		lblStoreName.setText(strName);
+		CodePanLabel lblStoreAddress = (CodePanLabel) view.findViewById(R.id.lblStoreAddress);
+		lblStoreAddress.setText(strAddress);
+		lvContacts = (ListView) view.findViewById(R.id.lvContacts);
+		loadContacts(db);
+		return view;
+	}
 
-    @Override
-    public void onClick(View view) {
-        switch(view.getId()) {
-            case R.id.btnAddContact:
-                NewContactFragment frgNewCon = new NewContactFragment();
-                frgNewCon.strStoreID = strStoreID;
-                frgNewCon.setOnRefreshCallback(this);
-                transaction = manager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-                        R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-                transaction.replace(R.id.rlContacts, frgNewCon);
-                transaction.addToBackStack(null);
-                transaction.commit();
-                break;
-            case R.id.btnBackContacts:
-                manager.popBackStack();
-                break;
-        }
-    }
+	@Override
+	public void onClick(View view) {
+		switch(view.getId()) {
+			case R.id.btnAddContact:
+				NewContactFragment frgNewCon = new NewContactFragment();
+				frgNewCon.strStoreID = strStoreID;
+				frgNewCon.setOnRefreshCallback(this);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.replace(R.id.rlContacts, frgNewCon);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case R.id.btnBackContacts:
+				manager.popBackStack();
+				break;
+		}
+	}
 
-    public void loadContacts(final SQLiteAdapter db) {
-        Thread bg = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    contactList = Data.loadContacts(db, strStoreID);
-                    handler.obtainMessage().sendToTarget();
-                }
-                catch(Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        bg.start();
-    }
+	public void loadContacts(final SQLiteAdapter db) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					contactList = Data.loadContacts(db, strStoreID);
+					handler.obtainMessage().sendToTarget();
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
 
-    Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            lvContacts.setAdapter(new ContactsAdapter(getActivity(), contactList));
-            if(contactList.size() != 0) {
-                flNoContacts.setVisibility(View.INVISIBLE);
-            }
-           return true;
-       }
-    });
+	Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			lvContacts.setAdapter(new ContactsAdapter(getActivity(), contactList));
+			if(contactList.size() != 0) {
+				flNoContacts.setVisibility(View.INVISIBLE);
+			}
+			return true;
+		}
+	});
 
-    @Override
-    public void onRefresh() {
-        loadContacts(db);
-    }
+	@Override
+	public void onRefresh() {
+		loadContacts(db);
+	}
 }

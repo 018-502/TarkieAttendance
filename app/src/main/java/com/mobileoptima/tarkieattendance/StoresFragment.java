@@ -112,7 +112,7 @@ public class StoresFragment extends Fragment implements OnClickListener, OnRefre
 		tvTitleStores = (CodePanLabel) view.findViewById(R.id.tvTitleStores);
 		etSearchStores = (CodePanTextField) view.findViewById(R.id.etSearchStores);
 		btnBackStores = (CodePanButton) view.findViewById(R.id.btnBackStores);
-        btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
+		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
 		lvStores = (ListView) view.findViewById(R.id.lvStores);
 		btnBackStores.setOnClickListener(this);
@@ -183,8 +183,8 @@ public class StoresFragment extends Fragment implements OnClickListener, OnRefre
 		});
 		if(convention != null) {
 			tvTitleStores.setText(convention);
-            convention = convention.toUpperCase();
-            btnAddStore.setText("ADD " + convention);
+			convention = convention.toUpperCase();
+			btnAddStore.setText("ADD " + convention);
 		}
 		loadStores(db, search);
 		return view;
@@ -197,14 +197,14 @@ public class StoresFragment extends Fragment implements OnClickListener, OnRefre
 				manager.popBackStack();
 				break;
 			case R.id.btnAddStore:
-                AddStoreFragment storeFragment = new AddStoreFragment();
-                storeFragment.setOnRefreshCallback(this);
-                transaction = manager.beginTransaction();
-                transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-                        R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-                transaction.replace(R.id.rlStores, storeFragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
+				AddStoreFragment storeFragment = new AddStoreFragment();
+				storeFragment.setOnRefreshCallback(this);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.replace(R.id.rlStores, storeFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
 		}
 	}
@@ -332,8 +332,8 @@ public class StoresFragment extends Fragment implements OnClickListener, OnRefre
 		}
 	}
 
-    @Override
-    public void onRefresh() {
-        loadStores(db, "");
-    }
+	@Override
+	public void onRefresh() {
+		loadStores(db, "");
+	}
 }

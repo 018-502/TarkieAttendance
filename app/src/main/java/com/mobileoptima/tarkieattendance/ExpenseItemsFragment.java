@@ -165,7 +165,6 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-
 	}
 
 	public void loadExpenseItems(final SQLiteAdapter db) {

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:codePan="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rlStores"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:clickable="true">
+                xmlns:codePan="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/rlStores"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:clickable="true">
 
     <RelativeLayout
         android:id="@+id/rlHeaderStores"
@@ -25,13 +25,13 @@
                 android:layout_width="@dimen/eighteen"
                 android:layout_height="@dimen/sixteen"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_back" />
+                android:src="@drawable/ic_back"/>
 
             <com.codepan.widget.CodePanButton
                 android:id="@+id/btnBackStores"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/state_rect_trans_dark" />
+                android:background="@drawable/state_rect_trans_dark"/>
 
         </FrameLayout>
 
@@ -48,7 +48,7 @@
             android:text="@string/stores"
             android:textColor="@color/white"
             android:textSize="@dimen/eighteen"
-            codePan:typeface="@string/proxima_nova_light" />
+            codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanButton
             android:id="@+id/btnAddStore"
@@ -67,7 +67,7 @@
             android:text="@string/add_client_bold"
             android:textColor="@color/header"
             android:textSize="@dimen/fourteen"
-            codePan:typeface="@string/proxima_nova_light" />
+            codePan:typeface="@string/proxima_nova_light"/>
 
     </RelativeLayout>
 
@@ -93,7 +93,7 @@
             android:textColor="@color/gray_pri"
             android:textColorHint="@color/gray_qua"
             android:textSize="@dimen/seventeen"
-            codePan:typeface="@string/proxima_nova_light" />
+            codePan:typeface="@string/proxima_nova_light"/>
 
         <ImageView
             android:layout_width="@dimen/twenty"
@@ -101,7 +101,7 @@
             android:layout_gravity="end|center_vertical"
             android:layout_marginEnd="@dimen/eight"
             android:layout_marginRight="@dimen/eight"
-            android:src="@drawable/ic_search_dark" />
+            android:src="@drawable/ic_search_dark"/>
 
     </FrameLayout>
 
@@ -110,7 +110,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/one"
         android:layout_below="@+id/flSearchStores"
-        android:background="@color/gray_sec" />
+        android:background="@color/gray_sec"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -125,7 +125,7 @@
             android:dividerHeight="0dp"
             android:listSelector="@color/transparent"
             android:scrollbarSize="@dimen/scrollbar"
-            android:scrollbarThumbVertical="@color/scrollbar" />
+            android:scrollbarThumbVertical="@color/scrollbar"/>
 
         <ImageView
             android:id="@+id/ivLoadingStores"
@@ -133,7 +133,7 @@
             android:layout_height="@dimen/fifty"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_loading"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
