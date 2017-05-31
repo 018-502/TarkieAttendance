@@ -1,7 +1,7 @@
 package com.mobileoptima.tarkieattendance;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +37,7 @@ import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
+import com.mobileoptima.callback.Interface.OnCameraDoneCallback;
 import com.mobileoptima.callback.Interface.OnClearCallback;
 import com.mobileoptima.callback.Interface.OnDeletePhotoCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
@@ -688,10 +689,9 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 					public void onClick(View view) {
 						FormFragment form = (FormFragment) manager.findFragmentByTag(Tag.FORM);
 						CameraMultiShotFragment camera = new CameraMultiShotFragment();
-						camera.setOnBackPressedCallback(form.getOnBackPressedCallback());
 						camera.setOnOverrideCallback(overrideCallback);
 						camera.setOnFragmentCallback(PageFragment.this);
-						camera.setOnCameraDoneCallback(new com.mobileoptima.callback.Interface.OnCameraDoneCallback() {
+						camera.setOnCameraDoneCallback(new OnCameraDoneCallback() {
 							@Override
 							public void onCameraDone(ArrayList<ImageObj> imageList) {
 								if(answer.imageList != null) {
@@ -727,13 +727,12 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 			ViewGroup container = (ViewGroup) view.getParent();
 			llGridPhoto.removeAllViews();
 			for(final ImageObj obj : imageList) {
+				String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
+						.getPath() + "/" + obj.fileName;
 				View child = inflater.inflate(R.layout.photo_item, container, false);
 				CodePanButton btnPhoto = (CodePanButton) child.findViewById(R.id.btnPhoto);
 				ImageView ivPhoto = (ImageView) child.findViewById(R.id.ivPhoto);
-				int size = CodePanUtils.getWidth(child);
-				Bitmap bitmap = CodePanUtils.getBitmapThumbnails(getActivity(), App.FOLDER, obj.fileName, size);
-				ivPhoto.setImageBitmap(bitmap);
-				obj.bitmap = bitmap;
+				CodePanUtils.displayImage(ivPhoto, uri, R.color.gray_ter);
 				btnPhoto.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -866,6 +865,11 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	public void onFragment(boolean status) {
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(!status);
+		}
+		if(!status) {
+			MainActivity main = (MainActivity) getActivity();
+			FormFragment form = (FormFragment) manager.findFragmentByTag(Tag.FORM);
+			main.setOnBackPressedCallback(form.getOnBackPressedCallback());
 		}
 	}
 }

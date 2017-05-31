@@ -58,8 +58,8 @@ public class PhotosAdapter extends ArrayAdapter<ImageObj> {
 			else {
 				holder = (ViewHolder) view.getTag();
 			}
-			if(obj.thumbnail != null) {
-				holder.ivPhotosItem.setImageBitmap(obj.thumbnail);
+			if(obj.bitmap != null) {
+				holder.ivPhotosItem.setImageBitmap(obj.bitmap);
 			}
 			else {
 				holder.ivPhotosItem.setImageBitmap(null);
@@ -71,7 +71,7 @@ public class PhotosAdapter extends ArrayAdapter<ImageObj> {
 		return view;
 	}
 
-	public void loadImage(final SquareImageView ivPhotosItem, final String fileName, final int position) {
+	private void loadImage(final SquareImageView ivPhotosItem, final String fileName, final int position) {
 		String uri = "file://" + context.getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() + "/" + fileName;
 		imageLoader.displayImage(uri, ivPhotosItem, options, new ImageLoadingListener() {
 			@Override
@@ -85,10 +85,12 @@ public class PhotosAdapter extends ArrayAdapter<ImageObj> {
 			@Override
 			public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
 				int width = view.getWidth();
-				int height = view.getHeight();
-				ImageObj image = items.get(position);
-				image.bitmap = bitmap;
-				image.thumbnail = CodePanUtils.resizeBitmap(bitmap, width, height);
+				if(bitmap != null && width > 0) {
+					float ratio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+					int height = (int) ((float) width / ratio);
+					ImageObj image = items.get(position);
+					image.bitmap = CodePanUtils.resizeBitmap(bitmap, width, height);
+				}
 			}
 
 			@Override

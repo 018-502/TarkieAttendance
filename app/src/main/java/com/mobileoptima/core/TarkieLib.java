@@ -265,6 +265,21 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
+		column = "isEnabled";
+		table = Tables.getName(TB.GPS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "withHistory";
+		table = Tables.getName(TB.GPS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "isValid";
+		table = Tables.getName(TB.GPS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
 		binder.finish();
 	}
 
@@ -474,9 +489,9 @@ public class TarkieLib {
 		query.add(new FieldValue("gpsTime", gps.time));
 		query.add(new FieldValue("gpsLongitude", gps.longitude));
 		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("isEnabled", gps.isEnabled));
+		query.add(new FieldValue("withHistory", gps.withHistory));
+		query.add(new FieldValue("isValid", gps.isValid));
 		String gpsID = binder.insert(Tables.getName(TB.GPS), query);
 		binder.finish();
 		return gpsID;

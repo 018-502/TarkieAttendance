@@ -157,6 +157,10 @@
     <string name="currently_check_in_message">You are currently checked-in at $title. Please check-out first before ending your day.</string>
     <string name="time_in_required_message">Please time-in first before creating new entries. To time-in, please tap on Menu or slide to the right and select \'Time-in\'.</string>
     <string name="expense_details">Expense Details</string>
+    <string name="save_changes_title">Save Changes?</string>
+    <string name="save_changes_message">Do you want to save changes?</string>
+    <string name="save_photos_title">Save Photos?</string>
+    <string name="save_photos_message">Do you want to save photos?</string>
     <string-array name="tab_expense">
         <item>Expense Items</item>
         <item>Expense Reports</item>

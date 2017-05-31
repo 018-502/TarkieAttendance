@@ -1,6 +1,6 @@
 package com.mobileoptima.tarkieattendance;
 
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -19,6 +19,8 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.codepan.callback.Interface.OnBackPressedCallback;
+import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
@@ -52,7 +54,8 @@ import com.mobileoptima.model.VisitObj;
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
-		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback {
+		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback,
+		OnBackPressedCallback, OnFragmentCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
 			btnSaveVisitDetails, btnAddPhotoVisitDetails;
@@ -60,21 +63,34 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
 	private CodePanTextField etNotesVisitDetails;
 	private OnOverrideCallback overrideCallback;
+	private boolean hasPhotoAdded, withChanges;
 	private OnRefreshCallback refreshCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
 	private ArrayList<EntryObj> entryList;
 	private FragmentManager manager;
-	private boolean hasPhotoAdded;
 	private MainActivity main;
 	private CheckOutObj out;
 	private SQLiteAdapter db;
 	private VisitObj visit;
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		main = (MainActivity) getActivity();
+		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -263,7 +279,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	public void onClick(View view) {
 		switch(view.getId()) {
 			case R.id.btnBackVisitDetails:
-				manager.popBackStack();
+				onBackPressed();
 				break;
 			case R.id.btnCheckInVisitDetails:
 				if(TarkieLib.isTimeIn(db)) {
@@ -339,6 +355,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			case R.id.btnAddPhotoVisitDetails:
 				CameraMultiShotFragment camera = new CameraMultiShotFragment();
 				camera.setOnOverrideCallback(overrideCallback);
+				camera.setOnFragmentCallback(this);
 				camera.setOnCameraDoneCallback(this);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
@@ -349,8 +366,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				transaction.commit();
 				break;
 			case R.id.btnSaveVisitDetails:
-				String notes = etNotesVisitDetails.getText().toString().trim();
-				saveTask(db, notes);
+				saveTask(db);
 				break;
 		}
 	}
@@ -478,13 +494,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			ViewGroup container = (ViewGroup) view.getParent();
 			llGridPhoto.removeAllViews();
 			for(final ImageObj obj : imageList) {
+				String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
+						.getPath() + "/" + obj.fileName;
 				View child = inflater.inflate(R.layout.photo_item, container, false);
 				CodePanButton btnPhoto = (CodePanButton) child.findViewById(R.id.btnPhoto);
 				ImageView ivPhoto = (ImageView) child.findViewById(R.id.ivPhoto);
-				int size = CodePanUtils.getWidth(child);
-				Bitmap bitmap = CodePanUtils.getBitmapThumbnails(getActivity(), App.FOLDER, obj.fileName, size);
-				ivPhoto.setImageBitmap(bitmap);
-				obj.bitmap = bitmap;
+				CodePanUtils.displayImage(ivPhoto, uri, R.color.gray_ter);
 				btnPhoto.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -511,6 +526,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		ImagePreviewFragment preview = new ImagePreviewFragment();
 		preview.setDeletable(true);
 		preview.setImageList(imageList, position);
+		preview.setOnFragmentCallback(this);
 		preview.setOnDeletePhotoCallback(new Interface.OnDeletePhotoCallback() {
 			@Override
 			public void onDeletePhoto(int position) {
@@ -545,7 +561,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		}
 	}
 
-	public void saveTask(final SQLiteAdapter db, final String notes) {
+	public void saveTask(final SQLiteAdapter db) {
+		final String notes = etNotesVisitDetails.getText().toString().trim();
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -594,9 +611,62 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onCameraDone(ArrayList<ImageObj> imageList) {
 		this.hasPhotoAdded = true;
+		this.withChanges = true;
 		if(imageList != null) {
-			this.imageList.addAll(0, imageList);
+			imageList.addAll(0, this.imageList);
 		}
-		updatePhotoGrid(llGridPhotoVisitDetails, this.imageList);
+		updatePhotoGrid(llGridPhotoVisitDetails, imageList);
+		this.imageList = imageList;
+	}
+
+	@Override
+	public void onBackPressed() {
+		if(withChanges) {
+			final AlertDialogFragment alert = new AlertDialogFragment();
+			alert.setDialogTitle(R.string.save_changes_title);
+			alert.setDialogMessage(R.string.save_changes_message);
+			alert.setOnFragmentCallback(this);
+			alert.setPositiveButton("Save", new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					manager.popBackStack();
+					manager.popBackStack();
+					saveTask(db);
+				}
+			});
+			alert.setNegativeButton("Discard", new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					manager.popBackStack();
+					manager.popBackStack();
+				}
+			});
+			transaction = manager.beginTransaction();
+			transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+					R.anim.fade_in, R.anim.fade_out);
+			transaction.add(R.id.rlMain, alert);
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
+		else {
+			manager.popBackStack();
+		}
+	}
+
+	@Override
+	public void onFragment(boolean status) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(!status);
+		}
+		if(!status) {
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
+		}
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
+		}
 	}
 }

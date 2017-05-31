@@ -5,22 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <com.codepan.widget.SquareImageView
+        android:id="@+id/ivPhotosItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        squareView:reference="width"/>
 
-        <com.codepan.widget.SquareImageView
-            android:id="@+id/ivPhotosItem"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            squareView:reference="width"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/state_rect_trans_dark"/>
-
-    </FrameLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/state_rect_trans_dark"/>
 
 </RelativeLayout>

@@ -5,5 +5,4 @@ import android.graphics.Bitmap;
 public class ImageObj extends PhotoObj {
 
 	public Bitmap bitmap;
-	public Bitmap thumbnail;
 }

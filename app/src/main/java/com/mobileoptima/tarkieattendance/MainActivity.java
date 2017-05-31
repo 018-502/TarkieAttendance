@@ -20,6 +20,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -877,6 +878,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	public void onBackPressed() {
 		if(isInitialized && isSecured) {
+			Log.e("isOverridden", ""+isOverridden);
+			Log.e("backPressedCallback", ""+(backPressedCallback != null));
 			if(isOverridden) {
 				if(backPressedCallback != null) {
 					backPressedCallback.onBackPressed();

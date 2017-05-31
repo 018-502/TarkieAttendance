@@ -118,9 +118,9 @@ public class Tables {
 				query.add(new Field("gpsTime", DataType.TEXT));
 				query.add(new Field("gpsLongitude", DataType.TEXT));
 				query.add(new Field("gpsLatitude", DataType.TEXT));
-				query.add(new Field("isGpsEnabled", DataType.INTEGER));
-				query.add(new Field("withGpsHistory", DataType.INTEGER));
-				query.add(new Field("isGpsValid", DataType.INTEGER));
+				query.add(new Field("isEnabled", DataType.INTEGER));
+				query.add(new Field("withHistory", DataType.INTEGER));
+				query.add(new Field("isValid", DataType.INTEGER));
 				break;
 			case TIME_IN:
 				query.clearAll();
@@ -324,7 +324,7 @@ public class Tables {
 				query.add(new Field("startDate", DataType.TEXT));
 				query.add(new Field("endDate", DataType.TEXT));
 				query.add(new Field("syncBatchID", DataType.TEXT));
-				query.add(new Field("webTaskID", DataType.TEXT));
+				query.add(new Field("webTaskID", DataType.INTEGER));
 				query.add(new Field("notesLimit", DataType.INTEGER));
 				query.add(new Field("notes", DataType.TEXT));
 				query.add(new Field("status", DataType.TEXT));
