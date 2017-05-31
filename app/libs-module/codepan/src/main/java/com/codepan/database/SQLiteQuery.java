@@ -109,7 +109,7 @@ public class SQLiteQuery {
 		return false;
 	}
 
-	public String getFields() {
+	private String createFields() {
 		String fields = "";
 		if(fieldList != null) {
 			for(Field obj : fieldList) {
@@ -127,6 +127,19 @@ public class SQLiteQuery {
 				else {
 					fields += obj.field;
 				}
+				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
+					fields += ", ";
+				}
+			}
+		}
+		return fields;
+	}
+
+	public String getFields() {
+		String fields = "";
+		if(fieldValueList != null) {
+			for(Field obj : fieldList) {
+				fields += obj.field;
 				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
 					fields += ", ";
 				}
@@ -243,7 +256,15 @@ public class SQLiteQuery {
 	}
 
 	public String createTable(String table) {
-		return "CREATE TABLE IF NOT EXISTS " + table + " (" + getFields() + ")";
+		return "CREATE TABLE IF NOT EXISTS " + table + " (" + createFields() + ")";
+	}
+
+	public String select(String table) {
+		String condition = "";
+		if(conditionList != null && !conditionList.isEmpty()) {
+			condition = " WHERE " + getConditions();
+		}
+		return "SELECT " + getFields() + " FROM " + table + condition;
 	}
 
 	public String addColumn(String table, String column, String defText) {

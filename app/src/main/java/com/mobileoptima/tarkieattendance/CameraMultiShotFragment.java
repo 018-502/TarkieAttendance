@@ -174,6 +174,9 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 				getActivity().getSupportFragmentManager().popBackStack();
 				break;
 			case R.id.btnSwitchCameraMultiShot:
+				if(rlOptionsCameraMultiShot.getVisibility() == View.VISIBLE) {
+					CodePanUtils.fadeOut(rlOptionsCameraMultiShot);
+				}
 				if(cameraSelection == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 					cameraSelection = Camera.CameraInfo.CAMERA_FACING_BACK;
 				}

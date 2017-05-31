@@ -438,9 +438,6 @@ public class Tables {
 			case PHOTO:
 				name = "photo_tb";
 				break;
-			case TASK_PHOTO:
-				name = "task_photo_tb";
-				break;
 			case FORMS:
 				name = "forms_tb";
 				break;
@@ -461,6 +458,9 @@ public class Tables {
 				break;
 			case TASK_FORM:
 				name = "task_form_tb";
+				break;
+			case TASK_PHOTO:
+				name = "task_photo_tb";
 				break;
 			case TASK:
 				name = "task_tb";

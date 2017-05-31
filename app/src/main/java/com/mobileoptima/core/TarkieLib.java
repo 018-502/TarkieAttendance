@@ -4,11 +4,13 @@ import android.content.Context;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 
 import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.Condition;
 import com.codepan.database.Condition.Operator;
+import com.codepan.database.Field;
 import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
@@ -31,7 +33,6 @@ import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
-import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
@@ -706,34 +707,52 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean editTask(SQLiteAdapter db, String storeID, String taskID, String startDate,
-								   String endDate, String notes, ArrayList<FormObj> formList,
-								   ArrayList<PhotoObj> photoList) {
+	public static boolean editTask(SQLiteAdapter db, String storeID, String taskID, String notes,
+								   ArrayList<FormObj> formList, ArrayList<ImageObj> imageList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String t = Tables.getName(TB.TASK);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String tp = Tables.getName(TB.TASK_PHOTO);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("notes", notes));
 		query.add(new FieldValue("storeID", storeID));
-		query.add(new FieldValue("startDate", startDate));
-		query.add(new FieldValue("endDate", endDate));
-		binder.update(Tables.getName(TB.TASK), query, taskID);
+		binder.update(t, query, taskID);
 		query.clearAll();
 		query.add(new FieldValue("isTag", false));
 		query.add(new Condition("taskID", taskID));
-		binder.update(Tables.getName(TB.TASK_FORM), query);
-		binder.update(Tables.getName(TB.TASK_PHOTO), query);
+		binder.update(tf, query);
+		binder.update(tp, query);
 		for(FormObj form : formList) {
 			query.clearAll();
+			query.add(new Field("ID"));
+			query.add(new Condition("formID", form.ID));
+			query.add(new Condition("taskID", taskID));
 			query.add(new FieldValue("formID", form.ID));
 			query.add(new FieldValue("taskID", taskID));
 			query.add(new FieldValue("isTag", true));
-			binder.update(Tables.getName(TB.TASK_FORM), query);
+			String sql = query.select(tf);
+			if(db.isRecordExists(sql)) {
+				binder.update(tf, query);
+			}
+			else {
+				binder.insert(tf, query);
+			}
 		}
-		for(PhotoObj photo : photoList) {
+		for(ImageObj image : imageList) {
 			query.clearAll();
-			query.add(new FieldValue("photoID", photo.ID));
+			query.add(new Field("ID"));
+			query.add(new Condition("photoID", image.ID));
+			query.add(new Condition("taskID", taskID));
+			query.add(new FieldValue("photoID", image.ID));
 			query.add(new FieldValue("taskID", taskID));
 			query.add(new FieldValue("isTag", true));
-			binder.update(Tables.getName(TB.TASK_PHOTO), query);
+			String sql = query.select(tp);
+			if(db.isRecordExists(sql)) {
+				binder.update(tp, query);
+			}
+			else {
+				binder.insert(tp, query);
+			}
 		}
 		return binder.finish();
 	}
