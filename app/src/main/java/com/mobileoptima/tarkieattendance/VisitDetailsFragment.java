@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -187,7 +186,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
-							Log.e("DEPANOT", ""+entry.ID);
 							if(visit.isCheckIn) {
 								FormFragment form = new FormFragment();
 								form.setEntry(entry);
@@ -195,7 +193,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 								form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
 									@Override
 									public void onSaveEntry(EntryObj entry) {
-										Log.e("DEPANOT", ""+entry.ID);
 										entryList.set(index, entry);
 									}
 								});
