@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -91,6 +92,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 					if(!obj.isAdded) {
 						obj.childList = new ArrayList<>();
 						ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, obj.dDate);
+						Log.e("paul", expenseList.size() + "");
 						for(ExpenseObj expense : expenseList) {
 							View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, llItemsExpenseItems, false);
 							View child = getChild(v, obj, expenseList, expense);
@@ -171,6 +173,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 					LinearLayout llItemsExpenseItems = (LinearLayout) lvExpenseItems.getChildAt(i).findViewById(R.id.llItemsExpenseItems);
 					obj.childList = new ArrayList<>();
 					ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, obj.dDate);
+					Log.e("paul", expenseList.size() + "");
 					for(ExpenseObj expense : expenseList) {
 						View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, llItemsExpenseItems, false);
 						View child = getChild(v, obj, expenseList, expense);

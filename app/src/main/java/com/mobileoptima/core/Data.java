@@ -790,11 +790,11 @@ public class Data {
 				query = "SELECT start, end, rate, startPhoto, endPhoto FROM " + table + " WHERE expenseID = " + obj.ID;
 				Cursor c = db.read(query);
 				while(c.moveToNext()) {
-					obj.fcStart = cursor.getString(0);
-					obj.fcEnd = cursor.getString(1);
-					obj.fcRate = cursor.getString(2);
-					obj.fcStartPhoto = cursor.getString(3);
-					obj.fcEndPhoto = cursor.getString(4);
+					obj.fcStart = c.getString(0);
+					obj.fcEnd = c.getString(1);
+					obj.fcRate = c.getString(2);
+					obj.fcStartPhoto = c.getString(3);
+					obj.fcEndPhoto = c.getString(4);
 				}
 				c.close();
 			}
@@ -802,13 +802,13 @@ public class Data {
 				table = Tables.getName(TB.EXPENSE_FUEL_PURCHASE);
 				query = "SELECT start, liters, price, photo, startPhoto, withOR FROM " + table + " WHERE expenseID = " + obj.ID;
 				Cursor c = db.read(query);
-				while(cursor.moveToNext()) {
-					obj.fpStart = cursor.getString(0);
-					obj.fpLiters = cursor.getString(1);
-					obj.fpPrice = cursor.getString(2);
-					obj.fpPhoto = cursor.getString(3);
-					obj.fpStartPhoto = cursor.getString(4);
-					obj.fpWithOR = cursor.getInt(5) == 1;
+				while(c.moveToNext()) {
+					obj.fpStart = c.getString(0);
+					obj.fpLiters = c.getString(1);
+					obj.fpPrice = c.getString(2);
+					obj.fpPhoto = c.getString(3);
+					obj.fpStartPhoto = c.getString(4);
+					obj.fpWithOR = c.getInt(5) == 1;
 				}
 				c.close();
 			}
@@ -816,11 +816,11 @@ public class Data {
 				table = Tables.getName(TB.EXPENSE_DEFAULT);
 				query = "SELECT start, end, photo, withOR FROM " + table + " WHERE expenseID = " + obj.ID;
 				Cursor c = db.read(query);
-				while(cursor.moveToNext()) {
-					obj.defStart = cursor.getString(0);
-					obj.defEnd = cursor.getString(1);
-					obj.defPhoto = cursor.getString(2);
-					obj.defWithOR = cursor.getInt(3) == 1;
+				while(c.moveToNext()) {
+					obj.defStart = c.getString(0);
+					obj.defEnd = c.getString(1);
+					obj.defPhoto = c.getString(2);
+					obj.defWithOR = c.getInt(3) == 1;
 				}
 				c.close();
 			}

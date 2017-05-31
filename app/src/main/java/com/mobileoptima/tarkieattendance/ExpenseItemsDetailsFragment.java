@@ -133,8 +133,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				manager.popBackStack();
 				break;
 			case R.id.btnSaveExpenseItemsDetails:
-				obj.typeID = Integer.valueOf(btnItemExpenseItemsDetails.getText().toString());
-				obj.storeID = Integer.valueOf(etStoreExpenseItemsDetails.getText().toString());
 				obj.notes = etNotesExpenseItemsDetails.getText().toString();
 				obj.amount = Float.parseFloat(etAmountExpenseItemsDetails.getText().toString().replace(",", ""));
 				if(obj.typeID == 1) {
