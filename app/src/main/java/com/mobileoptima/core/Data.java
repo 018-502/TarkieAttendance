@@ -89,23 +89,36 @@ public class Data {
 		return formList;
 	}
 
-	public static ArrayList<FormObj> loadEntries(SQLiteAdapter db, String taskID) {
-		ArrayList<FormObj> formList = new ArrayList<>();
+	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db, String taskID) {
+		ArrayList<EntryObj> entryList = new ArrayList<>();
 		String f = Tables.getName(TB.FORMS);
 		String e = Tables.getName(TB.ENTRIES);
 		String tf = Tables.getName(TB.TASK_FORM);
-		String query = "SELECT f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf WHERE " +
-				"f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
+		String te = Tables.getName(TB.TASK_ENTRY);
+		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, " +
+				"f.logoUrl FROM " + f + " f, " + tf + " tf LEFT JOIN " + e + " e ON e.ID = te.entryID " +
+				"AND e.formID = f.ID LEFT JOIN " + te + " te ON te.taskID = '" + taskID + "'" +
+				"WHERE f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			FormObj obj = new FormObj();
-			obj.ID = cursor.getString(0);
-			obj.name = cursor.getString(1);
-			obj.logoUrl = cursor.getString(2);
-			formList.add(obj);
+			EntryObj entry = new EntryObj();
+			String entryID = cursor.getString(0);
+			if(entryID != null) {
+				entry.ID = entryID;
+				entry.dDate = cursor.getString(1);
+				entry.dTime = cursor.getString(2);
+				entry.isSubmit = cursor.getInt(3) == 1;
+				entry.referenceNo = cursor.getString(4);
+			}
+			FormObj form = new FormObj();
+			form.ID = cursor.getString(5);
+			form.name = cursor.getString(6);
+			form.logoUrl = cursor.getString(7);
+			entry.form = form;
+			entryList.add(entry);
 		}
 		cursor.close();
-		return formList;
+		return entryList;
 	}
 
 	public static ArrayList<BreakObj> loadBreaks(SQLiteAdapter db) {

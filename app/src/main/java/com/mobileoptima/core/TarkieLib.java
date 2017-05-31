@@ -725,10 +725,11 @@ public class TarkieLib {
 	}
 
 	public static boolean editTask(SQLiteAdapter db, String storeID, String taskID, String notes,
-								   ArrayList<FormObj> formList, ArrayList<ImageObj> imageList) {
+								   ArrayList<EntryObj> entryList, ArrayList<ImageObj> imageList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String t = Tables.getName(TB.TASK);
 		String tf = Tables.getName(TB.TASK_FORM);
+		String te = Tables.getName(TB.TASK_ENTRY);
 		String tp = Tables.getName(TB.TASK_PHOTO);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("notes", notes));
@@ -739,7 +740,20 @@ public class TarkieLib {
 		query.add(new Condition("taskID", taskID));
 		binder.update(tf, query);
 		binder.update(tp, query);
-		for(FormObj form : formList) {
+		for(EntryObj entry : entryList) {
+			if(entry.ID != null) {
+				query.clearAll();
+				query.add(new Field("ID"));
+				query.add(new Condition("entry", entry.ID));
+				query.add(new Condition("taskID", taskID));
+				query.add(new FieldValue("formID", entry.ID));
+				query.add(new FieldValue("taskID", taskID));
+				String sql = query.select(te);
+				if(!db.isRecordExists(sql)) {
+					binder.insert(te, query);
+				}
+			}
+			FormObj form = entry.form;
 			query.clearAll();
 			query.add(new Field("ID"));
 			query.add(new Condition("formID", form.ID));

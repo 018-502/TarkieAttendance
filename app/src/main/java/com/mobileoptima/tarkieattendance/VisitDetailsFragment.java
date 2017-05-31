@@ -64,7 +64,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private OnRefreshCallback refreshCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
-	private ArrayList<FormObj> formList;
+	private ArrayList<EntryObj> entryList;
 	private FragmentManager manager;
 	private boolean hasPhotoAdded;
 	private MainActivity main;
@@ -158,7 +158,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					formList = Data.loadEntries(db, taskID);
+					entryList = Data.loadEntries(db, taskID);
 					formsHandler.sendMessage(formsHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -177,17 +177,18 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			if(view != null) {
 				LayoutInflater inflater = getActivity().getLayoutInflater();
 				ViewGroup container = (ViewGroup) view.getParent();
-				for(final FormObj obj : formList) {
+				for(final EntryObj entry : entryList) {
+					FormObj form = entry.form;
 					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
 					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
 					CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
-					tvVisitDetailsForm.setText(obj.name);
+					tvVisitDetailsForm.setText(form.name);
 					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
 							if(visit.isCheckIn) {
 								FormFragment form = new FormFragment();
-								form.setForm(obj);
+								form.setEntry(entry);
 								form.setOnOverrideCallback(overrideCallback);
 								form.setOnSaveEntryCallback(VisitDetailsFragment.this);
 								transaction = manager.beginTransaction();
@@ -546,7 +547,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				try {
 					StoreObj store = visit.store;
 					boolean result = TarkieLib.editTask(db, store.ID, visit.ID, notes,
-							formList, imageList);
+							entryList, imageList);
 					if(result) {
 						visit.notes = notes;
 						saveTaskHandler.sendMessage(saveTaskHandler.obtainMessage(Result.SUCCESS));
