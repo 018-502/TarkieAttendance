@@ -239,14 +239,17 @@ public class Rx {
 						String coID = dataObj.getString("company_id");
 						String company = dataObj.getString("company_name");
 						String address = dataObj.getString("address");
+						String logoUrl = dataObj.getString("company_logo");
+						CodePanUtils.clearImageUrl(db.getContext(), logoUrl);
 						company = CodePanUtils.handleUniCode(company);
 						address = CodePanUtils.handleUniCode(address);
 						query.clearAll();
 						query.add(new FieldValue("ID", coID));
 						query.add(new FieldValue("name", company));
 						query.add(new FieldValue("address", address));
-						query.add(new FieldValue("code", dataObj.getString("company_code")));
+						query.add(new FieldValue("logoUrl", logoUrl));
 						query.add(new FieldValue("mobile", dataObj.getString("mobile")));
+						query.add(new FieldValue("code", dataObj.getString("company_code")));
 						query.add(new FieldValue("landline", dataObj.getString("landline")));
 						query.add(new FieldValue("expirationDate", dataObj.getString("expiration_date")));
 						String sql = "SELECT ID FROM " + table + " WHERE ID = '" + coID + "'";

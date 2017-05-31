@@ -91,9 +91,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain, btnAddExpenseReportMain;
 	private View vHomeMain, vVisitsMain, vExpenseMain, vPhotosMain, vEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
+	private ImageView ivTimeInMain, ivTimeOutMain, ivLogoMain;
 	private OnBackPressedCallback backPressedCallback;
 	private LocalBroadcastManager broadcastManager;
-	private ImageView ivTimeInMain, ivTimeOutMain;
 	private RelativeLayout rlMain, rlMenuMain;
 	private CircularImageView ivEmployeeMain;
 	private String tabType = TabType.DEFAULT;
@@ -153,6 +153,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		ivEmployeeMain = (CircularImageView) findViewById(R.id.ivEmployeeMain);
 		ivTimeInMain = (ImageView) findViewById(R.id.ivTimeInMain);
 		ivTimeOutMain = (ImageView) findViewById(R.id.ivTimeOutMain);
+		ivLogoMain = (ImageView) findViewById(R.id.ivLogoMain);
 		btnNotificationMain = (CodePanButton) findViewById(R.id.btnNotificationMain);
 		btnSyncMain = (CodePanButton) findViewById(R.id.btnSyncMain);
 		btnHomeMain = (CodePanButton) findViewById(R.id.btnHomeMain);
@@ -873,6 +874,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		checkTimeIn();
 		setDefaultTab();
 		updateUser();
+		updateLogo();
 		setReceiver();
 		registerReceiver();
 		updateSyncCount();
@@ -912,8 +914,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	public void onBackPressed() {
 		if(isInitialized && isSecured) {
-			Log.e("isOverridden", ""+isOverridden);
-			Log.e("backPressedCallback", ""+(backPressedCallback != null));
+			Log.e("isOverridden", "" + isOverridden);
+			Log.e("backPressedCallback", "" + (backPressedCallback != null));
 			if(isOverridden) {
 				if(backPressedCallback != null) {
 					backPressedCallback.onBackPressed();
@@ -1293,6 +1295,18 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			tvEmployeeNoMain.setText(employee.employeeNo);
 			CodePanUtils.displayImage(ivEmployeeMain, employee.imageUrl,
 					R.drawable.ic_user_placeholder);
+		}
+	}
+
+	public void updateLogo() {
+		String logoUrl = TarkieLib.getCompanyLogo(db);
+		if(logoUrl != null) {
+			CodePanUtils.displayImage(ivLogoMain, logoUrl);
+			Fragment fragment = manager.findFragmentByTag(TabType.HOME);
+			if(fragment != null) {
+				HomeFragment home = (HomeFragment) fragment;
+				home.updateLogo(db, logoUrl);
+			}
 		}
 	}
 

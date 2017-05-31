@@ -6,19 +6,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/forty_three">
+        android:layout_height="wrap_content">
 
         <com.codepan.widget.CodePanLabel
             android:id="@+id/tvVisitDetailsForm"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="start|center_vertical"
-            android:paddingEnd="@dimen/twelve"
-            android:paddingLeft="@dimen/twelve"
-            android:paddingRight="@dimen/twelve"
-            android:paddingStart="@dimen/twelve"
+            android:padding="@dimen/twelve"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/seventeen"
             codePan:typeface="@string/proxima_nova_light"/>
@@ -26,10 +23,12 @@
         <com.codepan.widget.CodePanButton
             android:id="@+id/btnVisitDetailsForm"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tvVisitDetailsForm"
+            android:layout_alignTop="@+id/tvVisitDetailsForm"
             android:background="@drawable/state_rect_trans_dark"/>
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"
