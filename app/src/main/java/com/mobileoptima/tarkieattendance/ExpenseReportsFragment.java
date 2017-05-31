@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.CodePanTextField;
@@ -27,12 +28,13 @@ import java.util.ArrayList;
 public class ExpenseReportsFragment extends Fragment implements OnClickListener {
 	private final long IDLE_TIME = 500;
 	private ArrayList<ExpenseReportsObj> expenseReportsList;
-	private ExpenseReportsAdapter adapter;
 	private CodePanTextField etSearchExpenseReports;
+	private ExpenseReportsAdapter adapter;
+	private Handler inputFinishHandler;
 	private FragmentManager manager;
 	private FragmentTransaction transaction;
 	private ListView lvExpenseReports;
-	private Handler inputFinishHandler;
+	private RelativeLayout rlPlaceholderExpenseReports;
 	private SQLiteAdapter db;
 	private String search;
 	private long lastEdit;
@@ -52,6 +54,7 @@ public class ExpenseReportsFragment extends Fragment implements OnClickListener 
 		View view = inflater.inflate(R.layout.expense_reports_layout, container, false);
 		etSearchExpenseReports = (CodePanTextField) view.findViewById(R.id.etSearchExpenseReports);
 		lvExpenseReports = (ListView) view.findViewById(R.id.lvExpenseReports);
+		rlPlaceholderExpenseReports = (RelativeLayout) view.findViewById(R.id.rlPlaceholderExpenseReports);
 		etSearchExpenseReports.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence cs, int i, int i1, int i2) {
@@ -100,6 +103,16 @@ public class ExpenseReportsFragment extends Fragment implements OnClickListener 
 		}
 	};
 
+	public void addExpenseReport() {
+		AddExpenseReportFragment addExpenseReport = new AddExpenseReportFragment();
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+		transaction.add(R.id.rlMain, addExpenseReport);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
 	public void loadExpenseReports(final SQLiteAdapter db) {
 		Thread bg = new Thread(new Runnable() {
 			@Override
@@ -119,6 +132,12 @@ public class ExpenseReportsFragment extends Fragment implements OnClickListener 
 	Handler handler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
+			if(expenseReportsList.size() == 0) {
+				rlPlaceholderExpenseReports.setVisibility(View.VISIBLE);
+			}
+			else {
+				rlPlaceholderExpenseReports.setVisibility(View.GONE);
+			}
 			adapter = new ExpenseReportsAdapter(getActivity(), expenseReportsList);
 			lvExpenseReports.setAdapter(adapter);
 			return true;

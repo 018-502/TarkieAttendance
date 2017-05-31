@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    android:id="@+id/rlMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:circular="http://schemas.android.com/apk/res-auto"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mobileoptima.tarkieattendance.MainActivity">
@@ -247,6 +247,30 @@
                     android:paddingStart="@dimen/five"
                     android:paddingTop="@dimen/three"
                     android:text="@string/add_visit_caps"
+                    android:textColor="@color/blue_pri"
+                    android:textSize="@dimen/thirteen"
+                    android:visibility="gone"
+                    codePan:typeface="@string/proxima_nova_mid"/>
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnAddExpenseReportMain"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/ten"
+                    android:layout_marginRight="@dimen/ten"
+                    android:background="@drawable/state_rect_white_rad_three"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/two"
+                    android:paddingEnd="@dimen/five"
+                    android:paddingLeft="@dimen/five"
+                    android:paddingRight="@dimen/five"
+                    android:paddingStart="@dimen/five"
+                    android:paddingTop="@dimen/three"
+                    android:text="@string/add_expense_report"
+                    android:textAllCaps="true"
                     android:textColor="@color/blue_pri"
                     android:textSize="@dimen/thirteen"
                     android:visibility="gone"

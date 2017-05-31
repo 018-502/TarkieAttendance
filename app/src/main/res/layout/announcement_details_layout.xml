@@ -81,9 +81,9 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/ninety"
+            android:background="@color/gray_sec"
             android:gravity="center_vertical"
-            android:padding="@dimen/twenty"
-            android:background="@color/gray_sec">
+            android:padding="@dimen/twenty">
 
             <com.codepan.widget.CircularImageView
                 android:id="@+id/ivPhotoAnnouncementDetails"
@@ -96,9 +96,9 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
                 android:layout_toEndOf="@+id/ivPhotoAnnouncementDetails"
-                android:layout_toRightOf="@+id/ivPhotoAnnouncementDetails">
+                android:layout_toRightOf="@+id/ivPhotoAnnouncementDetails"
+                android:gravity="center_vertical">
 
                 <com.codepan.widget.CodePanLabel
                     android:id="@+id/tvSubjectAnnouncementDetails"
@@ -135,12 +135,12 @@
 
         <com.codepan.widget.CodePanLabel
             android:id="@+id/tvMessageAnnouncementDetails"
-            android:padding="@dimen/twenty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/two"
+            android:padding="@dimen/twenty"
             android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
             android:textColor="@color/gray_pri"
-            android:lineSpacingExtra="@dimen/two"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>
 

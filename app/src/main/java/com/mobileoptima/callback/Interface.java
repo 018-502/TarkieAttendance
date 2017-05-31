@@ -1,7 +1,5 @@
 package com.mobileoptima.callback;
 
-import android.view.ViewGroup;
-
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.model.GpsObj;
 import com.mobileoptima.model.AnnouncementObj;
@@ -9,6 +7,7 @@ import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
@@ -19,7 +18,6 @@ import com.mobileoptima.model.TimeOutObj;
 import java.util.ArrayList;
 
 public class Interface {
-
 	public interface OnInitializeCallback {
 		void onInitialize(SQLiteAdapter db);
 	}
@@ -94,6 +92,10 @@ public class Interface {
 
 	public interface OnDeleteEntryCallback {
 		void onDeleteEntry(EntryObj entry);
+	}
+
+	public interface OnUpdateExpenseCallback {
+		void onUpdateExpense(ExpenseObj expense);
 	}
 
 	public interface OnResultCallback {

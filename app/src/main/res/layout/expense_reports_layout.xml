@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -42,17 +42,39 @@
     </FrameLayout>
 
     <View
+        android:id="@+id/vDivider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/one"
+        android:layout_below="@+id/flSearchExpenseReports"
         android:background="@color/divider"/>
 
     <ListView
         android:id="@+id/lvExpenseReports"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_below="@+id/flSearchExpenseReports"
         android:divider="@color/divider"
         android:dividerHeight="@dimen/one"
         android:listSelector="@color/transparent"
         android:scrollbarSize="@dimen/three"
         android:scrollbarThumbVertical="@color/black_trans_forty"/>
-</LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlPlaceholderExpenseReports"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/vDivider"
+        android:padding="@dimen/ten"
+        android:visibility="gone">
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_expense_reports_message"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+    </RelativeLayout>
+</RelativeLayout>
