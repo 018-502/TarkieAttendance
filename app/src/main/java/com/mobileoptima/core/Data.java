@@ -242,7 +242,7 @@ public class Data {
 	public static ArrayList<PageObj> loadPages(SQLiteAdapter db, String formID) {
 		ArrayList<PageObj> pageList = new ArrayList<>();
 		String table = Tables.getName(TB.FIELDS);
-		String query = "SELECT ID, orderNo FROM " + table + " WHERE type = '" +
+		String query = "SELECT ID, orderNo FROM " + table + " WHERE typeID = '" +
 				FieldType.PB + "' AND formID = '" + formID + "' AND isActive = 1 " +
 				"ORDER BY orderNo";
 		Cursor cursor = db.read(query);
@@ -293,7 +293,7 @@ public class Data {
 												 EntryObj entry, PageObj page) {
 		ArrayList<FieldObj> fieldList = new ArrayList<>();
 		String table = Tables.getName(TB.FIELDS);
-		String query = "SELECT ID, name, description, type, isRequired FROM " + table + " WHERE " +
+		String query = "SELECT ID, name, description, typeID, isRequired FROM " + table + " WHERE " +
 				"formID = '" + form.ID + "' AND orderNo BETWEEN '" + page.start + "' AND '" +
 				page.end + "' AND isActive = 1 ORDER BY orderNo";
 		Cursor cursor = db.read(query);
@@ -666,7 +666,7 @@ public class Data {
 			form.ID = cursor.getString(8);
 			entry.form = form;
 			ArrayList<FieldObj> fieldList = new ArrayList<>();
-			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + a + " a, " + f + " f " +
+			query = "SELECT f.ID, f.typeID, a.ID, a.value FROM " + a + " a, " + f + " f " +
 					"WHERE f.formID = " + form.ID + " AND a.entryID = " + entry.ID + " " +
 					"AND a.fieldID = f.ID AND f.isActive = 1 AND a.value NOT NULL";
 			Cursor c = db.read(query);
@@ -756,7 +756,7 @@ public class Data {
 		ArrayList<ExpenseItemsObj> expenseItemsList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate >= '" + startDate + "' AND dDate <= '" + endDate + "' AND empID = " + empID + " AND isDelete = 0 GROUP BY dDate";
+		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate >= '" + startDate + "' AND dDate <= '" + endDate + "' AND empID = " + empID + " AND isDelete = 0 GROUP BY dDate ORDER BY dDate DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseItemsObj expenseItem = new ExpenseItemsObj();
@@ -772,7 +772,7 @@ public class Data {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT ID, dDate, dTime, amount, expenseTypeID, clientID, photo, origin, destination, notes, reportID, withOR, isTag, isSubmit FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0";
+		String query = "SELECT ID, dDate, dTime, amount, typeID, storeID, notes, isTag, isSubmit FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseObj obj = new ExpenseObj();
@@ -780,16 +780,50 @@ public class Data {
 			obj.dDate = cursor.getString(1);
 			obj.dTime = cursor.getString(2);
 			obj.amount = cursor.getFloat(3);
-			obj.expenseType = cursor.getString(4);
-			obj.client = cursor.getString(5);
-			obj.photo = cursor.getString(6);
-			obj.origin = cursor.getString(7);
-			obj.destination = cursor.getString(8);
-			obj.notes = cursor.getString(9);
-			obj.reportID = cursor.getString(10);
-			obj.withOR = cursor.getInt(11) == 1;
-			obj.isTag = cursor.getInt(12) == 1;
-			obj.isSubmit = cursor.getInt(13) == 1;
+			obj.typeID = cursor.getInt(4);
+			obj.storeID = cursor.getInt(5);
+			obj.notes = cursor.getString(6);
+			obj.isTag = cursor.getInt(7) == 1;
+			obj.isSubmit = cursor.getInt(8) == 1;
+			if(obj.typeID == 1) {
+				table = Tables.getName(TB.EXPENSE_FUEL_CONSUMPTION);
+				query = "SELECT start, end, rate, startPhoto, endPhoto FROM " + table + " WHERE expenseID = " + obj.ID;
+				Cursor c = db.read(query);
+				while(c.moveToNext()) {
+					obj.fcStart = cursor.getString(0);
+					obj.fcEnd = cursor.getString(1);
+					obj.fcRate = cursor.getString(2);
+					obj.fcStartPhoto = cursor.getString(3);
+					obj.fcEndPhoto = cursor.getString(4);
+				}
+				c.close();
+			}
+			else if(obj.typeID == 2) {
+				table = Tables.getName(TB.EXPENSE_FUEL_PURCHASE);
+				query = "SELECT start, liters, price, photo, startPhoto, withOR FROM " + table + " WHERE expenseID = " + obj.ID;
+				Cursor c = db.read(query);
+				while(cursor.moveToNext()) {
+					obj.fpStart = cursor.getString(0);
+					obj.fpLiters = cursor.getString(1);
+					obj.fpPrice = cursor.getString(2);
+					obj.fpPhoto = cursor.getString(3);
+					obj.fpStartPhoto = cursor.getString(4);
+					obj.fpWithOR = cursor.getInt(5) == 1;
+				}
+				c.close();
+			}
+			else {
+				table = Tables.getName(TB.EXPENSE_DEFAULT);
+				query = "SELECT start, end, photo, withOR FROM " + table + " WHERE expenseID = " + obj.ID;
+				Cursor c = db.read(query);
+				while(cursor.moveToNext()) {
+					obj.defStart = cursor.getString(0);
+					obj.defEnd = cursor.getString(1);
+					obj.defPhoto = cursor.getString(2);
+					obj.defWithOR = cursor.getInt(3) == 1;
+				}
+				c.close();
+			}
 			expenseList.add(obj);
 		}
 		cursor.close();

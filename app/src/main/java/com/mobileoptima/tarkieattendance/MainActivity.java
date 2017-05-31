@@ -90,7 +90,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
 	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnExpenseMain, btnPhotosMain,
-			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain;
+			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain, btnAddExpenseReportMain;
 	private View vHomeMain, vVisitsMain, vExpenseMain, vPhotosMain, vEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private OnBackPressedCallback backPressedCallback;
@@ -164,6 +164,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
 		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
 		btnAddVisitMain = (CodePanButton) findViewById(R.id.btnAddVisitMain);
+		btnAddExpenseReportMain = (CodePanButton) findViewById(R.id.btnAddExpenseReportMain);
 		btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
 		llTimeInMain = (LinearLayout) findViewById(R.id.llTimeInMain);
 		rlMenuMain = (RelativeLayout) findViewById(R.id.rlMenuMain);
@@ -188,6 +189,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		llTimeInMain.setOnClickListener(this);
 		btnSelectMain.setOnClickListener(this);
 		btnAddVisitMain.setOnClickListener(this);
+		btnAddExpenseReportMain.setOnClickListener(this);
 		btnHomeMain.setOnClickListener(this);
 		btnVisitsMain.setOnClickListener(this);
 		btnExpenseMain.setOnClickListener(this);
@@ -199,8 +201,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				String dTime = CodePanUtils.getTime();
 				String expenseID = TarkieLib.saveExpense(db, dDate, dTime, gps);
 				if(!expenseID.isEmpty()) {
-					reloadExpenseItems();
-					CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " has been tagged. You may enter more details later.");
+					if(tabType.equals(TabType.EXPENSE)) {
+						Fragment fragment = manager.findFragmentByTag(tabType);
+						if(fragment != null) {
+							ExpenseFragment expense = (ExpenseFragment) fragment;
+							expense.addExpenseItem(dDate, dTime, expenseID);
+						}
+					}
+					CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " has been added. You may enter more details later.");
 				}
 				return true;
 			}
@@ -739,6 +747,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					visits.addVisit();
 				}
 				break;
+			case R.id.btnAddExpenseReportMain:
+				if(tabType.equals(TabType.EXPENSE)) {
+					ExpenseFragment expense = (ExpenseFragment) manager.findFragmentByTag(tabType);
+					expense.addExpenseReport();
+				}
+				break;
 		}
 	}
 
@@ -761,6 +775,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlDateMain.setVisibility(GONE);
 				btnSelectMain.setVisibility(GONE);
 				btnAddVisitMain.setVisibility(GONE);
+				btnAddExpenseReportMain.setVisibility(GONE);
 				break;
 			case TabType.VISITS:
 				vVisitsMain.setVisibility(VISIBLE);
@@ -770,15 +785,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlDateMain.setVisibility(VISIBLE);
 				btnSelectMain.setVisibility(GONE);
 				btnAddVisitMain.setVisibility(VISIBLE);
+				btnAddExpenseReportMain.setVisibility(GONE);
 				break;
 			case TabType.EXPENSE:
 				vExpenseMain.setVisibility(VISIBLE);
-				rlNotifMain.setVisibility(VISIBLE);
-				rlSyncMain.setVisibility(VISIBLE);
+				rlNotifMain.setVisibility(GONE);
+				rlSyncMain.setVisibility(GONE);
 				rlSearchMain.setVisibility(GONE);
 				rlDateMain.setVisibility(GONE);
 				btnSelectMain.setVisibility(GONE);
 				btnAddVisitMain.setVisibility(GONE);
+				btnAddExpenseReportMain.setVisibility(VISIBLE);
 				break;
 			case TabType.PHOTOS:
 				vPhotosMain.setVisibility(VISIBLE);
@@ -788,6 +805,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlDateMain.setVisibility(GONE);
 				btnSelectMain.setVisibility(GONE);
 				btnAddVisitMain.setVisibility(GONE);
+				btnAddExpenseReportMain.setVisibility(GONE);
 				break;
 			case TabType.ENTRIES:
 				vEntriesMain.setVisibility(VISIBLE);
@@ -797,6 +815,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				rlSearchMain.setVisibility(VISIBLE);
 				btnSelectMain.setVisibility(VISIBLE);
 				btnAddVisitMain.setVisibility(GONE);
+				btnAddExpenseReportMain.setVisibility(GONE);
 				break;
 		}
 		this.tabType = tabType;

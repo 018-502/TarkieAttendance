@@ -53,6 +53,9 @@ import static com.mobileoptima.schema.Tables.TB.CREDENTIALS;
 import static com.mobileoptima.schema.Tables.TB.EMPLOYEE;
 import static com.mobileoptima.schema.Tables.TB.ENTRIES;
 import static com.mobileoptima.schema.Tables.TB.EXPENSE;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE_DEFAULT;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE_FUEL_CONSUMPTION;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE_FUEL_PURCHASE;
 import static com.mobileoptima.schema.Tables.TB.FIELDS;
 import static com.mobileoptima.schema.Tables.TB.PHOTO;
 import static com.mobileoptima.schema.Tables.TB.SETTINGS;
@@ -140,7 +143,10 @@ public class TarkieLib {
 	}
 
 	public static void createTables(SQLiteAdapter db) {
-//		db.execQuery("DROP TABLE expense_tb");
+//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE));
+//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE_DEFAULT));
+//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE_FUEL_CONSUMPTION));
+//		db.execQuery("DROP TABLE " + Tables.getName(TB.EXPENSE_FUEL_PURCHASE));
 		db.execQuery(Tables.create(TB.API_KEY));
 		db.execQuery(Tables.create(TB.SYNC_BATCH));
 		db.execQuery(Tables.create(TB.CREDENTIALS));
@@ -160,6 +166,9 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.LOCATION));
 		db.execQuery(Tables.create(TB.PHOTO));
 		db.execQuery(Tables.create(TB.EXPENSE));
+		db.execQuery(Tables.create(TB.EXPENSE_DEFAULT));
+		db.execQuery(Tables.create(TB.EXPENSE_FUEL_CONSUMPTION));
+		db.execQuery(Tables.create(TB.EXPENSE_FUEL_PURCHASE));
 		db.execQuery(Tables.create(TB.FORMS));
 		db.execQuery(Tables.create(TB.FIELDS));
 		db.execQuery(Tables.create(TB.CHOICES));
@@ -779,15 +788,44 @@ public class TarkieLib {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("amount", obj.amount));
-		query.add(new FieldValue("expenseTypeID", obj.expenseType));
-		query.add(new FieldValue("clientID", obj.client));
-		query.add(new FieldValue("photo", obj.photo));
-		query.add(new FieldValue("origin", obj.origin));
-		query.add(new FieldValue("destination", obj.destination));
+		query.add(new FieldValue("typeID", obj.typeID));
+		query.add(new FieldValue("storeID", obj.storeID));
 		query.add(new FieldValue("notes", obj.notes));
-		query.add(new FieldValue("withOR", obj.withOR));
 		query.add(new FieldValue("isUpdate", 1));
+		query.add(new FieldValue("isSync", 0));
+		query.add(new FieldValue("isWebUpdate", 0));
 		binder.update(Tables.getName(EXPENSE), query, obj.ID);
+		query = new SQLiteQuery();
+		query.add(new Condition("expenseID", obj.ID));
+		if(obj.typeID == 1) {
+			query.add(new FieldValue("start", obj.fcStart));
+			query.add(new FieldValue("end", obj.fcEnd));
+			query.add(new FieldValue("rate", obj.fcRate));
+			query.add(new FieldValue("startPhoto", obj.fcStartPhoto));
+			query.add(new FieldValue("endPhoto", obj.fcEndPhoto));
+			query.add(new FieldValue("isStartPhotoUpload", 0));
+			query.add(new FieldValue("isEndPhotoUpload", 0));
+			binder.update(Tables.getName(EXPENSE_FUEL_CONSUMPTION), query);
+		}
+		else if(obj.typeID == 2) {
+			query.add(new FieldValue("start", obj.fpStart));
+			query.add(new FieldValue("liters", obj.fpLiters));
+			query.add(new FieldValue("price", obj.fpPrice));
+			query.add(new FieldValue("photo", obj.fpPhoto));
+			query.add(new FieldValue("startPhoto", obj.fpStartPhoto));
+			query.add(new FieldValue("withOR", obj.fpWithOR));
+			query.add(new FieldValue("isPhotoUpload", 0));
+			query.add(new FieldValue("isStartPhotoUpload", 0));
+			binder.update(Tables.getName(EXPENSE_FUEL_PURCHASE), query);
+		}
+		else {
+			query.add(new FieldValue("start", obj.defStart));
+			query.add(new FieldValue("end", obj.defEnd));
+			query.add(new FieldValue("photo", obj.defPhoto));
+			query.add(new FieldValue("withOR", obj.defWithOR));
+			query.add(new FieldValue("isPhotoUpload", 0));
+			binder.update(Tables.getName(EXPENSE_DEFAULT), query);
+		}
 		return binder.finish();
 	}
 

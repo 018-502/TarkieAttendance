@@ -81,12 +81,12 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/rlClientExpenseItemsDetails"
+                android:id="@+id/rlStoreExpenseItemsDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvClientExpenseItemsDetails"
+                    android:id="@+id/tvStoreExpenseItemsDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -94,21 +94,21 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/ten"
                     android:layout_marginStart="@dimen/ten"
-                    android:text="Client"
+                    android:text="Store"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/seventeen"
                     codePan:typeface="@string/proxima_nova_light"/>
 
                 <FrameLayout
-                    android:id="@+id/flClientExpenseItemsDetails"
+                    android:id="@+id/flStoreExpenseItemsDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/ten"
-                    android:layout_toEndOf="@+id/tvClientExpenseItemsDetails"
-                    android:layout_toRightOf="@id/tvClientExpenseItemsDetails">
+                    android:layout_toEndOf="@+id/tvStoreExpenseItemsDetails"
+                    android:layout_toRightOf="@id/tvStoreExpenseItemsDetails">
 
                     <com.codepan.widget.CodePanTextField
-                        android:id="@+id/etClientExpenseItemsDetails"
+                        android:id="@+id/etStoreExpenseItemsDetails"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/state_rect_gray_sec_rad_three"
@@ -137,7 +137,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/one"
-                    android:layout_below="@+id/flClientExpenseItemsDetails"
+                    android:layout_below="@+id/flStoreExpenseItemsDetails"
                     android:background="@color/divider"/>
 
             </RelativeLayout>
@@ -336,7 +336,7 @@
                     codePan:typeface="@string/proxima_nova_light"/>
 
                 <com.codepan.widget.CodePanTextField
-                    android:id="@+id/etOriginExpenseItemsDetails"
+                    android:id="@+id/etStartExpenseItemsDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/ten"
@@ -358,7 +358,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/one"
-                    android:layout_below="@+id/etOriginExpenseItemsDetails"
+                    android:layout_below="@+id/etStartExpenseItemsDetails"
                     android:background="@color/divider"/>
 
             </RelativeLayout>
@@ -383,7 +383,7 @@
                     codePan:typeface="@string/proxima_nova_light"/>
 
                 <com.codepan.widget.CodePanTextField
-                    android:id="@+id/etDestinationExpenseItemsDetails"
+                    android:id="@+id/etEndExpenseItemsDetails"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/ten"
@@ -405,7 +405,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/one"
-                    android:layout_below="@+id/etDestinationExpenseItemsDetails"
+                    android:layout_below="@+id/etEndExpenseItemsDetails"
                     android:background="@color/divider"/>
 
             </RelativeLayout>

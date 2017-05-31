@@ -88,7 +88,7 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 					}
 				}
 				else {
-					CodePanUtils.alertToast(getActivity(), "Please select a store.");
+					CodePanUtils.alertToast(getActivity(), "Please select a storeID.");
 				}
 				break;
 			case R.id.btnCancelStore:

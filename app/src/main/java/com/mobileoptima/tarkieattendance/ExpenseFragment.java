@@ -71,10 +71,17 @@ public class ExpenseFragment extends Fragment {
 		return view;
 	}
 
+	public void addExpenseItem(String dDate, String dTime, String expenseID) {
+		items.addExpenseItem(dDate, dTime, expenseID);
+	}
+
 	public void loadExpenseItems(SQLiteAdapter db) {
 		items.loadExpenseItems(db);
 	}
 
+	public void addExpenseReport() {
+		reports.addExpenseReport();
+	}
 	public void loadExpenseReports(SQLiteAdapter db) {
 		reports.loadExpenseReports(db);
 	}
