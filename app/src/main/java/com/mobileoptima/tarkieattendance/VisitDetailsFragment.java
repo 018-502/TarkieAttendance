@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -52,8 +53,7 @@ import com.mobileoptima.model.VisitObj;
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
-		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback,
-		OnSaveEntryCallback {
+		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
 			btnSaveVisitDetails, btnAddPhotoVisitDetails;
@@ -178,6 +178,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				LayoutInflater inflater = getActivity().getLayoutInflater();
 				ViewGroup container = (ViewGroup) view.getParent();
 				for(final EntryObj entry : entryList) {
+					final int index = entryList.indexOf(entry);
 					FormObj form = entry.form;
 					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
 					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
@@ -186,11 +187,18 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
+							Log.e("DEPANOT", ""+entry.ID);
 							if(visit.isCheckIn) {
 								FormFragment form = new FormFragment();
 								form.setEntry(entry);
 								form.setOnOverrideCallback(overrideCallback);
-								form.setOnSaveEntryCallback(VisitDetailsFragment.this);
+								form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
+									@Override
+									public void onSaveEntry(EntryObj entry) {
+										Log.e("DEPANOT", ""+entry.ID);
+										entryList.set(index, entry);
+									}
+								});
 								transaction = manager.beginTransaction();
 								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -593,9 +601,5 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			this.imageList.addAll(0, imageList);
 		}
 		updatePhotoGrid(llGridPhotoVisitDetails, this.imageList);
-	}
-
-	@Override
-	public void onSaveEntry(EntryObj entry) {
 	}
 }

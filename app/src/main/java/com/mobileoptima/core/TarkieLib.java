@@ -744,9 +744,9 @@ public class TarkieLib {
 			if(entry.ID != null) {
 				query.clearAll();
 				query.add(new Field("ID"));
-				query.add(new Condition("entry", entry.ID));
+				query.add(new Condition("entryID", entry.ID));
 				query.add(new Condition("taskID", taskID));
-				query.add(new FieldValue("formID", entry.ID));
+				query.add(new FieldValue("entryID", entry.ID));
 				query.add(new FieldValue("taskID", taskID));
 				String sql = query.select(te);
 				if(!db.isRecordExists(sql)) {
@@ -1174,7 +1174,7 @@ public class TarkieLib {
 		return syncCount + photoCount + signatureCount;
 	}
 
-	public static boolean addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,
+	public static String addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,
 								   boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String dDate = CodePanUtils.getDate();
@@ -1206,7 +1206,8 @@ public class TarkieLib {
 				binder.insert(Tables.getName(ANSWERS), query);
 			}
 		}
-		return binder.finish();
+		binder.finish();
+		return entryID;
 	}
 
 	public static boolean editEntry(SQLiteAdapter db, String entryID, ArrayList<FieldObj> fieldList, boolean isSubmit) {

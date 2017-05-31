@@ -315,7 +315,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 				}
 			}
 		}
-		if(entry != null) {
+		if(entry != null && entry.ID != null) {
 			entry.isSubmit = isSubmit;
 			boolean result = TarkieLib.editEntry(db, entry.ID, fieldList, isSubmit);
 			if(result) {
@@ -323,8 +323,11 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 			}
 		}
 		else {
-			boolean result = TarkieLib.addEntry(db, form.ID, fieldList, isSubmit);
-			if(result) {
+			String entryID = TarkieLib.addEntry(db, form.ID, fieldList, isSubmit);
+			if(entryID != null) {
+				if(entry != null) {
+					entry.ID = entryID;
+				}
 				CodePanUtils.alertToast(getActivity(), "Entry has been has successfully saved.");
 			}
 		}
