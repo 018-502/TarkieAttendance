@@ -15,13 +15,14 @@ import com.codepan.cache.TypefaceCache;
 import com.codepan.calendar.adapter.ViewPagerAdapter;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.SlidingTabLayout;
+import com.mobileoptima.model.ExpenseObj;
 
 import java.util.ArrayList;
 
 public class ExpenseFragment extends Fragment {
 	private ArrayList<Fragment> fragmentList;
-	private FragmentManager manager;
-	private FragmentTransaction transaction;
+	private ExpenseItemsFragment items;
+	private ExpenseReportsFragment reports;
 	private SQLiteAdapter db;
 	private SlidingTabLayout stlExpense;
 	private String[] tabItems;
@@ -40,7 +41,6 @@ public class ExpenseFragment extends Fragment {
 		gray = res.getColor(R.color.gray_pri);
 		MainActivity main = (MainActivity) getActivity();
 		bold = TypefaceCache.get(main.getAssets(), getString(R.string.proxima_nova_bold));
-		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
 	}
@@ -50,10 +50,10 @@ public class ExpenseFragment extends Fragment {
 		View view = inflater.inflate(R.layout.expense_layout, container, false);
 		stlExpense = (SlidingTabLayout) view.findViewById(R.id.stlExpense);
 		vpExpense = (ViewPager) view.findViewById(R.id.vpExpense);
-		ExpenseItemsFragment item = new ExpenseItemsFragment();
-		ExpenseReportsFragment report = new ExpenseReportsFragment();
-		fragmentList.add(item);
-		fragmentList.add(report);
+		items = new ExpenseItemsFragment();
+		reports = new ExpenseReportsFragment();
+		fragmentList.add(items);
+		fragmentList.add(reports);
 		adapter = new ViewPagerAdapter(getChildFragmentManager(), fragmentList, tabItems);
 		vpExpense.setOffscreenPageLimit(2);
 		vpExpense.setAdapter(adapter);
@@ -71,6 +71,18 @@ public class ExpenseFragment extends Fragment {
 		return view;
 	}
 
-	public void loadExpense(SQLiteAdapter db) {
+	public void addExpenseItem(String dDate, String dTime, String expenseID) {
+		items.addExpenseItem(dDate, dTime, expenseID);
+	}
+
+	public void loadExpenseItems(SQLiteAdapter db) {
+		items.loadExpenseItems(db);
+	}
+
+	public void addExpenseReport() {
+		reports.addExpenseReport();
+	}
+	public void loadExpenseReports(SQLiteAdapter db) {
+		reports.loadExpenseReports(db);
 	}
 }

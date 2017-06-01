@@ -11,11 +11,11 @@
         android:id="@+id/ivPhotoAnnouncements"
         android:layout_width="@dimen/thirty"
         android:layout_height="@dimen/thirty"
-        android:layout_marginEnd="@dimen/five"
-        android:layout_marginRight="@dimen/five"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/five"
+        android:layout_marginRight="@dimen/five"
         android:src="@drawable/ic_user_placeholder"/>
 
     <LinearLayout

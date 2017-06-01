@@ -239,14 +239,17 @@ public class Rx {
 						String coID = dataObj.getString("company_id");
 						String company = dataObj.getString("company_name");
 						String address = dataObj.getString("address");
+						String logoUrl = dataObj.getString("company_logo");
+						CodePanUtils.clearImageUrl(db.getContext(), logoUrl);
 						company = CodePanUtils.handleUniCode(company);
 						address = CodePanUtils.handleUniCode(address);
 						query.clearAll();
 						query.add(new FieldValue("ID", coID));
 						query.add(new FieldValue("name", company));
 						query.add(new FieldValue("address", address));
-						query.add(new FieldValue("code", dataObj.getString("company_code")));
+						query.add(new FieldValue("logoUrl", logoUrl));
 						query.add(new FieldValue("mobile", dataObj.getString("mobile")));
+						query.add(new FieldValue("code", dataObj.getString("company_code")));
 						query.add(new FieldValue("landline", dataObj.getString("landline")));
 						query.add(new FieldValue("expirationDate", dataObj.getString("expiration_date")));
 						String sql = "SELECT ID FROM " + table + " WHERE ID = '" + coID + "'";
@@ -1267,7 +1270,7 @@ public class Rx {
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
 						String webTaskID = dataObj.getString("itinerary_id");
-						String name = dataObj.getString("client_name");
+						String name = dataObj.getString("store_name");
 						String notes = dataObj.getString("notes");
 						notes = CodePanUtils.handleUniCode(notes);
 						notes = CodePanUtils.handleHTMLEntities(notes, false);
@@ -1282,7 +1285,7 @@ public class Rx {
 						query.add(new FieldValue("notes", notes));
 						query.add(new FieldValue("notesLimit", notesLimit));
 						query.add(new FieldValue("empID", dataObj.getString("employee_id")));
-						query.add(new FieldValue("storeID", dataObj.getString("client_id")));
+						query.add(new FieldValue("storeID", dataObj.getString("store_id")));
 						query.add(new FieldValue("startDate", dataObj.getString("start_date")));
 						query.add(new FieldValue("endDate", dataObj.getString("end_date")));
 						String sql = "SELECT ID FROM " + t + " WHERE webTaskID = '" + webTaskID + "'";

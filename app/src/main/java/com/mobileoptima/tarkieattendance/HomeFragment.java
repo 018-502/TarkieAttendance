@@ -1,6 +1,7 @@
 package com.mobileoptima.tarkieattendance;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -33,10 +34,12 @@ import com.mobileoptima.model.VisitObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements ImageLoadingListener {
 
 	private LinearLayout llInventoryHome, llScheduleHome, llFormHome;
 	private OnSaveEntryCallback saveEntryCallback;
@@ -48,6 +51,7 @@ public class HomeFragment extends Fragment {
 	private CodePanLabel tvStoreHome;
 	private FragmentManager manager;
 	private ImageLoader imageLoader;
+	private ImageView ivLogoHome;
 	private SQLiteAdapter db;
 
 	@Override
@@ -76,7 +80,10 @@ public class HomeFragment extends Fragment {
 		llScheduleHome = (LinearLayout) view.findViewById(R.id.llScheduleHome);
 		llFormHome = (LinearLayout) view.findViewById(R.id.llFormHome);
 		tvStoreHome = (CodePanLabel) view.findViewById(R.id.tvStoreHome);
+		ivLogoHome = (ImageView) view.findViewById(R.id.ivLogoHome);
 		setStore(TarkieLib.getDefaultStore(db));
+		String logoUrl = TarkieLib.getCompanyLogo(db);
+		updateLogo(db, logoUrl);
 		loadSchedule(db);
 		loadForms(db);
 		return view;
@@ -261,12 +268,29 @@ public class HomeFragment extends Fragment {
 		this.saveEntryCallback = saveEntryCallback;
 	}
 
-	public void upgrade() {
-		UpgradeFragment upgrade = new UpgradeFragment();
-		transaction = manager.beginTransaction();
-		transaction.add(R.id.flContainerMain, upgrade);
-		transaction.hide(this);
-		transaction.addToBackStack(null);
-		transaction.commit();
+	public void updateLogo(SQLiteAdapter db, String logoUrl) {
+		if(logoUrl != null) {
+			CodePanUtils.displayImage(ivLogoHome, logoUrl, this);
+		}
+	}
+
+	@Override
+	public void onLoadingStarted(String imageUri, View view) {
+	}
+
+	@Override
+	public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+	}
+
+	@Override
+	public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
+		if(bitmap != null) {
+			float ratio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+			view.getLayoutParams().width = (int) ((float) view.getHeight() * ratio);
+		}
+	}
+
+	@Override
+	public void onLoadingCancelled(String imageUri, View view) {
 	}
 }

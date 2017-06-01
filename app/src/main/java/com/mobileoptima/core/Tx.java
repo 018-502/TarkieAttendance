@@ -16,9 +16,9 @@ import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
-import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.IncidentObj;
 import com.mobileoptima.model.IncidentReportObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
@@ -346,7 +346,7 @@ public class Tx {
 		return result;
 	}
 
-	public static boolean uploadTimeInPhoto(SQLiteAdapter db, ImageObj image, OnErrorCallback errorCallback) {
+	public static boolean uploadTimeInPhoto(SQLiteAdapter db, PhotoObj photo, OnErrorCallback errorCallback) {
 		boolean result = false;
 		final int INDENT = 4;
 		String action = "upload-time-in-photo";
@@ -357,14 +357,14 @@ public class Tx {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
 			paramsObj.put("api_key", apiKey);
-			paramsObj.put("local_record_id", image.ID);
-			paramsObj.put("sync_batch_id", image.syncBatchID);
+			paramsObj.put("local_record_id", photo.ID);
+			paramsObj.put("sync_batch_id", photo.syncBatchID);
 			params = paramsObj.toString(INDENT);
 			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
-					"/" + image.fileName;
+					"/" + photo.fileName;
 			File file = new File(path);
 			if(!file.exists() || file.isDirectory()) {
-				return TarkieLib.updateStatusPhotoUpload(db, TB.TIME_IN, image.ID);
+				return TarkieLib.updateStatusPhotoUpload(db, TB.TIME_IN, photo.ID);
 			}
 			response = CodePanUtils.uploadFile(url, params, "image", "image/png", file);
 			CodePanUtils.logHttpRequest(params, response);
@@ -376,9 +376,9 @@ public class Tx {
 					String status = initObj.getString("status");
 					String message = initObj.getString("message");
 					if(status.equals("ok")) {
-						result = TarkieLib.updateStatusPhotoUpload(db, TB.TIME_IN, image.ID);
+						result = TarkieLib.updateStatusPhotoUpload(db, TB.TIME_IN, photo.ID);
 						if(result) {
-							CodePanUtils.deleteFile(db.getContext(), App.FOLDER, image.fileName);
+							CodePanUtils.deleteFile(db.getContext(), App.FOLDER, photo.fileName);
 						}
 					}
 					else {
@@ -406,7 +406,7 @@ public class Tx {
 		return result;
 	}
 
-	public static boolean uploadTimeOutPhoto(SQLiteAdapter db, ImageObj image, OnErrorCallback errorCallback) {
+	public static boolean uploadTimeOutPhoto(SQLiteAdapter db, PhotoObj photo, OnErrorCallback errorCallback) {
 		boolean result = false;
 		final int INDENT = 4;
 		String action = "upload-time-out-photo";
@@ -417,14 +417,14 @@ public class Tx {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
 			paramsObj.put("api_key", apiKey);
-			paramsObj.put("local_record_id", image.ID);
-			paramsObj.put("sync_batch_id", image.syncBatchID);
+			paramsObj.put("local_record_id", photo.ID);
+			paramsObj.put("sync_batch_id", photo.syncBatchID);
 			params = paramsObj.toString(INDENT);
 			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
-					"/" + image.fileName;
+					"/" + photo.fileName;
 			File file = new File(path);
 			if(!file.exists() || file.isDirectory()) {
-				return TarkieLib.updateStatusPhotoUpload(db, TB.TIME_OUT, image.ID);
+				return TarkieLib.updateStatusPhotoUpload(db, TB.TIME_OUT, photo.ID);
 			}
 			response = CodePanUtils.uploadFile(url, params, "image", "image/png", file);
 			CodePanUtils.logHttpRequest(params, response);
@@ -436,9 +436,9 @@ public class Tx {
 					String status = initObj.getString("status");
 					String message = initObj.getString("message");
 					if(status.equals("ok")) {
-						result = TarkieLib.updateStatusPhotoUpload(db, TB.TIME_OUT, image.ID);
+						result = TarkieLib.updateStatusPhotoUpload(db, TB.TIME_OUT, photo.ID);
 						if(result) {
-							CodePanUtils.deleteFile(db.getContext(), App.FOLDER, image.fileName);
+							CodePanUtils.deleteFile(db.getContext(), App.FOLDER, photo.fileName);
 						}
 					}
 					else {
@@ -466,7 +466,7 @@ public class Tx {
 		return result;
 	}
 
-	public static boolean uploadSignature(SQLiteAdapter db, ImageObj image, OnErrorCallback errorCallback) {
+	public static boolean uploadSignature(SQLiteAdapter db, PhotoObj photo, OnErrorCallback errorCallback) {
 		boolean result = false;
 		final int INDENT = 4;
 		String action = "upload-signature-photo";
@@ -477,14 +477,14 @@ public class Tx {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
 			paramsObj.put("api_key", apiKey);
-			paramsObj.put("local_record_id", image.ID);
-			paramsObj.put("sync_batch_id", image.syncBatchID);
+			paramsObj.put("local_record_id", photo.ID);
+			paramsObj.put("sync_batch_id", photo.syncBatchID);
 			params = paramsObj.toString(INDENT);
 			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
-					"/" + image.fileName;
+					"/" + photo.fileName;
 			File file = new File(path);
 			if(!file.exists() || file.isDirectory()) {
-				return TarkieLib.updateStatusSignatureUpload(db, TB.TIME_OUT, image.ID);
+				return TarkieLib.updateStatusSignatureUpload(db, TB.TIME_OUT, photo.ID);
 			}
 			response = CodePanUtils.uploadFile(url, params, "image", "image/png", file);
 			CodePanUtils.logHttpRequest(params, response);
@@ -496,7 +496,7 @@ public class Tx {
 					String status = initObj.getString("status");
 					String message = initObj.getString("message");
 					if(status.equals("ok")) {
-						result = TarkieLib.updateStatusSignatureUpload(db, TB.TIME_OUT, image.ID);
+						result = TarkieLib.updateStatusSignatureUpload(db, TB.TIME_OUT, photo.ID);
 					}
 					else {
 						if(errorCallback != null) {
@@ -680,7 +680,7 @@ public class Tx {
 		return result;
 	}
 
-	public static boolean uploadEntryPhoto(SQLiteAdapter db, ImageObj image, OnErrorCallback errorCallback) {
+	public static boolean uploadEntryPhoto(SQLiteAdapter db, PhotoObj photo, OnErrorCallback errorCallback) {
 		boolean result = false;
 		boolean hasData = false;
 		final int INDENT = 4;
@@ -696,16 +696,16 @@ public class Tx {
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("employee_id", empID);
 			paramsObj.put("team_id", groupID);
-			paramsObj.put("local_record_id", image.ID);
-			paramsObj.put("sync_batch_id", image.syncBatchID);
-			paramsObj.put("is_signature", image.isSignature ? 1 : 0);
+			paramsObj.put("local_record_id", photo.ID);
+			paramsObj.put("sync_batch_id", photo.syncBatchID);
+			paramsObj.put("is_signature", photo.isSignature ? 1 : 0);
 			params = paramsObj.toString(INDENT);
 			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
-					"/" + image.fileName;
+					"/" + photo.fileName;
 			String table = Tables.getName(TB.PHOTO);
 			File file = new File(path);
 			if(!file.exists() || file.isDirectory()) {
-				return TarkieLib.updateStatusUpload(db, TB.PHOTO, image.ID);
+				return TarkieLib.updateStatusUpload(db, TB.PHOTO, photo.ID);
 			}
 			response = CodePanUtils.uploadFile(url, params, "image", "image/png", file);
 			CodePanUtils.logHttpRequest(params, response);
@@ -744,7 +744,7 @@ public class Tx {
 						JSONObject dataObj = dataArray.getJSONObject(i);
 						query.add(new FieldValue("webPhotoID", dataObj.getString("photo_id")));
 						query.add(new FieldValue("isUpload", true));
-						binder.update(table, query, image.ID);
+						binder.update(table, query, photo.ID);
 					}
 					catch(Exception e) {
 						e.printStackTrace();

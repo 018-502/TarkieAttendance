@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 
 import com.codepan.cache.TypefaceCache;
 import com.codepan.utils.CodePanUtils;
@@ -18,12 +17,10 @@ import com.mobileoptima.tarkieattendance.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import java.util.ArrayList;
 
 public class AnnouncementsAdapter extends ArrayAdapter<AnnouncementObj> {
-
 	private DisplayImageOptions options;
 	private ArrayList<AnnouncementObj> items;
 	private LayoutInflater inflater;

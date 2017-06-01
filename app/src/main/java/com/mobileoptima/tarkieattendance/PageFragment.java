@@ -1,7 +1,7 @@
 package com.mobileoptima.tarkieattendance;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -37,6 +37,7 @@ import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
+import com.mobileoptima.callback.Interface.OnCameraDoneCallback;
 import com.mobileoptima.callback.Interface.OnClearCallback;
 import com.mobileoptima.callback.Interface.OnDeletePhotoCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
@@ -66,7 +67,6 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	private boolean withChanges, isLoadable;
 	private ArrayList<FieldObj> fieldList;
 	private FragmentManager manager;
-	private ViewGroup container;
 	private LinearLayout llPage;
 	private ScrollView svPage;
 	private SQLiteAdapter db;
@@ -88,7 +88,6 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.page_layout, container, false);
-		this.container = container;
 		llPage = (LinearLayout) view.findViewById(R.id.llPage);
 		svPage = (ScrollView) view.findViewById(R.id.svPage);
 		ViewTreeObserver vto = svPage.getViewTreeObserver();
@@ -139,20 +138,24 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	Handler handler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
-			LayoutInflater inflater = getActivity().getLayoutInflater();
-			int size = fieldList.size();
-			int end = start + LIMIT;
-			end = end > size ? size : end;
-			for(int i = start; i < end; i++) {
-				final FieldObj field = fieldList.get(i);
-				boolean isEditable = entry == null || !entry.isSubmit;
-				View view = getField(inflater, field, isEditable);
-				llPage.addView(view);
-				if(i == end - 1) {
-					start = end;
-					lastChild = view;
-					if(end < size) {
-						isLoadable = true;
+			View view = getView();
+			if(view != null) {
+				LayoutInflater inflater = getActivity().getLayoutInflater();
+				ViewGroup container = (ViewGroup) view.getParent();
+				int size = fieldList.size();
+				int end = start + LIMIT;
+				end = end > size ? size : end;
+				for(int i = start; i < end; i++) {
+					final FieldObj field = fieldList.get(i);
+					boolean isEditable = entry == null || !entry.isSubmit;
+					View child = getField(inflater, container, field, isEditable);
+					llPage.addView(child);
+					if(i == end - 1) {
+						start = end;
+						lastChild = child;
+						if(end < size) {
+							isLoadable = true;
+						}
 					}
 				}
 			}
@@ -160,7 +163,7 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 		}
 	});
 
-	public View getField(LayoutInflater inflater, final FieldObj field, final boolean isEditable) {
+	public View getField(LayoutInflater inflater, ViewGroup container, final FieldObj field, final boolean isEditable) {
 		final AnswerObj answer = field.answer;
 		View view = null;
 		switch(field.type) {
@@ -686,10 +689,9 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 					public void onClick(View view) {
 						FormFragment form = (FormFragment) manager.findFragmentByTag(Tag.FORM);
 						CameraMultiShotFragment camera = new CameraMultiShotFragment();
-						camera.setOnBackPressedCallback(form.getOnBackPressedCallback());
 						camera.setOnOverrideCallback(overrideCallback);
 						camera.setOnFragmentCallback(PageFragment.this);
-						camera.setOnCameraDoneCallback(new com.mobileoptima.callback.Interface.OnCameraDoneCallback() {
+						camera.setOnCameraDoneCallback(new OnCameraDoneCallback() {
 							@Override
 							public void onCameraDone(ArrayList<ImageObj> imageList) {
 								if(answer.imageList != null) {
@@ -719,35 +721,38 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	}
 
 	public void updatePhotoGrid(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
-		LayoutInflater inflater = getActivity().getLayoutInflater();
-		llGridPhoto.removeAllViews();
-		for(final ImageObj obj : imageList) {
-			View view = inflater.inflate(R.layout.photo_item, container, false);
-			CodePanButton btnPhoto = (CodePanButton) view.findViewById(R.id.btnPhoto);
-			ImageView ivPhoto = (ImageView) view.findViewById(R.id.ivPhoto);
-			int size = CodePanUtils.getWidth(view);
-			Bitmap bitmap = CodePanUtils.getBitmapThumbnails(getActivity(), App.FOLDER, obj.fileName, size);
-			ivPhoto.setImageBitmap(bitmap);
-			obj.bitmap = bitmap;
-			btnPhoto.setOnClickListener(new OnClickListener() {
+		View view = getView();
+		if(view != null) {
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			ViewGroup container = (ViewGroup) view.getParent();
+			llGridPhoto.removeAllViews();
+			for(final ImageObj obj : imageList) {
+				String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
+						.getPath() + "/" + obj.fileName;
+				View child = inflater.inflate(R.layout.photo_item, container, false);
+				CodePanButton btnPhoto = (CodePanButton) child.findViewById(R.id.btnPhoto);
+				ImageView ivPhoto = (ImageView) child.findViewById(R.id.ivPhoto);
+				CodePanUtils.displayImage(ivPhoto, uri, R.color.gray_ter);
+				btnPhoto.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int position = imageList.indexOf(obj);
+						onPhotoGridItemClick(llGridPhoto, imageList, position);
+					}
+				});
+				llGridPhoto.addView(child);
+			}
+			ViewParent parent = llGridPhoto.getParent();
+			final HorizontalScrollView hsvPhoto = (HorizontalScrollView) parent.getParent();
+			hsvPhoto.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
 				@Override
-				public void onClick(View v) {
-					int position = imageList.indexOf(obj);
-					onPhotoGridItemClick(llGridPhoto, imageList, position);
+				public void onLayoutChange(View view, int l, int t, int r, int b, int ol,
+										   int ot, int or, int ob) {
+					hsvPhoto.removeOnLayoutChangeListener(this);
+					hsvPhoto.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
 				}
 			});
-			llGridPhoto.addView(view);
 		}
-		ViewParent parent = llGridPhoto.getParent();
-		final HorizontalScrollView hsvPhoto = (HorizontalScrollView) parent.getParent();
-		hsvPhoto.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-			@Override
-			public void onLayoutChange(View view, int l, int t, int r, int b, int ol,
-									   int ot, int or, int ob) {
-				hsvPhoto.removeOnLayoutChangeListener(this);
-				hsvPhoto.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
-			}
-		});
 	}
 
 	public void onPhotoGridItemClick(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList, int position) {
@@ -860,6 +865,11 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 	public void onFragment(boolean status) {
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(!status);
+		}
+		if(!status) {
+			MainActivity main = (MainActivity) getActivity();
+			FormFragment form = (FormFragment) manager.findFragmentByTag(Tag.FORM);
+			main.setOnBackPressedCallback(form.getOnBackPressedCallback());
 		}
 	}
 }

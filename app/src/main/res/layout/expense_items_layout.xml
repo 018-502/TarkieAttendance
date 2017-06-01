@@ -1,20 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:clickable="true"
-    android:orientation="vertical">
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/rlSearchExpenseItems"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="@dimen/fifteen"
+        android:paddingEnd="@dimen/ten"
+        android:paddingLeft="@dimen/ten"
+        android:paddingRight="@dimen/ten"
+        android:paddingStart="@dimen/ten"
+        android:paddingTop="@dimen/fifteen">
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/ten"
+            android:layout_marginRight="@dimen/ten"
+            android:text="@string/select_range"
+            android:textColor="@color/gray_qui"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvStartDateExpenseItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tvToExpenseItems"
+            android:layout_toStartOf="@+id/tvToExpenseItems"
+            android:text="2017-05-01"
+            android:textColor="@color/blue_sec"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_mid"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvToExpenseItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tvEndDateExpenseItems"
+            android:layout_toStartOf="@+id/tvEndDateExpenseItems"
+            android:text=" - "
+            android:textColor="@color/blue_sec"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvEndDateExpenseItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="2017-05-31"
+            android:textColor="@color/blue_sec"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_mid"/>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/vDivider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:layout_below="@+id/rlSearchExpenseItems"
+        android:background="@color/divider"/>
 
     <ListView
         android:id="@+id/lvExpenseItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/vDivider"
         android:divider="@color/divider"
         android:dividerHeight="@dimen/one"
         android:listSelector="@color/transparent"
         android:scrollbarSize="@dimen/three"
         android:scrollbarThumbVertical="@color/black_trans_forty"/>
 
-</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/rlPlaceholderExpenseItems"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/vDivider"
+        android:padding="@dimen/ten"
+        android:visibility="gone">
+
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/no_expense_items_message"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+    </RelativeLayout>
+</RelativeLayout>

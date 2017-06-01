@@ -54,7 +54,6 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	private LinearLayout llPhotoGridCameraMultiShot, llSwitchCameraMultiShot;
 	private HorizontalScrollView hsvPhotoGridCameraMultiShot;
 	private CodePanLabel tvPhotosTakenCameraMultiShot;
-	private OnBackPressedCallback backPressedCallback;
 	private OnCameraDoneCallback cameraDoneCallback;
 	private OnOverrideCallback overrideCallback;
 	private OnFragmentCallback fragmentCallback;
@@ -174,6 +173,9 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 				getActivity().getSupportFragmentManager().popBackStack();
 				break;
 			case R.id.btnSwitchCameraMultiShot:
+				if(rlOptionsCameraMultiShot.getVisibility() == View.VISIBLE) {
+					CodePanUtils.fadeOut(rlOptionsCameraMultiShot);
+				}
 				if(cameraSelection == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 					cameraSelection = Camera.CameraInfo.CAMERA_FACING_BACK;
 				}
@@ -231,10 +233,6 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	public void setOnBackStack(boolean isOnBackStack) {
 		if(fragmentCallback != null) {
 			fragmentCallback.onFragment(isOnBackStack);
-		}
-		if(!isOnBackStack) {
-			MainActivity main = (MainActivity) getActivity();
-			main.setOnBackPressedCallback(backPressedCallback);
 		}
 	}
 
@@ -296,8 +294,8 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 		if(!imageList.isEmpty() && !inOtherFragment) {
 			final AlertDialogFragment alert = new AlertDialogFragment();
 			alert.setOnFragmentCallback(this);
-			alert.setDialogTitle("Save Photos");
-			alert.setDialogMessage("Do you want to save photos?");
+			alert.setDialogTitle(R.string.save_photos_title);
+			alert.setDialogMessage(R.string.save_photos_message);
 			alert.setPositiveButton("Yes", new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -432,10 +430,6 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 
 	public void setOnCameraDoneCallback(OnCameraDoneCallback cameraDoneCallback) {
 		this.cameraDoneCallback = cameraDoneCallback;
-	}
-
-	public void setOnBackPressedCallback(OnBackPressedCallback backPressedCallback) {
-		this.backPressedCallback = backPressedCallback;
 	}
 
 	public void resetCamera(long delay) {

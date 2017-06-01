@@ -26,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
@@ -1683,6 +1684,16 @@ public class CodePanUtils {
 			}
 		}
 		return result;
+	}
+
+	public static Bitmap resizeBitmap(Bitmap bitmap, int width, int height) {
+		int w = bitmap.getWidth();
+		int h = bitmap.getHeight();
+		float scaleWidth = ((float) width) / w;
+		float scaleHeight = ((float) height) / h;
+		Matrix matrix = new Matrix();
+		matrix.postScale(scaleWidth, scaleHeight);
+		return Bitmap.createBitmap(bitmap, 0, 0, w, h, matrix, false);
 	}
 
 	public static Bitmap getBitmapThumbnails(Context context, String folderName, String fileName, int size) {

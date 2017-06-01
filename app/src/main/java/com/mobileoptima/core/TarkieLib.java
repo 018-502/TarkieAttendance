@@ -11,6 +11,7 @@ import android.view.View;
 import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.database.Condition;
 import com.codepan.database.Condition.Operator;
+import com.codepan.database.Field;
 import com.codepan.database.FieldValue;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteBinder;
@@ -33,7 +34,9 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.FieldObj;
+import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
@@ -56,6 +59,10 @@ import static com.mobileoptima.schema.Tables.TB.CONVENTION;
 import static com.mobileoptima.schema.Tables.TB.CREDENTIALS;
 import static com.mobileoptima.schema.Tables.TB.EMPLOYEE;
 import static com.mobileoptima.schema.Tables.TB.ENTRIES;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE_DEFAULT;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE_FUEL_CONSUMPTION;
+import static com.mobileoptima.schema.Tables.TB.EXPENSE_FUEL_PURCHASE;
 import static com.mobileoptima.schema.Tables.TB.FIELDS;
 import static com.mobileoptima.schema.Tables.TB.PHOTO;
 import static com.mobileoptima.schema.Tables.TB.SETTINGS;
@@ -161,6 +168,11 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.TIME_SECURITY));
 		db.execQuery(Tables.create(TB.LOCATION));
 		db.execQuery(Tables.create(TB.PHOTO));
+		db.execQuery(Tables.create(TB.TASK_PHOTO));
+		db.execQuery(Tables.create(TB.EXPENSE));
+		db.execQuery(Tables.create(TB.EXPENSE_DEFAULT));
+		db.execQuery(Tables.create(TB.EXPENSE_FUEL_CONSUMPTION));
+		db.execQuery(Tables.create(TB.EXPENSE_FUEL_PURCHASE));
 		db.execQuery(Tables.create(TB.FORMS));
 		db.execQuery(Tables.create(TB.FIELDS));
 		db.execQuery(Tables.create(TB.CHOICES));
@@ -267,6 +279,21 @@ public class TarkieLib {
 		table = Tables.getName(TB.TASK);
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "isEnabled";
+		table = Tables.getName(TB.GPS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "withHistory";
+		table = Tables.getName(TB.GPS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "isValid";
+		table = Tables.getName(TB.GPS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
 		}
 		column = "syncBatchID";
 		table = Tables.getName(TB.STORES);
@@ -517,15 +544,15 @@ public class TarkieLib {
 		query.add(new FieldValue("gpsTime", gps.time));
 		query.add(new FieldValue("gpsLongitude", gps.longitude));
 		query.add(new FieldValue("gpsLatitude", gps.latitude));
-		query.add(new FieldValue("isGpsEnabled", gps.isEnabled));
-		query.add(new FieldValue("withGpsHistory", gps.withHistory));
-		query.add(new FieldValue("isGpsValid", gps.isValid));
+		query.add(new FieldValue("isEnabled", gps.isEnabled));
+		query.add(new FieldValue("withHistory", gps.withHistory));
+		query.add(new FieldValue("isValid", gps.isValid));
 		String gpsID = binder.insert(Tables.getName(TB.GPS), query);
 		binder.finish();
 		return gpsID;
 	}
 
-	public static boolean saveTimeIn(SQLiteAdapter db, GpsObj gps, StoreObj store, String photo) {
+	public static boolean saveTimeIn(SQLiteAdapter db, GpsObj gps, String storeID, String photo) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
@@ -539,9 +566,7 @@ public class TarkieLib {
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("photo", photo));
 		query.add(new FieldValue("gpsID", gpsID));
-		if(store != null) {
-			query.add(new FieldValue("storeID", store.ID));
-		}
+		query.add(new FieldValue("storeID", storeID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		binder.insert(Tables.getName(TB.TIME_IN), query);
@@ -716,8 +741,27 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean saveTask(SQLiteAdapter db, StoreObj store, String startDate,
-								   String endDate, String notes) {
+	public static boolean addTask(SQLiteAdapter db, String storeID, String startDate, String endDate) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String empID = getEmployeeID(db);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("storeID", storeID));
+		query.add(new FieldValue("startDate", startDate));
+		query.add(new FieldValue("endDate", endDate));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		binder.insert(Tables.getName(TB.TASK), query);
+		return binder.finish();
+	}
+
+	public static boolean addTask(SQLiteAdapter db, String storeID, String startDate,
+								  String endDate, String notes, ArrayList<FormObj> formList,
+								  ArrayList<ImageObj> imageList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String empID = getEmployeeID(db);
 		String dDate = CodePanUtils.getDate();
@@ -728,15 +772,93 @@ public class TarkieLib {
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("notes", notes));
-		query.add(new FieldValue("storeID", store.ID));
+		query.add(new FieldValue("storeID", storeID));
 		query.add(new FieldValue("startDate", startDate));
 		query.add(new FieldValue("endDate", endDate));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		binder.insert(Tables.getName(TB.TASK), query);
+		String taskID = binder.insert(Tables.getName(TB.TASK), query);
+		if(taskID != null) {
+			for(FormObj form : formList) {
+				query.clearAll();
+				query.add(new FieldValue("formID", form.ID));
+				query.add(new FieldValue("taskID", taskID));
+				binder.insert(Tables.getName(TB.TASK_FORM), query);
+			}
+			for(ImageObj image : imageList) {
+				query.clearAll();
+				query.add(new FieldValue("photoID", image.ID));
+				query.add(new FieldValue("taskID", taskID));
+				binder.insert(Tables.getName(TB.TASK_FORM), query);
+			}
+		}
 		return binder.finish();
 	}
 
-	public static boolean saveCheckIn(SQLiteAdapter db, GpsObj gps, TaskObj task,
+	public static boolean editTask(SQLiteAdapter db, String storeID, String taskID, String notes,
+								   ArrayList<EntryObj> entryList, ArrayList<ImageObj> imageList) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String t = Tables.getName(TB.TASK);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String te = Tables.getName(TB.TASK_ENTRY);
+		String tp = Tables.getName(TB.TASK_PHOTO);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("notes", notes));
+		query.add(new FieldValue("storeID", storeID));
+		binder.update(t, query, taskID);
+		query.clearAll();
+		query.add(new FieldValue("isTag", false));
+		query.add(new Condition("taskID", taskID));
+		binder.update(tf, query);
+		binder.update(tp, query);
+		for(EntryObj entry : entryList) {
+			if(entry.ID != null) {
+				query.clearAll();
+				query.add(new Field("ID"));
+				query.add(new Condition("entryID", entry.ID));
+				query.add(new Condition("taskID", taskID));
+				query.add(new FieldValue("entryID", entry.ID));
+				query.add(new FieldValue("taskID", taskID));
+				String sql = query.select(te);
+				if(!db.isRecordExists(sql)) {
+					binder.insert(te, query);
+				}
+			}
+			FormObj form = entry.form;
+			query.clearAll();
+			query.add(new Field("ID"));
+			query.add(new Condition("formID", form.ID));
+			query.add(new Condition("taskID", taskID));
+			query.add(new FieldValue("formID", form.ID));
+			query.add(new FieldValue("taskID", taskID));
+			query.add(new FieldValue("isTag", true));
+			String sql = query.select(tf);
+			if(db.isRecordExists(sql)) {
+				binder.update(tf, query);
+			}
+			else {
+				binder.insert(tf, query);
+			}
+		}
+		for(ImageObj image : imageList) {
+			query.clearAll();
+			query.add(new Field("ID"));
+			query.add(new Condition("photoID", image.ID));
+			query.add(new Condition("taskID", taskID));
+			query.add(new FieldValue("photoID", image.ID));
+			query.add(new FieldValue("taskID", taskID));
+			query.add(new FieldValue("isTag", true));
+			String sql = query.select(tp);
+			if(db.isRecordExists(sql)) {
+				binder.update(tp, query);
+			}
+			else {
+				binder.insert(tp, query);
+			}
+		}
+		return binder.finish();
+	}
+
+	public static boolean saveCheckIn(SQLiteAdapter db, GpsObj gps, String taskID,
 									  String dDate, String dTime, String photo) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
@@ -750,7 +872,7 @@ public class TarkieLib {
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("photo", photo));
-		query.add(new FieldValue("taskID", task.ID));
+		query.add(new FieldValue("taskID", taskID));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("batteryLevel", battery));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
@@ -758,7 +880,7 @@ public class TarkieLib {
 		if(checkInID != null) {
 			query.clearAll();
 			query.add(new FieldValue("isCheckIn", true));
-			binder.update(Tables.getName(TB.TASK), query, task.ID);
+			binder.update(Tables.getName(TB.TASK), query, taskID);
 		}
 		return binder.finish();
 	}
@@ -794,6 +916,79 @@ public class TarkieLib {
 			query.add(new FieldValue("notes", task.notes));
 			binder.update(Tables.getName(TB.TASK), query, task.ID);
 		}
+		return binder.finish();
+	}
+
+	public static String saveExpense(SQLiteAdapter db, String dDate, String dTime, GpsObj gps) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String gpsID = saveGps(db, gps);
+		String empID = getEmployeeID(db);
+		String timeInID = getTimeInID(db);
+		String syncBatchID = getSyncBatchID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("gpsID", gpsID));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("timeInID", timeInID));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		String expenseID = binder.insert(Tables.getName(EXPENSE), query);
+		if(binder.finish()) {
+			return expenseID;
+		}
+		return "";
+	}
+
+	public static boolean updateExpense(SQLiteAdapter db, ExpenseObj obj) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("amount", obj.amount));
+		query.add(new FieldValue("typeID", obj.typeID));
+		query.add(new FieldValue("storeID", obj.storeID));
+		query.add(new FieldValue("notes", obj.notes));
+		query.add(new FieldValue("isUpdate", 1));
+		query.add(new FieldValue("isSync", 0));
+		query.add(new FieldValue("isWebUpdate", 0));
+		binder.update(Tables.getName(EXPENSE), query, obj.ID);
+		query = new SQLiteQuery();
+		query.add(new Condition("expenseID", obj.ID));
+		if(obj.typeID == 1) {
+			query.add(new FieldValue("start", obj.fcStart));
+			query.add(new FieldValue("end", obj.fcEnd));
+			query.add(new FieldValue("rate", obj.fcRate));
+			query.add(new FieldValue("startPhoto", obj.fcStartPhoto));
+			query.add(new FieldValue("endPhoto", obj.fcEndPhoto));
+			query.add(new FieldValue("isStartPhotoUpload", 0));
+			query.add(new FieldValue("isEndPhotoUpload", 0));
+			binder.update(Tables.getName(EXPENSE_FUEL_CONSUMPTION), query);
+		}
+		else if(obj.typeID == 2) {
+			query.add(new FieldValue("start", obj.fpStart));
+			query.add(new FieldValue("liters", obj.fpLiters));
+			query.add(new FieldValue("price", obj.fpPrice));
+			query.add(new FieldValue("photo", obj.fpPhoto));
+			query.add(new FieldValue("startPhoto", obj.fpStartPhoto));
+			query.add(new FieldValue("withOR", obj.fpWithOR));
+			query.add(new FieldValue("isPhotoUpload", 0));
+			query.add(new FieldValue("isStartPhotoUpload", 0));
+			binder.update(Tables.getName(EXPENSE_FUEL_PURCHASE), query);
+		}
+		else {
+			query.add(new FieldValue("start", obj.defStart));
+			query.add(new FieldValue("end", obj.defEnd));
+			query.add(new FieldValue("photo", obj.defPhoto));
+			query.add(new FieldValue("withOR", obj.defWithOR));
+			query.add(new FieldValue("isPhotoUpload", 0));
+			binder.update(Tables.getName(EXPENSE_DEFAULT), query);
+		}
+		return binder.finish();
+	}
+
+	public static boolean deleteExpense(SQLiteAdapter db, String expenseID) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("isDelete", true));
+		binder.update(Tables.getName(EXPENSE), query, expenseID);
 		return binder.finish();
 	}
 
@@ -1122,7 +1317,8 @@ public class TarkieLib {
 		return syncCount + photoCount + signatureCount;
 	}
 
-	public static boolean saveEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList, boolean isSubmit) {
+	public static String addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,
+								   boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
@@ -1130,10 +1326,10 @@ public class TarkieLib {
 		String syncBatchID = getSyncBatchID(db);
 		String timeInID = getTimeInID(db);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("formID", formID));
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("formID", formID));
 		query.add(new FieldValue("isSubmit", isSubmit));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
@@ -1153,10 +1349,11 @@ public class TarkieLib {
 				binder.insert(Tables.getName(ANSWERS), query);
 			}
 		}
-		return binder.finish();
+		binder.finish();
+		return entryID;
 	}
 
-	public static boolean updateEntry(SQLiteAdapter db, String entryID, ArrayList<FieldObj> fieldList, boolean isSubmit) {
+	public static boolean editEntry(SQLiteAdapter db, String entryID, ArrayList<FieldObj> fieldList, boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("isSubmit", isSubmit));
@@ -1247,11 +1444,11 @@ public class TarkieLib {
 		String syncBatchID = getSyncBatchID(db);
 		String empID = getEmployeeID(db);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("fileName", obj.fileName));
+		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("dDate", obj.dDate));
 		query.add(new FieldValue("dTime", obj.dTime));
+		query.add(new FieldValue("fileName", obj.fileName));
 		query.add(new FieldValue("isSignature", obj.isSignature));
-		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		String photoID = binder.insert(Tables.getName(PHOTO), query);
 		binder.finish();
@@ -1394,8 +1591,7 @@ public class TarkieLib {
 		String query = "SELECT sg.value FROM " + s + " s, " + sg + " sg WHERE " +
 				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
 				"AND s.code = '" + code + "'";
-		//return db.getInt(query) == 1;
-		return true;
+		return db.getInt(query) == 1;
 	}
 
 	public static void requiredField(CodePanLabel label, String text) {

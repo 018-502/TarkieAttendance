@@ -77,7 +77,7 @@ public class PhotosFragment extends Fragment {
 			@Override
 			public void run() {
 				try {
-					imageList = Data.loadPhotos(db);
+					imageList = Data.loadImages(db);
 					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {

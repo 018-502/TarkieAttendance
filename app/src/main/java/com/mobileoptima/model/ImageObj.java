@@ -1,13 +1,8 @@
 package com.mobileoptima.model;
 
 import android.graphics.Bitmap;
-public class ImageObj {
 
-	public String ID;
-	public String fileName;
-	public String dDate;
-	public String dTime;
+public class ImageObj extends PhotoObj {
+
 	public Bitmap bitmap;
-	public String syncBatchID;
-	public boolean isSignature;
 }

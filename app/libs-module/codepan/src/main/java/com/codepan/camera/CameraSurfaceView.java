@@ -121,11 +121,11 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 			}
 			List<Size> previewSizes = params.getSupportedPreviewSizes();
 			List<Size> pictureSizes = params.getSupportedPictureSizes();
-			float maxOutputHeight = 0f;
 			int previewWidth = 0;
 			int previewHeight = 0;
 			int pictureWidth = 0;
 			int pictureHeight = 0;
+			float maxOutputHeight = 0f;
 			for(Size s : previewSizes) {
 				float ratio = (float) s.width / (float) s.height;
 				float outputHeight = (float) maxWidth * ratio;
@@ -135,32 +135,26 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 					previewWidth = s.width;
 				}
 			}
-			ArrayList<Size> sizes = new ArrayList<Size>();
+			List<Size> sizes = new ArrayList<>();
 			for(Size s : pictureSizes) {
 				int resolution = s.width * s.height;
 				if(resolution <= HIGH_RESO && resolution >= OPTIMAL_RESO) {
 					sizes.add(s);
 				}
 			}
-			if(sizes.size() > 0) {
-				int index = sizes.size() / 2;
-				pictureWidth = sizes.get(index).width;
-				pictureHeight = sizes.get(index).height;
+			if(sizes.isEmpty()) {
+				sizes = pictureSizes;
+			}
+			int count = sizes.size();
+			Size first = sizes.get(0);
+			Size last = sizes.get(count - 1);
+			if(first.width * first.height > last.width * last.height) {
+				pictureWidth = first.width;
+				pictureHeight = first.height;
 			}
 			else {
-				int count = pictureSizes.size();
-				Size first = pictureSizes.get(0);
-				Size last = pictureSizes.get(count - 1);
-				if(first.width * first.height > last.width * last.height) {
-					int index = count - (count / 4);
-					pictureWidth = pictureSizes.get(index).width;
-					pictureHeight = pictureSizes.get(index).height;
-				}
-				else {
-					int index = count / 4;
-					pictureWidth = pictureSizes.get(index).width;
-					pictureHeight = pictureSizes.get(index).height;
-				}
+				pictureWidth = last.width;
+				pictureHeight = last.height;
 			}
 			params.setRotation(0);
 			params.setPreviewSize(previewWidth, previewHeight);
@@ -346,7 +340,7 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 	public void tapToFocus(final Rect tfocusRect) {
 		if(camera != null) {
 			try {
-				List<Area> focusList = new ArrayList<Area>();
+				List<Area> focusList = new ArrayList<>();
 				Area focusArea = new Area(tfocusRect, 1000);
 				focusList.add(focusArea);
 				Camera.Parameters params = camera.getParameters();

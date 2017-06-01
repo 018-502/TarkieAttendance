@@ -1,5 +1,6 @@
 package com.mobileoptima.tarkieattendance;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Handler.Callback;
@@ -13,44 +14,60 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.codepan.callback.Interface.OnBackPressedCallback;
+import com.codepan.callback.Interface.OnFragmentCallback;
 import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
+import com.mobileoptima.callback.Interface;
+import com.mobileoptima.callback.Interface.OnCameraDoneCallback;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.callback.Interface.OnSelectStatusCallback;
+import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Result;
 import com.mobileoptima.constant.Settings;
+import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
+import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FormObj;
+import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.VisitObj;
 
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
-		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback {
+		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback,
+		OnBackPressedCallback, OnFragmentCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
-			btnSaveVisitDetails;
+			btnSaveVisitDetails, btnAddPhotoVisitDetails;
+	private LinearLayout llFormsVisitDetails, llGridPhotoVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
 	private CodePanTextField etNotesVisitDetails;
 	private OnOverrideCallback overrideCallback;
+	private boolean hasPhotoAdded, withChanges;
 	private OnRefreshCallback refreshCallback;
-	private LinearLayout llFormsVisitDetails;
 	private FragmentTransaction transaction;
-	private ArrayList<FormObj> formList;
+	private ArrayList<ImageObj> imageList;
+	private ArrayList<EntryObj> entryList;
 	private FragmentManager manager;
 	private MainActivity main;
 	private CheckOutObj out;
@@ -58,9 +75,22 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private VisitObj visit;
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		main = (MainActivity) getActivity();
+		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
@@ -73,14 +103,17 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		tvAddressVisitDetails = (CodePanLabel) view.findViewById(R.id.tvAddressVisitDetails);
 		etNotesVisitDetails = (CodePanTextField) view.findViewById(R.id.etNotesVisitDetails);
 		llFormsVisitDetails = (LinearLayout) view.findViewById(R.id.llFormsVisitDetails);
+		llGridPhotoVisitDetails = (LinearLayout) view.findViewById(R.id.llGridPhotoVisitDetails);
 		btnBackVisitDetails = (CodePanButton) view.findViewById(R.id.btnBackVisitDetails);
 		btnCheckInVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckInVisitDetails);
 		btnCheckOutVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckOutVisitDetails);
+		btnAddPhotoVisitDetails = (CodePanButton) view.findViewById(R.id.btnAddPhotoVisitDetails);
 		btnSaveVisitDetails = (CodePanButton) view.findViewById(R.id.btnSaveVisitDetails);
 		btnSaveVisitDetails.setOnClickListener(this);
 		btnBackVisitDetails.setOnClickListener(this);
 		btnCheckInVisitDetails.setOnClickListener(this);
 		btnCheckOutVisitDetails.setOnClickListener(this);
+		btnAddPhotoVisitDetails.setOnClickListener(this);
 		if(visit != null) {
 			StoreObj store = visit.store;
 			if(store != null) {
@@ -130,6 +163,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				}
 			});
 			loadForms(db, visit.ID);
+			loadPhotos(db, visit.ID);
 		}
 		return view;
 	}
@@ -139,7 +173,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					formList = Data.loadForms(db, taskID);
+					entryList = Data.loadEntries(db, taskID);
 					formsHandler.sendMessage(formsHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -154,11 +188,13 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		@Override
 		public boolean handleMessage(Message message) {
 			llFormsVisitDetails.removeAllViews();
-			LayoutInflater inflater = getActivity().getLayoutInflater();
 			View view = getView();
 			if(view != null) {
+				LayoutInflater inflater = getActivity().getLayoutInflater();
 				ViewGroup container = (ViewGroup) view.getParent();
-				for(FormObj form : formList) {
+				for(final EntryObj entry : entryList) {
+					final int index = entryList.indexOf(entry);
+					FormObj form = entry.form;
 					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
 					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
 					CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
@@ -166,11 +202,57 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View view) {
+							if(visit.isCheckIn) {
+								FormFragment form = new FormFragment();
+								form.setEntry(entry);
+								form.setOnOverrideCallback(overrideCallback);
+								form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
+									@Override
+									public void onSaveEntry(EntryObj entry) {
+										entryList.set(index, entry);
+									}
+								});
+								transaction = manager.beginTransaction();
+								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+								transaction.add(R.id.rlMain, form, Tag.FORM);
+								transaction.hide(VisitDetailsFragment.this);
+								transaction.addToBackStack(null);
+								transaction.commit();
+							}
+							else {
+								TarkieLib.alertDialog(getActivity(), R.string.check_in_required_title,
+										R.string.check_in_required_message);
+							}
 						}
 					});
 					llFormsVisitDetails.addView(child);
 				}
 			}
+			return true;
+		}
+	});
+
+	public void loadPhotos(final SQLiteAdapter db, final String taskID) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					imageList = Data.loadImages(db, taskID);
+					photosHandler.sendMessage(photosHandler.obtainMessage());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler photosHandler = new Handler(new Callback() {
+		@Override
+		public boolean handleMessage(Message message) {
+			updatePhotoGrid(llGridPhotoVisitDetails, imageList);
 			return true;
 		}
 	});
@@ -197,7 +279,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	public void onClick(View view) {
 		switch(view.getId()) {
 			case R.id.btnBackVisitDetails:
-				manager.popBackStack();
+				onBackPressed();
 				break;
 			case R.id.btnCheckInVisitDetails:
 				if(TarkieLib.isTimeIn(db)) {
@@ -270,7 +352,21 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					}
 				}
 				break;
+			case R.id.btnAddPhotoVisitDetails:
+				CameraMultiShotFragment camera = new CameraMultiShotFragment();
+				camera.setOnOverrideCallback(overrideCallback);
+				camera.setOnFragmentCallback(this);
+				camera.setOnCameraDoneCallback(this);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, camera);
+				transaction.hide(this);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
 			case R.id.btnSaveVisitDetails:
+				saveTask(db);
 				break;
 		}
 	}
@@ -281,7 +377,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					boolean result = TarkieLib.saveCheckIn(db, in.gps, in.task, in.dDate,
+					TaskObj task = in.task;
+					boolean result = TarkieLib.saveCheckIn(db, in.gps, task.ID, in.dDate,
 							in.dTime, in.photo);
 					checkInHandler.sendMessage(checkInHandler
 							.obtainMessage(result ? Result.SUCCESS : Result.FAILED, in));
@@ -389,4 +486,187 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			return true;
 		}
 	});
+
+	public void updatePhotoGrid(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
+		View view = getView();
+		if(view != null) {
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			ViewGroup container = (ViewGroup) view.getParent();
+			llGridPhoto.removeAllViews();
+			for(final ImageObj obj : imageList) {
+				String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
+						.getPath() + "/" + obj.fileName;
+				View child = inflater.inflate(R.layout.photo_item, container, false);
+				CodePanButton btnPhoto = (CodePanButton) child.findViewById(R.id.btnPhoto);
+				ImageView ivPhoto = (ImageView) child.findViewById(R.id.ivPhoto);
+				CodePanUtils.displayImage(ivPhoto, uri, R.color.gray_ter);
+				btnPhoto.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						int position = imageList.indexOf(obj);
+						onPhotoGridItemClick(llGridPhoto, imageList, position);
+					}
+				});
+				llGridPhoto.addView(child);
+			}
+			ViewParent parent = llGridPhoto.getParent();
+			final HorizontalScrollView hsvPhoto = (HorizontalScrollView) parent.getParent();
+			hsvPhoto.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+				@Override
+				public void onLayoutChange(View view, int l, int t, int r, int b, int ol,
+										   int ot, int or, int ob) {
+					hsvPhoto.removeOnLayoutChangeListener(this);
+					hsvPhoto.fullScroll(HorizontalScrollView.FOCUS_RIGHT);
+				}
+			});
+		}
+	}
+
+	public void onPhotoGridItemClick(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList, int position) {
+		ImagePreviewFragment preview = new ImagePreviewFragment();
+		preview.setDeletable(true);
+		preview.setImageList(imageList, position);
+		preview.setOnFragmentCallback(this);
+		preview.setOnDeletePhotoCallback(new Interface.OnDeletePhotoCallback() {
+			@Override
+			public void onDeletePhoto(int position) {
+				imageList.remove(position);
+				llGridPhoto.removeViewAt(position);
+				if(imageList.size() > 0) {
+					invalidateViews(llGridPhoto, imageList);
+				}
+			}
+		});
+		transaction = getActivity().getSupportFragmentManager().beginTransaction();
+		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+		transaction.add(R.id.rlMain, preview);
+		transaction.hide(this);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	public void invalidateViews(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
+		int count = llGridPhoto.getChildCount();
+		for(int i = 0; i < count; i++) {
+			final int position = i;
+			View view = llGridPhoto.getChildAt(i);
+			CodePanButton btnPhoto = (CodePanButton) view.findViewById(R.id.btnPhoto);
+			btnPhoto.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					onPhotoGridItemClick(llGridPhoto, imageList, position);
+				}
+			});
+		}
+	}
+
+	public void saveTask(final SQLiteAdapter db) {
+		final String notes = etNotesVisitDetails.getText().toString().trim();
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					StoreObj store = visit.store;
+					boolean result = TarkieLib.editTask(db, store.ID, visit.ID, notes,
+							entryList, imageList);
+					if(result) {
+						visit.notes = notes;
+						saveTaskHandler.sendMessage(saveTaskHandler.obtainMessage(Result.SUCCESS));
+					}
+					else {
+						saveTaskHandler.sendMessage(saveTaskHandler.obtainMessage(Result.FAILED));
+					}
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler saveTaskHandler = new Handler(new Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			switch(msg.what) {
+				case Result.SUCCESS:
+					if(refreshCallback != null) {
+						refreshCallback.onRefresh();
+					}
+					if(hasPhotoAdded) {
+						main.reloadPhotos();
+					}
+					manager.popBackStack();
+					CodePanUtils.alertToast(getActivity(), "Task has been successfully saved.");
+					break;
+				case Result.FAILED:
+					CodePanUtils.alertToast(getActivity(), "Failed to update task.");
+					break;
+			}
+			return false;
+		}
+	});
+
+	@Override
+	public void onCameraDone(ArrayList<ImageObj> imageList) {
+		this.hasPhotoAdded = true;
+		this.withChanges = true;
+		if(imageList != null) {
+			imageList.addAll(0, this.imageList);
+		}
+		updatePhotoGrid(llGridPhotoVisitDetails, imageList);
+		this.imageList = imageList;
+	}
+
+	@Override
+	public void onBackPressed() {
+		if(withChanges) {
+			final AlertDialogFragment alert = new AlertDialogFragment();
+			alert.setDialogTitle(R.string.save_changes_title);
+			alert.setDialogMessage(R.string.save_changes_message);
+			alert.setOnFragmentCallback(this);
+			alert.setPositiveButton("Save", new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					manager.popBackStack();
+					manager.popBackStack();
+					saveTask(db);
+				}
+			});
+			alert.setNegativeButton("Discard", new OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					manager.popBackStack();
+					manager.popBackStack();
+				}
+			});
+			transaction = manager.beginTransaction();
+			transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+					R.anim.fade_in, R.anim.fade_out);
+			transaction.add(R.id.rlMain, alert);
+			transaction.addToBackStack(null);
+			transaction.commit();
+		}
+		else {
+			manager.popBackStack();
+		}
+	}
+
+	@Override
+	public void onFragment(boolean status) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(!status);
+		}
+		if(!status) {
+			MainActivity main = (MainActivity) getActivity();
+			main.setOnBackPressedCallback(this);
+		}
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
+		}
+	}
 }

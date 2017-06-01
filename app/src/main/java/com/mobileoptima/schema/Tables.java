@@ -25,6 +25,10 @@ public class Tables {
 		TIME_SECURITY,
 		LOCATION,
 		PHOTO,
+		EXPENSE,
+		EXPENSE_DEFAULT,
+		EXPENSE_FUEL_CONSUMPTION,
+		EXPENSE_FUEL_PURCHASE,
 		FORMS,
 		FIELDS,
 		CHOICES,
@@ -32,6 +36,7 @@ public class Tables {
 		ANSWERS,
 		TASK_FORM,
 		TASK_ENTRY,
+		TASK_PHOTO,
 		TASK,
 		CHECK_IN,
 		CHECK_OUT,
@@ -124,9 +129,9 @@ public class Tables {
 				query.add(new Field("gpsTime", DataType.TEXT));
 				query.add(new Field("gpsLongitude", DataType.TEXT));
 				query.add(new Field("gpsLatitude", DataType.TEXT));
-				query.add(new Field("isGpsEnabled", DataType.INTEGER));
-				query.add(new Field("withGpsHistory", DataType.INTEGER));
-				query.add(new Field("isGpsValid", DataType.INTEGER));
+				query.add(new Field("isEnabled", DataType.INTEGER));
+				query.add(new Field("withHistory", DataType.INTEGER));
+				query.add(new Field("isValid", DataType.INTEGER));
 				break;
 			case TIME_IN:
 				query.clearAll();
@@ -243,6 +248,72 @@ public class Tables {
 				query.add(new Field("isUpload", 0));
 				query.add(new Field("isActive", 0));
 				break;
+			case EXPENSE:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
+				query.add(new Field("amount", DataType.TEXT));
+				query.add(new Field("typeID", DataType.INTEGER));
+				query.add(new Field("storeID", DataType.INTEGER));
+				query.add(new Field("notes", DataType.TEXT));
+				query.add(new Field("gpsID", DataType.INTEGER));
+				query.add(new Field("empID", DataType.INTEGER));
+				query.add(new Field("timeInID", DataType.INTEGER));
+				query.add(new Field("syncBatchID", DataType.TEXT));
+				query.add(new Field("isTag", 0));
+				query.add(new Field("isSubmit", 0));
+				query.add(new Field("isUpdate", 0));
+				query.add(new Field("isDelete", 0));
+				query.add(new Field("isSync", 0));
+				query.add(new Field("isWebUpdate", 0));
+				query.add(new Field("isWebDelete", 0));
+				break;
+			case EXPENSE_DEFAULT:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("end", DataType.TEXT));
+				query.add(new Field("photo", DataType.TEXT));
+				query.add(new Field("start", DataType.TEXT));
+				query.add(new Field("expenseID", DataType.INTEGER));
+				query.add(new Field("isPhotoThumbnail", 0));
+				query.add(new Field("isPhotoUpload", 0));
+				query.add(new Field("isPhotoDelete", 0));
+				query.add(new Field("withOR", 0));
+				break;
+			case EXPENSE_FUEL_CONSUMPTION:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("start", DataType.TEXT));
+				query.add(new Field("end", DataType.TEXT));
+				query.add(new Field("rate", DataType.TEXT));
+				query.add(new Field("startPhoto", DataType.TEXT));
+				query.add(new Field("endPhoto", DataType.TEXT));
+				query.add(new Field("expenseID", DataType.INTEGER));
+				query.add(new Field("isStartPhotoUpload", 0));
+				query.add(new Field("isStartPhotoDelete", 0));
+				query.add(new Field("isStartPhotoThumbnail", 0));
+				query.add(new Field("isEndPhotoUpload", 0));
+				query.add(new Field("isEndPhotoDelete", 0));
+				query.add(new Field("isEndPhotoThumbnail", 0));
+				break;
+			case EXPENSE_FUEL_PURCHASE:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("start", DataType.TEXT));
+				query.add(new Field("liters", DataType.TEXT));
+				query.add(new Field("price", DataType.TEXT));
+				query.add(new Field("photo", DataType.TEXT));
+				query.add(new Field("startPhoto", DataType.TEXT));
+				query.add(new Field("expenseID", DataType.INTEGER));
+				query.add(new Field("isStartPhotoThumbnail", 0));
+				query.add(new Field("isStartPhotoUpload", 0));
+				query.add(new Field("isStartPhotoDelete", 0));
+				query.add(new Field("isPhotoThumbnail", 0));
+				query.add(new Field("isPhotoUpload", 0));
+				query.add(new Field("isPhotoDelete", 0));
+				query.add(new Field("withOR", 0));
+				break;
 			case FORMS:
 				query.clearAll();
 				query.add(new Field("ID", true));
@@ -312,6 +383,13 @@ public class Tables {
 				query.add(new Field("taskID", DataType.INTEGER));
 				query.add(new Field("isTag", 1));
 				break;
+			case TASK_PHOTO:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("photoID", DataType.INTEGER));
+				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("isTag", 1));
+				break;
 			case TASK:
 				query.clearAll();
 				query.add(new Field("ID", true));
@@ -323,7 +401,7 @@ public class Tables {
 				query.add(new Field("startDate", DataType.TEXT));
 				query.add(new Field("endDate", DataType.TEXT));
 				query.add(new Field("syncBatchID", DataType.TEXT));
-				query.add(new Field("webTaskID", DataType.TEXT));
+				query.add(new Field("webTaskID", DataType.INTEGER));
 				query.add(new Field("notesLimit", DataType.INTEGER));
 				query.add(new Field("notes", DataType.TEXT));
 				query.add(new Field("status", DataType.TEXT));
@@ -450,6 +528,18 @@ public class Tables {
 			case PHOTO:
 				name = "photo_tb";
 				break;
+			case EXPENSE:
+				name = "expense_tb";
+				break;
+			case EXPENSE_DEFAULT:
+				name = "expense_default_tb";
+				break;
+			case EXPENSE_FUEL_CONSUMPTION:
+				name = "expense_fuel_consumption_tb";
+				break;
+			case EXPENSE_FUEL_PURCHASE:
+				name = "expense_fuel_purchase_tb";
+				break;
 			case FORMS:
 				name = "forms_tb";
 				break;
@@ -470,6 +560,9 @@ public class Tables {
 				break;
 			case TASK_FORM:
 				name = "task_form_tb";
+				break;
+			case TASK_PHOTO:
+				name = "task_photo_tb";
 				break;
 			case TASK:
 				name = "task_tb";
