@@ -27,6 +27,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.StoresAdapter;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.core.Data;
@@ -37,6 +38,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
+import static com.codepan.callback.Interface.OnRefreshCallback;
+
 public class StoresFragment extends Fragment implements OnClickListener {
 
 	private final int LIMIT = 30;
@@ -44,6 +47,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 
 	private boolean isEnd, isPause, isPending, isAdded;
 	private CodePanButton btnBackStores, btnAddStore;
+	private OnOverrideCallback overrideCallback;
 	private OnSelectStoreCallback selectStoreCallback;
 	private int visibleItem, totalItem, firstVisible;
 	private OnFragmentCallback fragmentCallback;
@@ -113,6 +117,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
 		lvStores = (ListView) view.findViewById(R.id.lvStores);
+		view.findViewById(R.id.btnAddStore).setOnClickListener(this);
 		btnBackStores.setOnClickListener(this);
 		lvStores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -179,6 +184,22 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		switch(v.getId()) {
 			case R.id.btnBackStores:
 				manager.popBackStack();
+				break;
+			case R.id.btnAddStore:
+				AddStoreFragment storeFragment = new AddStoreFragment();
+				storeFragment.setOnOverrideCallback(overrideCallback);
+				storeFragment.setOnRefreshCallback(new OnRefreshCallback() {
+					@Override
+					public void onRefresh() {
+						loadStores(db, null);
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.replace(R.id.rlMain, storeFragment);
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
 		}
 	}
@@ -304,5 +325,9 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		if(fragmentCallback != null) {
 			fragmentCallback.onFragment(isOnBackStack);
 		}
+	}
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
 	}
 }

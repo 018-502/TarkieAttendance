@@ -31,7 +31,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import java.text.NumberFormat;
 
-import static android.view.View.*;
+import static android.view.View.OnFocusChangeListener;
+import static android.view.View.OnTouchListener;
 
 public class ExpenseItemsDetailsFragment extends Fragment implements OnClickListener, OnFocusChangeListener, OnTouchListener {
 	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails, btnItemExpenseItemsDetails, btnPhotoExpenseItemsDetails;
@@ -148,7 +149,8 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 					obj.fpStart = "";
 					obj.fpLiters = "";
 					obj.fpPrice = "";
-					obj.fpPhoto = "";;
+					obj.fpPhoto = "";
+					;
 					obj.fpStartPhoto = "";
 					obj.fpWithOR = cbWithORExpenseItemsDetails.isChecked();
 				}
@@ -215,26 +217,26 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		editText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
 			}
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				String text = s.toString();
-				if (text.equals("")) {
+				if(text.equals("")) {
 					text = "0";
 					editText.setText(text);
 					editText.setSelection(text.length());
-				} else if (text.substring(0, 1).equals(".")) {
+				}
+				else if(text.substring(0, 1).equals(".")) {
 					text = "0" + text;
 					editText.setText(text);
 					editText.setSelection(text.length());
-				} else if (text.length() == 2 && text.substring(0, 1).equals("0") && !text.substring(1, 2).equals(".")) {
+				}
+				else if(text.length() == 2 && text.substring(0, 1).equals("0") && !text.substring(1, 2).equals(".")) {
 					text = text.substring(1);
 					editText.setText(text);
 					editText.setSelection(text.length());

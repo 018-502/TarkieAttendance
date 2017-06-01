@@ -9,7 +9,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/rlHeaderAddClient"
+        android:id="@+id/rlHeaderAddStore"
         android:layout_width="match_parent"
         android:layout_height="@dimen/header"
         android:layout_alignParentTop="true"
@@ -66,8 +66,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/llFooterBtns"
-        android:layout_below="@+id/rlHeaderAddClient"
+        android:layout_below="@+id/rlHeaderAddStore"
         android:layout_marginBottom="@dimen/ten">
 
         <LinearLayout
@@ -91,7 +90,7 @@
                     android:textSize="@dimen/seventeen"/>
 
                 <com.codepan.widget.CodePanTextField
-                    android:id="@+id/tfCompName"
+                    android:id="@+id/etCompNameAddStore"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/thirty_five"
                     android:layout_gravity="center_vertical"
@@ -131,7 +130,7 @@
                     android:textSize="@dimen/seventeen"/>
 
                 <com.codepan.widget.CodePanTextField
-                    android:id="@+id/tfAddress"
+                    android:id="@+id/etAddressAddStore"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/ninety"
                     android:layout_marginEnd="@dimen/ten"
@@ -226,38 +225,5 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/llFooterBtns"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/thirty"
-        android:orientation="horizontal">
-
-        <com.codepan.widget.CodePanButton
-            android:id="@+id/btnCancel"
-            android:layout_width="@dimen/one_hundred_twenty"
-            android:layout_height="@dimen/forty_five"
-            android:layout_marginEnd="@dimen/ten"
-            android:layout_marginRight="@dimen/ten"
-            android:background="@drawable/state_rect_gray_qui_rad_five"
-            android:text="@string/cancel"
-            android:textColor="@color/white"
-            android:textSize="@dimen/seventeen"
-            codePan:typeface="@string/proxima_nova_bold"/>
-
-        <com.codepan.widget.CodePanButton
-            android:id="@+id/btnSave"
-            android:layout_width="@dimen/one_hundred_twenty"
-            android:layout_height="@dimen/forty_five"
-            android:background="@drawable/state_rect_green_pri_rad_five"
-            android:text="@string/save"
-            android:textColor="@color/white"
-            android:textSize="@dimen/seventeen"
-            codePan:typeface="@string/proxima_nova_bold"/>
-
-    </LinearLayout>
 
 </RelativeLayout>

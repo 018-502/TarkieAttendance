@@ -1318,7 +1318,7 @@ public class TarkieLib {
 	}
 
 	public static String addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,
-								   boolean isSubmit) {
+								  boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
@@ -1613,7 +1613,7 @@ public class TarkieLib {
 		query.add(new FieldValue("storeID", store.ID));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("name", contact.name));
-		query.add(new FieldValue("position", contact.position));
+		query.add(new FieldValue("designation", contact.designation));
 		query.add(new FieldValue("mobile", contact.mobile));
 		query.add(new FieldValue("landline", contact.landline));
 		query.add(new FieldValue("email", contact.email));

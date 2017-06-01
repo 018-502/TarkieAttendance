@@ -34,6 +34,16 @@
 
         </FrameLayout>
 
+        <com.codepan.widget.CodePanLabel
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="@string/contacts"
+            android:textColor="@color/white"
+            android:textSize="@dimen/eighteen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
         <com.codepan.widget.CodePanButton
             android:id="@+id/btnAddContactStoreDetails"
             android:layout_width="wrap_content"

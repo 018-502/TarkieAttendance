@@ -460,7 +460,7 @@ public class Tables {
 				query.add(new Field("storeID", DataType.INTEGER));
 				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("name", DataType.TEXT));
-				query.add(new Field("position", DataType.TEXT));
+				query.add(new Field("designation", DataType.TEXT));
 				query.add(new Field("mobile", DataType.TEXT));
 				query.add(new Field("landline", DataType.TEXT));
 				query.add(new Field("email", DataType.TEXT));
