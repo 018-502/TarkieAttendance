@@ -358,6 +358,7 @@ public class MainService extends Service implements LocationListener, Connection
 			final int max = count + 2;
 			Process process = new Process(new OnResultCallback() {
 				int progress = 0;
+
 				@Override
 				public void onResult(boolean result) {
 					String title = null;

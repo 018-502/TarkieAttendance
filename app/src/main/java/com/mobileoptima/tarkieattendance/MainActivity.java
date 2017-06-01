@@ -49,6 +49,7 @@ import com.mobileoptima.callback.Interface.OnTimeInCallback;
 import com.mobileoptima.callback.Interface.OnTimeOutCallback;
 import com.mobileoptima.callback.Interface.OnTimeValidatedCallback;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.DialogTag;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Key;
@@ -69,6 +70,8 @@ import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.service.MainService;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -174,8 +177,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vExpenseMain = findViewById(R.id.vExpenseMain);
 		vPhotosMain = findViewById(R.id.vPhotosMain);
 		vEntriesMain = findViewById(R.id.vEntriesMain);
+		tvClientsMenu = (CodePanLabel) findViewById(R.id.tvClientsMenu);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
+		findViewById(R.id.llClientsMain).setOnClickListener(this);
 		findViewById(R.id.llUpdateMasterFileMain).setOnClickListener(this);
 		findViewById(R.id.llSendBackUpMain).setOnClickListener(this);
 		findViewById(R.id.llSupportMain).setOnClickListener(this);
@@ -533,6 +538,30 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					CodePanUtils.alertToast(this, R.string.break_without_time_in);
 				}
 				break;
+			case R.id.llClientsMain:
+				dlMain.closeDrawer(rlMenuMain);
+				final StoresFragment stores = new StoresFragment();
+				stores.setOnSelectStoreCallback(new OnSelectStoreCallback() {
+					@Override
+					public void onSelectStore(StoreObj store) {
+						StoreDetailsFragment contacts = new StoreDetailsFragment();
+						contacts.setStore(store);
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+						transaction.replace(R.id.rlStores, contacts);
+						transaction.addToBackStack(null);
+						transaction.hide(stores);
+						transaction.commit();
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, stores);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
 			case R.id.llUpdateMasterFileMain:
 				dlMain.closeDrawer(rlMenuMain);
 				if(CodePanUtils.hasInternet(this)) {
@@ -879,11 +908,20 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		registerReceiver();
 		updateSyncCount();
 		updateLastSynced();
+		setConventions();
 	}
 
 	public void setDefaultTab() {
 		if(btnHomeMain != null) {
 			btnHomeMain.performClick();
+		}
+	}
+
+	public void setConventions() {
+		conventionClient = TarkieLib.getConvention(db, Convention.STORES);
+		if(conventionClient != null) {
+			conventionClient = StringUtils.capitalize(conventionClient);
+			tvClientsMenu.setText(conventionClient);
 		}
 	}
 

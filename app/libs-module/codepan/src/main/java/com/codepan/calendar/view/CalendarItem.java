@@ -61,7 +61,7 @@ public class CalendarItem extends Fragment {
 	}
 
 	public int getLastSelected() {
-		for(DayObj obj: dayList) {
+		for(DayObj obj : dayList) {
 			if(obj.isSelect) {
 				return dayList.indexOf(obj);
 			}
@@ -70,7 +70,7 @@ public class CalendarItem extends Fragment {
 	}
 
 	public void setSelected(String date) {
-		for(DayObj obj: dayList) {
+		for(DayObj obj : dayList) {
 			obj.isSelect = obj.date.equals(date);
 		}
 		adapter.notifyDataSetChanged();

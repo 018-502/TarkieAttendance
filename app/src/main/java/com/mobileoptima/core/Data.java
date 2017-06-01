@@ -19,6 +19,7 @@ import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseItemsObj;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 import static com.codepan.database.Condition.Operator;
 
 public class Data {
+
 	public static ArrayList<InventoryObj> loadInventory(SQLiteAdapter db) {
 		ArrayList<InventoryObj> inventoryList = new ArrayList<>();
 		InventoryObj tracking = new InventoryObj();
@@ -1038,5 +1040,27 @@ public class Data {
 		statusList.add(incomplete);
 		statusList.add(cancelled);
 		return statusList;
+	}
+
+	public static ArrayList<ContactObj> loadContacts(SQLiteAdapter db, String storeID) {
+		ArrayList<ContactObj> contactList = new ArrayList<>();
+		String empID = TarkieLib.getEmployeeID(db);
+		String table = Tables.getName(Tables.TB.CONTACTS);
+		String query = "SELECT name, position, mobile, landline, email, birthday, remarks " +
+				"FROM " + table + " WHERE storeID = " + storeID + " AND empID = '" + empID + "'";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			ContactObj contact = new ContactObj();
+			contact.name = cursor.getString(0);
+			contact.position = cursor.getString(1);
+			contact.mobile = cursor.getString(2);
+			contact.landline = cursor.getString(3);
+			contact.email = cursor.getString(4);
+			contact.birthday = cursor.getString(5);
+			contact.remarks = cursor.getString(6);
+			contactList.add(contact);
+		}
+		cursor.close();
+		return contactList;
 	}
 }

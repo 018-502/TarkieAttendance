@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                xmlns:codePan="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/imgEmployee"
+        android:layout_width="@dimen/twenty"
+        android:layout_height="@dimen/twenty_one"
+        android:layout_marginLeft="@dimen/twenty_five"
+        android:layout_marginStart="@dimen/twenty_five"
+        android:layout_marginTop="@dimen/fifteen"
+        android:src="@drawable/ic_employee"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblEmployee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/sixteen"
+        android:layout_marginLeft="@dimen/three"
+        android:layout_marginStart="@dimen/three"
+        android:layout_toRightOf="@id/imgEmployee"
+        android:textSize="@dimen/seventeen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_bold"/>
+
+    <ImageView
+        android:id="@+id/imgPosition"
+        android:layout_width="@dimen/fifteen"
+        android:layout_height="@dimen/eleven"
+        android:layout_marginLeft="@dimen/seventy"
+        android:layout_marginStart="@dimen/seventy"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/imgEmployee"
+        android:src="@drawable/ic_position"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ten"
+        android:layout_marginLeft="@dimen/eight"
+        android:layout_marginStart="@dimen/eight"
+        android:layout_toRightOf="@id/imgPosition"
+        android:layout_below="@id/lblEmployee"
+        android:textSize="@dimen/sixteen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <ImageView
+        android:id="@+id/imgCell"
+        android:layout_width="@dimen/fifteen"
+        android:layout_height="@dimen/fifteen"
+        android:layout_marginLeft="@dimen/seventy"
+        android:layout_marginStart="@dimen/seventy"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/imgPosition"
+        android:src="@drawable/ic_cell"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblCell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ten"
+        android:layout_marginLeft="@dimen/eight"
+        android:layout_marginStart="@dimen/eight"
+        android:layout_toRightOf="@id/imgCell"
+        android:layout_below="@id/lblPosition"
+        android:textSize="@dimen/sixteen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <ImageView
+        android:id="@+id/imgPhone"
+        android:layout_width="@dimen/fifteen"
+        android:layout_height="@dimen/fifteen"
+        android:layout_marginLeft="@dimen/seventy"
+        android:layout_marginStart="@dimen/seventy"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/imgCell"
+        android:src="@drawable/ic_tel"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/eleven"
+        android:layout_marginLeft="@dimen/eight"
+        android:layout_marginStart="@dimen/eight"
+        android:layout_toRightOf="@id/imgCell"
+        android:layout_below="@id/lblCell"
+        android:textSize="@dimen/sixteen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <ImageView
+        android:id="@+id/imgEmail"
+        android:layout_width="@dimen/fifteen"
+        android:layout_height="@dimen/eleven"
+        android:layout_marginLeft="@dimen/seventy"
+        android:layout_marginStart="@dimen/seventy"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/imgPhone"
+        android:src="@drawable/ic_email"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ten"
+        android:layout_marginLeft="@dimen/eight"
+        android:layout_marginStart="@dimen/eight"
+        android:layout_toRightOf="@id/imgEmail"
+        android:layout_below="@id/lblPhone"
+        android:textSize="@dimen/sixteen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <ImageView
+        android:id="@+id/imgBirthday"
+        android:layout_width="@dimen/fifteen"
+        android:layout_height="@dimen/fifteen"
+        android:layout_marginLeft="@dimen/seventy"
+        android:layout_marginStart="@dimen/seventy"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/imgEmail"
+        android:src="@drawable/ic_birthday"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblBirthday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/eleven"
+        android:layout_marginLeft="@dimen/eight"
+        android:layout_marginStart="@dimen/eight"
+        android:layout_toRightOf="@id/imgBirthday"
+        android:layout_below="@id/lblEmail"
+        android:textSize="@dimen/sixteen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <ImageView
+        android:id="@+id/imgRemarks"
+        android:layout_width="@dimen/fifteen"
+        android:layout_height="@dimen/fourteen"
+        android:layout_marginLeft="@dimen/seventy"
+        android:layout_marginStart="@dimen/seventy"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/imgBirthday"
+        android:src="@drawable/ic_remarks"/>
+
+    <com.codepan.widget.CodePanLabel
+        android:id="@+id/lblRemarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/ten"
+        android:layout_marginLeft="@dimen/eight"
+        android:layout_marginStart="@dimen/eight"
+        android:layout_toRightOf="@id/imgRemarks"
+        android:layout_below="@id/lblBirthday"
+        android:textSize="@dimen/sixteen"
+        android:textColor="@color/gray_qui"
+        codePan:typeface="@string/proxima_nova_light"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/one"
+        android:layout_marginTop="@dimen/fifteen"
+        android:layout_below="@id/lblRemarks"
+        android:background="@color/gray_sec"/>
+
+</RelativeLayout>

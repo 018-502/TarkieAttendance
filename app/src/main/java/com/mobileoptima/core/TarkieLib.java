@@ -1,9 +1,11 @@
 package com.mobileoptima.core;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 
 import com.codepan.callback.Interface.OnFragmentCallback;
@@ -17,6 +19,8 @@ import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.model.TimeObj;
 import com.codepan.utils.CodePanUtils;
+import com.codepan.utils.SpannableMap;
+import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.FieldType;
@@ -27,6 +31,7 @@ import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakObj;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.ChoiceObj;
+import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseObj;
@@ -178,8 +183,9 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.TASK_FORM));
 		db.execQuery(Tables.create(TB.CHECK_IN));
 		db.execQuery(Tables.create(TB.CHECK_OUT));
-		db.execQuery(Tables.create(SETTINGS));
+		db.execQuery(Tables.create(TB.SETTINGS));
 		db.execQuery(Tables.create(TB.SETTINGS_GROUP));
+		db.execQuery(Tables.create(TB.CONTACTS));
 	}
 
 	public static void updateTables(SQLiteAdapter db, int o, int n) {
@@ -274,6 +280,7 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
+<<<<<<<<< Temporary merge branch 1
 		column = "isEnabled";
 		table = Tables.getName(TB.GPS);
 		if(!db.isColumnExists(table, column)) {
@@ -288,6 +295,46 @@ public class TarkieLib {
 		table = Tables.getName(TB.GPS);
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "syncBatchID";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "webStoreID";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "webStoreID";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		column = "isDefault";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "isSync";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "isFromWeb";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
+		column = "dDate";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "dTime";
+		table = Tables.getName(TB.STORES);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
 		}
 		binder.finish();
 	}
@@ -1546,5 +1593,49 @@ public class TarkieLib {
 				"sg.groupID = '" + groupID + "' AND sg.settingsID = s.ID " +
 				"AND s.code = '" + code + "'";
 		return db.getInt(query) == 1;
+	}
+
+	public static void requiredField(CodePanLabel label, String text) {
+		if(text != null) {
+			int length = text.length();
+			String name = text + "*";
+			ArrayList<SpannableMap> list = new ArrayList<>();
+			list.add(new SpannableMap(length, length + 1, Color.RED));
+			SpannableStringBuilder ssb = CodePanUtils.customizeText(list, name);
+			label.setText(ssb);
+		}
+	}
+
+	public static boolean addContact(SQLiteAdapter db, ContactObj contact) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String empID = getEmployeeID(db);
+		SQLiteQuery query = new SQLiteQuery();
+		StoreObj store = contact.store;
+		query.add(new FieldValue("storeID", store.ID));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("name", contact.name));
+		query.add(new FieldValue("position", contact.position));
+		query.add(new FieldValue("mobile", contact.mobile));
+		query.add(new FieldValue("landline", contact.landline));
+		query.add(new FieldValue("email", contact.email));
+		query.add(new FieldValue("birthday", contact.birthday));
+		query.add(new FieldValue("remarks", contact.remarks));
+		binder.insert(Tables.getName(TB.CONTACTS), query);
+		return binder.finish();
+	}
+
+	public static boolean addStore(SQLiteAdapter db, StoreObj obj) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		SQLiteQuery query = new SQLiteQuery();
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String syncBatchID = getSyncBatchID(db);
+		query.add(new FieldValue("name", obj.name));
+		query.add(new FieldValue("address", obj.address));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
+		binder.insert(Tables.getName(TB.STORES), query);
+		return binder.finish();
 	}
 }

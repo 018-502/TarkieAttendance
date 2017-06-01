@@ -91,7 +91,6 @@ public class ExpenseReportsFragment extends Fragment implements OnClickListener 
 
 	@Override
 	public void onClick(View v) {
-
 	}
 
 	private Runnable inputFinishChecker = new Runnable() {

@@ -8,12 +8,12 @@ import com.mobileoptima.constant.Key;
 import com.mobileoptima.constant.Receiver;
 import com.mobileoptima.service.MainService;
 
-public class BootCompleteReceiver extends BroadcastReceiver{
+public class BootCompleteReceiver extends BroadcastReceiver {
 
-    @Override  
-    public void onReceive(Context context, Intent intent) {
+	@Override
+	public void onReceive(Context context, Intent intent) {
 		Intent service = new Intent(context, MainService.class);
 		service.putExtra(Key.RECEIVER, Receiver.BOOT_COMPLETE);
 		context.startService(service);
-    }
+	}
 }
