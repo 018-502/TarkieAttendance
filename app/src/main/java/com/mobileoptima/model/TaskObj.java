@@ -4,7 +4,6 @@ public class TaskObj {
 
 	public String ID;
 	public String name;
-	public String empID;
 	public String notes;
 	public String endDate;
 	public String status;
