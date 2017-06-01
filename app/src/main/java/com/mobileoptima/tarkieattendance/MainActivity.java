@@ -540,10 +540,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				break;
 			case R.id.llClientsMain:
 				dlMain.closeDrawer(rlMenuMain);
+				final StoresFragment stores = new StoresFragment();
+				stores.setOnSelectStoreCallback(new OnSelectStoreCallback() {
+					@Override
+					public void onSelectStore(StoreObj store) {
+						StoreDetailsFragment contacts = new StoreDetailsFragment();
+						contacts.setStore(store);
+						transaction = manager.beginTransaction();
+						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+						transaction.replace(R.id.rlStores, contacts);
+						transaction.addToBackStack(null);
+						transaction.hide(stores);
+						transaction.commit();
+					}
+				});
 				transaction = manager.beginTransaction();
-				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-						R.anim.fade_in, R.anim.fade_out);
-				transaction.add(R.id.rlMain, new StoresFragment());
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, stores);
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;

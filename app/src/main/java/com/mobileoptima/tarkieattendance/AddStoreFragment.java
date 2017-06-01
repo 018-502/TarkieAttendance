@@ -20,10 +20,6 @@ import com.mobileoptima.model.StoreObj;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * Created by IOS on 5/31/2017.
- */
-
 public class AddStoreFragment extends Fragment implements OnClickListener {
 
 	private CodePanTextField tfCompName, tfAddress;
@@ -63,7 +59,8 @@ public class AddStoreFragment extends Fragment implements OnClickListener {
 		view.findViewById(R.id.btnCancel).setOnClickListener(this);
 		TarkieLib.requiredField(tvCompName, getResources().getString(R.string.company_name));
 		if(conventionStore != null && !conventionStore.isEmpty()) {
-			tvTitle.setText("Add " + conventionStore);
+			String title = "Add " + conventionStore;
+			tvTitle.setText(title);
 		}
 		return view;
 	}

@@ -49,8 +49,8 @@ public class ContactsAdapter extends ArrayAdapter<ContactObj> {
 		ContactObj obj = contactList.get(position);
 		holder.lblEmployee.setText(obj.name);
 		holder.lblPosition.setText(obj.position);
-		holder.lblCell.setText(obj.cellNo);
-		holder.lblPhone.setText(obj.phoneNo);
+		holder.lblCell.setText(obj.mobile);
+		holder.lblPhone.setText(obj.landline);
 		holder.lblEmail.setText(obj.email);
 		holder.lblBirthday.setText(obj.birthday);
 		holder.lblRemarks.setText(obj.remarks);

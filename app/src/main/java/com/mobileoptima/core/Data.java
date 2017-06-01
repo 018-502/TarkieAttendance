@@ -1042,20 +1042,25 @@ public class Data {
 		return statusList;
 	}
 
-	public static ArrayList<ContactObj> loadContacts(SQLiteAdapter db, String id) {
+	public static ArrayList<ContactObj> loadContacts(SQLiteAdapter db, String storeID) {
 		ArrayList<ContactObj> contactList = new ArrayList<>();
-		Cursor cursor = db.read("SELECT name, position, cellNo, phoneNo, email, birthday, remarks FROM " + Tables.getName(Tables.TB.CONTACTS) + " WHERE storeID = " + id + " AND userID = " + TarkieLib.getUserID(db));
+		String empID = TarkieLib.getEmployeeID(db);
+		String table = Tables.getName(Tables.TB.CONTACTS);
+		String query = "SELECT name, position, mobile, landline, email, birthday, remarks " +
+				"FROM " + table + " WHERE storeID = " + storeID + " AND empID = '" + empID + "'";
+		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ContactObj contact = new ContactObj();
 			contact.name = cursor.getString(0);
 			contact.position = cursor.getString(1);
-			contact.cellNo = cursor.getString(2);
-			contact.phoneNo = cursor.getString(3);
+			contact.mobile = cursor.getString(2);
+			contact.landline = cursor.getString(3);
 			contact.email = cursor.getString(4);
 			contact.birthday = cursor.getString(5);
 			contact.remarks = cursor.getString(6);
 			contactList.add(contact);
 		}
+		cursor.close();
 		return contactList;
 	}
 }

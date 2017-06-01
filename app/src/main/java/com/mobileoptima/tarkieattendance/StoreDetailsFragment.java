@@ -19,14 +19,11 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.ContactsAdapter;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.ContactObj;
+import com.mobileoptima.model.StoreObj;
 
 import java.util.ArrayList;
 
-/**
- * Created by IOS on 5/19/2017.
- */
-
-public class ContactsFragment extends Fragment implements OnClickListener, Interface.OnRefreshCallback {
+public class StoreDetailsFragment extends Fragment implements OnClickListener, Interface.OnRefreshCallback {
 
 	private FrameLayout flNoContacts;
 	private ListView lvContacts;
@@ -34,9 +31,7 @@ public class ContactsFragment extends Fragment implements OnClickListener, Inter
 	private FragmentManager manager;
 	private ArrayList<ContactObj> contactList;
 	private SQLiteAdapter db;
-	public String strStoreID;
-	public String strName;
-	public String strAddress;
+	private StoreObj store;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -48,14 +43,14 @@ public class ContactsFragment extends Fragment implements OnClickListener, Inter
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.contacts_layout, container, false);
+		View view = inflater.inflate(R.layout.store_details_layout, container, false);
+		CodePanLabel lblStoreAddress = (CodePanLabel) view.findViewById(R.id.lblStoreAddress);
+		CodePanLabel lblStoreName = (CodePanLabel) view.findViewById(R.id.lblStoreName);
+		lvContacts = (ListView) view.findViewById(R.id.lvContacts);
 		view.findViewById(R.id.btnAddContact).setOnClickListener(this);
 		view.findViewById(R.id.btnBackContacts).setOnClickListener(this);
-		CodePanLabel lblStoreName = (CodePanLabel) view.findViewById(R.id.lblStoreName);
-		lblStoreName.setText(strName);
-		CodePanLabel lblStoreAddress = (CodePanLabel) view.findViewById(R.id.lblStoreAddress);
-		lblStoreAddress.setText(strAddress);
-		lvContacts = (ListView) view.findViewById(R.id.lvContacts);
+		lblStoreName.setText(store.name);
+		lblStoreAddress.setText(store.address);
 		loadContacts(db);
 		return view;
 	}
@@ -64,13 +59,13 @@ public class ContactsFragment extends Fragment implements OnClickListener, Inter
 	public void onClick(View view) {
 		switch(view.getId()) {
 			case R.id.btnAddContact:
-				NewContactFragment frgNewCon = new NewContactFragment();
-				frgNewCon.strStoreID = strStoreID;
-				frgNewCon.setOnRefreshCallback(this);
+				AddContactFragment addContact = new AddContactFragment();
+				addContact.setStore(store);
+				addContact.setOnRefreshCallback(this);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-				transaction.replace(R.id.rlContacts, frgNewCon);
+				transaction.replace(R.id.rlContacts, addContact);
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
@@ -85,7 +80,7 @@ public class ContactsFragment extends Fragment implements OnClickListener, Inter
 			@Override
 			public void run() {
 				try {
-					contactList = Data.loadContacts(db, strStoreID);
+					contactList = Data.loadContacts(db, store.ID);
 					handler.obtainMessage().sendToTarget();
 				}
 				catch(Exception e) {
@@ -110,5 +105,9 @@ public class ContactsFragment extends Fragment implements OnClickListener, Inter
 	@Override
 	public void onRefresh() {
 		loadContacts(db);
+	}
+
+	public void setStore(StoreObj store) {
+		this.store = store;
 	}
 }

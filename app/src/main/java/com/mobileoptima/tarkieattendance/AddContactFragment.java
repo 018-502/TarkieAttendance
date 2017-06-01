@@ -15,12 +15,9 @@ import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.ContactObj;
+import com.mobileoptima.model.StoreObj;
 
-/**
- * Created by IOS on 5/20/2017.
- */
-
-public class NewContactFragment extends Fragment implements OnClickListener {
+public class AddContactFragment extends Fragment implements OnClickListener {
 
 	private FragmentManager manager;
 	private CodePanTextField tfName;
@@ -32,7 +29,7 @@ public class NewContactFragment extends Fragment implements OnClickListener {
 	private CodePanTextField tfRemarks;
 	private SQLiteAdapter db;
 	private OnRefreshCallback refreshCallback;
-	public String strStoreID;
+	private StoreObj store;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,7 +41,7 @@ public class NewContactFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.new_contact_layout, container, false);
+		View view = inflater.inflate(R.layout.add_contact_layout, container, false);
 		CodePanButton btnBackContacts = (CodePanButton) view.findViewById(R.id.btnBackContacts);
 		CodePanButton btnAddContact = (CodePanButton) view.findViewById(R.id.btnAddContact);
 		CodePanLabel lblName = (CodePanLabel) view.findViewById(R.id.lblName);
@@ -69,15 +66,15 @@ public class NewContactFragment extends Fragment implements OnClickListener {
 				break;
 			case R.id.btnAddContact:
 				ContactObj contact = new ContactObj();
-				contact.storeID = strStoreID;
+				contact.store = store;
 				contact.name = tfName.getText().toString();
 				contact.position = tfDesignation.getText().toString();
-				contact.cellNo = tfMobile.getText().toString();
-				contact.phoneNo = tfTel.getText().toString();
+				contact.mobile = tfMobile.getText().toString();
+				contact.landline = tfTel.getText().toString();
 				contact.email = tfEmail.getText().toString();
 				contact.birthday = tfBirthday.getText().toString();
 				contact.remarks = tfRemarks.getText().toString();
-				boolean result = TarkieLib.saveNewContact(db, contact);
+				boolean result = TarkieLib.addContact(db, contact);
 				if(result && refreshCallback != null) {
 					refreshCallback.onRefresh();
 				}
@@ -87,5 +84,9 @@ public class NewContactFragment extends Fragment implements OnClickListener {
 
 	public void setOnRefreshCallback(OnRefreshCallback refreshCallback) {
 		this.refreshCallback = refreshCallback;
+	}
+
+	public void setStore(StoreObj store) {
+		this.store = store;
 	}
 }

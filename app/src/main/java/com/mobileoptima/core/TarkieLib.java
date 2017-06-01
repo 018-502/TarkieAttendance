@@ -183,9 +183,9 @@ public class TarkieLib {
 		db.execQuery(Tables.create(TB.TASK_FORM));
 		db.execQuery(Tables.create(TB.CHECK_IN));
 		db.execQuery(Tables.create(TB.CHECK_OUT));
-		db.execQuery(Tables.create(SETTINGS));
+		db.execQuery(Tables.create(TB.SETTINGS));
 		db.execQuery(Tables.create(TB.SETTINGS_GROUP));
-		db.execQuery(Tables.create(TB.STORES));
+		db.execQuery(Tables.create(TB.CONTACTS));
 	}
 
 	public static void updateTables(SQLiteAdapter db, int o, int n) {
@@ -1605,19 +1605,17 @@ public class TarkieLib {
 		}
 	}
 
-	public static String getUserID(SQLiteAdapter db) {
-		return db.getString("SELECT empID FROM " + Tables.getName(Tables.TB.CREDENTIALS));
-	}
-
-	public static boolean saveNewContact(SQLiteAdapter db, ContactObj contact) {
+	public static boolean addContact(SQLiteAdapter db, ContactObj contact) {
 		SQLiteBinder binder = new SQLiteBinder(db);
+		String empID = getEmployeeID(db);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("storeID", contact.storeID));
-		query.add(new FieldValue("userID", getUserID(db)));
+		StoreObj store = contact.store;
+		query.add(new FieldValue("storeID", store.ID));
+		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("name", contact.name));
 		query.add(new FieldValue("position", contact.position));
-		query.add(new FieldValue("cellNo", contact.cellNo));
-		query.add(new FieldValue("phoneNo", contact.phoneNo));
+		query.add(new FieldValue("mobile", contact.mobile));
+		query.add(new FieldValue("landline", contact.landline));
 		query.add(new FieldValue("email", contact.email));
 		query.add(new FieldValue("birthday", contact.birthday));
 		query.add(new FieldValue("remarks", contact.remarks));

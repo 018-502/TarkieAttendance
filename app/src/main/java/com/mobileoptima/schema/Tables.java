@@ -458,11 +458,11 @@ public class Tables {
 				query.clearAll();
 				query.add(new Field("ID", true));
 				query.add(new Field("storeID", DataType.INTEGER));
-				query.add(new Field("userID", DataType.INTEGER));
+				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("position", DataType.TEXT));
-				query.add(new Field("cellNo", DataType.TEXT));
-				query.add(new Field("phoneNo", DataType.TEXT));
+				query.add(new Field("mobile", DataType.TEXT));
+				query.add(new Field("landline", DataType.TEXT));
 				query.add(new Field("email", DataType.TEXT));
 				query.add(new Field("birthday", DataType.TEXT));
 				query.add(new Field("remarks", DataType.TEXT));

@@ -126,18 +126,6 @@ public class StoresFragment extends Fragment implements OnClickListener, OnRefre
 					selectStoreCallback.onSelectStore(obj);
 					manager.popBackStack();
 				}
-				else {
-					ContactsFragment frgContact = new ContactsFragment();
-					frgContact.strStoreID = obj.ID;
-					frgContact.strName = obj.name;
-					frgContact.strAddress = obj.address;
-					transaction = manager.beginTransaction();
-					transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-							R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-					transaction.replace(R.id.rlStores, frgContact);
-					transaction.addToBackStack(null);
-					transaction.commit();
-				}
 			}
 		});
 		lvStores.setOnScrollListener(new AbsListView.OnScrollListener() {
