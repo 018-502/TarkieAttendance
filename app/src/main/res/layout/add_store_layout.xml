@@ -72,8 +72,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rlHeaderAddStore"
-        android:layout_marginBottom="@dimen/ten">
+        android:layout_below="@+id/rlHeaderAddStore">
 
         <LinearLayout
             android:layout_width="match_parent"
