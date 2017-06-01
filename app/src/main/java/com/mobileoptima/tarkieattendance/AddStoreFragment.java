@@ -27,17 +27,15 @@ import org.apache.commons.lang3.StringUtils;
 
 public class AddStoreFragment extends Fragment implements OnClickListener, TextWatcher, OnBackPressedCallback, OnFragmentCallback {
 
-	private CodePanTextField etCompName, etAddress;
-	private MainActivity main;
-	private FragmentManager manager;
-	private FragmentTransaction transaction;
-	private SQLiteAdapter db;
-	private OnRefreshCallback refreshCallback;
-	private boolean isShareWithMe;
-	private boolean isShareWithTeam;
-	private String conventionStore;
-	private boolean withChanges;
+	private boolean isShareWithTeam, isShareWithMe, withChanges;
+	private CodePanTextField etNameAddStore, etAddressAddStore;
 	private OnOverrideCallback overrideCallback;
+	private OnRefreshCallback refreshCallback;
+	private FragmentTransaction transaction;
+	private String conventionStore;
+	private FragmentManager manager;
+	private MainActivity main;
+	private SQLiteAdapter db;
 
 	@Override
 	public void onStart() {
@@ -57,8 +55,6 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		main = (MainActivity) getActivity();
 		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
-		isShareWithTeam = false;
-		isShareWithMe = false;
 		db = main.getDatabase();
 		db.openConnection();
 		conventionStore = TarkieLib.getConvention(db, Convention.STORES);
@@ -70,33 +66,35 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.add_store_layout, container, false);
-		CodePanLabel tvCompName = (CodePanLabel) view.findViewById(R.id.tvCompName);
-		CodePanLabel tvTitle = (CodePanLabel) view.findViewById(R.id.tvTitle);
-		etCompName = (CodePanTextField) view.findViewById(R.id.etCompNameAddStore);
-		etAddress = (CodePanTextField) view.findViewById(R.id.etAddressAddStore);
-		view.findViewById(R.id.btnHeaderSave).setOnClickListener(this);
+		CodePanLabel tvNameAddStore = (CodePanLabel) view.findViewById(R.id.tvNameAddStore);
+		CodePanLabel tvTitleAddStore = (CodePanLabel) view.findViewById(R.id.tvTitleAddStore);
+		etAddressAddStore = (CodePanTextField) view.findViewById(R.id.etAddressAddStore);
+		etNameAddStore = (CodePanTextField) view.findViewById(R.id.etNameAddStore);
+		view.findViewById(R.id.btnSaveAddStore).setOnClickListener(this);
 		view.findViewById(R.id.btnBackStoreDetails).setOnClickListener(this);
 		view.findViewById(R.id.cbMe).setOnClickListener(this);
 		view.findViewById(R.id.cbTeam).setOnClickListener(this);
-		TarkieLib.requiredField(tvCompName, getResources().getString(R.string.company_name));
+		etNameAddStore.addTextChangedListener(this);
+		etAddressAddStore.addTextChangedListener(this);
+		String name = getString(R.string.company_name);
+		TarkieLib.requiredField(tvNameAddStore, name);
 		if(conventionStore != null && !conventionStore.isEmpty()) {
 			String title = "Add " + conventionStore;
-			tvTitle.setText(title);
+			tvTitleAddStore.setText(title);
 		}
-		etCompName.addTextChangedListener(this);
-		etAddress.addTextChangedListener(this);
 		return view;
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()) {
-			case R.id.btnHeaderSave:
+			case R.id.btnSaveAddStore:
 				if(!isValidated()) {
 					TarkieLib.alertDialog(main, "Required Field", "Please complete required fields.");
-					return;
 				}
-				showAlert(true);
+				else {
+					showAlert(true);
+				}
 				break;
 			case R.id.btnBackStoreDetails:
 				onBackPressed();
@@ -111,10 +109,7 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 	}
 
 	public boolean isValidated() {
-		if(etCompName.getText().toString().isEmpty()) {
-			return false;
-		}
-		return true;
+		return !etNameAddStore.getText().toString().isEmpty();
 	}
 
 	public void showAlert(boolean isSave) {
@@ -127,8 +122,8 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 				@Override
 				public void onClick(View view) {
 					StoreObj store = new StoreObj();
-					store.name = etCompName.getText().toString();
-					store.address = etAddress.getText().toString();
+					store.name = etNameAddStore.getText().toString();
+					store.address = etAddressAddStore.getText().toString();
 					if(TarkieLib.addStore(db, store)) {
 						manager.popBackStack();
 						manager.popBackStack();
@@ -142,7 +137,7 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		}
 		else {
 			alert.setDialogTitle("Discard Changes");
-			alert.setDialogMessage("All Details will be lost. Are you sure you want to cancel?");
+			alert.setDialogMessage("All details will be lost. Are you sure you want to cancel?");
 			alert.setPositiveButton("Yes", new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {

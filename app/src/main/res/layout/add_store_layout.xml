@@ -36,7 +36,7 @@
         </FrameLayout>
 
         <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvTitle"
+            android:id="@+id/tvTitleAddStore"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
@@ -47,19 +47,25 @@
             codePan:typeface="@string/proxima_nova_light"/>
 
         <com.codepan.widget.CodePanButton
-            android:id="@+id/btnHeaderSave"
-            android:layout_width="@dimen/fifty_five"
-            android:layout_height="@dimen/twenty_five"
+            android:id="@+id/btnSaveAddStore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/ten"
             android:layout_marginRight="@dimen/ten"
             android:background="@drawable/state_rect_white_rad_three"
+            android:paddingBottom="@dimen/two"
+            android:paddingEnd="@dimen/ten"
+            android:paddingLeft="@dimen/ten"
+            android:paddingRight="@dimen/ten"
+            android:paddingStart="@dimen/ten"
+            android:paddingTop="@dimen/three"
             android:text="@string/save_caps"
-            android:textColor="@color/header"
-            android:textSize="@dimen/fourteen"
-            codePan:typeface="@string/proxima_nova_light"/>
+            android:textColor="@color/blue_pri"
+            android:textSize="@dimen/thirteen"
+            codePan:typeface="@string/proxima_nova_mid"/>
 
     </RelativeLayout>
 
@@ -76,74 +82,29 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/sixty_five"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/ten">
 
                 <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvCompName"
+                    android:id="@+id/tvNameAddStore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/thirteen"
-                    android:layout_marginStart="@dimen/thirteen"
                     android:text="@string/company_name"
-                    android:textSize="@dimen/seventeen"/>
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
 
                 <com.codepan.widget.CodePanTextField
-                    android:id="@+id/etCompNameAddStore"
+                    android:id="@+id/etNameAddStore"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/thirty_five"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginEnd="@dimen/ten"
-                    android:layout_marginLeft="@dimen/five"
-                    android:layout_marginRight="@dimen/ten"
-                    android:layout_marginStart="@dimen/five"
-                    android:background="@drawable/state_rect_gray_sec_rad_three"
-                    android:hint="@string/name_hint"
-                    android:maxLines="1"
-                    android:paddingEnd="@dimen/eight"
-                    android:paddingLeft="@dimen/eight"
-                    android:paddingRight="@dimen/eight"
-                    android:paddingStart="@dimen/eight"/>
-
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/one"
-                android:background="@color/gray_sec"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/one_hundred_twenty"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <com.codepan.widget.CodePanLabel
-                    android:layout_width="@dimen/one_hundred_twenty_five"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="top"
-                    android:layout_marginTop="@dimen/twenty"
-                    android:paddingLeft="@dimen/fifteen"
-                    android:paddingStart="@dimen/fifteen"
-                    android:text="@string/address"
-                    android:textSize="@dimen/seventeen"/>
-
-                <com.codepan.widget.CodePanTextField
-                    android:id="@+id/etAddressAddStore"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/ninety"
-                    android:layout_marginEnd="@dimen/ten"
-                    android:layout_marginRight="@dimen/ten"
-                    android:background="@drawable/state_rect_gray_sec_rad_three"
-                    android:gravity="top"
-                    android:hint="@string/address_hint"
+                    android:background="@drawable/state_rect_gray_sen_rad_three"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
                     android:maxLines="1"
-                    android:paddingEnd="@dimen/eight"
-                    android:paddingLeft="@dimen/eight"
-                    android:paddingRight="@dimen/eight"
-                    android:paddingStart="@dimen/eight"
-                    android:paddingTop="5dp"
+                    android:padding="@dimen/ten"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/seventeen"
                     codePan:typeface="@string/proxima_nova_light"/>
 
             </LinearLayout>
@@ -151,7 +112,41 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/one"
-                android:background="@color/gray_sec"/>
+                android:background="@color/divider"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/ten">
+
+                <com.codepan.widget.CodePanLabel
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/address"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+                <com.codepan.widget.CodePanTextField
+                    android:id="@+id/etAddressAddStore"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_gray_sen_rad_three"
+                    android:gravity="start|top"
+                    android:inputType="textCapWords|textMultiLine"
+                    android:minHeight="@dimen/ninety"
+                    android:padding="@dimen/ten"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
+                android:background="@color/divider"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -177,8 +172,8 @@
 
                     <CheckBox
                         android:id="@+id/cbMe"
-                        android:layout_width="@dimen/thirteen"
-                        android:layout_height="@dimen/thirteen"
+                        android:layout_width="@dimen/twenty"
+                        android:layout_height="@dimen/twenty"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/five"
                         android:layout_marginRight="@dimen/five"
@@ -193,12 +188,14 @@
                         android:layout_marginEnd="@dimen/seventy_five"
                         android:layout_marginRight="@dimen/seventy_five"
                         android:text="@string/me"
-                        android:textSize="@dimen/seventeen"/>
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/seventeen"
+                        codePan:typeface="@string/proxima_nova_light"/>
 
                     <CheckBox
                         android:id="@+id/cbTeam"
-                        android:layout_width="@dimen/thirteen"
-                        android:layout_height="@dimen/thirteen"
+                        android:layout_width="@dimen/twenty"
+                        android:layout_height="@dimen/twenty"
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/five"
                         android:layout_marginRight="@dimen/five"
@@ -211,7 +208,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/my_team"
-                        android:textSize="@dimen/seventeen"/>
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/seventeen"
+                        codePan:typeface="@string/proxima_nova_light"/>
 
                 </LinearLayout>
 
@@ -220,7 +219,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/one"
-                android:background="@color/gray_sec"/>
+                android:background="@color/divider"/>
 
         </LinearLayout>
 
