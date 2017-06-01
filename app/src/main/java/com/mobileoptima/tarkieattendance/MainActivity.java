@@ -1588,7 +1588,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					expense.addExpenseItem(dDate, dTime, expenseID);
 				}
 			}
-			CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " " +
+			CodePanUtils.alertToast(this, "Expense " + expenseID + " " +
 					"has been added. You may enter more details later.");
 		}
 		return true;

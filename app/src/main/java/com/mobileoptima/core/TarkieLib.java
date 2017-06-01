@@ -42,6 +42,7 @@ import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
+import com.mobileoptima.model.VisitObj;
 import com.mobileoptima.model.VisitsDateObj;
 import com.mobileoptima.schema.Tables;
 import com.mobileoptima.schema.Tables.TB;
@@ -69,6 +70,7 @@ import static com.mobileoptima.schema.Tables.TB.SETTINGS;
 import static com.mobileoptima.schema.Tables.TB.SYNC_BATCH;
 
 public class TarkieLib {
+
 	public static void alertDialog(final FragmentActivity activity, String title, String message,
 								   OnFragmentCallback callback) {
 		final FragmentManager manager = activity.getSupportFragmentManager();
@@ -741,60 +743,38 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean addTask(SQLiteAdapter db, String storeID, String startDate, String endDate) {
+	public static VisitObj addTask(SQLiteAdapter db, StoreObj store) {
+		VisitObj visit = new VisitObj();
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String empID = getEmployeeID(db);
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
 		String syncBatchID = getSyncBatchID(db);
+		String table = Tables.getName(TB.TASK);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("dDate", dDate));
-		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("empID", empID));
-		query.add(new FieldValue("storeID", storeID));
-		query.add(new FieldValue("startDate", startDate));
-		query.add(new FieldValue("endDate", endDate));
-		query.add(new FieldValue("syncBatchID", syncBatchID));
-		binder.insert(Tables.getName(TB.TASK), query);
-		return binder.finish();
-	}
-
-	public static boolean addTask(SQLiteAdapter db, String storeID, String startDate,
-								  String endDate, String notes, ArrayList<FormObj> formList,
-								  ArrayList<ImageObj> imageList) {
-		SQLiteBinder binder = new SQLiteBinder(db);
-		String empID = getEmployeeID(db);
-		String dDate = CodePanUtils.getDate();
-		String dTime = CodePanUtils.getTime();
-		String syncBatchID = getSyncBatchID(db);
-		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("dDate", dDate));
-		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("empID", empID));
-		query.add(new FieldValue("notes", notes));
-		query.add(new FieldValue("storeID", storeID));
-		query.add(new FieldValue("startDate", startDate));
-		query.add(new FieldValue("endDate", endDate));
-		query.add(new FieldValue("syncBatchID", syncBatchID));
-		String taskID = binder.insert(Tables.getName(TB.TASK), query);
-		if(taskID != null) {
-			for(FormObj form : formList) {
-				query.clearAll();
-				query.add(new FieldValue("formID", form.ID));
-				query.add(new FieldValue("taskID", taskID));
-				binder.insert(Tables.getName(TB.TASK_FORM), query);
-			}
-			for(ImageObj image : imageList) {
-				query.clearAll();
-				query.add(new FieldValue("photoID", image.ID));
-				query.add(new FieldValue("taskID", taskID));
-				binder.insert(Tables.getName(TB.TASK_FORM), query);
-			}
+		if(store != null) {
+			query.add(new FieldValue("storeID", store.ID));
+			query.add(new FieldValue("name", store.name));
 		}
-		return binder.finish();
+		else {
+			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE isFromWeb = 0 AND " +
+					"'" + dDate + "' BETWEEN startDate AND endDate AND empID = '" + empID + "'";
+			int count = db.getInt(sql) + 1;
+			visit.name = "New Visit " + count;
+		}
+		query.add(new FieldValue("name", visit.name));
+		query.add(new FieldValue("dateCreated", dDate));
+		query.add(new FieldValue("timeCreated", dTime));
+		query.add(new FieldValue("empID", empID));
+		query.add(new FieldValue("startDate", dDate));
+		query.add(new FieldValue("endDate", dDate));
+		query.add(new FieldValue("syncBatchID", syncBatchID));
+		visit.ID = binder.insert(table, query);
+		binder.finish();
+		return visit;
 	}
 
-	public static boolean editTask(SQLiteAdapter db, String storeID, String taskID, String notes,
+	public static boolean editTask(SQLiteAdapter db, StoreObj store, String taskID, String notes,
 								   ArrayList<EntryObj> entryList, ArrayList<ImageObj> imageList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String t = Tables.getName(TB.TASK);
@@ -803,7 +783,10 @@ public class TarkieLib {
 		String tp = Tables.getName(TB.TASK_PHOTO);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("notes", notes));
-		query.add(new FieldValue("storeID", storeID));
+		query.add(new FieldValue("isUpdate", true));
+		query.add(new FieldValue("isWebUpdate", false));
+		query.add(new FieldValue("name", store.name));
+		query.add(new FieldValue("storeID", store.ID));
 		binder.update(t, query, taskID);
 		query.clearAll();
 		query.add(new FieldValue("isTag", false));
@@ -1318,7 +1301,7 @@ public class TarkieLib {
 	}
 
 	public static String addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,
-								   boolean isSubmit) {
+								  boolean isSubmit) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
@@ -1629,11 +1612,11 @@ public class TarkieLib {
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
 		String syncBatchID = getSyncBatchID(db);
+		query.add(new FieldValue("dDate", dDate));
+		query.add(new FieldValue("dTime", dTime));
 		query.add(new FieldValue("name", obj.name));
 		query.add(new FieldValue("address", obj.address));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		query.add(new FieldValue("dDate", dDate));
-		query.add(new FieldValue("dTime", dTime));
 		binder.insert(Tables.getName(TB.STORES), query);
 		return binder.finish();
 	}

@@ -80,29 +80,61 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="@dimen/twelve">
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvStoreVisitDetails"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/twenty_three"
-                    codePan:typeface="@string/proxima_nova_bold"/>
+                    android:layout_toLeftOf="@+id/flStoreVisitDetails"
+                    android:layout_toStartOf="@+id/flStoreVisitDetails"
+                    android:orientation="vertical"
+                    android:padding="@dimen/twelve">
 
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvAddressVisitDetails"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/seventeen"
-                    codePan:typeface="@string/proxima_nova_light"/>
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvStoreVisitDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/twenty_three"
+                        codePan:typeface="@string/proxima_nova_bold"/>
 
-            </LinearLayout>
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvAddressVisitDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/seventeen"
+                        codePan:typeface="@string/proxima_nova_light"/>
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/flStoreVisitDetails"
+                    android:layout_width="@dimen/forty"
+                    android:layout_height="@dimen/forty"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/twelve"
+                    android:layout_marginRight="@dimen/twelve">
+
+                    <ImageView
+                        android:layout_width="@dimen/twenty"
+                        android:layout_height="@dimen/twenty"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_edit"/>
+
+                    <com.codepan.widget.CodePanButton
+                        android:id="@+id/btnStoreVisitDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/state_oval_trans_dark"/>
+
+                </FrameLayout>
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

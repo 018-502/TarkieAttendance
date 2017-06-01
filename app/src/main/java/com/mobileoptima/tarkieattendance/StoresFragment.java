@@ -39,7 +39,7 @@ import java.util.ArrayList;
 
 public class StoresFragment extends Fragment implements OnClickListener {
 
-	private final int LIMIT = 30;
+	private final int LIMIT = 50;
 	private final long IDLE_TIME = 500;
 
 	private boolean isEnd, isPause, isPending, isAdded;

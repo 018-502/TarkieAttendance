@@ -20,7 +20,6 @@ import android.widget.ListView;
 
 import com.codepan.calendar.callback.Interface.OnPickDateCallback;
 import com.codepan.calendar.view.CalendarView;
-import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
@@ -28,6 +27,7 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.VisitsAdapter;
 import com.mobileoptima.adapter.VisitsDateAdapter;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
+import com.mobileoptima.callback.Interface.OnSaveVisitCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.VisitObj;
@@ -35,7 +35,7 @@ import com.mobileoptima.model.VisitsDateObj;
 
 import java.util.ArrayList;
 
-public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRefreshCallback {
+public class VisitsFragment extends Fragment implements OnPickDateCallback {
 
 	private final int PREVIOUS = 0;
 	private final int CURRENT = 1;
@@ -114,12 +114,22 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 		});
 		lvVisits.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-				VisitObj visit = visitList.get(i);
+			public void onItemClick(AdapterView<?> adapterView, View view, final int index, long l) {
+				VisitObj visit = visitList.get(index);
 				VisitDetailsFragment details = new VisitDetailsFragment();
 				details.setVisit(visit);
 				details.setOnOverrideCallback(overrideCallback);
-				details.setOnRefreshCallback(VisitsFragment.this);
+				details.setOnSaveVisitCallback(new OnSaveVisitCallback() {
+					@Override
+					public void onSaveVisit(VisitObj visit) {
+						visitList.set(index, visit);
+						lvVisits.invalidate();
+						adapter.notifyDataSetChanged();
+						MainActivity main = (MainActivity) getActivity();
+						main.updateSyncCount();
+						main.reloadSchedule();
+					}
+				});
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -295,15 +305,6 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRe
 
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
 		this.overrideCallback = overrideCallback;
-	}
-
-	@Override
-	public void onRefresh() {
-		MainActivity main = (MainActivity) getActivity();
-		main.updateSyncCount();
-		main.reloadSchedule();
-		lvVisits.invalidate();
-		adapter.notifyDataSetChanged();
 	}
 
 	public void setInitDate(String date) {

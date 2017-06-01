@@ -14,6 +14,7 @@ import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
+import com.mobileoptima.model.VisitObj;
 
 import java.util.ArrayList;
 
@@ -120,5 +121,9 @@ public class Interface {
 
 	public interface OnSelectStatusCallback {
 		void onSelectStatus(TaskStatusObj status);
+	}
+
+	public interface OnSaveVisitCallback {
+		void onSaveVisit(VisitObj visit);
 	}
 }

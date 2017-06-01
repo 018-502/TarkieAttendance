@@ -9,6 +9,7 @@ public class TaskObj {
 	public String status;
 	public StoreObj store;
 	public int notesLimit;
+	public EmployeeObj emp;
 	public String startDate;
 	public String dateCreated;
 	public String timeCreated;

@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.SpannableMap;
@@ -25,6 +24,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
+import com.mobileoptima.callback.Interface.OnSaveVisitCallback;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
@@ -39,12 +39,13 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 
-public class HomeFragment extends Fragment implements ImageLoadingListener {
+public class HomeFragment extends Fragment implements ImageLoadingListener, OnClickListener {
 
 	private LinearLayout llInventoryHome, llScheduleHome, llFormHome;
 	private OnSaveEntryCallback saveEntryCallback;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
+	private CodePanButton btnNewVisitHome;
 	private ArrayList<VisitObj> visitList;
 	private DisplayImageOptions options;
 	private ArrayList<FormObj> formList;
@@ -76,11 +77,13 @@ public class HomeFragment extends Fragment implements ImageLoadingListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.home_layout, container, false);
+		btnNewVisitHome = (CodePanButton) view.findViewById(R.id.btnNewVisitHome);
 		llInventoryHome = (LinearLayout) view.findViewById(R.id.llInventoryHome);
 		llScheduleHome = (LinearLayout) view.findViewById(R.id.llScheduleHome);
 		llFormHome = (LinearLayout) view.findViewById(R.id.llFormHome);
 		tvStoreHome = (CodePanLabel) view.findViewById(R.id.tvStoreHome);
 		ivLogoHome = (ImageView) view.findViewById(R.id.ivLogoHome);
+		btnNewVisitHome.setOnClickListener(this);
 		setStore(TarkieLib.getDefaultStore(db));
 		String logoUrl = TarkieLib.getCompanyLogo(db);
 		updateLogo(db, logoUrl);
@@ -133,37 +136,7 @@ public class HomeFragment extends Fragment implements ImageLoadingListener {
 			if(view != null) {
 				ViewGroup container = (ViewGroup) view.getParent();
 				for(final VisitObj visit : visitList) {
-					View child = inflater.inflate(R.layout.schedule_list_item, container, false);
-					CodePanLabel tvNameSchedule = (CodePanLabel) child.findViewById(R.id.tvNameSchedule);
-					CodePanLabel tvAddressSchedule = (CodePanLabel) child.findViewById(R.id.tvAddressSchedule);
-					CodePanButton btnItemSchedule = (CodePanButton) child.findViewById(R.id.btnItemSchedule);
-					tvNameSchedule.setText(visit.name);
-					if(visit.store != null) {
-						StoreObj store = visit.store;
-						tvAddressSchedule.setText(store.address);
-					}
-					btnItemSchedule.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							VisitDetailsFragment details = new VisitDetailsFragment();
-							details.setVisit(visit);
-							details.setOnOverrideCallback(overrideCallback);
-							details.setOnRefreshCallback(new OnRefreshCallback() {
-								@Override
-								public void onRefresh() {
-									MainActivity main = (MainActivity) getActivity();
-									main.reloadVisits();
-									loadSchedule(db);
-								}
-							});
-							transaction = manager.beginTransaction();
-							transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-									R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-							transaction.add(R.id.rlMain, details);
-							transaction.addToBackStack(null);
-							transaction.commit();
-						}
-					});
+					View child = getSchedule(inflater, container, visit);
 					llScheduleHome.addView(child);
 				}
 				MainActivity main = (MainActivity) getActivity();
@@ -172,6 +145,49 @@ public class HomeFragment extends Fragment implements ImageLoadingListener {
 			return true;
 		}
 	});
+
+	public View getSchedule(final LayoutInflater inflater, final ViewGroup container, final VisitObj visit) {
+		View child = inflater.inflate(R.layout.schedule_list_item, container, false);
+		CodePanLabel tvNameSchedule = (CodePanLabel) child.findViewById(R.id.tvNameSchedule);
+		CodePanLabel tvAddressSchedule = (CodePanLabel) child.findViewById(R.id.tvAddressSchedule);
+		CodePanButton btnItemSchedule = (CodePanButton) child.findViewById(R.id.btnItemSchedule);
+		tvNameSchedule.setText(visit.name);
+		if(visit.store != null) {
+			StoreObj store = visit.store;
+			tvAddressSchedule.setText(store.address);
+		}
+		else {
+			tvAddressSchedule.setVisibility(View.GONE);
+		}
+		btnItemSchedule.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				final int index = visitList.indexOf(visit);
+				VisitDetailsFragment details = new VisitDetailsFragment();
+				details.setVisit(visit);
+				details.setOnOverrideCallback(overrideCallback);
+				details.setOnSaveVisitCallback(new OnSaveVisitCallback() {
+					@Override
+					public void onSaveVisit(VisitObj visit) {
+						visitList.set(index, visit);
+						View child = getSchedule(inflater, container, visit);
+						llScheduleHome.removeViewAt(index);
+						llScheduleHome.addView(child, index);
+						MainActivity main = (MainActivity) getActivity();
+						main.updateSyncCount();
+						main.reloadVisits();
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, details);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+		});
+		return child;
+	}
 
 	public void loadForms(final SQLiteAdapter db) {
 		Thread bg = new Thread(new Runnable() {
@@ -292,5 +308,24 @@ public class HomeFragment extends Fragment implements ImageLoadingListener {
 
 	@Override
 	public void onLoadingCancelled(String imageUri, View view) {
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch(v.getId()) {
+			case R.id.btnNewVisitHome:
+				VisitObj visit = TarkieLib.addTask(db, null);
+				visitList.add(visit);
+				LayoutInflater inflater = getActivity().getLayoutInflater();
+				View view = getView();
+				if(view != null) {
+					ViewGroup container = (ViewGroup) view.getParent();
+					View child = getSchedule(inflater, container, visit);
+					llScheduleHome.addView(child);
+					String message = "You have added a new Visit. Tap " + visit.name + " to edit.";
+					CodePanUtils.alertToast(getActivity(), message);
+				}
+				break;
+		}
 	}
 }
