@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,10 +27,12 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.ExpenseItemsAdapter;
 import com.mobileoptima.callback.Interface.OnUpdateExpenseCallback;
 import com.mobileoptima.constant.DateType;
+import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
+import com.mobileoptima.model.ExpenseTypeObj;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		this.inflater = inflater;
 		this.container = container;
 		View view = inflater.inflate(R.layout.expense_items_layout, container, false);
@@ -84,30 +85,30 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		tvEndDateExpenseItems.setOnClickListener(this);
 		lvExpenseItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
-			public void onItemClick(final AdapterView<?> adapterView, View view, int i, long l) {
-				ExpenseItemsObj obj = expenseItemsList.get(i);
+			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+				ExpenseItemsObj item = expenseItemsList.get(i);
 				ImageView ivCollapsibleExpenseItems = (ImageView) view.findViewById(R.id.ivCollapsibleExpenseItems);
 				LinearLayout llItemsExpenseItems = (LinearLayout) view.findViewById(R.id.llItemsExpenseItems);
 				if(llItemsExpenseItems.getVisibility() == View.GONE) {
-					if(!obj.isAdded) {
-						obj.childList = new ArrayList<>();
-						ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, obj.dDate);
+					if(!item.isAdded) {
+						item.childList = new ArrayList<>();
+						ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, item.dDate);
 						for(ExpenseObj expense : expenseList) {
 							View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, llItemsExpenseItems, false);
-							View child = getChild(v, obj, expenseList, expense);
+							View child = getChild(v, item, expenseList, expense);
 							llItemsExpenseItems.addView(child);
-							obj.childList.add(child);
+							item.childList.add(child);
 						}
-						obj.isAdded = true;
+						item.isAdded = true;
 					}
 					CodePanUtils.expandView(llItemsExpenseItems, true);
 					ivCollapsibleExpenseItems.setImageResource(R.drawable.ic_up_dark);
-					obj.isOpen = true;
+					item.isOpen = true;
 				}
 				else {
 					CodePanUtils.collapseView(llItemsExpenseItems, true);
 					ivCollapsibleExpenseItems.setImageResource(R.drawable.ic_down_dark);
-					obj.isOpen = false;
+					item.isOpen = false;
 				}
 			}
 		});
@@ -166,16 +167,16 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 
 	public void addExpenseItem(String dDate, String dTime, String expenseID) {
 		for(int i = 0; i < expenseItemsList.size(); i++) {
-			ExpenseItemsObj obj = expenseItemsList.get(i);
-			if(obj.dDate.equals(dDate)) {
-				if(obj.isAdded) {
+			ExpenseItemsObj item = expenseItemsList.get(i);
+			if(item.dDate.equals(dDate)) {
+				if(item.isAdded) {
 					LinearLayout llItemsExpenseItems = (LinearLayout) lvExpenseItems.getChildAt(i).findViewById(R.id.llItemsExpenseItems);
-					obj.childList = new ArrayList<>();
-					ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, obj.dDate);
+					item.childList = new ArrayList<>();
+					ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, item.dDate);
 					for(ExpenseObj expense : expenseList) {
 						View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, llItemsExpenseItems, false);
-						View child = getChild(v, obj, expenseList, expense);
-						obj.childList.add(child);
+						View child = getChild(v, item, expenseList, expense);
+						item.childList.add(child);
 					}
 					adapter.notifyDataSetChanged();
 					lvExpenseItems.invalidate();
@@ -183,20 +184,23 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 				return;
 			}
 		}
-		ExpenseItemsObj obj = new ExpenseItemsObj();
-		obj.dDate = dDate;
-		obj.totalAmount = 0;
-		obj.childList = new ArrayList<>();
+		ExpenseItemsObj item = new ExpenseItemsObj();
+		item.dDate = dDate;
+		item.totalAmount = 0;
+		item.childList = new ArrayList<>();
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		ExpenseObj expense = new ExpenseObj();
 		expense.ID = expenseID;
 		expense.dDate = dDate;
 		expense.dTime = dTime;
+		ExpenseTypeObj type = new ExpenseTypeObj();
+		type.name = "Expense 1";
+		expense.type = type;
 		expenseList.add(expense);
 		View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, container, false);
-		View child = getChild(v, obj, expenseList, expense);
-		obj.childList.add(child);
-		expenseItemsList.add(0, obj);
+		View child = getChild(v, item, expenseList, expense);
+		item.childList.add(child);
+		expenseItemsList.add(0, item);
 		if(expenseItemsList.size() == 0) {
 			rlPlaceholderExpenseItems.setVisibility(View.VISIBLE);
 		}
@@ -238,9 +242,8 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		}
 	});
 
-	public View getChild(final View view, final ExpenseItemsObj obj, final ArrayList<ExpenseObj> expenseList, final ExpenseObj expense) {
-		final String expenseID = expense.ID;
-		final int expenseType = expense.typeID;
+	public View getChild(final View view, final ExpenseItemsObj item, final ArrayList<ExpenseObj> expenseList, final ExpenseObj expense) {
+		final String name = expense.type.name;
 		String time = CodePanUtils.getNormalTime(expense.dTime, false);
 		final String amount = nf.format(expense.amount);
 		RelativeLayout rlExpenseItems = (RelativeLayout) view.findViewById(R.id.rlExpenseItems);
@@ -256,9 +259,9 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 					@Override
 					public void onUpdateExpense(ExpenseObj updatedExpense) {
 						int pos = expenseList.indexOf(expense);
-						View child = getChild(view, obj, expenseList, expense);
-						obj.childList.set(pos, child);
-						obj.totalAmount = updateTotalAmount(obj.childList);
+						View child = getChild(view, item, expenseList, expense);
+						item.childList.set(pos, child);
+						item.totalAmount = updateTotalAmount(item.childList);
 						adapter.notifyDataSetChanged();
 						lvExpenseItems.invalidate();
 					}
@@ -276,15 +279,15 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 			public boolean onLongClick(View v) {
 				String bold = getString(R.string.proxima_nova_bold);
 				String text = getString(R.string.delete_expense_items_message);
-				String message = text + (expenseType == 0 ? "Expense " + expenseID : expenseType) + " PHP " + amount;
+				String message = text + name + " PHP " + amount;
 				int start1 = text.length();
-				int end1 = start1 + (expenseType == 0 ? ("Expense " + expenseID).length() : String.valueOf(expenseType).length());
+				int end1 = start1 + name.length();
 				int start2 = end1 + 5;
 				int end2 = start2 + amount.length();
 				ArrayList<SpannableMap> list = new ArrayList<>();
 				list.add(new SpannableMap(main, bold, start1, end1));
 				list.add(new SpannableMap(main, bold, start2, end2));
-				final AlertDialogFragment alert = new AlertDialogFragment();
+				AlertDialogFragment alert = new AlertDialogFragment();
 				alert.setDialogTitle(R.string.delete_expense_items_title);
 				alert.setDialogMessage(message);
 				alert.setSpannableList(list);
@@ -300,10 +303,10 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 						if(TarkieLib.deleteExpense(db, expense.ID)) {
 							int pos = expenseList.indexOf(expense);
 							expenseList.remove(pos);
-							obj.childList.remove(pos);
-							obj.totalAmount = updateTotalAmount(obj.childList);
-							if(obj.childList.size() == 0) {
-								expenseItemsList.remove(obj);
+							item.childList.remove(pos);
+							item.totalAmount = updateTotalAmount(item.childList);
+							if(item.childList.size() == 0) {
+								expenseItemsList.remove(item);
 								if(expenseItemsList.size() == 0) {
 									rlPlaceholderExpenseItems.setVisibility(View.VISIBLE);
 								}
@@ -314,7 +317,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 							adapter.notifyDataSetChanged();
 							lvExpenseItems.invalidate();
 							manager.popBackStack();
-							CodePanUtils.alertToast(main, (expenseType == 0 ? "Expense " + expenseID : expenseType) + " has been successfully deleted.", Toast.LENGTH_SHORT);
+							CodePanUtils.alertToast(main, name + " has been successfully deleted.", Toast.LENGTH_SHORT);
 						}
 					}
 				});
@@ -327,7 +330,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 				return true;
 			}
 		});
-		tvExpenseType.setText(expenseType == 0 ? "Expense " + expenseID : "" + expenseType);
+		tvExpenseType.setText(name);
 		tvTime.setText(time);
 		tvAmount.setText(amount);
 		return view;

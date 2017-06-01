@@ -1579,16 +1579,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		GpsObj gps = getGps();
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
-		String expenseID = TarkieLib.saveExpense(db, dDate, dTime, gps);
-		if(!expenseID.isEmpty()) {
+		String ID = TarkieLib.saveExpense(db, dDate, dTime, gps);
+		if(!ID.isEmpty()) {
 			if(tabType.equals(TabType.EXPENSE)) {
 				Fragment fragment = manager.findFragmentByTag(tabType);
 				if(fragment != null) {
 					ExpenseFragment expense = (ExpenseFragment) fragment;
-					expense.addExpenseItem(dDate, dTime, expenseID);
+					expense.addExpenseItem(dDate, dTime, ID);
 				}
 			}
-			CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " " +
+			CodePanUtils.alertToast(MainActivity.this, "Expense " + ID + " " +
 					"has been added. You may enter more details later.");
 		}
 		return true;

@@ -1,7 +1,5 @@
 package com.mobileoptima.tarkieattendance;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,7 +21,11 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.callback.Interface.OnUpdateExpenseCallback;
+import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.core.TarkieLib;
+import com.mobileoptima.model.ExpenseDefaultObj;
+import com.mobileoptima.model.ExpenseFuelConsumptionObj;
+import com.mobileoptima.model.ExpenseFuelPurchaseObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -39,7 +41,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 	private CodePanTextField etStoreExpenseItemsDetails, etAmountExpenseItemsDetails, etStartExpenseItemsDetails, etEndExpenseItemsDetails, etNotesExpenseItemsDetails;
 	private CheckBox cbWithORExpenseItemsDetails;
 	private DisplayImageOptions options;
-	private ExpenseObj obj;
 	private FragmentManager manager;
 	private FragmentTransaction transaction;
 	private ImageLoader imageLoader;
@@ -91,36 +92,52 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		btnSaveExpenseItemsDetails.setOnClickListener(this);
 		btnItemExpenseItemsDetails.setOnClickListener(this);
 		btnPhotoExpenseItemsDetails.setOnClickListener(this);
-		if(obj.isSubmit) {
-			btnSaveExpenseItemsDetails.setEnabled(false);
-			etStoreExpenseItemsDetails.setEnabled(false);
-			btnItemExpenseItemsDetails.setEnabled(false);
-			btnPhotoExpenseItemsDetails.setEnabled(false);
-			etAmountExpenseItemsDetails.setEnabled(false);
-			etStartExpenseItemsDetails.setEnabled(false);
-			etEndExpenseItemsDetails.setEnabled(false);
-			cbWithORExpenseItemsDetails.setEnabled(false);
-			etNotesExpenseItemsDetails.setEnabled(false);
-		}
-		etStoreExpenseItemsDetails.setText(String.valueOf(obj.storeID));
-		btnItemExpenseItemsDetails.setText(obj.typeID == 0 ? "Expense " + obj.ID : String.valueOf(obj.typeID));
-		tvDatetExpenseItemsDetails.setText(obj.dDate);
-		tvTimeExpenseItemsDetails.setText(obj.dTime);
-		if(obj.defPhoto != null && !obj.defPhoto.isEmpty()) {
-			Bitmap photo = BitmapFactory.decodeFile(obj.defPhoto);
-			ivPhotoExpenseItemsDetails.setImageBitmap(photo);
-		}
-		etAmountExpenseItemsDetails.setText(nf.format(obj.amount));
-		editText(etAmountExpenseItemsDetails);
-		etStartExpenseItemsDetails.setText(obj.defStart);
-		etEndExpenseItemsDetails.setText(obj.defEnd);
-		cbWithORExpenseItemsDetails.setChecked(obj.defWithOR);
-		etNotesExpenseItemsDetails.setText(obj.notes);
+//		if(expense.isSubmit) {
+//			btnSaveExpenseItemsDetails.setEnabled(false);
+//			etStoreExpenseItemsDetails.setEnabled(false);
+//			btnItemExpenseItemsDetails.setEnabled(false);
+//			btnPhotoExpenseItemsDetails.setEnabled(false);
+//			etAmountExpenseItemsDetails.setEnabled(false);
+//			etStartExpenseItemsDetails.setEnabled(false);
+//			etEndExpenseItemsDetails.setEnabled(false);
+//			cbWithORExpenseItemsDetails.setEnabled(false);
+//			etNotesExpenseItemsDetails.setEnabled(false);
+//		}
+//		etStoreExpenseItemsDetails.setText(String.valueOf(expense.storeID));
+//		btnItemExpenseItemsDetails.setText(expense.typeID == 0 ? "Expense " + expense.ID : String.valueOf(expense.typeID));
+//		tvDatetExpenseItemsDetails.setText(expense.dDate);
+//		tvTimeExpenseItemsDetails.setText(expense.dTime);
+//		if(expense.defPhoto != null && !expense.defPhoto.isEmpty()) {
+//			Bitmap photo = BitmapFactory.decodeFile(expense.defPhoto);
+//			ivPhotoExpenseItemsDetails.setImageBitmap(photo);
+//		}
+//		etAmountExpenseItemsDetails.setText(nf.format(expense.amount));
+//		editText(etAmountExpenseItemsDetails);
+//		etStartExpenseItemsDetails.setText(expense.defStart);
+//		etEndExpenseItemsDetails.setText(expense.defEnd);
+//		cbWithORExpenseItemsDetails.setChecked(expense.defWithOR);
+//		etNotesExpenseItemsDetails.setText(expense.notes);
 		return view;
 	}
 
-	public void setExpense(ExpenseObj obj) {
-		this.obj = obj;
+	public void setExpense(ExpenseObj expense) {
+		String type = expense.type.ID;
+		if(type != null) {
+			switch(Integer.valueOf(type)) {
+				case ExpenseType.FUEL_CONSUMPTION:
+					ExpenseFuelConsumptionObj fc = (ExpenseFuelConsumptionObj) expense;
+					updateDetails();
+					break;
+				case ExpenseType.FUEL_PURCHASE:
+					ExpenseFuelPurchaseObj fp = (ExpenseFuelPurchaseObj) expense;
+					updateDetails();
+					break;
+				default:
+					ExpenseDefaultObj d = (ExpenseDefaultObj) expense;
+					updateDetails();
+					break;
+			}
+		}
 	}
 
 	public void setOnUpdateExpenseCallback(OnUpdateExpenseCallback saveExpenseCallback) {
@@ -135,50 +152,51 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				break;
 			case R.id.btnSaveExpenseItemsDetails:
 				CodePanUtils.hideKeyboard(view, getActivity());
-				obj.notes = etNotesExpenseItemsDetails.getText().toString();
-				obj.amount = Float.parseFloat(etAmountExpenseItemsDetails.getText().toString().replace(",", ""));
-				if(obj.typeID == 1) {
-					obj.fcStart = "";
-					obj.fcEnd = "";
-					obj.fcRate = "";
-					obj.fcStartPhoto = "";
-					obj.fcEndPhoto = "";
-				}
-				else if(obj.typeID == 2) {
-					obj.fpStart = "";
-					obj.fpLiters = "";
-					obj.fpPrice = "";
-					obj.fpPhoto = "";;
-					obj.fpStartPhoto = "";
-					obj.fpWithOR = cbWithORExpenseItemsDetails.isChecked();
-				}
-				else {
-					obj.defStart = etStartExpenseItemsDetails.getText().toString();
-					obj.defEnd = etEndExpenseItemsDetails.getText().toString();
-					obj.defPhoto = "";
-					obj.defWithOR = cbWithORExpenseItemsDetails.isChecked();
-				}
-				if(TarkieLib.updateExpense(db, obj)) {
-					if(updateExpenseCallback != null) {
-						updateExpenseCallback.onUpdateExpense(obj);
-					}
-					final AlertDialogFragment alert = new AlertDialogFragment();
-					alert.setDialogTitle(R.string.save_expense_items_title);
-					alert.setDialogMessage(R.string.save_expense_items_message);
-					alert.setPositiveButton("Ok", new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							manager.popBackStack();
-							manager.popBackStack();
-						}
-					});
-					transaction = manager.beginTransaction();
-					transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-							R.anim.fade_in, R.anim.fade_out);
-					transaction.add(R.id.rlMain, alert);
-					transaction.addToBackStack(null);
-					transaction.commit();
-				}
+//				expense.notes = etNotesExpenseItemsDetails.getText().toString();
+//				expense.amount = Float.parseFloat(etAmountExpenseItemsDetails.getText().toString().replace(",", ""));
+//				if(expense.typeID == 1) {
+//					expense.fcStart = "";
+//					expense.fcEnd = "";
+//					expense.fcRate = "";
+//					expense.fcStartPhoto = "";
+//					expense.fcEndPhoto = "";
+//				}
+//				else if(expense.typeID == 2) {
+//					expense.fpStart = "";
+//					expense.fpLiters = "";
+//					expense.fpPrice = "";
+//					expense.fpPhoto = "";;
+//					expense.fpStartPhoto = "";
+//					expense.fpWithOR = cbWithORExpenseItemsDetails.isChecked();
+//				}
+//				else {
+//					expense.defStart = etStartExpenseItemsDetails.getText().toString();
+//					expense.defEnd = etEndExpenseItemsDetails.getText().toString();
+//					expense.defPhoto = "";
+//					expense.defWithOR = cbWithORExpenseItemsDetails.isChecked();
+//				}
+//
+//				if(TarkieLib.updateExpense(db, expense)) {
+//					if(updateExpenseCallback != null) {
+//						updateExpenseCallback.onUpdateExpense(expense);
+//					}
+//					AlertDialogFragment alert = new AlertDialogFragment();
+//					alert.setDialogTitle(R.string.save_expense_items_title);
+//					alert.setDialogMessage(R.string.save_expense_items_message);
+//					alert.setPositiveButton("Ok", new OnClickListener() {
+//						@Override
+//						public void onClick(View view) {
+//							manager.popBackStack();
+//							manager.popBackStack();
+//						}
+//					});
+//					transaction = manager.beginTransaction();
+//					transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+//							R.anim.fade_in, R.anim.fade_out);
+//					transaction.add(R.id.rlMain, alert);
+//					transaction.addToBackStack(null);
+//					transaction.commit();
+//				}
 				break;
 		}
 	}
@@ -206,6 +224,10 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 			}
 		});
 		return false;
+	}
+
+	public void updateDetails() {
+
 	}
 
 	public void editText(View view) {

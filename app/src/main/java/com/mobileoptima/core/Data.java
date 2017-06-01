@@ -25,6 +25,7 @@ import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseReportsObj;
+import com.mobileoptima.model.ExpenseTypeObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
@@ -50,7 +51,6 @@ import java.util.ArrayList;
 import static com.codepan.database.Condition.Operator;
 
 public class Data {
-
 	public static ArrayList<InventoryObj> loadInventory(SQLiteAdapter db) {
 		ArrayList<InventoryObj> inventoryList = new ArrayList<>();
 		InventoryObj tracking = new InventoryObj();
@@ -808,59 +808,18 @@ public class Data {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT ID, dDate, dTime, amount, typeID, storeID, notes, isTag, isSubmit FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
+		String query = "SELECT ID, dTime, amount, typeID, typeName FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			ExpenseObj obj = new ExpenseObj();
-			obj.ID = cursor.getString(0);
-			obj.dDate = cursor.getString(1);
-			obj.dTime = cursor.getString(2);
-			obj.amount = cursor.getFloat(3);
-			obj.typeID = cursor.getInt(4);
-			obj.storeID = cursor.getInt(5);
-			obj.notes = cursor.getString(6);
-			obj.isTag = cursor.getInt(7) == 1;
-			obj.isSubmit = cursor.getInt(8) == 1;
-			if(obj.typeID == 1) {
-				table = Tables.getName(TB.EXPENSE_FUEL_CONSUMPTION);
-				query = "SELECT start, end, rate, startPhoto, endPhoto FROM " + table + " WHERE expenseID = " + obj.ID;
-				Cursor c = db.read(query);
-				while(c.moveToNext()) {
-					obj.fcStart = c.getString(0);
-					obj.fcEnd = c.getString(1);
-					obj.fcRate = c.getString(2);
-					obj.fcStartPhoto = c.getString(3);
-					obj.fcEndPhoto = c.getString(4);
-				}
-				c.close();
-			}
-			else if(obj.typeID == 2) {
-				table = Tables.getName(TB.EXPENSE_FUEL_PURCHASE);
-				query = "SELECT start, liters, price, photo, startPhoto, withOR FROM " + table + " WHERE expenseID = " + obj.ID;
-				Cursor c = db.read(query);
-				while(c.moveToNext()) {
-					obj.fpStart = c.getString(0);
-					obj.fpLiters = c.getString(1);
-					obj.fpPrice = c.getString(2);
-					obj.fpPhoto = c.getString(3);
-					obj.fpStartPhoto = c.getString(4);
-					obj.fpWithOR = c.getInt(5) == 1;
-				}
-				c.close();
-			}
-			else {
-				table = Tables.getName(TB.EXPENSE_DEFAULT);
-				query = "SELECT start, end, photo, withOR FROM " + table + " WHERE expenseID = " + obj.ID;
-				Cursor c = db.read(query);
-				while(c.moveToNext()) {
-					obj.defStart = c.getString(0);
-					obj.defEnd = c.getString(1);
-					obj.defPhoto = c.getString(2);
-					obj.defWithOR = c.getInt(3) == 1;
-				}
-				c.close();
-			}
-			expenseList.add(obj);
+			ExpenseObj expense = new ExpenseObj();
+			expense.ID = cursor.getString(0);
+			expense.dTime = cursor.getString(1);
+			expense.amount = cursor.getFloat(2);
+			ExpenseTypeObj type = new ExpenseTypeObj();
+			type.ID = cursor.getString(3);
+			type.name = cursor.getString(4);
+			expense.type = type;
+			expenseList.add(expense);
 		}
 		cursor.close();
 		return expenseList;
