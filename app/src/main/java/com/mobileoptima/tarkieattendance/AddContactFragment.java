@@ -54,7 +54,7 @@ public class AddContactFragment extends Fragment implements OnClickListener {
 		tfTel = (CodePanTextField) view.findViewById(R.id.tfTel);
 		tfEmail = (CodePanTextField) view.findViewById(R.id.tfEmail);
 		tfBirthday = (CodePanTextField) view.findViewById(R.id.tfBirthday);
-		tfRemarks = (CodePanTextField) view.findViewById(R.id.tfRemarks);
+		tfRemarks = (CodePanTextField) view.findViewById(R.id.tfRemarks);//
 		return view;
 	}
 
