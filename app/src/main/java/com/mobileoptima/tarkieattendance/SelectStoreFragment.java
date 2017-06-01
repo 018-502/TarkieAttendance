@@ -103,6 +103,7 @@ public class SelectStoreFragment extends Fragment implements OnClickListener, On
 
 	@Override
 	public void onSelectStore(StoreObj store) {
+		manager.popBackStack();
 		btnSelectStore.setText(store.name);
 		this.store = store;
 	}

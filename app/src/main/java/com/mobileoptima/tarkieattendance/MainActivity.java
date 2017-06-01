@@ -24,6 +24,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -86,12 +87,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		OnOverrideCallback, OnLoginCallback, OnInitializeCallback, ServiceConnection,
 		OnTimeValidatedCallback, OnGpsFixedCallback, OnCountdownFinishCallback,
 		OnHighlightEntriesCallback, OnMultiUpdateCallback, OnSaveEntryCallback,
-		OnTimeInCallback, OnTimeOutCallback, OnSelectStoreCallback {
+		OnTimeInCallback, OnTimeOutCallback, OnSelectStoreCallback, OnLongClickListener {
 
-	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain, tvEmployeeNoMain;
+	private CodePanLabel tvTimeInMain, tvSyncMain, tvLastSyncMain, tvEmployeeNameMain,
+			tvEmployeeNoMain, tvClientsMenu;
 	private boolean isInitialized, isOverridden, isServiceConnected, isPause, isSecured, isGpsOff;
-	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain, btnExpenseMain, btnPhotosMain,
-			btnEntriesMain, btnSelectMain, btnMenuMain, btnAddVisitMain, btnAddExpenseReportMain;
+	private CodePanButton btnNotificationMain, btnSyncMain, btnHomeMain, btnVisitsMain,
+			btnExpenseMain, btnPhotosMain, btnEntriesMain, btnSelectMain, btnMenuMain,
+			btnAddVisitMain, btnAddExpenseReportMain;
 	private View vHomeMain, vVisitsMain, vExpenseMain, vPhotosMain, vEntriesMain;
 	private OnPermissionGrantedCallback permissionGrantedCallback;
 	private ImageView ivTimeInMain, ivTimeOutMain, ivLogoMain;
@@ -166,6 +169,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		btnEntriesMain = (CodePanButton) findViewById(R.id.btnEntriesMain);
 		btnSelectMain = (CodePanButton) findViewById(R.id.btnSelectMain);
 		btnAddVisitMain = (CodePanButton) findViewById(R.id.btnAddVisitMain);
+		tvClientsMenu = (CodePanLabel) findViewById(R.id.tvClientsMenu);
 		btnAddExpenseReportMain = (CodePanButton) findViewById(R.id.btnAddExpenseReportMain);
 		btnMenuMain = (CodePanButton) findViewById(R.id.btnMenuMain);
 		llTimeInMain = (LinearLayout) findViewById(R.id.llTimeInMain);
@@ -177,7 +181,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		vExpenseMain = findViewById(R.id.vExpenseMain);
 		vPhotosMain = findViewById(R.id.vPhotosMain);
 		vEntriesMain = findViewById(R.id.vEntriesMain);
-		tvClientsMenu = (CodePanLabel) findViewById(R.id.tvClientsMenu);
 		findViewById(R.id.llAttendanceMain).setOnClickListener(this);
 		findViewById(R.id.llBreaksMain).setOnClickListener(this);
 		findViewById(R.id.llClientsMain).setOnClickListener(this);
@@ -193,33 +196,14 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		llTimeInMain.setOnClickListener(this);
 		btnSelectMain.setOnClickListener(this);
 		btnAddVisitMain.setOnClickListener(this);
-		btnAddExpenseReportMain.setOnClickListener(this);
 		btnHomeMain.setOnClickListener(this);
 		btnVisitsMain.setOnClickListener(this);
 		btnExpenseMain.setOnClickListener(this);
-		btnExpenseMain.setOnLongClickListener(new View.OnLongClickListener() {
-			@Override
-			public boolean onLongClick(View v) {
-				GpsObj gps = getGps();
-				String dDate = CodePanUtils.getDate();
-				String dTime = CodePanUtils.getTime();
-				String expenseID = TarkieLib.saveExpense(db, dDate, dTime, gps);
-				if(!expenseID.isEmpty()) {
-					if(tabType.equals(TabType.EXPENSE)) {
-						Fragment fragment = manager.findFragmentByTag(tabType);
-						if(fragment != null) {
-							ExpenseFragment expense = (ExpenseFragment) fragment;
-							expense.addExpenseItem(dDate, dTime, expenseID);
-						}
-					}
-					CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " has been added. You may enter more details later.");
-				}
-				return true;
-			}
-		});
 		btnPhotosMain.setOnClickListener(this);
 		btnEntriesMain.setOnClickListener(this);
 		btnNotificationMain.setOnClickListener(this);
+		btnExpenseMain.setOnLongClickListener(this);
+		btnAddExpenseReportMain.setOnClickListener(this);
 		btnSyncMain.setOnClickListener(this);
 		btnMenuMain.setOnClickListener(this);
 		int color = getResources().getColor(R.color.black_trans_twenty);
@@ -549,7 +533,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 						transaction = manager.beginTransaction();
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-						transaction.replace(R.id.rlStores, contacts);
+						transaction.add(R.id.rlMain, contacts);
 						transaction.addToBackStack(null);
 						transaction.hide(stores);
 						transaction.commit();
@@ -918,10 +902,10 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	}
 
 	public void setConventions() {
-		conventionClient = TarkieLib.getConvention(db, Convention.STORES);
-		if(conventionClient != null) {
-			conventionClient = StringUtils.capitalize(conventionClient);
-			tvClientsMenu.setText(conventionClient);
+		String convention = TarkieLib.getConvention(db, Convention.STORES);
+		if(convention != null) {
+			convention = StringUtils.capitalize(convention);
+			tvClientsMenu.setText(convention);
 		}
 	}
 
@@ -1588,5 +1572,25 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		}
 		transaction.addToBackStack(null);
 		transaction.commit();
+	}
+
+	@Override
+	public boolean onLongClick(View view) {
+		GpsObj gps = getGps();
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		String expenseID = TarkieLib.saveExpense(db, dDate, dTime, gps);
+		if(!expenseID.isEmpty()) {
+			if(tabType.equals(TabType.EXPENSE)) {
+				Fragment fragment = manager.findFragmentByTag(tabType);
+				if(fragment != null) {
+					ExpenseFragment expense = (ExpenseFragment) fragment;
+					expense.addExpenseItem(dDate, dTime, expenseID);
+				}
+			}
+			CodePanUtils.alertToast(MainActivity.this, "Expense " + expenseID + " " +
+					"has been added. You may enter more details later.");
+		}
+		return true;
 	}
 }

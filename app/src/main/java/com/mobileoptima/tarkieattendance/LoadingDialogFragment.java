@@ -100,7 +100,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 		String title = null;
 		switch(action) {
 			case AUTHORIZE_DEVICE:
-				setMax(10);
+				setMax(9);
 				successMsg = "Authorization successful.";
 				failedMsg = "Failed to authorize the device.";
 				title = "Authorizing Device";

@@ -280,7 +280,6 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
-<<<<<<<<< Temporary merge branch 1
 		column = "isEnabled";
 		table = Tables.getName(TB.GPS);
 		if(!db.isColumnExists(table, column)) {

@@ -43,6 +43,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	private final long IDLE_TIME = 500;
 
 	private boolean isEnd, isPause, isPending, isAdded;
+	private CodePanButton btnBackStores, btnAddStore;
 	private OnSelectStoreCallback selectStoreCallback;
 	private int visibleItem, totalItem, firstVisible;
 	private OnFragmentCallback fragmentCallback;
@@ -51,7 +52,6 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	private CodePanTextField etSearchStores;
 	private ArrayList<StoreObj> storeList;
 	private CodePanLabel tvTitleStores;
-	private CodePanButton btnBackStores;
 	private Handler inputFinishHandler;
 	private ImageView ivLoadingStores;
 	private FragmentManager manager;
@@ -110,6 +110,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		tvTitleStores = (CodePanLabel) view.findViewById(R.id.tvTitleStores);
 		etSearchStores = (CodePanTextField) view.findViewById(R.id.etSearchStores);
 		btnBackStores = (CodePanButton) view.findViewById(R.id.btnBackStores);
+		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
 		lvStores = (ListView) view.findViewById(R.id.lvStores);
 		btnBackStores.setOnClickListener(this);
@@ -120,7 +121,6 @@ public class StoresFragment extends Fragment implements OnClickListener {
 				CodePanUtils.hideKeyboard(etSearchStores, getActivity());
 				if(selectStoreCallback != null) {
 					selectStoreCallback.onSelectStore(obj);
-					manager.popBackStack();
 				}
 			}
 		});
@@ -167,6 +167,8 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		});
 		if(convention != null) {
 			tvTitleStores.setText(convention);
+			String action = "ADD " + convention.toUpperCase();
+			btnAddStore.setText(action);
 		}
 		loadStores(db, search);
 		return view;

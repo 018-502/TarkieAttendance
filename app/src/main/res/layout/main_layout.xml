@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<<<< Temporary merge branch 1
 <RelativeLayout
+    android:id="@+id/rlMain"
     xmlns:android="http://schemas.android.com/apk/res/android"
-=========
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
->>>>>>>>> Temporary merge branch 2
     xmlns:circular="http://schemas.android.com/apk/res-auto"
     xmlns:codePan="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rlMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.mobileoptima.tarkieattendance.MainActivity">
@@ -29,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_bg_pri" />
+                android:src="@drawable/ic_bg_pri"/>
 
             <RelativeLayout
                 android:id="@+id/rlHeaderMain"
@@ -56,7 +52,7 @@
                         <ImageView
                             android:layout_width="@dimen/fourteen"
                             android:layout_height="@dimen/fourteen"
-                            android:src="@drawable/ic_menu" />
+                            android:src="@drawable/ic_menu"/>
 
                         <com.codepan.widget.CodePanLabel
                             android:layout_width="wrap_content"
@@ -66,7 +62,7 @@
                             android:text="@string/menu"
                             android:textColor="@color/white"
                             android:textSize="@dimen/eighteen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
@@ -74,7 +70,7 @@
                         android:id="@+id/btnMenuMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -91,7 +87,7 @@
                         android:layout_width="@dimen/twenty_one"
                         android:layout_height="@dimen/twenty"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/ic_notification" />
+                        android:src="@drawable/ic_notification"/>
 
                     <com.codepan.widget.CodePanLabel
                         android:id="@+id/tvNotificationMain"
@@ -110,13 +106,13 @@
                         android:visibility="gone"
                         codePan:reference="dynamic"
                         codePan:setSquare="true"
-                        codePan:typeface="@string/proxima_nova_bold" />
+                        codePan:typeface="@string/proxima_nova_bold"/>
 
                     <com.codepan.widget.CodePanButton
                         android:id="@+id/btnNotificationMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </RelativeLayout>
 
@@ -133,7 +129,7 @@
                         android:layout_width="@dimen/twenty_seven"
                         android:layout_height="@dimen/nineteen"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/ic_sync" />
+                        android:src="@drawable/ic_sync"/>
 
                     <com.codepan.widget.CodePanLabel
                         android:id="@+id/tvSyncMain"
@@ -152,13 +148,13 @@
                         android:visibility="gone"
                         codePan:reference="dynamic"
                         codePan:setSquare="true"
-                        codePan:typeface="@string/proxima_nova_bold" />
+                        codePan:typeface="@string/proxima_nova_bold"/>
 
                     <com.codepan.widget.CodePanButton
                         android:id="@+id/btnSyncMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </RelativeLayout>
 
@@ -176,13 +172,13 @@
                         android:layout_width="@dimen/twenty"
                         android:layout_height="@dimen/twenty_one"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/ic_search_light" />
+                        android:src="@drawable/ic_search_light"/>
 
                     <com.codepan.widget.CodePanButton
                         android:id="@+id/btnSearchMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </RelativeLayout>
 
@@ -207,7 +203,7 @@
                     android:textColor="@color/blue_pri"
                     android:textSize="@dimen/thirteen"
                     android:visibility="gone"
-                    codePan:typeface="@string/proxima_nova_mid" />
+                    codePan:typeface="@string/proxima_nova_mid"/>
 
                 <RelativeLayout
                     android:id="@+id/rlDateMain"
@@ -223,13 +219,13 @@
                         android:layout_width="@dimen/twenty"
                         android:layout_height="@dimen/twenty_one"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/ic_calendar" />
+                        android:src="@drawable/ic_calendar"/>
 
                     <com.codepan.widget.CodePanButton
                         android:id="@+id/btnDateMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </RelativeLayout>
 
@@ -254,7 +250,7 @@
                     android:textColor="@color/blue_pri"
                     android:textSize="@dimen/thirteen"
                     android:visibility="gone"
-                    codePan:typeface="@string/proxima_nova_mid" />
+                    codePan:typeface="@string/proxima_nova_mid"/>
 
                 <com.codepan.widget.CodePanButton
                     android:id="@+id/btnAddExpenseReportMain"
@@ -287,7 +283,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/llTabMain"
-                android:layout_below="@+id/rlHeaderMain" />
+                android:layout_below="@+id/rlHeaderMain"/>
 
             <LinearLayout
                 android:id="@+id/llTabMain"
@@ -306,7 +302,7 @@
                         android:id="@+id/vHomeMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/black_trans_ten" />
+                        android:background="@color/black_trans_ten"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -324,7 +320,7 @@
                                 android:layout_width="@dimen/thirty_three"
                                 android:layout_height="@dimen/twenty_seven"
                                 android:layout_gravity="center_horizontal|bottom"
-                                android:src="@drawable/ic_home" />
+                                android:src="@drawable/ic_home"/>
 
                         </FrameLayout>
 
@@ -336,7 +332,7 @@
                             android:text="@string/tab_home"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </LinearLayout>
 
@@ -344,7 +340,7 @@
                         android:id="@+id/btnHomeMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -358,7 +354,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/black_trans_ten"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -376,7 +372,7 @@
                                 android:layout_width="@dimen/twenty_six"
                                 android:layout_height="@dimen/twenty_seven"
                                 android:layout_gravity="center_horizontal|bottom"
-                                android:src="@drawable/ic_visits" />
+                                android:src="@drawable/ic_visits"/>
 
                         </FrameLayout>
 
@@ -388,7 +384,7 @@
                             android:text="@string/tab_visits"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </LinearLayout>
 
@@ -396,7 +392,7 @@
                         android:id="@+id/btnVisitsMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -410,7 +406,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/black_trans_ten"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -428,7 +424,7 @@
                                 android:layout_width="@dimen/twenty_seven"
                                 android:layout_height="@dimen/twenty_seven"
                                 android:layout_gravity="center_horizontal|bottom"
-                                android:src="@drawable/ic_expense" />
+                                android:src="@drawable/ic_expense"/>
 
                         </FrameLayout>
 
@@ -440,7 +436,7 @@
                             android:text="@string/tab_expense"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </LinearLayout>
 
@@ -448,7 +444,7 @@
                         android:id="@+id/btnExpenseMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -463,7 +459,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/black_trans_ten"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -481,7 +477,7 @@
                                 android:layout_width="@dimen/twenty_nine"
                                 android:layout_height="@dimen/twenty_seven"
                                 android:layout_gravity="center_horizontal|bottom"
-                                android:src="@drawable/ic_inventory" />
+                                android:src="@drawable/ic_inventory"/>
 
                         </FrameLayout>
 
@@ -493,7 +489,7 @@
                             android:text="@string/tab_inventory"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </LinearLayout>
 
@@ -501,7 +497,7 @@
                         android:id="@+id/btnInventoryMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -515,7 +511,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/black_trans_ten"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -533,7 +529,7 @@
                                 android:layout_width="@dimen/thirty_one"
                                 android:layout_height="@dimen/twenty_five"
                                 android:layout_gravity="center_horizontal|bottom"
-                                android:src="@drawable/ic_photos" />
+                                android:src="@drawable/ic_photos"/>
 
                         </FrameLayout>
 
@@ -545,7 +541,7 @@
                             android:text="@string/tab_photos"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </LinearLayout>
 
@@ -553,7 +549,7 @@
                         android:id="@+id/btnPhotosMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -567,7 +563,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/black_trans_ten"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -585,7 +581,7 @@
                                 android:layout_width="@dimen/thirty_one"
                                 android:layout_height="@dimen/twenty_five"
                                 android:layout_gravity="center_horizontal|bottom"
-                                android:src="@drawable/ic_entries" />
+                                android:src="@drawable/ic_entries"/>
 
                         </FrameLayout>
 
@@ -597,7 +593,7 @@
                             android:text="@string/tab_entries"
                             android:textColor="@color/white"
                             android:textSize="@dimen/twelve"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </LinearLayout>
 
@@ -605,7 +601,7 @@
                         android:id="@+id/btnEntriesMain"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@drawable/state_rect_trans_dark" />
+                        android:background="@drawable/state_rect_trans_dark"/>
 
                 </FrameLayout>
 
@@ -656,12 +652,7 @@
                                 android:id="@+id/ivLogoMain"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-<<<<<<<<< Temporary merge branch 1
                                 android:scaleType="centerInside"/>
-=========
-                                android:scaleType="centerInside"
-                                android:src="@drawable/ic_logo_miescor" />
->>>>>>>>> Temporary merge branch 2
 
                         </FrameLayout>
 
@@ -670,7 +661,7 @@
                             android:layout_width="@dimen/fifty"
                             android:layout_height="@dimen/fifty"
                             android:src="@drawable/ic_user_placeholder"
-                            circular:borderWidth="5" />
+                            circular:borderWidth="5"/>
 
                         <com.codepan.widget.CodePanLabel
                             android:id="@+id/tvEmployeeNameMain"
@@ -683,7 +674,7 @@
                             android:text="@string/employee_name"
                             android:textColor="@color/white"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                         <com.codepan.widget.CodePanLabel
                             android:id="@+id/tvEmployeeNoMain"
@@ -695,7 +686,7 @@
                             android:text="@string/employee_no"
                             android:textColor="@color/white"
                             android:textSize="@dimen/thirteen"
-                            codePan:typeface="@string/proxima_nova_mid" />
+                            codePan:typeface="@string/proxima_nova_mid"/>
 
                     </RelativeLayout>
 
@@ -719,14 +710,14 @@
                                 android:layout_height="@dimen/twenty"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_menu_time_out"
-                                android:visibility="gone" />
+                                android:visibility="gone"/>
 
                             <ImageView
                                 android:id="@+id/ivTimeInMain"
                                 android:layout_width="@dimen/twenty_five"
                                 android:layout_height="@dimen/twenty_five"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_time_in" />
+                                android:src="@drawable/ic_menu_time_in"/>
 
                         </FrameLayout>
 
@@ -739,14 +730,14 @@
                             android:text="@string/menu_time_in"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                     <LinearLayout
                         android:id="@+id/llAttendanceMain"
@@ -766,7 +757,7 @@
                                 android:layout_width="@dimen/nineteen"
                                 android:layout_height="@dimen/twenty"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_attendance" />
+                                android:src="@drawable/ic_menu_attendance"/>
 
                         </FrameLayout>
 
@@ -778,14 +769,14 @@
                             android:text="@string/menu_attendance"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                     <LinearLayout
                         android:id="@+id/llBreaksMain"
@@ -805,7 +796,7 @@
                                 android:layout_width="@dimen/twenty_five"
                                 android:layout_height="@dimen/twenty_three"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_breaks" />
+                                android:src="@drawable/ic_menu_breaks"/>
 
                         </FrameLayout>
 
@@ -841,7 +832,7 @@
                             android:layout_height="@dimen/twenty_five">
 
                             <ImageView
-                                android:layout_width="@dimen/twenty_three"
+                                android:layout_width="@dimen/twenty_five"
                                 android:layout_height="@dimen/nineteen"
                                 android:layout_gravity="center"
                                 android:src="@drawable/ic_clients"/>
@@ -857,14 +848,14 @@
                             android:text="@string/menu_clients"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                     <LinearLayout
                         android:id="@+id/llUpdateMasterFileMain"
@@ -884,7 +875,7 @@
                                 android:layout_width="@dimen/twenty_three"
                                 android:layout_height="@dimen/nineteen"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_update_master_file" />
+                                android:src="@drawable/ic_menu_update_master_file"/>
 
                         </FrameLayout>
 
@@ -896,14 +887,14 @@
                             android:text="@string/menu_update_master_file"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                     <LinearLayout
                         android:id="@+id/llSendBackUpMain"
@@ -923,7 +914,7 @@
                                 android:layout_width="@dimen/twenty_one"
                                 android:layout_height="@dimen/nineteen"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_send_back_up" />
+                                android:src="@drawable/ic_menu_send_back_up"/>
 
                         </FrameLayout>
 
@@ -935,14 +926,14 @@
                             android:text="@string/menu_send_back_up"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                     <LinearLayout
                         android:id="@+id/llSupportMain"
@@ -962,7 +953,7 @@
                                 android:layout_width="@dimen/twenty"
                                 android:layout_height="@dimen/twenty"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_support" />
+                                android:src="@drawable/ic_menu_support"/>
 
                         </FrameLayout>
 
@@ -974,14 +965,14 @@
                             android:text="@string/menu_support"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                     <LinearLayout
                         android:id="@+id/llSettingsMain"
@@ -1002,7 +993,7 @@
                                 android:layout_width="@dimen/twenty_one"
                                 android:layout_height="@dimen/twenty_one"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_settings" />
+                                android:src="@drawable/ic_menu_settings"/>
 
                         </FrameLayout>
 
@@ -1014,7 +1005,7 @@
                             android:text="@string/menu_settings"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
@@ -1022,7 +1013,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
                         android:background="@color/gray_sec"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/llLocationsMain"
@@ -1043,7 +1034,7 @@
                                 android:layout_width="@dimen/twenty_one"
                                 android:layout_height="@dimen/twenty_one"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_location" />
+                                android:src="@drawable/ic_menu_location"/>
 
                         </FrameLayout>
 
@@ -1055,7 +1046,7 @@
                             android:text="@string/menu_locations"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
@@ -1063,7 +1054,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
                         android:background="@color/gray_sec"
-                        android:visibility="gone" />
+                        android:visibility="gone"/>
 
                     <LinearLayout
                         android:id="@+id/llLogoutMain"
@@ -1083,7 +1074,7 @@
                                 android:layout_width="@dimen/nineteen"
                                 android:layout_height="@dimen/twenty_one"
                                 android:layout_gravity="center"
-                                android:src="@drawable/ic_menu_logout" />
+                                android:src="@drawable/ic_menu_logout"/>
 
                         </FrameLayout>
 
@@ -1095,14 +1086,14 @@
                             android:text="@string/menu_logout"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light" />
+                            codePan:typeface="@string/proxima_nova_light"/>
 
                     </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/one"
-                        android:background="@color/gray_sec" />
+                        android:background="@color/gray_sec"/>
 
                 </LinearLayout>
 
@@ -1118,7 +1109,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/one"
-                    android:background="@color/gray_sec" />
+                    android:background="@color/gray_sec"/>
 
                 <com.codepan.widget.CodePanLabel
                     android:id="@+id/tvLastSyncMain"
@@ -1128,7 +1119,7 @@
                     android:text="@string/last_synced"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/thirteen"
-                    codePan:typeface="@string/proxima_nova_light" />
+                    codePan:typeface="@string/proxima_nova_light"/>
 
             </LinearLayout>
 

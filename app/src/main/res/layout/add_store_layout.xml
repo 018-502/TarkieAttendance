@@ -28,7 +28,7 @@
                 android:src="@drawable/ic_back"/>
 
             <com.codepan.widget.CodePanButton
-                android:id="@+id/btnBackContacts"
+                android:id="@+id/btnBackStoreDetails"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/state_rect_trans_dark"/>
@@ -41,7 +41,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="@string/add_client_normal"
+            android:text="@string/add_store"
             android:textColor="@color/white"
             android:textSize="@dimen/eighteen"
             codePan:typeface="@string/proxima_nova_light"/>

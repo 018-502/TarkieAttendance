@@ -10,13 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.codepan.callback.Interface;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.CodePanLabel;
-import com.mobileoptima.adapter.ContactsAdapter;
+import com.mobileoptima.adapter.StoreDetailsAdapter;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.StoreObj;
@@ -25,11 +24,12 @@ import java.util.ArrayList;
 
 public class StoreDetailsFragment extends Fragment implements OnClickListener, Interface.OnRefreshCallback {
 
-	private FrameLayout flNoContacts;
-	private ListView lvContacts;
-	private FragmentTransaction transaction;
-	private FragmentManager manager;
+	private CodePanLabel tvPlaceholderStoreDetails, tvAddressStoreDetails, tvNameStoreDetails;
 	private ArrayList<ContactObj> contactList;
+	private FragmentTransaction transaction;
+	private StoreDetailsAdapter adapter;
+	private FragmentManager manager;
+	private ListView lvContacts;
 	private SQLiteAdapter db;
 	private StoreObj store;
 
@@ -44,13 +44,16 @@ public class StoreDetailsFragment extends Fragment implements OnClickListener, I
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.store_details_layout, container, false);
-		CodePanLabel lblStoreAddress = (CodePanLabel) view.findViewById(R.id.lblStoreAddress);
-		CodePanLabel lblStoreName = (CodePanLabel) view.findViewById(R.id.lblStoreName);
-		lvContacts = (ListView) view.findViewById(R.id.lvContacts);
-		view.findViewById(R.id.btnAddContact).setOnClickListener(this);
-		view.findViewById(R.id.btnBackContacts).setOnClickListener(this);
-		lblStoreName.setText(store.name);
-		lblStoreAddress.setText(store.address);
+		tvPlaceholderStoreDetails = (CodePanLabel) view.findViewById(R.id.tvPlaceholderStoreDetails);
+		tvAddressStoreDetails = (CodePanLabel) view.findViewById(R.id.tvAddressStoreDetails);
+		tvNameStoreDetails = (CodePanLabel) view.findViewById(R.id.tvNameStoreDetails);
+		lvContacts = (ListView) view.findViewById(R.id.lvStoreDetails);
+		view.findViewById(R.id.btnAddContactStoreDetails).setOnClickListener(this);
+		view.findViewById(R.id.btnBackStoreDetails).setOnClickListener(this);
+		if(store != null) {
+			tvNameStoreDetails.setText(store.name);
+			tvAddressStoreDetails.setText(store.address);
+		}
 		loadContacts(db);
 		return view;
 	}
@@ -58,18 +61,19 @@ public class StoreDetailsFragment extends Fragment implements OnClickListener, I
 	@Override
 	public void onClick(View view) {
 		switch(view.getId()) {
-			case R.id.btnAddContact:
+			case R.id.btnAddContactStoreDetails:
 				AddContactFragment addContact = new AddContactFragment();
 				addContact.setStore(store);
 				addContact.setOnRefreshCallback(this);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-				transaction.replace(R.id.rlContacts, addContact);
+				transaction.add(R.id.rlMain, addContact);
+				transaction.hide(this);
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
-			case R.id.btnBackContacts:
+			case R.id.btnBackStoreDetails:
 				manager.popBackStack();
 				break;
 		}
@@ -81,7 +85,7 @@ public class StoreDetailsFragment extends Fragment implements OnClickListener, I
 			public void run() {
 				try {
 					contactList = Data.loadContacts(db, store.ID);
-					handler.obtainMessage().sendToTarget();
+					handler.sendMessage(handler.obtainMessage());
 				}
 				catch(Exception e) {
 					e.printStackTrace();
@@ -94,9 +98,13 @@ public class StoreDetailsFragment extends Fragment implements OnClickListener, I
 	Handler handler = new Handler(new Handler.Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
-			lvContacts.setAdapter(new ContactsAdapter(getActivity(), contactList));
-			if(contactList.size() != 0) {
-				flNoContacts.setVisibility(View.INVISIBLE);
+			if(!contactList.isEmpty()) {
+				tvPlaceholderStoreDetails.setVisibility(View.INVISIBLE);
+				adapter = new StoreDetailsAdapter(getActivity(), contactList);
+				lvContacts.setAdapter(adapter);
+			}
+			else {
+				tvPlaceholderStoreDetails.setVisibility(View.VISIBLE);
 			}
 			return true;
 		}

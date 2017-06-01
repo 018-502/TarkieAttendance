@@ -19,16 +19,13 @@ import com.mobileoptima.model.StoreObj;
 
 public class AddContactFragment extends Fragment implements OnClickListener {
 
-	private FragmentManager manager;
-	private CodePanTextField tfName;
-	private CodePanTextField tfDesignation;
-	private CodePanTextField tfMobile;
-	private CodePanTextField tfTel;
-	private CodePanTextField tfEmail;
-	private CodePanTextField tfBirthday;
-	private CodePanTextField tfRemarks;
-	private SQLiteAdapter db;
+	private CodePanTextField etDesignationAddContact, etNameAddContact, etMobileAddContact,
+			etLandlineAddContact, etEmailAddContact, etRemarksAddContact;
+	private CodePanButton btnBackContacts, btnAddContact;
 	private OnRefreshCallback refreshCallback;
+	private CodePanLabel tvNameAddContact;
+	private FragmentManager manager;
+	private SQLiteAdapter db;
 	private StoreObj store;
 
 	@Override
@@ -42,38 +39,37 @@ public class AddContactFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.add_contact_layout, container, false);
-		CodePanButton btnBackContacts = (CodePanButton) view.findViewById(R.id.btnBackContacts);
-		CodePanButton btnAddContact = (CodePanButton) view.findViewById(R.id.btnAddContact);
-		CodePanLabel lblName = (CodePanLabel) view.findViewById(R.id.lblName);
+		btnBackContacts = (CodePanButton) view.findViewById(R.id.btnBackStoreDetails);
+		btnAddContact = (CodePanButton) view.findViewById(R.id.btnAddContactStoreDetails);
+		tvNameAddContact = (CodePanLabel) view.findViewById(R.id.tvNameAddContact);
+		etNameAddContact = (CodePanTextField) view.findViewById(R.id.etNameAddContact);
+		etDesignationAddContact = (CodePanTextField) view.findViewById(R.id.etDesignationAddContact);
+		etMobileAddContact = (CodePanTextField) view.findViewById(R.id.etMobileAddContact);
+		etLandlineAddContact = (CodePanTextField) view.findViewById(R.id.etLandlineAddContact);
+		etEmailAddContact = (CodePanTextField) view.findViewById(R.id.etEmailAddContact);
+		etRemarksAddContact = (CodePanTextField) view.findViewById(R.id.etRemarksAddContact);
 		btnBackContacts.setOnClickListener(this);
 		btnAddContact.setOnClickListener(this);
-		TarkieLib.requiredField(lblName, "Name");
-		tfName = (CodePanTextField) view.findViewById(R.id.tfName);
-		tfDesignation = (CodePanTextField) view.findViewById(R.id.tfDesignation);
-		tfMobile = (CodePanTextField) view.findViewById(R.id.tfMobile);
-		tfTel = (CodePanTextField) view.findViewById(R.id.tfTel);
-		tfEmail = (CodePanTextField) view.findViewById(R.id.tfEmail);
-		tfBirthday = (CodePanTextField) view.findViewById(R.id.tfBirthday);
-		tfRemarks = (CodePanTextField) view.findViewById(R.id.tfRemarks);//
+		String name = getString(R.string.name);
+		TarkieLib.requiredField(tvNameAddContact, name);
 		return view;
 	}
 
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()) {
-			case R.id.btnBackContacts:
+			case R.id.btnBackStoreDetails:
 				manager.popBackStack();
 				break;
-			case R.id.btnAddContact:
+			case R.id.btnAddContactStoreDetails:
 				ContactObj contact = new ContactObj();
 				contact.store = store;
-				contact.name = tfName.getText().toString();
-				contact.position = tfDesignation.getText().toString();
-				contact.mobile = tfMobile.getText().toString();
-				contact.landline = tfTel.getText().toString();
-				contact.email = tfEmail.getText().toString();
-				contact.birthday = tfBirthday.getText().toString();
-				contact.remarks = tfRemarks.getText().toString();
+				contact.name = etNameAddContact.getText().toString();
+				contact.position = etDesignationAddContact.getText().toString();
+				contact.mobile = etMobileAddContact.getText().toString();
+				contact.landline = etLandlineAddContact.getText().toString();
+				contact.email = etEmailAddContact.getText().toString();
+				contact.remarks = etRemarksAddContact.getText().toString();
 				boolean result = TarkieLib.addContact(db, contact);
 				if(result && refreshCallback != null) {
 					refreshCallback.onRefresh();
