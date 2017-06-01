@@ -5,7 +5,7 @@ public class ContactObj {
 	public String ID;
 	public StoreObj store;
 	public String name;
-	public String position;
+	public String designation;
 	public String mobile;
 	public String landline;
 	public String email;

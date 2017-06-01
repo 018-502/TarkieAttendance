@@ -1046,13 +1046,13 @@ public class Data {
 		ArrayList<ContactObj> contactList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(Tables.TB.CONTACTS);
-		String query = "SELECT name, position, mobile, landline, email, birthday, remarks " +
+		String query = "SELECT name, designation, mobile, landline, email, birthday, remarks " +
 				"FROM " + table + " WHERE storeID = " + storeID + " AND empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ContactObj contact = new ContactObj();
 			contact.name = cursor.getString(0);
-			contact.position = cursor.getString(1);
+			contact.designation = cursor.getString(1);
 			contact.mobile = cursor.getString(2);
 			contact.landline = cursor.getString(3);
 			contact.email = cursor.getString(4);

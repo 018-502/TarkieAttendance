@@ -1596,7 +1596,7 @@ public class TarkieLib {
 		query.add(new FieldValue("storeID", store.ID));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("name", contact.name));
-		query.add(new FieldValue("position", contact.position));
+		query.add(new FieldValue("designation", contact.designation));
 		query.add(new FieldValue("mobile", contact.mobile));
 		query.add(new FieldValue("landline", contact.landline));
 		query.add(new FieldValue("email", contact.email));

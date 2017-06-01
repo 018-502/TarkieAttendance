@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -525,11 +524,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case R.id.llClientsMain:
 				dlMain.closeDrawer(rlMenuMain);
 				final StoresFragment stores = new StoresFragment();
+				stores.setOnOverrideCallback(MainActivity.this);
 				stores.setOnSelectStoreCallback(new OnSelectStoreCallback() {
 					@Override
 					public void onSelectStore(StoreObj store) {
 						StoreDetailsFragment contacts = new StoreDetailsFragment();
 						contacts.setStore(store);
+						contacts.setOnOverrideCallback(MainActivity.this);
 						transaction = manager.beginTransaction();
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -936,8 +937,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	public void onBackPressed() {
 		if(isInitialized && isSecured) {
-			Log.e("isOverridden", "" + isOverridden);
-			Log.e("backPressedCallback", "" + (backPressedCallback != null));
 			if(isOverridden) {
 				if(backPressedCallback != null) {
 					backPressedCallback.onBackPressed();
