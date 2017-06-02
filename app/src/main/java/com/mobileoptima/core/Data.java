@@ -89,6 +89,27 @@ public class Data {
 		return formList;
 	}
 
+	public static ArrayList<FormObj> loadForms(SQLiteAdapter db, String taskID) {
+		ArrayList<FormObj> formList = new ArrayList<>();
+		String groupID = TarkieLib.getGroupID(db);
+		String f = Tables.getName(TB.FORMS);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String query = "SELECT f.ID, f.name, f.logoUrl, tf.ID FROM " + f + " f LEFT JOIN " +
+				tf + " tf ON tf.formID = f.ID AND tf.taskID = '" + taskID + "' WHERE " +
+				"f.groupID = '" + groupID + "' AND f.isActive = 1";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			FormObj obj = new FormObj();
+			obj.ID = cursor.getString(0);
+			obj.name = cursor.getString(1);
+			obj.logoUrl = cursor.getString(2);
+			obj.isCheck = cursor.getString(3) != null;
+			formList.add(obj);
+		}
+		cursor.close();
+		return formList;
+	}
+
 	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db, String taskID) {
 		ArrayList<EntryObj> entryList = new ArrayList<>();
 		String f = Tables.getName(TB.FORMS);

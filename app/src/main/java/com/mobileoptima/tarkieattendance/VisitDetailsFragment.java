@@ -63,7 +63,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		OnBackPressedCallback, OnFragmentCallback, OnSelectStoreCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
-			btnSaveVisitDetails, btnAddPhotoVisitDetails, btnStoreVisitDetails;
+			btnSaveVisitDetails, btnAddPhotoVisitDetails, btnStoreVisitDetails,
+			btnAddFormVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails, tvTitleVisitDetails;
 	private LinearLayout llFormsVisitDetails, llGridPhotoVisitDetails;
 	private OnSaveVisitCallback saveVisitCallback;
@@ -123,12 +124,14 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		btnAddPhotoVisitDetails = (CodePanButton) view.findViewById(R.id.btnAddPhotoVisitDetails);
 		btnSaveVisitDetails = (CodePanButton) view.findViewById(R.id.btnSaveVisitDetails);
 		btnStoreVisitDetails = (CodePanButton) view.findViewById(R.id.btnStoreVisitDetails);
+		btnAddFormVisitDetails = (CodePanButton) view.findViewById(R.id.btnAddFormVisitDetails);
 		btnStoreVisitDetails.setOnClickListener(this);
 		btnSaveVisitDetails.setOnClickListener(this);
 		btnBackVisitDetails.setOnClickListener(this);
 		btnCheckInVisitDetails.setOnClickListener(this);
 		btnCheckOutVisitDetails.setOnClickListener(this);
 		btnAddPhotoVisitDetails.setOnClickListener(this);
+		btnAddFormVisitDetails.setOnClickListener(this);
 		if(visit != null) {
 			StoreObj store = visit.store;
 			if(store != null) {
@@ -410,6 +413,17 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
 				transaction.add(R.id.rlMain, stores);
+				transaction.hide(this);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case R.id.btnAddFormVisitDetails:
+				AddFormsFragment addForms = new AddFormsFragment();
+				addForms.setVisit(visit);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, addForms);
 				transaction.hide(this);
 				transaction.addToBackStack(null);
 				transaction.commit();

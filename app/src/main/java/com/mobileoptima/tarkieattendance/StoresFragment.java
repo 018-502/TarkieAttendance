@@ -114,10 +114,10 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		tvTitleStores = (CodePanLabel) view.findViewById(R.id.tvTitleStores);
 		etSearchStores = (CodePanTextField) view.findViewById(R.id.etSearchStores);
 		btnBackStores = (CodePanButton) view.findViewById(R.id.btnBackStores);
-		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
+		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStores);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
 		lvStores = (ListView) view.findViewById(R.id.lvStores);
-		view.findViewById(R.id.btnAddStore).setOnClickListener(this);
+		view.findViewById(R.id.btnAddStores).setOnClickListener(this);
 		btnBackStores.setOnClickListener(this);
 		lvStores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -185,7 +185,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 			case R.id.btnBackStores:
 				manager.popBackStack();
 				break;
-			case R.id.btnAddStore:
+			case R.id.btnAddStores:
 				AddStoreFragment addStore = new AddStoreFragment();
 				addStore.setOnOverrideCallback(overrideCallback);
 				addStore.setOnAddStoreCallback(new Interface.OnAddStoreCallback() {
