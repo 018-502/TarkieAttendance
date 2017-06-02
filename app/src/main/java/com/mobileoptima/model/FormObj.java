@@ -8,5 +8,6 @@ public class FormObj {
 	public boolean isChecked;
 	public boolean hasChanged;
 	public boolean isTagged;
+	public boolean isDefault;
 	public int type;
 }

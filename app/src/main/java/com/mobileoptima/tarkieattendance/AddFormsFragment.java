@@ -35,7 +35,6 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	private CodePanButton btnSaveAddForms, btnBackAddForms;
 	private OnTagFormsCallback tagFormsCallback;
 	private OnOverrideCallback overrideCallback;
-	private OnFragmentCallback fragmentCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<FormObj> taggedList;
 	private ArrayList<FormObj> formList;
@@ -107,6 +106,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 						for(FormObj tagged : taggedList) {
 							if(form.ID.equals(tagged.ID)) {
 								form.isChecked = true;
+								form.isDefault = true;
 								break;
 							}
 						}
@@ -139,7 +139,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 			case R.id.btnSaveAddForms:
 				ArrayList<FormObj> taggedList = new ArrayList<>();
 				for(FormObj form : formList) {
-					if(form.hasChanged) {
+					if(form.hasChanged || form.isDefault) {
 						taggedList.add(form);
 					}
 				}
@@ -210,12 +210,5 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(isOnBackStack);
 		}
-		if(fragmentCallback != null) {
-			fragmentCallback.onFragment(isOnBackStack);
-		}
-	}
-
-	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {
-		this.fragmentCallback = fragmentCallback;
 	}
 }

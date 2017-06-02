@@ -425,7 +425,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				addForms.setVisit(visit);
 				addForms.setTaggedList(taggedList);
 				addForms.setOnTagFormsCallback(this);
-				addForms.setOnFragmentCallback(this);
 				addForms.setOnOverrideCallback(overrideCallback);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
@@ -754,9 +753,11 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		taggedList.clear();
 		for(FormObj form : formList) {
 			if(form.isChecked) {
-				EntryObj entry = new EntryObj();
-				entry.form = form;
-				entryList.add(entry);
+				if(!form.isDefault) {
+					EntryObj entry = new EntryObj();
+					entry.form = form;
+					entryList.add(entry);
+				}
 				taggedList.add(form);
 			}
 			else {
