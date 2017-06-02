@@ -171,10 +171,12 @@ public class AddContactFragment extends Fragment implements OnClickListener, OnP
 		contact.birthday = birthday;
 		contact.remarks = etRemarksAddContact.getText().toString();
 		boolean result = TarkieLib.addContact(db, contact);
-		manager.popBackStack();
-		CodePanUtils.alertToast(main, "You have successfully added\n" + name);
-		if(result && refreshCallback != null) {
-			refreshCallback.onRefresh();
+		if(result) {
+			manager.popBackStack();
+			CodePanUtils.alertToast(main, "You have successfully added\n" + name);
+			if(refreshCallback != null) {
+				refreshCallback.onRefresh();
+			}
 		}
 	}
 
@@ -195,11 +197,12 @@ public class AddContactFragment extends Fragment implements OnClickListener, OnP
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setOnFragmentCallback(this);
 		if(isSave) {
-			alert.setDialogTitle("Save Client");
+			alert.setDialogTitle("Save Contact");
 			alert.setDialogMessage("Are you sure you want to add this contact?");
 			alert.setPositiveButton("Yes", new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					manager.popBackStack();
 					saveContact();
 				}
 			});

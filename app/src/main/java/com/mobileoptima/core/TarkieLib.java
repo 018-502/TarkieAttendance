@@ -337,6 +337,11 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
+		column = "designation";
+		table = Tables.getName(TB.CONTACTS);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
 		binder.finish();
 	}
 
