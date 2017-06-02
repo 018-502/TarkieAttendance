@@ -54,6 +54,18 @@ public class AddVisitFragment extends Fragment implements OnClickListener, OnPic
 	private int dateType;
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		taskList = new ArrayList<>();
@@ -326,5 +338,11 @@ public class AddVisitFragment extends Fragment implements OnClickListener, OnPic
 
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
 		this.overrideCallback = overrideCallback;
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
+		}
 	}
 }

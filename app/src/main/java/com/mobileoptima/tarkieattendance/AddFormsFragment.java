@@ -35,6 +35,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	private CodePanButton btnSaveAddForms, btnBackAddForms;
 	private OnTagFormsCallback tagFormsCallback;
 	private OnOverrideCallback overrideCallback;
+	private OnFragmentCallback fragmentCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<FormObj> taggedList;
 	private ArrayList<FormObj> formList;
@@ -44,6 +45,18 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	private ListView lvAddForms;
 	private SQLiteAdapter db;
 	private VisitObj visit;
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -191,5 +204,18 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 
 	public void setTaggedList(ArrayList<FormObj> taggedList) {
 		this.taggedList = taggedList;
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
+		}
+		if(fragmentCallback != null) {
+			fragmentCallback.onFragment(isOnBackStack);
+		}
+	}
+
+	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {
+		this.fragmentCallback = fragmentCallback;
 	}
 }
