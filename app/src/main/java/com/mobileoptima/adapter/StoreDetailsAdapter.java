@@ -55,19 +55,19 @@ public class StoreDetailsAdapter extends ArrayAdapter<ContactObj> {
 		if(obj.name != null) {
 			holder.tvEmployee.setText(obj.name);
 		}
-		if(obj.designation != null && obj.designation.isEmpty()) {
+		if(obj.designation != null && !obj.designation.isEmpty()) {
 			holder.tvDesignation.setText(obj.designation);
 		}
 		else {
 			holder.llDesignation.setVisibility(GONE);
 		}
-		if(obj.mobile != null && obj.mobile.isEmpty()) {
+		if(obj.mobile != null && !obj.mobile.isEmpty()) {
 			holder.tvMobile.setText(obj.mobile);
 		}
 		else {
 			holder.llMobile.setVisibility(GONE);
 		}
-		if(obj.landline != null && obj.landline.isEmpty()) {
+		if(obj.landline != null && !obj.landline.isEmpty()) {
 			holder.tvLandline.setText(obj.landline);
 		}
 		else {
@@ -86,7 +86,8 @@ public class StoreDetailsAdapter extends ArrayAdapter<ContactObj> {
 			holder.llBirthday.setVisibility(GONE);
 		}
 		if(obj.remarks != null && !obj.remarks.isEmpty()) {
-			holder.tvRemarks.setText(obj.remarks);
+			String remarks = "Remarks:\n" + obj.remarks;
+			holder.tvRemarks.setText(remarks);
 		}
 		else {
 			holder.llRemarks.setVisibility(GONE);

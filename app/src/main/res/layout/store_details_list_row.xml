@@ -27,6 +27,7 @@
                 android:id="@+id/tvEmployee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/five"
                 android:layout_marginLeft="@dimen/three"
                 android:layout_marginStart="@dimen/three"
                 android:layout_marginTop="@dimen/sixteen"
@@ -39,7 +40,8 @@
         <LinearLayout
             android:id="@+id/llDesignation"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -47,7 +49,6 @@
                 android:layout_height="@dimen/eleven"
                 android:layout_marginLeft="@dimen/seventy"
                 android:layout_marginStart="@dimen/seventy"
-                android:layout_marginTop="@dimen/fifteen"
                 android:src="@drawable/ic_position"/>
 
             <com.codepan.widget.CodePanLabel
@@ -56,7 +57,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/eight"
                 android:layout_marginStart="@dimen/eight"
-                android:layout_marginTop="@dimen/ten"
                 android:textColor="@color/gray_qui"
                 android:textSize="@dimen/sixteen"
                 codePan:typeface="@string/proxima_nova_light"/>
@@ -66,7 +66,8 @@
         <LinearLayout
             android:id="@+id/llMobile"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -74,7 +75,6 @@
                 android:layout_height="@dimen/fifteen"
                 android:layout_marginLeft="@dimen/seventy"
                 android:layout_marginStart="@dimen/seventy"
-                android:layout_marginTop="@dimen/fifteen"
                 android:src="@drawable/ic_cell"/>
 
             <com.codepan.widget.CodePanLabel
@@ -83,7 +83,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/eight"
                 android:layout_marginStart="@dimen/eight"
-                android:layout_marginTop="@dimen/ten"
                 android:textColor="@color/gray_qui"
                 android:textSize="@dimen/sixteen"
                 codePan:typeface="@string/proxima_nova_light"/>
@@ -93,7 +92,8 @@
         <LinearLayout
             android:id="@+id/llLandline"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -101,7 +101,6 @@
                 android:layout_height="@dimen/fifteen"
                 android:layout_marginLeft="@dimen/seventy"
                 android:layout_marginStart="@dimen/seventy"
-                android:layout_marginTop="@dimen/fifteen"
                 android:src="@drawable/ic_tel"/>
 
             <com.codepan.widget.CodePanLabel
@@ -110,7 +109,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/eight"
                 android:layout_marginStart="@dimen/eight"
-                android:layout_marginTop="@dimen/eleven"
                 android:textColor="@color/gray_qui"
                 android:textSize="@dimen/sixteen"
                 codePan:typeface="@string/proxima_nova_light"/>
@@ -120,7 +118,8 @@
         <LinearLayout
             android:id="@+id/llEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -128,7 +127,6 @@
                 android:layout_height="@dimen/eleven"
                 android:layout_marginLeft="@dimen/seventy"
                 android:layout_marginStart="@dimen/seventy"
-                android:layout_marginTop="@dimen/fifteen"
                 android:src="@drawable/ic_email"/>
 
             <com.codepan.widget.CodePanLabel
@@ -137,7 +135,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/eight"
                 android:layout_marginStart="@dimen/eight"
-                android:layout_marginTop="@dimen/ten"
                 android:textColor="@color/gray_qui"
                 android:textSize="@dimen/sixteen"
                 codePan:typeface="@string/proxima_nova_light"/>
@@ -147,7 +144,8 @@
         <LinearLayout
             android:id="@+id/llBirthday"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageView
@@ -155,7 +153,6 @@
                 android:layout_height="@dimen/fifteen"
                 android:layout_marginLeft="@dimen/seventy"
                 android:layout_marginStart="@dimen/seventy"
-                android:layout_marginTop="@dimen/fifteen"
                 android:src="@drawable/ic_birthday"/>
 
             <com.codepan.widget.CodePanLabel
@@ -164,7 +161,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/eight"
                 android:layout_marginStart="@dimen/eight"
-                android:layout_marginTop="@dimen/eleven"
                 android:textColor="@color/gray_qui"
                 android:textSize="@dimen/sixteen"
                 codePan:typeface="@string/proxima_nova_light"/>
