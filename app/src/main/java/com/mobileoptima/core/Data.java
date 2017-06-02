@@ -94,16 +94,17 @@ public class Data {
 		String groupID = TarkieLib.getGroupID(db);
 		String f = Tables.getName(TB.FORMS);
 		String tf = Tables.getName(TB.TASK_FORM);
-		String query = "SELECT f.ID, f.name, f.logoUrl, tf.ID FROM " + f + " f LEFT JOIN " +
-				tf + " tf ON tf.formID = f.ID AND tf.taskID = '" + taskID + "' WHERE " +
-				"f.groupID = '" + groupID + "' AND f.isActive = 1";
+		String query = "SELECT f.ID, f.name, f.logoUrl, tf.ID, tf.isFromWeb FROM " + f + " f " +
+				"LEFT JOIN " + tf + " tf ON tf.formID = f.ID AND tf.taskID = '" + taskID + "' " +
+				"AND tf.isTag = 1 WHERE f.groupID = '" + groupID + "' AND f.isActive = 1";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			FormObj obj = new FormObj();
 			obj.ID = cursor.getString(0);
 			obj.name = cursor.getString(1);
 			obj.logoUrl = cursor.getString(2);
-			obj.isCheck = cursor.getString(3) != null;
+			obj.isChecked = cursor.getString(3) != null;
+			obj.isTagged = cursor.getInt(4) == 1;
 			formList.add(obj);
 		}
 		cursor.close();

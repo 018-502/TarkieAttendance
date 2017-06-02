@@ -1314,6 +1314,7 @@ public class Rx {
 							sql = "SELECT ID FROM " + tf + " WHERE taskID = '" + taskID + "' AND " +
 									"formID = '" + formID + "'";
 							if(!db.isRecordExists(sql)) {
+								query.add(new FieldValue("isFromWeb", true));
 								binder.insert(tf, query);
 							}
 							else {

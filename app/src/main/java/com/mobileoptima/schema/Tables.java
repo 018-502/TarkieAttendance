@@ -381,6 +381,7 @@ public class Tables {
 				query.add(new Field("ID", true));
 				query.add(new Field("formID", DataType.INTEGER));
 				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("isFromWeb", 0));
 				query.add(new Field("isTag", 1));
 				break;
 			case TASK_PHOTO:

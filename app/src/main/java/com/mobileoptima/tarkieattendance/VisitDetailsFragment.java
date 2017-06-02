@@ -36,6 +36,7 @@ import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.callback.Interface.OnSaveVisitCallback;
 import com.mobileoptima.callback.Interface.OnSelectStatusCallback;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
+import com.mobileoptima.callback.Interface.OnTagFormsCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.ImageType;
@@ -60,7 +61,7 @@ import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback,
-		OnBackPressedCallback, OnFragmentCallback, OnSelectStoreCallback {
+		OnBackPressedCallback, OnFragmentCallback, OnSelectStoreCallback, OnTagFormsCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
 			btnSaveVisitDetails, btnAddPhotoVisitDetails, btnStoreVisitDetails,
@@ -75,6 +76,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
 	private ArrayList<EntryObj> entryList;
+	private ArrayList<FormObj> taggedList;
 	private FragmentManager manager;
 	private String convention;
 	private MainActivity main;
@@ -97,6 +99,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		taggedList = new ArrayList<>();
 		main = (MainActivity) getActivity();
 		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
@@ -420,6 +423,9 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			case R.id.btnAddFormVisitDetails:
 				AddFormsFragment addForms = new AddFormsFragment();
 				addForms.setVisit(visit);
+				addForms.setTaggedList(taggedList);
+				addForms.setOnTagFormsCallback(this);
+				addForms.setOnOverrideCallback(overrideCallback);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -739,5 +745,31 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 
 	public void setOnSaveVisitCallback(OnSaveVisitCallback saveVisitCallback) {
 		this.saveVisitCallback = saveVisitCallback;
+	}
+
+	@Override
+	public void onTagForms(ArrayList<FormObj> formList) {
+		taggedList.clear();
+		for(FormObj form : formList) {
+			if(form.isChecked) {
+				EntryObj entry = new EntryObj();
+				entry.form = form;
+				entryList.add(entry);
+				taggedList.add(form);
+			}
+			else {
+				EntryObj removed = null;
+				for(EntryObj entry : entryList) {
+					if(form.ID.equals(entry.form.ID)) {
+						removed = entry;
+						break;
+					}
+				}
+				if(removed != null) {
+					entryList.remove(removed);
+				}
+			}
+		}
+		formsHandler.sendMessage(formsHandler.obtainMessage());
 	}
 }

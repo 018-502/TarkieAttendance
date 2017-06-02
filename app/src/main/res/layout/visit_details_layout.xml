@@ -201,7 +201,7 @@
                 android:paddingRight="@dimen/ten"
                 android:paddingStart="@dimen/ten"
                 android:paddingTop="@dimen/seven"
-                android:text="@string/add_form"
+                android:text="@string/add_forms"
                 android:textColor="@color/white"
                 android:textSize="@dimen/seventeen"
                 codePan:typeface="@string/proxima_nova_semi_bold"/>

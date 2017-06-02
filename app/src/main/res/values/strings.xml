@@ -202,6 +202,8 @@
     <string name="add_new_visit_message">Are you sure you want to add new visit?</string>
     <string name="discard_changes_title">Discard Changes?</string>
     <string name="discard_changes_message">All details will be lost. Are you sure you want to cancel?</string>
+    <string name="untag_forms_title">Not Allowed</string>
+    <string name="untag_forms_message">This form was tagged from dashboard. You are not allowed to un-tag this form.</string>
     <string-array name="tab_expense">
         <item>Expense Items</item>
         <item>Expense Reports</item>

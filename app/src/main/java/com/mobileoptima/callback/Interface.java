@@ -8,6 +8,7 @@ import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseObj;
+import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
@@ -129,5 +130,9 @@ public class Interface {
 
 	public interface OnSaveVisitCallback {
 		void onSaveVisit(VisitObj visit);
+	}
+
+	public interface OnTagFormsCallback {
+		void onTagForms(ArrayList<FormObj> formList);
 	}
 }

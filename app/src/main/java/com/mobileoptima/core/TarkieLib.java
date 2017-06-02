@@ -315,6 +315,11 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
+		column = "isFromWeb";
+		table = Tables.getName(TB.TASK_FORM);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, column, 0);
+		}
 		switch(n) {
 			case 2:
 				TB tb = TB.STORES;

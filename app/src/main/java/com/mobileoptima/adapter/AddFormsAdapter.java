@@ -43,7 +43,7 @@ public class AddFormsAdapter extends ArrayAdapter<FormObj> {
 			if(obj.name != null) {
 				holder.tvNameAddForms.setText(obj.name);
 			}
-			holder.cbAddForms.setChecked(obj.isCheck);
+			holder.cbAddForms.setChecked(obj.isChecked);
 		}
 		return view;
 	}
