@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:clickable="true"
-    android:orientation="vertical">
+    android:clickable="true">
 
     <RelativeLayout
         android:id="@+id/rlHeaderAddStore"
@@ -104,6 +103,7 @@
                     android:padding="@dimen/ten"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/seventeen"
+                    codePan:autoHideKeyboard="true"
                     codePan:typeface="@string/proxima_nova_light"/>
 
             </LinearLayout>
@@ -138,6 +138,7 @@
                     android:padding="@dimen/ten"
                     android:textColor="@color/gray_pri"
                     android:textSize="@dimen/seventeen"
+                    codePan:autoHideKeyboard="true"
                     codePan:typeface="@string/proxima_nova_light"/>
 
             </LinearLayout>
@@ -170,7 +171,7 @@
                     android:orientation="horizontal">
 
                     <CheckBox
-                        android:id="@+id/cbMe"
+                        android:id="@+id/cbMeAddStore"
                         android:layout_width="@dimen/twenty"
                         android:layout_height="@dimen/twenty"
                         android:layout_gravity="center_vertical"
@@ -192,7 +193,7 @@
                         codePan:typeface="@string/proxima_nova_light"/>
 
                     <CheckBox
-                        android:id="@+id/cbTeam"
+                        android:id="@+id/cbTeamAddStore"
                         android:layout_width="@dimen/twenty"
                         android:layout_height="@dimen/twenty"
                         android:layout_gravity="center_vertical"

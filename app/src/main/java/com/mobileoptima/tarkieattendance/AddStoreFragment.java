@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.callback.Interface.OnFragmentCallback;
-import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
+import com.mobileoptima.callback.Interface.OnAddStoreCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.core.TarkieLib;
@@ -25,15 +25,16 @@ import com.mobileoptima.model.StoreObj;
 
 import org.apache.commons.lang3.StringUtils;
 
-public class AddStoreFragment extends Fragment implements OnClickListener, TextWatcher, OnBackPressedCallback, OnFragmentCallback {
+public class AddStoreFragment extends Fragment implements OnClickListener, TextWatcher,
+		OnBackPressedCallback, OnFragmentCallback {
 
 	private boolean isShareWithTeam, isShareWithMe, withChanges;
 	private CodePanTextField etNameAddStore, etAddressAddStore;
 	private OnOverrideCallback overrideCallback;
-	private OnRefreshCallback refreshCallback;
+	private OnAddStoreCallback addStoreCallback;
 	private FragmentTransaction transaction;
-	private String conventionStore;
 	private FragmentManager manager;
+	private String convention;
 	private MainActivity main;
 	private SQLiteAdapter db;
 
@@ -57,9 +58,9 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
-		conventionStore = TarkieLib.getConvention(db, Convention.STORES);
-		if(conventionStore != null) {
-			conventionStore = StringUtils.capitalize(conventionStore);
+		convention = TarkieLib.getConvention(db, Convention.STORES);
+		if(convention != null) {
+			convention = StringUtils.capitalize(convention);
 		}
 	}
 
@@ -72,14 +73,14 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		etNameAddStore = (CodePanTextField) view.findViewById(R.id.etNameAddStore);
 		view.findViewById(R.id.btnSaveAddStore).setOnClickListener(this);
 		view.findViewById(R.id.btnBackStoreDetails).setOnClickListener(this);
-		view.findViewById(R.id.cbMe).setOnClickListener(this);
-		view.findViewById(R.id.cbTeam).setOnClickListener(this);
+		view.findViewById(R.id.cbMeAddStore).setOnClickListener(this);
+		view.findViewById(R.id.cbTeamAddStore).setOnClickListener(this);
 		etNameAddStore.addTextChangedListener(this);
 		etAddressAddStore.addTextChangedListener(this);
 		String name = getString(R.string.company_name);
 		TarkieLib.requiredField(tvNameAddStore, name);
-		if(conventionStore != null && !conventionStore.isEmpty()) {
-			String title = "Add " + conventionStore;
+		if(convention != null && !convention.isEmpty()) {
+			String title = "Add " + convention;
 			tvTitleAddStore.setText(title);
 		}
 		return view;
@@ -90,7 +91,8 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		switch(v.getId()) {
 			case R.id.btnSaveAddStore:
 				if(!isValidated()) {
-					TarkieLib.alertDialog(main, "Required Field", "Please complete required fields.");
+					TarkieLib.alertDialog(main, "Required Field",
+							"Please complete required fields.", this);
 				}
 				else {
 					showAlert(true);
@@ -99,10 +101,10 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 			case R.id.btnBackStoreDetails:
 				onBackPressed();
 				break;
-			case R.id.cbMe:
+			case R.id.cbMeAddStore:
 				withChanges = true;
 				break;
-			case R.id.cbTeam:
+			case R.id.cbTeamAddStore:
 				withChanges = true;
 				break;
 		}
@@ -116,8 +118,8 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setOnFragmentCallback(this);
 		if(isSave) {
-			alert.setDialogTitle("Save client");
-			alert.setDialogMessage("Are you sure you want to add this Client?");
+			alert.setDialogTitle("Save " + convention);
+			alert.setDialogMessage("Are you sure you want to add this " + convention + "?");
 			alert.setPositiveButton("Yes", new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -128,16 +130,16 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 						manager.popBackStack();
 						manager.popBackStack();
 						CodePanUtils.alertToast(main, "You have successfully added\n" + store.name);
-						if(refreshCallback != null) {
-							refreshCallback.onRefresh();
+						if(addStoreCallback != null) {
+							addStoreCallback.onAddStore(store);
 						}
 					}
 				}
 			});
 		}
 		else {
-			alert.setDialogTitle("Discard Changes");
-			alert.setDialogMessage("All details will be lost. Are you sure you want to cancel?");
+			alert.setDialogTitle(R.string.discard_changes_title);
+			alert.setDialogMessage(R.string.discard_changes_message);
 			alert.setPositiveButton("Yes", new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
@@ -158,10 +160,6 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		transaction.add(R.id.rlMain, alert);
 		transaction.addToBackStack(null);
 		transaction.commit();
-	}
-
-	public void setOnRefreshCallback(OnRefreshCallback refreshCallback) {
-		this.refreshCallback = refreshCallback;
 	}
 
 	@Override
@@ -202,5 +200,9 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(!status);
 		}
+	}
+
+	public void setOnAddStoreCallback(OnAddStoreCallback addStoreCallback) {
+		this.addStoreCallback = addStoreCallback;
 	}
 }

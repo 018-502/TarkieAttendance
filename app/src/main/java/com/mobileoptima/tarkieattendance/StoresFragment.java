@@ -28,6 +28,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.StoresAdapter;
+import com.mobileoptima.callback.Interface;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
 import com.mobileoptima.constant.Convention;
@@ -38,8 +39,6 @@ import com.mobileoptima.model.StoreObj;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-
-import static com.codepan.callback.Interface.OnRefreshCallback;
 
 public class StoresFragment extends Fragment implements OnClickListener {
 
@@ -187,18 +186,18 @@ public class StoresFragment extends Fragment implements OnClickListener {
 				manager.popBackStack();
 				break;
 			case R.id.btnAddStore:
-				AddStoreFragment storeFragment = new AddStoreFragment();
-				storeFragment.setOnOverrideCallback(overrideCallback);
-				storeFragment.setOnRefreshCallback(new OnRefreshCallback() {
+				AddStoreFragment addStore = new AddStoreFragment();
+				addStore.setOnOverrideCallback(overrideCallback);
+				addStore.setOnAddStoreCallback(new Interface.OnAddStoreCallback() {
 					@Override
-					public void onRefresh() {
-						loadStores(db, null);
+					public void onAddStore(StoreObj store) {
+						etSearchStores.setText(store.name);
 					}
 				});
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-				transaction.add(R.id.rlMain, storeFragment);
+				transaction.add(R.id.rlMain, addStore);
 				transaction.hide(this);
 				transaction.addToBackStack(null);
 				transaction.commit();
@@ -228,7 +227,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 						int lastPosition = storeList.size() - 1;
 						start = storeList.get(lastPosition).name;
 					}
-					Thread.sleep(500);
+					Thread.sleep(250);
 					loadStoreHandler.sendMessage(loadStoreHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -280,7 +279,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 						int lastPosition = additionalList.size() - 1;
 						start = additionalList.get(lastPosition).name;
 					}
-					Thread.sleep(500);
+					Thread.sleep(250);
 					loadMoreStoresHandler.sendMessage(loadMoreStoresHandler.obtainMessage());
 				}
 				catch(Exception e) {

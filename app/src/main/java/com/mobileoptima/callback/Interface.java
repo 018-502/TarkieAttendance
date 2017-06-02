@@ -51,6 +51,10 @@ public class Interface {
 		void onSelectStore(StoreObj store);
 	}
 
+	public interface OnAddStoreCallback {
+		void onAddStore(StoreObj store);
+	}
+
 	public interface OnOptionSelectedCallback {
 		void onOptionSelected(ChoiceObj obj);
 	}
