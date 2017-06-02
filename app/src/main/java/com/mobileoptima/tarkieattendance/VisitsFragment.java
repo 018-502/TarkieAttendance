@@ -20,6 +20,7 @@ import android.widget.ListView;
 
 import com.codepan.calendar.callback.Interface.OnPickDateCallback;
 import com.codepan.calendar.view.CalendarView;
+import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
@@ -35,7 +36,7 @@ import com.mobileoptima.model.VisitsDateObj;
 
 import java.util.ArrayList;
 
-public class VisitsFragment extends Fragment implements OnPickDateCallback {
+public class VisitsFragment extends Fragment implements OnPickDateCallback, OnRefreshCallback {
 
 	private final int PREVIOUS = 0;
 	private final int CURRENT = 1;
@@ -270,6 +271,8 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 
 	public void addVisit() {
 		AddVisitFragment addVisit = new AddVisitFragment();
+		addVisit.setOnRefreshCallback(this);
+		addVisit.setOnOverrideCallback(overrideCallback);
 		transaction = manager.beginTransaction();
 		transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 				R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -309,5 +312,10 @@ public class VisitsFragment extends Fragment implements OnPickDateCallback {
 
 	public void setInitDate(String date) {
 		this.initDate = date;
+	}
+
+	@Override
+	public void onRefresh() {
+		loadVisits(db, selectedDate);
 	}
 }

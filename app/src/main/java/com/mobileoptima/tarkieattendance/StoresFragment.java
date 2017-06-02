@@ -2,6 +2,7 @@ package com.mobileoptima.tarkieattendance;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -42,7 +43,7 @@ import static com.codepan.callback.Interface.OnRefreshCallback;
 
 public class StoresFragment extends Fragment implements OnClickListener {
 
-	private final int LIMIT = 50;
+	private final int LIMIT = 100;
 	private final long IDLE_TIME = 500;
 
 	private boolean isEnd, isPause, isPending, isAdded;
@@ -197,7 +198,8 @@ public class StoresFragment extends Fragment implements OnClickListener {
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-				transaction.replace(R.id.rlMain, storeFragment);
+				transaction.add(R.id.rlMain, storeFragment);
+				transaction.hide(this);
 				transaction.addToBackStack(null);
 				transaction.commit();
 				break;
@@ -210,6 +212,8 @@ public class StoresFragment extends Fragment implements OnClickListener {
 
 	public void loadStores(final SQLiteAdapter db, final String search) {
 		lvStores.setEnabled(false);
+		ivLoadingStores.startAnimation(anim);
+		ivLoadingStores.setVisibility(View.VISIBLE);
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -224,6 +228,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 						int lastPosition = storeList.size() - 1;
 						start = storeList.get(lastPosition).name;
 					}
+					Thread.sleep(500);
 					loadStoreHandler.sendMessage(loadStoreHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -234,10 +239,12 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		bg.start();
 	}
 
-	Handler loadStoreHandler = new Handler(new Handler.Callback() {
+	Handler loadStoreHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
 			lvStores.setEnabled(true);
+			ivLoadingStores.clearAnimation();
+			ivLoadingStores.setVisibility(View.GONE);
 			if(!isPause) {
 				setStore(false);
 			}
@@ -249,9 +256,9 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	});
 
 	public void loadMoreStores(final SQLiteAdapter db, final String search) {
+		lvStores.setEnabled(false);
 		ivLoadingStores.startAnimation(anim);
 		ivLoadingStores.setVisibility(View.VISIBLE);
-		lvStores.setEnabled(false);
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -284,12 +291,12 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		bg.start();
 	}
 
-	Handler loadMoreStoresHandler = new Handler(new Handler.Callback() {
+	Handler loadMoreStoresHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
+			lvStores.setEnabled(true);
 			ivLoadingStores.clearAnimation();
 			ivLoadingStores.setVisibility(View.GONE);
-			lvStores.setEnabled(true);
 			if(!isPause) {
 				setStore(true);
 			}

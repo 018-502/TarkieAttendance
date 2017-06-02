@@ -314,18 +314,43 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 	public void onClick(View v) {
 		switch(v.getId()) {
 			case R.id.btnNewVisitHome:
-				VisitObj visit = TarkieLib.addTask(db, null);
-				visitList.add(visit);
-				LayoutInflater inflater = getActivity().getLayoutInflater();
-				View view = getView();
-				if(view != null) {
-					ViewGroup container = (ViewGroup) view.getParent();
-					View child = getSchedule(inflater, container, visit);
-					llScheduleHome.addView(child);
-					String message = "You have added a new Visit. Tap " + visit.name + " to edit.";
-					CodePanUtils.alertToast(getActivity(), message);
-				}
+				final AlertDialogFragment alert = new AlertDialogFragment();
+				alert.setDialogTitle(R.string.add_new_visit_title);
+				alert.setDialogMessage(R.string.add_new_visit_message);
+				alert.setPositiveButton("Yes", new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						manager.popBackStack();
+						addVisit();
+					}
+				});
+				alert.setNegativeButton("No", new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						manager.popBackStack();
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, alert);
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
+		}
+	}
+
+	public void addVisit() {
+		VisitObj visit = TarkieLib.addTask(db, null);
+		visitList.add(visit);
+		LayoutInflater inflater = getActivity().getLayoutInflater();
+		View view = getView();
+		if(view != null) {
+			ViewGroup container = (ViewGroup) view.getParent();
+			View child = getSchedule(inflater, container, visit);
+			llScheduleHome.addView(child);
+			String message = "You have added a new Visit. Tap " + visit.name + " to edit.";
+			CodePanUtils.alertToast(getActivity(), message);
 		}
 	}
 }

@@ -372,7 +372,7 @@ public class TarkieLib {
 		String table = Tables.getName(CONVENTION);
 		String query = "SELECT convention FROM " + table + " WHERE name = '" + name + "'";
 		String convention = db.getString(query);
-		if(convention != null && convention.equalsIgnoreCase(Convention.DEFAULT)) {
+		if(convention == null || convention.equalsIgnoreCase(Convention.DEFAULT)) {
 			convention = name;
 		}
 		return convention;
@@ -726,6 +726,30 @@ public class TarkieLib {
 		query.add(new FieldValue("accuracy", gps.accuracy));
 		query.add(new FieldValue("provider", provider));
 		binder.insert(Tables.getName(TB.LOCATION), query);
+		return binder.finish();
+	}
+
+	public static boolean addTasks(SQLiteAdapter db, ArrayList<TaskObj> taskList) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String syncBatchID = getSyncBatchID(db);
+		String table = Tables.getName(TB.TASK);
+		String empID = getEmployeeID(db);
+		String dDate = CodePanUtils.getDate();
+		String dTime = CodePanUtils.getTime();
+		SQLiteQuery query = new SQLiteQuery();
+		for(TaskObj task : taskList) {
+			StoreObj store = task.store;
+			query.clearAll();
+			query.add(new FieldValue("empID", empID));
+			query.add(new FieldValue("name", store.name));
+			query.add(new FieldValue("storeID", store.ID));
+			query.add(new FieldValue("dateCreated", dDate));
+			query.add(new FieldValue("timeCreated", dTime));
+			query.add(new FieldValue("startDate", task.startDate));
+			query.add(new FieldValue("endDate", task.endDate));
+			query.add(new FieldValue("syncBatchID", syncBatchID));
+			binder.insert(table, query);
+		}
 		return binder.finish();
 	}
 
