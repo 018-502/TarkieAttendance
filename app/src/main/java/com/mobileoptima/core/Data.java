@@ -450,9 +450,10 @@ public class Data {
 		ArrayList<TimeInObj> timeInList = new ArrayList<>();
 		String g = Tables.getName(TB.GPS);
 		String i = Tables.getName(TB.TIME_IN);
-		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, i.storeID, g.gpsDate, " +
-				"g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + i + " i, " + g + " g " +
-				"WHERE i.isSync = 0 AND g.ID = i.gpsID";
+		String s = Tables.getName(TB.STORES);
+		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, g.gpsDate, " +
+				"g.gpsTime, g.gpsLongitude, g.gpsLatitude, s.ID, s.webStoreID FROM " + i + " i, " +
+				g + " g, " + s + " s WHERE i.isSync = 0 AND g.ID = i.gpsID AND s.ID = i.storeID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TimeInObj in = new TimeInObj();
@@ -463,15 +464,16 @@ public class Data {
 			in.dDate = cursor.getString(2);
 			in.dTime = cursor.getString(3);
 			in.syncBatchID = cursor.getString(4);
-			StoreObj store = new StoreObj();
-			store.ID = cursor.getString(5);
-			in.store = store;
 			GpsObj gps = new GpsObj();
-			gps.date = cursor.getString(6);
-			gps.time = cursor.getString(7);
-			gps.longitude = cursor.getDouble(8);
-			gps.latitude = cursor.getDouble(9);
+			gps.date = cursor.getString(5);
+			gps.time = cursor.getString(6);
+			gps.longitude = cursor.getDouble(7);
+			gps.latitude = cursor.getDouble(8);
 			in.gps = gps;
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(9);
+			store.webStoreID = cursor.getString(10);
+			in.store = store;
 			timeInList.add(in);
 		}
 		cursor.close();

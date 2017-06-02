@@ -45,7 +45,7 @@ public class Tables {
 		CONTACTS
 	}
 
-	public static String create(TB tb) {
+	public static SQLiteQuery create(TB tb) {
 		SQLiteQuery query = new SQLiteQuery();
 		switch(tb) {
 			case API_KEY:
@@ -468,7 +468,7 @@ public class Tables {
 				query.add(new Field("remarks", DataType.TEXT));
 				break;
 		}
-		return query.createTable(getName(tb));
+		return query;
 	}
 
 	public static String getName(TB tb) {

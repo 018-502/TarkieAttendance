@@ -54,7 +54,7 @@ public class Tx {
 			paramsObj.put("gps_time", gps.time);
 			paramsObj.put("latitude", gps.latitude);
 			paramsObj.put("longitude", gps.longitude);
-			paramsObj.put("store_id", store.ID);
+			paramsObj.put("store_id", store.webStoreID);
 			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", in.ID);
 			paramsObj.put("sync_batch_id", in.syncBatchID);

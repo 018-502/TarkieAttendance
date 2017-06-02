@@ -52,6 +52,8 @@ import com.mobileoptima.tarkieattendance.R;
 import net.sqlcipher.Cursor;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.codepan.database.SQLiteQuery.DataType;
 import static com.mobileoptima.schema.Tables.TB.ANSWERS;
@@ -152,42 +154,13 @@ public class TarkieLib {
 	}
 
 	public static void createTables(SQLiteAdapter db) {
-		db.execQuery(Tables.create(TB.API_KEY));
-		db.execQuery(Tables.create(TB.SYNC_BATCH));
-		db.execQuery(Tables.create(TB.CREDENTIALS));
-		db.execQuery(Tables.create(TB.COMPANY));
-		db.execQuery(Tables.create(TB.EMPLOYEE));
-		db.execQuery(Tables.create(TB.BREAK));
-		db.execQuery(Tables.create(TB.STORES));
-		db.execQuery(Tables.create(TB.CONVENTION));
-		db.execQuery(Tables.create(TB.GPS));
-		db.execQuery(Tables.create(TB.TIME_IN));
-		db.execQuery(Tables.create(TB.TIME_OUT));
-		db.execQuery(Tables.create(TB.BREAK_IN));
-		db.execQuery(Tables.create(TB.BREAK_OUT));
-		db.execQuery(Tables.create(TB.INCIDENT));
-		db.execQuery(Tables.create(TB.INCIDENT_REPORT));
-		db.execQuery(Tables.create(TB.TIME_SECURITY));
-		db.execQuery(Tables.create(TB.LOCATION));
-		db.execQuery(Tables.create(TB.PHOTO));
-		db.execQuery(Tables.create(TB.TASK_PHOTO));
-		db.execQuery(Tables.create(TB.EXPENSE));
-		db.execQuery(Tables.create(TB.EXPENSE_DEFAULT));
-		db.execQuery(Tables.create(TB.EXPENSE_FUEL_CONSUMPTION));
-		db.execQuery(Tables.create(TB.EXPENSE_FUEL_PURCHASE));
-		db.execQuery(Tables.create(TB.FORMS));
-		db.execQuery(Tables.create(TB.FIELDS));
-		db.execQuery(Tables.create(TB.CHOICES));
-		db.execQuery(Tables.create(TB.ENTRIES));
-		db.execQuery(Tables.create(TB.ANSWERS));
-		db.execQuery(Tables.create(TB.TASK));
-		db.execQuery(Tables.create(TB.TASK_ENTRY));
-		db.execQuery(Tables.create(TB.TASK_FORM));
-		db.execQuery(Tables.create(TB.CHECK_IN));
-		db.execQuery(Tables.create(TB.CHECK_OUT));
-		db.execQuery(Tables.create(TB.SETTINGS));
-		db.execQuery(Tables.create(TB.SETTINGS_GROUP));
-		db.execQuery(Tables.create(TB.CONTACTS));
+		SQLiteBinder binder = new SQLiteBinder(db);
+		List<TB> tableList = Arrays.asList(TB.values());
+		for(TB tb : tableList) {
+			String table = Tables.getName(tb);
+			binder.createTable(table, Tables.create(tb));
+		}
+		binder.finish();
 	}
 
 	public static void updateTables(SQLiteAdapter db, int o, int n) {
@@ -341,6 +314,14 @@ public class TarkieLib {
 		table = Tables.getName(TB.CONTACTS);
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
+		}
+		switch(n) {
+			case 2:
+				TB tb = TB.STORES;
+				table = Tables.getName(tb);
+				binder.dropTable(table);
+				binder.createTable(table, Tables.create(tb));
+				break;
 		}
 		binder.finish();
 	}
