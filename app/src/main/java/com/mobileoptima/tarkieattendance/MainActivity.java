@@ -1580,17 +1580,16 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
 		String ID = TarkieLib.saveExpense(db, dDate, dTime, gps);
-		if(!ID.isEmpty()) {
-			if(tabType.equals(TabType.EXPENSE)) {
-				Fragment fragment = manager.findFragmentByTag(tabType);
-				if(fragment != null) {
-					ExpenseFragment expense = (ExpenseFragment) fragment;
-					expense.addExpenseItem(dDate, dTime, ID);
-				}
+		if(!ID.isEmpty() && tabType.equals(TabType.EXPENSE)) {
+			Fragment fragment = manager.findFragmentByTag(tabType);
+			if(fragment != null) {
+				ExpenseFragment expense = (ExpenseFragment) fragment;
+				expense.addExpenseItem(dDate, dTime, ID);
 			}
-			CodePanUtils.alertToast(MainActivity.this, "Expense " + ID + " " +
-					"has been added. You may enter more details later.");
 		}
+		String typeName = "Expense " + TarkieLib.getTimeInExpenseCount(db);
+		CodePanUtils.alertToast(this, typeName + " " +
+				"has been added. You may enter more details later.");
 		return true;
 	}
 }

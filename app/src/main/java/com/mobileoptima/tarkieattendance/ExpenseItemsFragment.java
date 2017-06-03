@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,9 +28,10 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.ExpenseItemsAdapter;
 import com.mobileoptima.callback.Interface.OnUpdateExpenseCallback;
 import com.mobileoptima.constant.DateType;
-import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
+import com.mobileoptima.model.ExpenseDefaultObj;
+import com.mobileoptima.model.ExpenseFuelConsumptionObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseTypeObj;
@@ -194,12 +196,14 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		expense.dDate = dDate;
 		expense.dTime = dTime;
 		ExpenseTypeObj type = new ExpenseTypeObj();
-		type.name = "Expense 1";
+		type.name = "Expense " + TarkieLib.getTimeInExpenseCount(db);
 		expense.type = type;
 		expenseList.add(expense);
 		View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, container, false);
 		View child = getChild(v, item, expenseList, expense);
 		item.childList.add(child);
+		item.isAdded = true;
+		item.isOpen = true;
 		expenseItemsList.add(0, item);
 		if(expenseItemsList.size() == 0) {
 			rlPlaceholderExpenseItems.setVisibility(View.VISIBLE);
@@ -247,19 +251,20 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		String time = CodePanUtils.getNormalTime(expense.dTime, false);
 		final String amount = nf.format(expense.amount);
 		RelativeLayout rlExpenseItems = (RelativeLayout) view.findViewById(R.id.rlExpenseItems);
-		CodePanLabel tvExpenseType = (CodePanLabel) view.findViewById(R.id.tvExpenseTypeExpenseItems);
+		final CodePanLabel tvExpenseType = (CodePanLabel) view.findViewById(R.id.tvExpenseTypeExpenseItems);
 		CodePanLabel tvTime = (CodePanLabel) view.findViewById(R.id.tvTimeExpenseItems);
 		CodePanLabel tvAmount = (CodePanLabel) view.findViewById(R.id.tvAmountExpenseItems);
 		rlExpenseItems.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				ExpenseItemsDetailsFragment expenseItemsDetails = new ExpenseItemsDetailsFragment();
-				expenseItemsDetails.setExpense(expense);
+				expenseItemsDetails.setExpense(expense.ID);
 				expenseItemsDetails.setOnUpdateExpenseCallback(new OnUpdateExpenseCallback() {
 					@Override
 					public void onUpdateExpense(ExpenseObj updatedExpense) {
 						int pos = expenseList.indexOf(expense);
 						View child = getChild(view, item, expenseList, expense);
+						((CodePanLabel) child.findViewById(R.id.tvExpenseTypeExpenseItems)).setText(updatedExpense.type.name);
 						item.childList.set(pos, child);
 						item.totalAmount = updateTotalAmount(item.childList);
 						adapter.notifyDataSetChanged();

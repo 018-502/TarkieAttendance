@@ -1343,6 +1343,188 @@ public class Rx {
 		return result;
 	}
 
+	public static boolean getExpenseTypeCategories(SQLiteAdapter db, OnErrorCallback errorCallback) {
+		boolean result = false;
+		boolean hasData = false;
+		final int INDENT = 4;
+		final int TIMEOUT = 5000;
+		String action = "get-expense-categories";
+		String url = App.WEB_API + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			paramsObj.put("api_key", apiKey);
+			params = paramsObj.toString(INDENT);
+			response = CodePanUtils.doHttpGet(url, paramsObj, TIMEOUT);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					int recNo = initObj.getInt("recno");
+					if(status.equals("ok")) {
+						hasData = recNo > 0;
+						result = recNo == 0;
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+			if(hasData) {
+				SQLiteBinder binder = new SQLiteBinder(db);
+				String table = Tables.getName(Tables.TB.EXPENSE_TYPE_CATEGORY);
+				try {
+					SQLiteQuery query = new SQLiteQuery();
+					JSONArray dataArray = responseObj.getJSONArray("data");
+					query.clearAll();
+					query.add(new FieldValue("isActive", false));
+					binder.update(table, query);
+					for(int d = 0; d < dataArray.length(); d++) {
+						JSONObject dataObj = dataArray.getJSONObject(d);
+						String ID = dataObj.getString("expense_category_id");
+						String name = dataObj.getString("expense_category_name");
+						query.clearAll();
+						query.add(new FieldValue("ID", ID));
+						query.add(new FieldValue("name", name));
+						String sql = "SELECT ID FROM " + table + " WHERE ID = " + ID;
+						if(!db.isRecordExists(sql)) {
+							binder.insert(table, query);
+						}
+						else {
+							binder.update(table, query, ID);
+						}
+						result = getExpenseTypes(db, ID, errorCallback);
+					}
+					result = binder.finish();
+				}
+				catch(JSONException je) {
+					je.printStackTrace();
+					if(errorCallback != null) {
+						errorCallback.onError(je.getMessage(), params, response, false);
+					}
+					binder.finish();
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
+	public static boolean getExpenseTypes(SQLiteAdapter db, String categoryID, OnErrorCallback errorCallback) {
+		boolean result = false;
+		boolean hasData = false;
+		final int INDENT = 4;
+		final int TIMEOUT = 5000;
+		String action = "get-expense-types";
+		String url = App.WEB_API + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("expense_category_id", categoryID);
+			params = paramsObj.toString(INDENT);
+			response = CodePanUtils.doHttpGet(url, paramsObj, TIMEOUT);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					int recNo = initObj.getInt("recno");
+					if(status.equals("ok")) {
+						hasData = recNo > 0;
+						result = recNo == 0;
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+			if(hasData) {
+				SQLiteBinder binder = new SQLiteBinder(db);
+				String table = Tables.getName(Tables.TB.EXPENSE_TYPE);
+				try {
+					SQLiteQuery query = new SQLiteQuery();
+					query.clearAll();
+					query.add(new Condition("categoryID", categoryID));
+					query.add(new FieldValue("isActive", false));
+					binder.update(table, query);
+					JSONArray dataArray = responseObj.getJSONArray("data");
+					for(int d = 0; d < dataArray.length(); d++) {
+						JSONObject dataObj = dataArray.getJSONObject(d);
+
+
+						String ID = dataObj.getString("expense_type_id");
+						String name = dataObj.getString("expense_type_name");
+						boolean isRequired = dataObj.getString("is_required").equals("yes");
+						query.clearAll();
+						query.add(new FieldValue("ID", ID));
+						query.add(new FieldValue("name", name));
+						query.add(new FieldValue("categoryID", categoryID));
+						query.add(new FieldValue("isRequired", isRequired));
+						String sql = "SELECT ID FROM " + table + " WHERE ID = " + ID;
+						if(!db.isRecordExists(sql)) {
+							binder.insert(table, query);
+						}
+						else {
+							binder.update(table, query, ID);
+						}
+					}
+					result = binder.finish();
+				}
+				catch(JSONException je) {
+					je.printStackTrace();
+					if(errorCallback != null) {
+						errorCallback.onError(je.getMessage(), params, response, false);
+					}
+					binder.finish();
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
 	public static boolean getSettings(SQLiteAdapter db, OnErrorCallback errorCallback) {
 		boolean result = false;
 		boolean hasData = false;

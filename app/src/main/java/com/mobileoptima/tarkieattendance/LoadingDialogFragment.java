@@ -118,7 +118,7 @@ public class LoadingDialogFragment extends Fragment implements OnErrorCallback,
 				process.login(db, username, password);
 				break;
 			case UPDATE_MASTER_FILE:
-				setMax(12);
+				setMax(13);
 				successMsg = "Update master list successful.";
 				failedMsg = "Failed to update master file.";
 				title = "Updating Master File";

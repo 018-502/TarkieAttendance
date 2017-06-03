@@ -1,11 +1,14 @@
 package com.mobileoptima.core;
 
+import android.util.Log;
+
 import com.codepan.database.Condition;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.EntriesSearchType;
+import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
@@ -22,6 +25,9 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseDefaultObj;
+import com.mobileoptima.model.ExpenseFuelConsumptionObj;
+import com.mobileoptima.model.ExpenseFuelPurchaseObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseReportsObj;
@@ -788,6 +794,23 @@ public class Data {
 		return announcementList;
 	}
 
+	public static ArrayList<ChoiceObj> loadExpenseTypes(SQLiteAdapter db) {
+		ArrayList<ChoiceObj> choiceList = new ArrayList<>();
+		String table = Tables.getName(TB.EXPENSE_TYPE);
+		String etc = Tables.getName(TB.EXPENSE_TYPE_CATEGORY);
+		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			ChoiceObj obj = new ChoiceObj();
+			obj.ID = cursor.getString(0);
+			obj.name = cursor.getString(1);
+			obj.isCheck = cursor.getInt(2) == 1;
+			choiceList.add(obj);
+		}
+		cursor.close();
+		return choiceList;
+	}
+
 	public static ArrayList<ExpenseItemsObj> loadExpenseItems(SQLiteAdapter db, String startDate, String endDate) {
 		ArrayList<ExpenseItemsObj> expenseItemsList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
@@ -808,16 +831,17 @@ public class Data {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT ID, dTime, amount, typeID, typeName FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
+		String query = "SELECT ID, dDate, dTime, amount, typeID, typeName FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseObj expense = new ExpenseObj();
 			expense.ID = cursor.getString(0);
-			expense.dTime = cursor.getString(1);
-			expense.amount = cursor.getFloat(2);
+			expense.dDate = cursor.getString(1);
+			expense.dTime = cursor.getString(2);
+			expense.amount = cursor.getFloat(3);
 			ExpenseTypeObj type = new ExpenseTypeObj();
-			type.ID = cursor.getString(3);
-			type.name = cursor.getString(4);
+			type.ID = cursor.getString(4);
+			type.name = cursor.getString(5);
 			expense.type = type;
 			expenseList.add(expense);
 		}

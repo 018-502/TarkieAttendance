@@ -323,13 +323,13 @@ public class Tables {
 				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("categoryID", DataType.INTEGER));
 				query.add(new Field("isRequired", 0));
-				query.add(new Field("isDelete", 0));
+				query.add(new Field("isActive", 1));
 				break;
 			case EXPENSE_TYPE_CATEGORY:
 				query.clearAll();
 				query.add(new Field("ID", true));
 				query.add(new Field("name", DataType.TEXT));
-				query.add(new Field("isDelete", 0));
+				query.add(new Field("isActive", 1));
 				break;
 			case FORMS:
 				query.clearAll();
