@@ -84,18 +84,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private VisitObj visit;
 
 	@Override
-	public void onStart() {
-		super.onStart();
-		setOnBackStack(true);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		setOnBackStack(false);
-	}
-
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		main = (MainActivity) getActivity();
@@ -430,6 +418,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				addForms.setVisit(visit);
 				addForms.setTaggedList(taggedList);
 				addForms.setOnTagFormsCallback(this);
+				addForms.setOnFragmentCallback(this);
 				addForms.setOnOverrideCallback(overrideCallback);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
@@ -680,12 +669,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onCameraDone(ArrayList<ImageObj> imageList) {
 		this.hasPhotoAdded = true;
-		this.withChanges = true;
 		if(imageList != null) {
 			imageList.addAll(0, this.imageList);
 		}
 		updatePhotoGrid(llGridPhotoVisitDetails, imageList);
 		this.imageList = imageList;
+		setWithChanges(true);
 	}
 
 	@Override
@@ -725,7 +714,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onFragment(boolean status) {
 		if(overrideCallback != null) {
-			overrideCallback.onOverride(!status);
+			overrideCallback.onOverride(!status && withChanges);
 		}
 		if(!status) {
 			MainActivity main = (MainActivity) getActivity();
@@ -733,19 +722,13 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		}
 	}
 
-	private void setOnBackStack(boolean isOnBackStack) {
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(isOnBackStack);
-		}
-	}
-
 	@Override
 	public void onSelectStore(StoreObj store) {
-		this.withChanges = true;
 		visit.store = store;
 		tvStoreVisitDetails.setText(store.name);
 		tvAddressVisitDetails.setText(store.address);
 		manager.popBackStack();
+		setWithChanges(true);
 	}
 
 	public void setOnSaveVisitCallback(OnSaveVisitCallback saveVisitCallback) {
@@ -754,7 +737,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onTagForms(ArrayList<FormObj> formList) {
-		this.withChanges = true;
 		for(FormObj form : formList) {
 			boolean exists = false;
 			for(EntryObj entry : entryList) {
@@ -770,6 +752,14 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				entryList.add(entry);
 			}
 		}
+		setWithChanges(true);
 		formsHandler.sendMessage(formsHandler.obtainMessage());
+	}
+
+	public void setWithChanges(boolean withChanges) {
+		this.withChanges = withChanges;
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(withChanges);
+		}
 	}
 }

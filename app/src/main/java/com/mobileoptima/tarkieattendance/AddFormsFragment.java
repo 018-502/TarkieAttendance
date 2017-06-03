@@ -35,6 +35,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	private CodePanButton btnSaveAddForms, btnBackAddForms;
 	private OnTagFormsCallback tagFormsCallback;
 	private OnOverrideCallback overrideCallback;
+	private OnFragmentCallback fragmentCallback;
 	private FragmentTransaction transaction;
 	private ArrayList<FormObj> taggedList;
 	private ArrayList<FormObj> formList;
@@ -84,7 +85,12 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 					obj.isChecked = !obj.isChecked;
 					obj.hasChanged = !obj.hasChanged;
 					cbAddForms.setChecked(obj.isChecked);
-					withChanges = true;
+					if(!withChanges) {
+						withChanges = true;
+						if(overrideCallback != null) {
+							overrideCallback.onOverride(true);
+						}
+					}
 				}
 				else {
 					TarkieLib.alertDialog(getActivity(), R.string.untag_forms_title,
@@ -212,8 +218,12 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	}
 
 	private void setOnBackStack(boolean isOnBackStack) {
-		if(overrideCallback != null) {
-			overrideCallback.onOverride(isOnBackStack);
+		if(fragmentCallback != null) {
+			fragmentCallback.onFragment(isOnBackStack);
 		}
+	}
+
+	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {
+		this.fragmentCallback = fragmentCallback;
 	}
 }
