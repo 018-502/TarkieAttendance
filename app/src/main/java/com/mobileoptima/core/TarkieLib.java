@@ -1079,6 +1079,15 @@ public class TarkieLib {
 		return db.getString(query);
 	}
 
+	public static boolean updateStatusWebUpdate(SQLiteAdapter db, TB tb, String recID) {
+		SQLiteBinder binder = new SQLiteBinder(db);
+		String table = Tables.getName(tb);
+		SQLiteQuery query = new SQLiteQuery();
+		query.add(new FieldValue("isWebUpdate", true));
+		binder.update(table, query, recID);
+		return binder.finish();
+	}
+
 	public static boolean updateStatusSync(SQLiteAdapter db, TB tb, String recID) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String table = Tables.getName(tb);
@@ -1238,14 +1247,11 @@ public class TarkieLib {
 		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
 			query.clearAll();
+			query.add(new Condition("isSync", false));
 			switch(tb) {
 				case ENTRIES:
 					query.add(new Condition("isDelete", false));
 					query.add(new Condition("isSubmit", true));
-					query.add(new Condition("isSync", false));
-					break;
-				default:
-					query.add(new Condition("isSync", false));
 					break;
 			}
 			String table = Tables.getName(tb);
@@ -1283,6 +1289,23 @@ public class TarkieLib {
 		return count;
 	}
 
+	public static int getCountWebUpdate(SQLiteAdapter db) {
+		int count = 0;
+		ArrayList<TB> tableList = new ArrayList<>();
+		tableList.add(TB.TASK);
+		SQLiteQuery query = new SQLiteQuery();
+		for(TB tb : tableList) {
+			query.clearAll();
+			query.add(new Condition("isSync", true));
+			query.add(new Condition("isUpdate", true));
+			query.add(new Condition("isWebUpdate", false));
+			String table = Tables.getName(tb);
+			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE " + query.getConditions();
+			count += db.getInt(sql);
+		}
+		return count;
+	}
+
 	public static int getCountSignatureUpload(SQLiteAdapter db) {
 		int count = 0;
 		ArrayList<TB> tableList = new ArrayList<>();
@@ -1312,9 +1335,10 @@ public class TarkieLib {
 
 	public static int getCountSyncTotal(SQLiteAdapter db) {
 		int syncCount = getCountSync(db);
+		int updateCount = getCountWebUpdate(db);
 		int photoCount = getCountPhotoUpload(db);
 		int signatureCount = getCountSignatureUpload(db);
-		return syncCount + photoCount + signatureCount;
+		return syncCount + updateCount + photoCount + signatureCount;
 	}
 
 	public static String addEntry(SQLiteAdapter db, String formID, ArrayList<FieldObj> fieldList,

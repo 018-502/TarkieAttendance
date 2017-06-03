@@ -36,6 +36,7 @@ import com.mobileoptima.model.PageObj;
 import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
@@ -600,6 +601,47 @@ public class Data {
 		}
 		cursor.close();
 		return breakOutList;
+	}
+
+	public static ArrayList<TaskObj> loadTaskUpdate(SQLiteAdapter db) {
+		ArrayList<TaskObj> taskList = new ArrayList<>();
+		String s = Tables.getName(TB.STORES);
+		String t = Tables.getName(TB.TASK);
+		String f = Tables.getName(TB.FORMS);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.empID, " +
+				"s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON s.ID = t.storeID " +
+				"WHERE t.isWebUpdate = 0 AND t.isUpdate = 1 AND t.isSync = 1";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(0);
+			task.webTaskID = cursor.getString(1);
+			task.startDate = cursor.getString(2);
+			task.endDate = cursor.getString(3);
+			task.notes = cursor.getString(4);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(5);
+			task.emp = emp;
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(6);
+			store.webStoreID = cursor.getString(7);
+			task.store = store;
+			ArrayList<FormObj> formList = new ArrayList<>();
+			query = "SELECT f.ID FROM " + f + " f, " + tf + " tf WHERE f.ID = tf.formID AND " +
+					"tf.taskID = '" + task.ID + "' AND tf.isTag = 1";
+			Cursor c = db.read(query);
+			while(c.moveToNext()) {
+				FormObj form = new FormObj();
+				form.ID = c.getString(0);
+				formList.add(form);
+			}
+			c.close();
+			task.formList = formList;
+			taskList.add(task);
+		}
+		cursor.close();
+		return taskList;
 	}
 
 	public static ArrayList<IncidentReportObj> loadIncidentReportSync(SQLiteAdapter db) {
