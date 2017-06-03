@@ -137,16 +137,8 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 				onBackPressed();
 				break;
 			case R.id.btnSaveAddForms:
-				ArrayList<FormObj> taggedList = new ArrayList<>();
-				for(FormObj form : formList) {
-					if(form.hasChanged || form.isDefault) {
-						taggedList.add(form);
-					}
-				}
-				if(tagFormsCallback != null) {
-					tagFormsCallback.onTagForms(taggedList);
-				}
 				manager.popBackStack();
+				save();
 				break;
 		}
 	}
@@ -170,19 +162,21 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	public void onBackPressed() {
 		if(withChanges) {
 			AlertDialogFragment alert = new AlertDialogFragment();
-			alert.setDialogTitle(R.string.discard_changes_title);
-			alert.setDialogMessage(R.string.discard_changes_message);
+			alert.setDialogTitle(R.string.save_changes_title);
+			alert.setDialogMessage(R.string.save_changes_message);
 			alert.setOnFragmentCallback(this);
 			alert.setPositiveButton("Yes", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					manager.popBackStack();
 					manager.popBackStack();
+					save();
 				}
 			});
-			alert.setNegativeButton("Cancel", new OnClickListener() {
+			alert.setNegativeButton("No", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
+					manager.popBackStack();
 					manager.popBackStack();
 				}
 			});
@@ -195,6 +189,18 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 		}
 		else {
 			manager.popBackStack();
+		}
+	}
+
+	public void save() {
+		ArrayList<FormObj> taggedList = new ArrayList<>();
+		for(FormObj form : formList) {
+			if(form.hasChanged || form.isDefault) {
+				taggedList.add(form);
+			}
+		}
+		if(tagFormsCallback != null) {
+			tagFormsCallback.onTagForms(taggedList);
 		}
 	}
 
