@@ -14,5 +14,4 @@ public class EntryObj extends TransactionObj {
 	public boolean isDelete;
 	public boolean isFromWeb;
 	public boolean isHighlight;
-	public ArrayList<FieldObj> fieldList;
 }

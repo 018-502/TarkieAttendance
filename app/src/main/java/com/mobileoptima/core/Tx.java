@@ -11,11 +11,13 @@ import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
+import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.IncidentObj;
 import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.PhotoObj;
@@ -605,13 +607,15 @@ public class Tx {
 			paramsObj.put("local_record_id", entry.ID);
 			paramsObj.put("sync_batch_id", entry.syncBatchID);
 			JSONArray detailsArray = new JSONArray();
-			for(FieldObj field : entry.fieldList) {
+			FormObj form = entry.form;
+			for(FieldObj field : form.fieldList) {
 				JSONObject detailsObj = new JSONObject();
+				AnswerObj answer = field.answer;
 				detailsObj.put("field_id", field.ID);
 				detailsObj.put("field_type", field.type);
-				detailsObj.put("answer", field.answer.value);
-				detailsObj.put("local_record_id", field.answer.ID);
-				detailsObj.put("sync_batch_id", field.answer.syncBatchID);
+				detailsObj.put("answer", answer.value);
+				detailsObj.put("local_record_id", answer.ID);
+				detailsObj.put("sync_batch_id", answer.syncBatchID);
 				detailsArray.put(detailsObj);
 			}
 			paramsObj.put("question_answers", detailsArray);

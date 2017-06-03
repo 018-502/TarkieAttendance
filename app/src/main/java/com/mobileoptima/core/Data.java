@@ -726,7 +726,6 @@ public class Data {
 			entry.isFromWeb = cursor.getInt(7) == 1;
 			FormObj form = new FormObj();
 			form.ID = cursor.getString(8);
-			entry.form = form;
 			ArrayList<FieldObj> fieldList = new ArrayList<>();
 			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + a + " a, " + f + " f " +
 					"WHERE f.formID = " + form.ID + " AND a.entryID = " + entry.ID + " " +
@@ -753,7 +752,8 @@ public class Data {
 				fieldList.add(field);
 			}
 			c.close();
-			entry.fieldList = fieldList;
+			form.fieldList = fieldList;
+			entry.form = form;
 			entryList.add(entry);
 		}
 		cursor.close();
