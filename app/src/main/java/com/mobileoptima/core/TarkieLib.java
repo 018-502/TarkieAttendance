@@ -947,7 +947,7 @@ public class TarkieLib {
 		return "Expense " + count;
 	}
 
-	public static String saveExpense(SQLiteAdapter db, String dDate, String dTime, GpsObj gps) {
+	public static String saveExpense(SQLiteAdapter db, GpsObj gps, String dDate, String dTime) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);

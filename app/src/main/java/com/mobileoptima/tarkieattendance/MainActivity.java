@@ -1578,7 +1578,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		GpsObj gps = getGps();
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
-		String expenseID = TarkieLib.saveExpense(db, dDate, dTime, gps);
+		String expenseID = TarkieLib.saveExpense(db, gps, dDate, dTime);
 		if(expenseID != null && tabType.equals(TabType.EXPENSE)) {
 			Fragment fragment = manager.findFragmentByTag(tabType);
 			if(fragment != null) {

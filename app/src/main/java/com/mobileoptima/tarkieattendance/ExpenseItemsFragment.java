@@ -195,7 +195,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		expense.dDate = dDate;
 		expense.dTime = dTime;
 		ExpenseTypeObj type = new ExpenseTypeObj();
-		type.name = "Expense " + TarkieLib.getExpenseTitle(db);
+		type.name = TarkieLib.getExpenseTitle(db);
 		expense.type = type;
 		expenseList.add(expense);
 		View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, container, false);
