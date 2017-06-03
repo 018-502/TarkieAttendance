@@ -109,7 +109,7 @@ public class Tx {
 			String apiKey = TarkieLib.getAPIKey(db);
 			GpsObj gps = out.gps;
 			TimeInObj in = out.timeIn;
-			EmployeeObj emp = in.emp;
+			EmployeeObj emp = out.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);
@@ -232,7 +232,7 @@ public class Tx {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
 			BreakInObj in = out.breakIn;
-			EmployeeObj emp = in.emp;
+			EmployeeObj emp = out.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);

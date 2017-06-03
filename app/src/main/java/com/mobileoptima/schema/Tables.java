@@ -105,17 +105,17 @@ public class Tables {
 				query.clearAll();
 				query.add(new Field("ID", true));
 				query.add(new Field("name", DataType.TEXT));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("gpsLongitude", DataType.TEXT));
 				query.add(new Field("gpsLatitude", DataType.TEXT));
 				query.add(new Field("address", DataType.TEXT));
 				query.add(new Field("radius", DataType.TEXT));
-				query.add(new Field("dDate", DataType.TEXT));
-				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("syncBatchID", DataType.TEXT));
 				query.add(new Field("webStoreID", DataType.INTEGER));
 				query.add(new Field("isDefault", 0));
-				query.add(new Field("isSync", 0));
 				query.add(new Field("isFromWeb", 0));
+				query.add(new Field("isSync", 0));
 				break;
 			case CONVENTION:
 				query.clearAll();

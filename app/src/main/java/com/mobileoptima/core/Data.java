@@ -523,6 +523,7 @@ public class Data {
 			EmployeeObj emp = new EmployeeObj();
 			emp.ID = cursor.getString(6);
 			in.emp = emp;
+			out.emp = emp;
 			out.timeIn = in;
 			GpsObj gps = new GpsObj();
 			gps.date = cursor.getString(7);
@@ -586,6 +587,7 @@ public class Data {
 			EmployeeObj emp = new EmployeeObj();
 			emp.ID = cursor.getString(6);
 			in.emp = emp;
+			out.emp = emp;
 			out.breakIn = in;
 			GpsObj gps = new GpsObj();
 			gps.date = cursor.getString(7);
