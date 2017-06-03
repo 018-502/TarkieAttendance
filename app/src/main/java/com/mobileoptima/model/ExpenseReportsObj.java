@@ -2,7 +2,6 @@ package com.mobileoptima.model;
 
 public class ExpenseReportsObj {
 	public String ID;
-	public String reportID;
 	public String dDate;
 	public String dTime;
 	public String title;

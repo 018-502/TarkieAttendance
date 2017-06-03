@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class ExpenseItemsObj {
 	public ArrayList<View> childList;
 	public String dDate;
-	public float totalAmount;
 	public boolean isAdded;
 	public boolean isOpen;
+	public float totalAmount;
 }

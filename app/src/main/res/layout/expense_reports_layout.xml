@@ -18,7 +18,7 @@
             android:id="@+id/etSearchExpenseReports"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/state_rect_gray_sec_rad_three"
+            android:background="@drawable/state_rect_gray_sen_rad_three"
             android:hint="@string/search"
             android:paddingBottom="@dimen/ten"
             android:paddingEnd="@dimen/thirty"

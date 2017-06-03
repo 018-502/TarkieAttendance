@@ -23,6 +23,7 @@ import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.Convention;
+import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.Incident;
 import com.mobileoptima.model.AnswerObj;
@@ -34,7 +35,11 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseDefaultObj;
+import com.mobileoptima.model.ExpenseFuelConsumptionObj;
+import com.mobileoptima.model.ExpenseFuelPurchaseObj;
 import com.mobileoptima.model.ExpenseObj;
+import com.mobileoptima.model.ExpenseTypeObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
@@ -919,69 +924,186 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
+	public static int getTimeInExpenseCount(SQLiteAdapter db) {
+		String table = Tables.getName(EXPENSE);
+		String timeInID = getTimeInID(db);
+		String sql = "SELECT COUNT(ID) FROM " + table + " WHERE timeInID = " + timeInID;
+		return db.getInt(sql);
+	}
+
 	public static String saveExpense(SQLiteAdapter db, String dDate, String dTime, GpsObj gps) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
 		String syncBatchID = getSyncBatchID(db);
+		String table = Tables.getName(EXPENSE);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
+		query.add(new FieldValue("typeName", "Expense " + (getTimeInExpenseCount(db) + 1)));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		String expenseID = binder.insert(Tables.getName(EXPENSE), query);
+		String ID = binder.insert(table, query);
 		if(binder.finish()) {
-			return expenseID;
+			return ID;
 		}
 		return "";
 	}
 
-	public static boolean updateExpense(SQLiteAdapter db, ExpenseObj obj) {
+	public static boolean updateExpense(SQLiteAdapter db, ExpenseObj expense) {
+		String table = Tables.getName(EXPENSE);
 		SQLiteBinder binder = new SQLiteBinder(db);
 		SQLiteQuery query = new SQLiteQuery();
-		query.add(new FieldValue("amount", obj.amount));
-		query.add(new FieldValue("typeID", obj.typeID));
-		query.add(new FieldValue("storeID", obj.storeID));
-		query.add(new FieldValue("notes", obj.notes));
-		query.add(new FieldValue("isUpdate", 1));
-		query.add(new FieldValue("isSync", 0));
-		query.add(new FieldValue("isWebUpdate", 0));
-		binder.update(Tables.getName(EXPENSE), query, obj.ID);
-		query = new SQLiteQuery();
-		query.add(new Condition("expenseID", obj.ID));
-		if(obj.typeID == 1) {
-			query.add(new FieldValue("start", obj.fcStart));
-			query.add(new FieldValue("end", obj.fcEnd));
-			query.add(new FieldValue("rate", obj.fcRate));
-			query.add(new FieldValue("startPhoto", obj.fcStartPhoto));
-			query.add(new FieldValue("endPhoto", obj.fcEndPhoto));
-			query.add(new FieldValue("isStartPhotoUpload", 0));
-			query.add(new FieldValue("isEndPhotoUpload", 0));
-			binder.update(Tables.getName(EXPENSE_FUEL_CONSUMPTION), query);
+		query.add(new FieldValue("amount", expense.amount));
+		query.add(new FieldValue("origin", expense.origin));
+		query.add(new FieldValue("destination", expense.destination));
+		query.add(new FieldValue("notes", expense.notes));
+		if(expense.type.ID != null) {
+			query.add(new FieldValue("typeID", expense.type.ID));
+			query.add(new FieldValue("typeName", expense.type.name));
 		}
-		else if(obj.typeID == 2) {
-			query.add(new FieldValue("start", obj.fpStart));
-			query.add(new FieldValue("liters", obj.fpLiters));
-			query.add(new FieldValue("price", obj.fpPrice));
-			query.add(new FieldValue("photo", obj.fpPhoto));
-			query.add(new FieldValue("startPhoto", obj.fpStartPhoto));
-			query.add(new FieldValue("withOR", obj.fpWithOR));
-			query.add(new FieldValue("isPhotoUpload", 0));
-			query.add(new FieldValue("isStartPhotoUpload", 0));
-			binder.update(Tables.getName(EXPENSE_FUEL_PURCHASE), query);
+		query.add(new FieldValue("storeID", expense.store.ID));
+		String sql = "SELECT isSync FROM " + table + " WHERE ID = " + expense.ID;
+		if(db.getInt(sql) == 1) {
+			query.add(new FieldValue("isUpdate", true));
+			query.add(new FieldValue("isWebUpdate", false));
 		}
-		else {
-			query.add(new FieldValue("start", obj.defStart));
-			query.add(new FieldValue("end", obj.defEnd));
-			query.add(new FieldValue("photo", obj.defPhoto));
-			query.add(new FieldValue("withOR", obj.defWithOR));
-			query.add(new FieldValue("isPhotoUpload", 0));
-			binder.update(Tables.getName(EXPENSE_DEFAULT), query);
+		binder.update(table, query, expense.ID);
+		if(expense instanceof ExpenseFuelConsumptionObj) {
+			ExpenseFuelConsumptionObj fc = (ExpenseFuelConsumptionObj) expense;
+			table = Tables.getName(EXPENSE_FUEL_CONSUMPTION);
+			query = new SQLiteQuery();
+			query.add(new FieldValue("start", fc.start));
+			query.add(new FieldValue("end", fc.end));
+			query.add(new FieldValue("rate", fc.rate));
+			query.add(new FieldValue("startPhoto", fc.startPhoto));
+			query.add(new FieldValue("endPhoto", fc.endPhoto));
+			query.add(new FieldValue("isStartPhotoUpload", false));
+			query.add(new FieldValue("isEndPhotoUpload", false));
+			sql = "SELECT ID FROM " + table + " WHERE expenseID = " + fc.ID;
+			if(db.isRecordExists(sql)) {
+				query.add(new Condition("expenseID", fc.ID));
+				binder.update(table, query);
+			}
+			else {
+				binder.insert(table, query);
+			}
+		}
+		else if(expense instanceof ExpenseFuelPurchaseObj) {
+			ExpenseFuelPurchaseObj fp = (ExpenseFuelPurchaseObj) expense;
+			table = Tables.getName(EXPENSE_FUEL_PURCHASE);
+			query = new SQLiteQuery();
+			query.add(new FieldValue("start", fp.start));
+			query.add(new FieldValue("liters", fp.liters));
+			query.add(new FieldValue("price", fp.price));
+			query.add(new FieldValue("photo", fp.photo));
+			query.add(new FieldValue("startPhoto", fp.startPhoto));
+			query.add(new FieldValue("withOR", fp.withOR));
+			query.add(new FieldValue("isPhotoUpload", true));
+			query.add(new FieldValue("isStartPhotoUpload", true));
+			sql = "SELECT ID FROM " + table + " WHERE expenseID = " + fp.ID;
+			if(db.isRecordExists(sql)) {
+				query.add(new Condition("expenseID", fp.ID));
+				binder.update(table, query);
+			}
+			else {
+				binder.insert(table, query);
+			}
+		}
+		else if(expense instanceof ExpenseDefaultObj) {
+			ExpenseDefaultObj d = (ExpenseDefaultObj) expense;
+			table = Tables.getName(EXPENSE_DEFAULT);
+			query = new SQLiteQuery();
+			query.add(new FieldValue("photo", d.photo));
+			query.add(new FieldValue("withOR", d.withOR));
+			query.add(new FieldValue("isPhotoUpload", false));
+			sql = "SELECT ID FROM " + table + " WHERE expenseID = " + d.ID;
+			if(db.isRecordExists(sql)) {
+				query.add(new Condition("expenseID", d.ID));
+				binder.update(table, query);
+			}
+			else {
+				binder.insert(table, query);
+			}
 		}
 		return binder.finish();
+	}
+
+	public static ExpenseObj getExpense(SQLiteAdapter db, String expenseID) {
+		ExpenseObj expense = new ExpenseObj();
+		String table = Tables.getName(TB.EXPENSE);
+		String query = "SELECT dDate, dTime, amount, typeID, typeName, storeID, origin, destination, notes, isTag, isSubmit FROM " + table + " WHERE ID = " + expenseID;
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			int typeID = cursor.getInt(3);
+			Cursor c;
+			switch(typeID) {
+				case ExpenseType.FUEL_CONSUMPTION:
+					ExpenseFuelConsumptionObj fc = new ExpenseFuelConsumptionObj();
+					table = Tables.getName(TB.EXPENSE_FUEL_CONSUMPTION);
+					query = "SELECT start, end, rate, startPhoto, endPhoto FROM " + table + " WHERE expenseID = " + expenseID;
+					c = db.read(query);
+					while(c.moveToNext()) {
+						fc.start = c.getString(0);
+						fc.end = c.getString(1);
+						fc.rate = c.getString(2);
+						fc.startPhoto = c.getString(3);
+						fc.endPhoto = c.getString(4);
+					}
+					c.close();
+					expense = fc;
+					break;
+				case ExpenseType.FUEL_PURCHASE:
+					ExpenseFuelPurchaseObj fp = new ExpenseFuelPurchaseObj();
+					table = Tables.getName(TB.EXPENSE_FUEL_PURCHASE);
+					query = "SELECT start, liters, price, photo, startPhoto, withOR FROM " + table + " WHERE expenseID = " + expenseID;
+					c = db.read(query);
+					while(c.moveToNext()) {
+						fp.start = c.getString(0);
+						fp.liters = c.getString(1);
+						fp.price = c.getString(2);
+						fp.photo = c.getString(3);
+						fp.startPhoto = c.getString(4);
+						fp.withOR = c.getInt(5) == 1;
+					}
+					c.close();
+					expense = fp;
+					break;
+				default:
+					ExpenseDefaultObj d = new ExpenseDefaultObj();
+					table = Tables.getName(TB.EXPENSE_DEFAULT);
+					query = "SELECT photo, withOR FROM " + table + " WHERE expenseID = " + expenseID;
+					c = db.read(query);
+					while(c.moveToNext()) {
+						d.photo = c.getString(0);
+						d.withOR = c.getInt(1) == 1;
+					}
+					c.close();
+					expense = d;
+					break;
+			}
+			expense.ID = expenseID;
+			expense.dDate = cursor.getString(0);
+			expense.dTime = cursor.getString(1);
+			expense.amount = cursor.getFloat(2);
+			ExpenseTypeObj type = new ExpenseTypeObj();
+			type.ID = cursor.getString(3);
+			type.name = cursor.getString(4);
+			expense.type = type;
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(5);
+			expense.store = store;
+			expense.origin = cursor.getString(6);
+			expense.destination = cursor.getString(7);
+			expense.notes = cursor.getString(8);
+			expense.isTag = cursor.getInt(9) == 1;
+			expense.isSubmit = cursor.getInt(10) == 1;
+		}
+		cursor.close();
+		return expense;
 	}
 
 	public static boolean deleteExpense(SQLiteAdapter db, String expenseID) {
@@ -1660,5 +1782,11 @@ public class TarkieLib {
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		binder.insert(Tables.getName(TB.STORES), query);
 		return binder.finish();
+	}
+
+	public static String getStoreName(SQLiteAdapter db, String ID) {
+		String table = Tables.getName(TB.STORES);
+		String query = "SELECT name FROM " + table + " WHERE ID = " + ID;
+		return db.getString(query);
 	}
 }

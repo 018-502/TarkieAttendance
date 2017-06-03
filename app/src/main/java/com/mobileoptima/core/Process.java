@@ -193,6 +193,11 @@ public class Process {
 						handler.sendMessage(handler.obtainMessage());
 					}
 					if(result) {
+						result = Rx.getExpenseTypeCategories(db, errorCallback);
+						Thread.sleep(250);
+						handler.sendMessage(handler.obtainMessage());
+					}
+					if(result) {
 						result = Rx.getSettings(db, errorCallback);
 						Thread.sleep(250);
 						handler.sendMessage(handler.obtainMessage());
