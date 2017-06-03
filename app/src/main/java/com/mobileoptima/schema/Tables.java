@@ -260,7 +260,7 @@ public class Tables {
 				query.add(new Field("destination", DataType.TEXT));
 				query.add(new Field("notes", DataType.TEXT));
 				query.add(new Field("typeID", DataType.INTEGER));
-				query.add(new Field("typeName", DataType.TEXT));
+				query.add(new Field("name", DataType.TEXT));
 				query.add(new Field("storeID", DataType.INTEGER));
 				query.add(new Field("gpsID", DataType.INTEGER));
 				query.add(new Field("empID", DataType.INTEGER));

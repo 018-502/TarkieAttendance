@@ -1,14 +1,11 @@
 package com.mobileoptima.core;
 
-import android.util.Log;
-
 import com.codepan.database.Condition;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.EntriesSearchType;
-import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
@@ -25,9 +22,6 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
-import com.mobileoptima.model.ExpenseDefaultObj;
-import com.mobileoptima.model.ExpenseFuelConsumptionObj;
-import com.mobileoptima.model.ExpenseFuelPurchaseObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseReportsObj;
@@ -867,7 +861,8 @@ public class Data {
 		ArrayList<ChoiceObj> choiceList = new ArrayList<>();
 		String table = Tables.getName(TB.EXPENSE_TYPE);
 		String etc = Tables.getName(TB.EXPENSE_TYPE_CATEGORY);
-		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
+		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND " +
+				"categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ChoiceObj obj = new ChoiceObj();
@@ -881,26 +876,30 @@ public class Data {
 	}
 
 	public static ArrayList<ExpenseItemsObj> loadExpenseItems(SQLiteAdapter db, String startDate, String endDate) {
-		ArrayList<ExpenseItemsObj> expenseItemsList = new ArrayList<>();
+		ArrayList<ExpenseItemsObj> expenseItemList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate >= '" + startDate + "' AND dDate <= '" + endDate + "' AND empID = " + empID + " AND isDelete = 0 GROUP BY dDate ORDER BY dDate DESC";
+		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate " +
+				"BETWEEN '" + startDate + "' AND '" + endDate + "' AND empID = " + empID + " " +
+				"AND isDelete = 0 GROUP BY dDate ORDER BY dDate DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseItemsObj expenseItem = new ExpenseItemsObj();
 			expenseItem.dDate = cursor.getString(0);
 			expenseItem.totalAmount = cursor.getFloat(1);
-			expenseItemsList.add(expenseItem);
+			expenseItemList.add(expenseItem);
 		}
 		cursor.close();
-		return expenseItemsList;
+		return expenseItemList;
 	}
 
 	public static ArrayList<ExpenseObj> loadExpense(SQLiteAdapter db, String date) {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT ID, dDate, dTime, amount, typeID, typeName FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
+		String query = "SELECT ID, dDate, dTime, amount, typeID, name FROM " + table + " WHERE " +
+				"dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 " +
+				"ORDER BY dTime DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseObj expense = new ExpenseObj();

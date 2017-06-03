@@ -325,6 +325,11 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, column, 0);
 		}
+		column = "name";
+		table = Tables.getName(TB.EXPENSE);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
 		switch(n) {
 			case 2:
 				TB tb = TB.STORES;
@@ -943,7 +948,7 @@ public class TarkieLib {
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("typeName", name));
+		query.add(new FieldValue("name", name));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("timeInID", timeInID));
@@ -963,7 +968,7 @@ public class TarkieLib {
 		query.add(new FieldValue("notes", expense.notes));
 		if(expense.type.ID != null) {
 			query.add(new FieldValue("typeID", expense.type.ID));
-			query.add(new FieldValue("typeName", expense.type.name));
+			query.add(new FieldValue("name", expense.type.name));
 		}
 		query.add(new FieldValue("storeID", expense.store.ID));
 		String sql = "SELECT isSync FROM " + table + " WHERE ID = " + expense.ID;
@@ -1035,7 +1040,8 @@ public class TarkieLib {
 	public static ExpenseObj getExpense(SQLiteAdapter db, String expenseID) {
 		ExpenseObj expense = new ExpenseObj();
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT dDate, dTime, amount, typeID, typeName, storeID, origin, destination, notes, isTag, isSubmit FROM " + table + " WHERE ID = " + expenseID;
+		String query = "SELECT dDate, dTime, amount, typeID, name, storeID, origin, destination, " +
+				"notes, isTag, isSubmit FROM " + table + " WHERE ID = " + expenseID;
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			int typeID = cursor.getInt(3);
@@ -1044,7 +1050,8 @@ public class TarkieLib {
 				case ExpenseType.FUEL_CONSUMPTION:
 					ExpenseFuelConsumptionObj fc = new ExpenseFuelConsumptionObj();
 					table = Tables.getName(TB.EXPENSE_FUEL_CONSUMPTION);
-					query = "SELECT start, end, rate, startPhoto, endPhoto FROM " + table + " WHERE expenseID = " + expenseID;
+					query = "SELECT start, end, rate, startPhoto, endPhoto FROM " + table + " " +
+							"WHERE expenseID = " + expenseID;
 					c = db.read(query);
 					while(c.moveToNext()) {
 						fc.start = c.getString(0);
@@ -1059,7 +1066,8 @@ public class TarkieLib {
 				case ExpenseType.FUEL_PURCHASE:
 					ExpenseFuelPurchaseObj fp = new ExpenseFuelPurchaseObj();
 					table = Tables.getName(TB.EXPENSE_FUEL_PURCHASE);
-					query = "SELECT start, liters, price, photo, startPhoto, withOR FROM " + table + " WHERE expenseID = " + expenseID;
+					query = "SELECT start, liters, price, photo, startPhoto, withOR FROM " + table + " " +
+							"WHERE expenseID = " + expenseID;
 					c = db.read(query);
 					while(c.moveToNext()) {
 						fp.start = c.getString(0);
