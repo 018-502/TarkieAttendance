@@ -800,12 +800,23 @@ public class Data {
 		String etc = Tables.getName(TB.EXPENSE_TYPE_CATEGORY);
 		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
 		Cursor cursor = db.read(query);
+		ChoiceObj choice;
+		choice = new ChoiceObj();
+		choice.ID = "1";
+		choice.name = "Fuel Consumption";
+		choice.isCheck = true;
+		choiceList.add(0, choice);
+		choice = new ChoiceObj();
+		choice.ID = "2";
+		choice.name = "Fuel Purchase";
+		choice.isCheck = false;
+		choiceList.add(1, choice);
 		while(cursor.moveToNext()) {
-			ChoiceObj obj = new ChoiceObj();
-			obj.ID = cursor.getString(0);
-			obj.name = cursor.getString(1);
-			obj.isCheck = cursor.getInt(2) == 1;
-			choiceList.add(obj);
+			choice = new ChoiceObj();
+			choice.ID = cursor.getString(0);
+			choice.name = cursor.getString(1);
+			choice.isCheck = cursor.getInt(2) == 1;
+			choiceList.add(choice);
 		}
 		cursor.close();
 		return choiceList;
@@ -831,7 +842,7 @@ public class Data {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT ID, dDate, dTime, amount, typeID, typeName FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
+		String query = "SELECT ID, dDate, dTime, amount, typeID, name FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseObj expense = new ExpenseObj();

@@ -944,7 +944,7 @@ public class TarkieLib {
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("typeName", "Expense " + (getTimeInExpenseCount(db) + 1)));
+		query.add(new FieldValue("name", "Expense " + (getTimeInExpenseCount(db) + 1)));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("timeInID", timeInID));
@@ -966,7 +966,7 @@ public class TarkieLib {
 		query.add(new FieldValue("notes", expense.notes));
 		if(expense.type.ID != null) {
 			query.add(new FieldValue("typeID", expense.type.ID));
-			query.add(new FieldValue("typeName", expense.type.name));
+			query.add(new FieldValue("name", expense.type.name));
 		}
 		query.add(new FieldValue("storeID", expense.store.ID));
 		String sql = "SELECT isSync FROM " + table + " WHERE ID = " + expense.ID;
@@ -979,6 +979,7 @@ public class TarkieLib {
 			ExpenseFuelConsumptionObj fc = (ExpenseFuelConsumptionObj) expense;
 			table = Tables.getName(EXPENSE_FUEL_CONSUMPTION);
 			query = new SQLiteQuery();
+			query.add(new FieldValue("expenseID", fc.ID));
 			query.add(new FieldValue("start", fc.start));
 			query.add(new FieldValue("end", fc.end));
 			query.add(new FieldValue("rate", fc.rate));
@@ -997,8 +998,10 @@ public class TarkieLib {
 		}
 		else if(expense instanceof ExpenseFuelPurchaseObj) {
 			ExpenseFuelPurchaseObj fp = (ExpenseFuelPurchaseObj) expense;
+			Log.e("paul", fp.withOR + "");
 			table = Tables.getName(EXPENSE_FUEL_PURCHASE);
 			query = new SQLiteQuery();
+			query.add(new FieldValue("expenseID", fp.ID));
 			query.add(new FieldValue("start", fp.start));
 			query.add(new FieldValue("liters", fp.liters));
 			query.add(new FieldValue("price", fp.price));
@@ -1016,10 +1019,11 @@ public class TarkieLib {
 				binder.insert(table, query);
 			}
 		}
-		else if(expense instanceof ExpenseDefaultObj) {
+		else {
 			ExpenseDefaultObj d = (ExpenseDefaultObj) expense;
 			table = Tables.getName(EXPENSE_DEFAULT);
 			query = new SQLiteQuery();
+			query.add(new FieldValue("expenseID", d.ID));
 			query.add(new FieldValue("photo", d.photo));
 			query.add(new FieldValue("withOR", d.withOR));
 			query.add(new FieldValue("isPhotoUpload", false));
@@ -1038,7 +1042,7 @@ public class TarkieLib {
 	public static ExpenseObj getExpense(SQLiteAdapter db, String expenseID) {
 		ExpenseObj expense = new ExpenseObj();
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT dDate, dTime, amount, typeID, typeName, storeID, origin, destination, notes, isTag, isSubmit FROM " + table + " WHERE ID = " + expenseID;
+		String query = "SELECT dDate, dTime, amount, typeID, name, storeID, origin, destination, notes, isTag, isSubmit FROM " + table + " WHERE ID = " + expenseID;
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			int typeID = cursor.getInt(3);
@@ -1071,6 +1075,7 @@ public class TarkieLib {
 						fp.photo = c.getString(3);
 						fp.startPhoto = c.getString(4);
 						fp.withOR = c.getInt(5) == 1;
+						Log.e("paul", fp.withOR + "");
 					}
 					c.close();
 					expense = fp;

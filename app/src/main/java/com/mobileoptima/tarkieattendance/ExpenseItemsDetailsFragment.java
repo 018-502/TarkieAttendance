@@ -14,6 +14,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -25,6 +26,7 @@ import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.callback.Interface;
 import com.mobileoptima.callback.Interface.OnOptionSelectedCallback;
 import com.mobileoptima.callback.Interface.OnUpdateExpenseCallback;
+import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.ChoiceObj;
@@ -44,23 +46,24 @@ import static android.view.View.*;
 
 public class ExpenseItemsDetailsFragment extends Fragment implements OnClickListener, OnFocusChangeListener, OnTouchListener {
 	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails, btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails, btnPhotoExpenseItemsDetails;
-	private CodePanLabel tvDatetExpenseItemsDetails, tvTimeExpenseItemsDetails;
+	private CodePanLabel tvDateExpenseItemsDetails, tvTimeExpenseItemsDetails;
 	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails, etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
 	private CheckBox cbWithORExpenseItemsDetails;
 	private DisplayImageOptions options;
 	private ExpenseObj expense;
-	private ExpenseDefaultObj d;
 	private ExpenseFuelConsumptionObj fc;
 	private ExpenseFuelPurchaseObj fp;
+	private ExpenseDefaultObj d;
 	private FragmentManager manager;
 	private FragmentTransaction transaction;
+	private FrameLayout flPhotoExpenseItemsDetails;
 	private ImageLoader imageLoader;
 	private ImageView ivPhotoExpenseItemsDetails;
 	private NumberFormat nf;
 	private OnUpdateExpenseCallback updateExpenseCallback;
 	private RelativeLayout rlWithORExpenseItemsDetails;
 	private SQLiteAdapter db;
-	private String ID;
+	private String expenseID;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,11 +86,8 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				.cacheInMemory(true)
 				.cacheOnDisk(true)
 				.build();
-		expense = TarkieLib.getExpense(db, ID);
+		expense = TarkieLib.getExpense(db, expenseID);
 		expense.store.name = TarkieLib.getStoreName(db, expense.store.ID);
-		fc = new ExpenseFuelConsumptionObj();
-		fp = new ExpenseFuelPurchaseObj();
-		d = new ExpenseDefaultObj();
 	}
 
 	@Override
@@ -95,43 +95,36 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		View view = inflater.inflate(R.layout.expense_items_details_layout, container, false);
 		btnBackExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnBackExpenseItemsDetails);
 		btnSaveExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnSaveExpenseItemsDetails);
-
-		tvDatetExpenseItemsDetails = (CodePanLabel) view.findViewById(R.id.tvDatetExpenseItemsDetails);
+		tvDateExpenseItemsDetails = (CodePanLabel) view.findViewById(R.id.tvDateExpenseItemsDetails);
 		tvTimeExpenseItemsDetails = (CodePanLabel) view.findViewById(R.id.tvTimeExpenseItemsDetails);
-
 		btnStoreExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnStoreExpenseItemsDetails);
 		btnItemExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnItemExpenseItemsDetails);
-
 		etAmountExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etAmountExpenseItemsDetails);
 		etOriginExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etOriginExpenseItemsDetails);
 		etDestinationExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etDestinationExpenseItemsDetails);
 		etNotesExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etNotesExpenseItemsDetails);
-
+		flPhotoExpenseItemsDetails = (FrameLayout) view.findViewById(R.id.flPhotoExpenseItemsDetails);
 		ivPhotoExpenseItemsDetails = (ImageView) view.findViewById(R.id.ivPhotoExpenseItemsDetails);
 		btnPhotoExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnPhotoExpenseItemsDetails);
-
 		rlWithORExpenseItemsDetails = (RelativeLayout) view.findViewById(R.id.rlWithORExpenseItemsDetails);
 		cbWithORExpenseItemsDetails = (CheckBox) view.findViewById(R.id.cbWithORExpenseItemsDetails);
-
 		btnBackExpenseItemsDetails.setOnClickListener(this);
 		btnSaveExpenseItemsDetails.setOnClickListener(this);;
 		btnStoreExpenseItemsDetails.setOnClickListener(this);
 		btnItemExpenseItemsDetails.setOnClickListener(this);
 		btnPhotoExpenseItemsDetails.setOnClickListener(this);
 
-		tvDatetExpenseItemsDetails.setText(expense.dDate);
+		tvDateExpenseItemsDetails.setText(expense.dDate);
 		tvTimeExpenseItemsDetails.setText(expense.dTime);
+		btnStoreExpenseItemsDetails.setText(expense.store.name);
+		etAmountExpenseItemsDetails.setText(nf.format(expense.amount));
+		editText(etAmountExpenseItemsDetails);
+		etOriginExpenseItemsDetails.setText(expense.origin);
+		etDestinationExpenseItemsDetails.setText(expense.destination);
+		etNotesExpenseItemsDetails.setText(expense.notes);
 
-		updateDetails();
+		updateDetails(expense);
 		return view;
-	}
-
-	public void setExpense(String ID) {
-		this.ID = ID;
-	}
-
-	public void setOnUpdateExpenseCallback(OnUpdateExpenseCallback saveExpenseCallback) {
-		this.updateExpenseCallback = saveExpenseCallback;
 	}
 
 	@Override
@@ -142,6 +135,7 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				break;
 			case R.id.btnSaveExpenseItemsDetails:
 				boolean result;
+				Log.e("paul", cbWithORExpenseItemsDetails.isChecked() + "");
 				CodePanUtils.hideKeyboard(view, getActivity());
 				expense.amount = Float.parseFloat(etAmountExpenseItemsDetails.getText().toString().replace(",", ""));
 				expense.origin = etOriginExpenseItemsDetails.getText().toString();
@@ -166,14 +160,11 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 					fp.withOR = cbWithORExpenseItemsDetails.isChecked();
 					result = TarkieLib.updateExpense(db, fp);
 				}
-				else if(expense instanceof ExpenseDefaultObj) {
+				else {
 					d = (ExpenseDefaultObj) expense;
 					d.photo = "";
 					d.withOR = cbWithORExpenseItemsDetails.isChecked();
 					result = TarkieLib.updateExpense(db, d);
-				}
-				else {
-					result = TarkieLib.updateExpense(db, expense);
 				}
 				if(result) {
 					if(updateExpenseCallback != null) {
@@ -218,19 +209,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 			case R.id.btnItemExpenseItemsDetails:
 				OptionsFragment options = new OptionsFragment();
 				ArrayList<ChoiceObj> optionList = Data.loadExpenseTypes(db);
-				ChoiceObj obj;
-				obj = new ChoiceObj();
-				obj.ID = "1";
-				obj.name = "Fuel Consumption";
-				optionList.add(0, obj);
-				obj = new ChoiceObj();
-				obj.ID = "2";
-				obj.name = "Fuel Purchase";
-				optionList.add(1, obj);
-				obj = new ChoiceObj();
-				obj.ID = "3";
-				obj.name = "Taxi";
-				optionList.add(2, obj);
 				options.setItems(optionList, "Expense Type");
 				options.setOnOptionSelectedCallback(new OnOptionSelectedCallback() {
 					@Override
@@ -238,7 +216,50 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 						expense.type.ID = choice.ID;
 						expense.type.name = choice.name;
 						btnItemExpenseItemsDetails.setText(expense.type.name);
-						updateDetails();
+						switch(Integer.parseInt(expense.type.ID)) {
+							case ExpenseType.FUEL_CONSUMPTION:
+								fc = new ExpenseFuelConsumptionObj();
+								fc.ID = expense.ID;
+								fc.dDate = expense.dDate;
+								fc.dTime = expense.dTime;
+								fc.amount = expense.amount;
+								fc.type = expense.type;
+								fc.store = expense.store;
+								fc.origin = expense.origin;
+								fc.destination = expense.destination;
+								fc.isTag = expense.isTag;
+								fc.isSubmit = expense.isSubmit;
+								updateDetails(fc);
+								break;
+							case ExpenseType.FUEL_PURCHASE:
+								fp = new ExpenseFuelPurchaseObj();
+								fp.ID = expense.ID;
+								fp.dDate = expense.dDate;
+								fp.dTime = expense.dTime;
+								fp.amount = expense.amount;
+								fp.type = expense.type;
+								fp.store = expense.store;
+								fp.origin = expense.origin;
+								fp.destination = expense.destination;
+								fp.isTag = expense.isTag;
+								fp.isSubmit = expense.isSubmit;
+								updateDetails(fp);
+								break;
+							default:
+								d = new ExpenseDefaultObj();
+								d.ID = expense.ID;
+								d.dDate = expense.dDate;
+								d.dTime = expense.dTime;
+								d.amount = expense.amount;
+								d.type = expense.type;
+								d.store = expense.store;
+								d.origin = expense.origin;
+								d.destination = expense.destination;
+								d.isTag = expense.isTag;
+								d.isSubmit = expense.isSubmit;
+								updateDetails(d);
+								break;
+						}
 					}
 				});
 				transaction = manager.beginTransaction();
@@ -276,29 +297,32 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		return false;
 	}
 
-	public void updateDetails() {
-		btnStoreExpenseItemsDetails.setText(expense.store.name);
+	public void setExpense(String ID) {
+		this.expenseID = ID;
+	}
+
+	public void setOnUpdateExpenseCallback(OnUpdateExpenseCallback saveExpenseCallback) {
+		this.updateExpenseCallback = saveExpenseCallback;
+	}
+
+	public void updateDetails(ExpenseObj expense) {
+		this.expense = expense;
 		btnItemExpenseItemsDetails.setText(expense.type.name);
-
-		etAmountExpenseItemsDetails.setText(nf.format(expense.amount));
-		editText(etAmountExpenseItemsDetails);
-		etOriginExpenseItemsDetails.setText(expense.origin);
-		etDestinationExpenseItemsDetails.setText(expense.destination);
-		etNotesExpenseItemsDetails.setText(expense.notes);
-
-		rlWithORExpenseItemsDetails.setVisibility(GONE);
 		if(expense instanceof ExpenseFuelConsumptionObj) {
 			fc = (ExpenseFuelConsumptionObj) expense;
+			rlWithORExpenseItemsDetails.setVisibility(GONE);
 		}
 		else if(expense instanceof ExpenseFuelPurchaseObj) {
 			fp = (ExpenseFuelPurchaseObj) expense;
 			cbWithORExpenseItemsDetails.setChecked(fp.withOR);
-		}
-		else if(expense instanceof ExpenseDefaultObj) {
-			d = (ExpenseDefaultObj) expense;
 			rlWithORExpenseItemsDetails.setVisibility(VISIBLE);
-			cbWithORExpenseItemsDetails.setChecked(d.withOR);
 		}
+		else {
+			d = (ExpenseDefaultObj) expense;
+			cbWithORExpenseItemsDetails.setChecked(d.withOR);
+			rlWithORExpenseItemsDetails.setVisibility(VISIBLE);
+		}
+		Log.e("paul", cbWithORExpenseItemsDetails.isChecked() + "");
 //		if(expense.isSubmit) {
 //			btnSaveExpenseItemsDetails.setEnabled(false);
 //			etStoreExpenseItemsDetails.setEnabled(false);

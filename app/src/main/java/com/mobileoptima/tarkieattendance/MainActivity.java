@@ -1587,8 +1587,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 				expense.addExpenseItem(dDate, dTime, ID);
 			}
 		}
-		String typeName = "Expense " + TarkieLib.getTimeInExpenseCount(db);
-		CodePanUtils.alertToast(this, typeName + " " +
+		String name = "Expense " + TarkieLib.getTimeInExpenseCount(db);
+		CodePanUtils.alertToast(this, name + " " +
 				"has been added. You may enter more details later.");
 		return true;
 	}
