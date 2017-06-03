@@ -330,6 +330,16 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
+		column = "origin";
+		table = Tables.getName(TB.EXPENSE);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
+		column = "destination";
+		table = Tables.getName(TB.EXPENSE);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.TEXT, column);
+		}
 		switch(n) {
 			case 2:
 				TB tb = TB.STORES;

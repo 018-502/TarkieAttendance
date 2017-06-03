@@ -39,19 +39,20 @@ import java.util.ArrayList;
 import static android.view.View.OnLongClickListener;
 
 public class ExpenseItemsFragment extends Fragment implements OnClickListener, OnPickDateCallback {
-	private ArrayList<ExpenseItemsObj> expenseItemsList;
+
 	private CodePanLabel tvStartDateExpenseItems, tvEndDateExpenseItems;
-	private ExpenseItemsAdapter adapter;
-	private FragmentManager manager;
+	private ArrayList<ExpenseItemsObj> expenseItemsList;
+	private RelativeLayout rlPlaceholderExpenseItems;
 	private FragmentTransaction transaction;
+	private ExpenseItemsAdapter adapter;
+	private String startDate, endDate;
+	private FragmentManager manager;
 	private LayoutInflater inflater;
 	private ListView lvExpenseItems;
-	private MainActivity main;
-	private NumberFormat nf;
-	private RelativeLayout rlPlaceholderExpenseItems;
-	private SQLiteAdapter db;
-	private String startDate, endDate;
 	private ViewGroup container;
+	private MainActivity main;
+	private SQLiteAdapter db;
+	private NumberFormat nf;
 	private int dateType;
 
 	@Override
@@ -149,8 +150,8 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 			case DateType.END:
 				if(date != null) {
 					long startMillis = CodePanUtils.dateToMillis(startDate);
-					long endMIllis = CodePanUtils.dateToMillis(date);
-					if(endMIllis >= startMillis) {
+					long endMillis = CodePanUtils.dateToMillis(date);
+					if(endMillis >= startMillis) {
 						String end = CodePanUtils.getCalendarDate(date, true, true);
 						tvEndDateExpenseItems.setText(end);
 						endDate = date;
@@ -169,7 +170,8 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 			ExpenseItemsObj item = expenseItemsList.get(i);
 			if(item.dDate.equals(dDate)) {
 				if(item.isAdded) {
-					LinearLayout llItemsExpenseItems = (LinearLayout) lvExpenseItems.getChildAt(i).findViewById(R.id.llItemsExpenseItems);
+					LinearLayout llItemsExpenseItems = (LinearLayout) lvExpenseItems
+							.getChildAt(i).findViewById(R.id.llItemsExpenseItems);
 					item.childList = new ArrayList<>();
 					ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, item.dDate);
 					for(ExpenseObj expense : expenseList) {

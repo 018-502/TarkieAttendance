@@ -17,16 +17,17 @@ import com.codepan.widget.SlidingTabLayout;
 import java.util.ArrayList;
 
 public class ExpenseFragment extends Fragment {
+
 	private ArrayList<Fragment> fragmentList;
-	private ExpenseItemsFragment items;
 	private ExpenseReportsFragment reports;
-	private SQLiteAdapter db;
+	private ExpenseItemsFragment items;
 	private SlidingTabLayout stlExpense;
-	private String[] tabItems;
-	private Typeface bold;
-	private ViewPager vpExpense;
 	private ViewPagerAdapter adapter;
+	private ViewPager vpExpense;
+	private String[] tabItems;
+	private SQLiteAdapter db;
 	private int green, gray;
+	private Typeface bold;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

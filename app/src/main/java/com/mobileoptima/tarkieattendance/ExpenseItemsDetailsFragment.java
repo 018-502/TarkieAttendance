@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,12 +39,19 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.OnFocusChangeListener;
+import static android.view.View.OnTouchListener;
+import static android.view.View.VISIBLE;
 
 public class ExpenseItemsDetailsFragment extends Fragment implements OnClickListener, OnFocusChangeListener, OnTouchListener {
-	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails, btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails, btnPhotoExpenseItemsDetails;
+
+	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails,
+			btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails,
+			btnPhotoExpenseItemsDetails;
+	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails,
+			etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
 	private CodePanLabel tvDatetExpenseItemsDetails, tvTimeExpenseItemsDetails;
-	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails, etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
 	private CheckBox cbWithORExpenseItemsDetails;
 	private DisplayImageOptions options;
 	private ExpenseObj expense;
@@ -95,33 +101,25 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		View view = inflater.inflate(R.layout.expense_items_details_layout, container, false);
 		btnBackExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnBackExpenseItemsDetails);
 		btnSaveExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnSaveExpenseItemsDetails);
-
 		tvDatetExpenseItemsDetails = (CodePanLabel) view.findViewById(R.id.tvDatetExpenseItemsDetails);
 		tvTimeExpenseItemsDetails = (CodePanLabel) view.findViewById(R.id.tvTimeExpenseItemsDetails);
-
 		btnStoreExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnStoreExpenseItemsDetails);
 		btnItemExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnItemExpenseItemsDetails);
-
 		etAmountExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etAmountExpenseItemsDetails);
 		etOriginExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etOriginExpenseItemsDetails);
 		etDestinationExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etDestinationExpenseItemsDetails);
 		etNotesExpenseItemsDetails = (CodePanTextField) view.findViewById(R.id.etNotesExpenseItemsDetails);
-
 		ivPhotoExpenseItemsDetails = (ImageView) view.findViewById(R.id.ivPhotoExpenseItemsDetails);
 		btnPhotoExpenseItemsDetails = (CodePanButton) view.findViewById(R.id.btnPhotoExpenseItemsDetails);
-
 		rlWithORExpenseItemsDetails = (RelativeLayout) view.findViewById(R.id.rlWithORExpenseItemsDetails);
 		cbWithORExpenseItemsDetails = (CheckBox) view.findViewById(R.id.cbWithORExpenseItemsDetails);
-
 		btnBackExpenseItemsDetails.setOnClickListener(this);
-		btnSaveExpenseItemsDetails.setOnClickListener(this);;
+		btnSaveExpenseItemsDetails.setOnClickListener(this);
 		btnStoreExpenseItemsDetails.setOnClickListener(this);
 		btnItemExpenseItemsDetails.setOnClickListener(this);
 		btnPhotoExpenseItemsDetails.setOnClickListener(this);
-
 		tvDatetExpenseItemsDetails.setText(expense.dDate);
 		tvTimeExpenseItemsDetails.setText(expense.dTime);
-
 		updateDetails();
 		return view;
 	}
@@ -279,13 +277,11 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 	public void updateDetails() {
 		btnStoreExpenseItemsDetails.setText(expense.store.name);
 		btnItemExpenseItemsDetails.setText(expense.type.name);
-
 		etAmountExpenseItemsDetails.setText(nf.format(expense.amount));
 		editText(etAmountExpenseItemsDetails);
 		etOriginExpenseItemsDetails.setText(expense.origin);
 		etDestinationExpenseItemsDetails.setText(expense.destination);
 		etNotesExpenseItemsDetails.setText(expense.notes);
-
 		rlWithORExpenseItemsDetails.setVisibility(GONE);
 		if(expense instanceof ExpenseFuelConsumptionObj) {
 			fc = (ExpenseFuelConsumptionObj) expense;
@@ -323,26 +319,26 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		editText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
 			}
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				String text = s.toString();
-				if (text.equals("")) {
+				if(text.equals("")) {
 					text = "0";
 					editText.setText(text);
 					editText.setSelection(text.length());
-				} else if (text.substring(0, 1).equals(".")) {
+				}
+				else if(text.substring(0, 1).equals(".")) {
 					text = "0" + text;
 					editText.setText(text);
 					editText.setSelection(text.length());
-				} else if (text.length() == 2 && text.substring(0, 1).equals("0") && !text.substring(1, 2).equals(".")) {
+				}
+				else if(text.length() == 2 && text.substring(0, 1).equals("0") && !text.substring(1, 2).equals(".")) {
 					text = text.substring(1);
 					editText.setText(text);
 					editText.setSelection(text.length());
