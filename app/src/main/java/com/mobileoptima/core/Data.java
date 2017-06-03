@@ -136,6 +136,7 @@ public class Data {
 			form.ID = cursor.getString(5);
 			form.name = cursor.getString(6);
 			form.logoUrl = cursor.getString(7);
+			form.isChecked = true;
 			entry.form = form;
 			entryList.add(entry);
 		}

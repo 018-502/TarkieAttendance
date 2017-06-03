@@ -341,7 +341,7 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 	}
 
 	public void addVisit() {
-		VisitObj visit = TarkieLib.addTask(db, null);
+		VisitObj visit = (VisitObj) TarkieLib.addTask(db, null);
 		visitList.add(visit);
 		LayoutInflater inflater = getActivity().getLayoutInflater();
 		View view = getView();

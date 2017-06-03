@@ -758,8 +758,8 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static VisitObj addTask(SQLiteAdapter db, StoreObj store) {
-		VisitObj visit = new VisitObj();
+	public static TaskObj addTask(SQLiteAdapter db, StoreObj store) {
+		TaskObj task = new VisitObj();
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String empID = getEmployeeID(db);
 		String dDate = CodePanUtils.getDate();
@@ -775,18 +775,18 @@ public class TarkieLib {
 			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE isFromWeb = 0 AND " +
 					"'" + dDate + "' BETWEEN startDate AND endDate AND empID = '" + empID + "'";
 			int count = db.getInt(sql) + 1;
-			visit.name = "New Visit " + count;
+			task.name = "New Visit " + count;
 		}
-		query.add(new FieldValue("name", visit.name));
+		query.add(new FieldValue("name", task.name));
 		query.add(new FieldValue("dateCreated", dDate));
 		query.add(new FieldValue("timeCreated", dTime));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("startDate", dDate));
 		query.add(new FieldValue("endDate", dDate));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		visit.ID = binder.insert(table, query);
+		task.ID = binder.insert(table, query);
 		binder.finish();
-		return visit;
+		return task;
 	}
 
 	public static boolean editTask(SQLiteAdapter db, StoreObj store, String taskID, String notes,
@@ -822,19 +822,21 @@ public class TarkieLib {
 				}
 			}
 			FormObj form = entry.form;
-			query.clearAll();
-			query.add(new Field("ID"));
-			query.add(new Condition("formID", form.ID));
-			query.add(new Condition("taskID", taskID));
-			query.add(new FieldValue("formID", form.ID));
-			query.add(new FieldValue("taskID", taskID));
-			query.add(new FieldValue("isTag", true));
-			String sql = query.select(tf);
-			if(db.isRecordExists(sql)) {
-				binder.update(tf, query);
-			}
-			else {
-				binder.insert(tf, query);
+			if(form.isChecked) {
+				query.clearAll();
+				query.add(new Field("ID"));
+				query.add(new Condition("formID", form.ID));
+				query.add(new Condition("taskID", taskID));
+				query.add(new FieldValue("formID", form.ID));
+				query.add(new FieldValue("taskID", taskID));
+				query.add(new FieldValue("isTag", true));
+				String sql = query.select(tf);
+				if(db.isRecordExists(sql)) {
+					binder.update(tf, query);
+				}
+				else {
+					binder.insert(tf, query);
+				}
 			}
 		}
 		for(ImageObj image : imageList) {

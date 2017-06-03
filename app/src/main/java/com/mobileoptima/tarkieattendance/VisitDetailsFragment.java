@@ -76,7 +76,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
 	private ArrayList<EntryObj> entryList;
-	private ArrayList<FormObj> taggedList;
 	private FragmentManager manager;
 	private String convention;
 	private MainActivity main;
@@ -99,7 +98,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		taggedList = new ArrayList<>();
 		main = (MainActivity) getActivity();
 		main.setOnBackPressedCallback(this);
 		manager = main.getSupportFragmentManager();
@@ -228,38 +226,40 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				for(final EntryObj entry : entryList) {
 					final int index = entryList.indexOf(entry);
 					FormObj form = entry.form;
-					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
-					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
-					CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
-					tvVisitDetailsForm.setText(form.name);
-					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							if(visit.isCheckIn) {
-								FormFragment form = new FormFragment();
-								form.setEntry(entry);
-								form.setOnOverrideCallback(overrideCallback);
-								form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
-									@Override
-									public void onSaveEntry(EntryObj entry) {
-										entryList.set(index, entry);
-									}
-								});
-								transaction = manager.beginTransaction();
-								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-								transaction.add(R.id.rlMain, form, Tag.FORM);
-								transaction.hide(VisitDetailsFragment.this);
-								transaction.addToBackStack(null);
-								transaction.commit();
+					if(form.isChecked) {
+						View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
+						CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
+						CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
+						tvVisitDetailsForm.setText(form.name);
+						btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								if(visit.isCheckIn) {
+									FormFragment form = new FormFragment();
+									form.setEntry(entry);
+									form.setOnOverrideCallback(overrideCallback);
+									form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
+										@Override
+										public void onSaveEntry(EntryObj entry) {
+											entryList.set(index, entry);
+										}
+									});
+									transaction = manager.beginTransaction();
+									transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+											R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+									transaction.add(R.id.rlMain, form, Tag.FORM);
+									transaction.hide(VisitDetailsFragment.this);
+									transaction.addToBackStack(null);
+									transaction.commit();
+								}
+								else {
+									TarkieLib.alertDialog(getActivity(), R.string.check_in_required_title,
+											R.string.check_in_required_message);
+								}
 							}
-							else {
-								TarkieLib.alertDialog(getActivity(), R.string.check_in_required_title,
-										R.string.check_in_required_message);
-							}
-						}
-					});
-					llFormsVisitDetails.addView(child);
+						});
+						llFormsVisitDetails.addView(child);
+					}
 				}
 			}
 			return true;
@@ -421,6 +421,11 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				transaction.commit();
 				break;
 			case R.id.btnAddFormVisitDetails:
+				ArrayList<FormObj> taggedList = new ArrayList<>();
+				for(EntryObj entry : entryList) {
+					FormObj form = entry.form;
+					taggedList.add(form);
+				}
 				AddFormsFragment addForms = new AddFormsFragment();
 				addForms.setVisit(visit);
 				addForms.setTaggedList(taggedList);
@@ -750,27 +755,19 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onTagForms(ArrayList<FormObj> formList) {
 		this.withChanges = true;
-		taggedList.clear();
 		for(FormObj form : formList) {
-			if(form.isChecked) {
-				if(!form.isDefault) {
-					EntryObj entry = new EntryObj();
+			boolean exists = false;
+			for(EntryObj entry : entryList) {
+				if(form.ID.equals(entry.form.ID)) {
 					entry.form = form;
-					entryList.add(entry);
+					exists = true;
+					break;
 				}
-				taggedList.add(form);
 			}
-			else {
-				EntryObj removed = null;
-				for(EntryObj entry : entryList) {
-					if(form.ID.equals(entry.form.ID)) {
-						removed = entry;
-						break;
-					}
-				}
-				if(removed != null) {
-					entryList.remove(removed);
-				}
+			if(!exists) {
+				EntryObj entry = new EntryObj();
+				entry.form = form;
+				entryList.add(entry);
 			}
 		}
 		formsHandler.sendMessage(formsHandler.obtainMessage());

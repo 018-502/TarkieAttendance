@@ -105,8 +105,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 					for(FormObj form : formList) {
 						for(FormObj tagged : taggedList) {
 							if(form.ID.equals(tagged.ID)) {
-								form.isChecked = true;
-								form.isDefault = true;
+								form.isChecked = tagged.isChecked;
 								break;
 							}
 						}
@@ -195,7 +194,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	public void save() {
 		ArrayList<FormObj> taggedList = new ArrayList<>();
 		for(FormObj form : formList) {
-			if(form.hasChanged || form.isDefault) {
+			if(form.hasChanged) {
 				taggedList.add(form);
 			}
 		}
