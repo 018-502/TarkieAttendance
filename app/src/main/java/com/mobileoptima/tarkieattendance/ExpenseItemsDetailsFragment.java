@@ -48,16 +48,13 @@ import static android.view.View.VISIBLE;
 
 public class ExpenseItemsDetailsFragment extends Fragment implements OnClickListener, OnFocusChangeListener, OnTouchListener {
 
+	private CheckBox cbWithORExpenseItemsDetails;
 	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails,
 			btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails,
 			btnPhotoExpenseItemsDetails;
+	private CodePanLabel tvDateExpenseItemsDetails, tvTimeExpenseItemsDetails;
 	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails,
 			etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
-	private CodePanLabel tvDatetExpenseItemsDetails, tvTimeExpenseItemsDetails;
-	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails, btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails, btnPhotoExpenseItemsDetails;
-	private CodePanLabel tvDateExpenseItemsDetails, tvTimeExpenseItemsDetails;
-	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails, etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
-	private CheckBox cbWithORExpenseItemsDetails;
 	private DisplayImageOptions options;
 	private ExpenseObj expense;
 	private ExpenseFuelConsumptionObj fc;
@@ -124,7 +121,7 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		btnPhotoExpenseItemsDetails.setOnClickListener(this);
 
 		tvDateExpenseItemsDetails.setText(expense.dDate);
-		tvDatetExpenseItemsDetails.setText(expense.dDate);
+		tvDateExpenseItemsDetails.setText(expense.dDate);
 		tvTimeExpenseItemsDetails.setText(expense.dTime);
 		btnStoreExpenseItemsDetails.setText(expense.store.name);
 		etAmountExpenseItemsDetails.setText(nf.format(expense.amount));
