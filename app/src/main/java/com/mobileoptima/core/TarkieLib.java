@@ -924,11 +924,12 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static int getTimeInExpenseCount(SQLiteAdapter db) {
+	public static String getExpenseTitle(SQLiteAdapter db) {
 		String table = Tables.getName(EXPENSE);
 		String timeInID = getTimeInID(db);
 		String sql = "SELECT COUNT(ID) FROM " + table + " WHERE timeInID = " + timeInID;
-		return db.getInt(sql);
+		int count = db.getInt(sql) + 1;
+		return "Expense " + count;
 	}
 
 	public static String saveExpense(SQLiteAdapter db, String dDate, String dTime, GpsObj gps) {
@@ -936,21 +937,20 @@ public class TarkieLib {
 		String gpsID = saveGps(db, gps);
 		String empID = getEmployeeID(db);
 		String timeInID = getTimeInID(db);
+		String name = getExpenseTitle(db);
 		String syncBatchID = getSyncBatchID(db);
 		String table = Tables.getName(EXPENSE);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("dDate", dDate));
 		query.add(new FieldValue("dTime", dTime));
-		query.add(new FieldValue("typeName", "Expense " + (getTimeInExpenseCount(db) + 1)));
+		query.add(new FieldValue("typeName", name));
 		query.add(new FieldValue("gpsID", gpsID));
 		query.add(new FieldValue("empID", empID));
 		query.add(new FieldValue("timeInID", timeInID));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
-		String ID = binder.insert(table, query);
-		if(binder.finish()) {
-			return ID;
-		}
-		return "";
+		String expenseID = binder.insert(table, query);
+		binder.finish();
+		return expenseID;
 	}
 
 	public static boolean updateExpense(SQLiteAdapter db, ExpenseObj expense) {
