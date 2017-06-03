@@ -15,6 +15,7 @@ import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.PhotoObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 
@@ -300,6 +301,13 @@ public class Process {
 					for(PhotoObj photo : Data.loadPhotosUpload(db)) {
 						if(result) {
 							result = Tx.uploadEntryPhoto(db, photo, errorCallback);
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
+					for(TaskObj task : Data.loadTaskUpdate(db)) {
+						if(result) {
+							result = Tx.updateTask(db, task, errorCallback);
 							Thread.sleep(250);
 							handler.sendMessage(handler.obtainMessage());
 						}

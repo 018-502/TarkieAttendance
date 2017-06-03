@@ -15,13 +15,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.codepan.callback.Interface.OnBackPressedCallback;
 import com.codepan.callback.Interface.OnFragmentCallback;
-import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
@@ -33,8 +33,12 @@ import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
+import com.mobileoptima.callback.Interface.OnSaveVisitCallback;
 import com.mobileoptima.callback.Interface.OnSelectStatusCallback;
+import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
+import com.mobileoptima.callback.Interface.OnTagFormsCallback;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.constant.Convention;
 import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.constant.Result;
 import com.mobileoptima.constant.Settings;
@@ -51,40 +55,33 @@ import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.VisitObj;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 
 public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		OnCheckInCallback, OnCheckOutCallback, OnSelectStatusCallback, OnCameraDoneCallback,
-		OnBackPressedCallback, OnFragmentCallback {
+		OnBackPressedCallback, OnFragmentCallback, OnSelectStoreCallback, OnTagFormsCallback {
 
 	private CodePanButton btnCheckInVisitDetails, btnCheckOutVisitDetails, btnBackVisitDetails,
-			btnSaveVisitDetails, btnAddPhotoVisitDetails;
+			btnSaveVisitDetails, btnAddPhotoVisitDetails, btnStoreVisitDetails,
+			btnAddFormVisitDetails;
+	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails, tvTitleVisitDetails;
 	private LinearLayout llFormsVisitDetails, llGridPhotoVisitDetails;
-	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails;
+	private OnSaveVisitCallback saveVisitCallback;
 	private CodePanTextField etNotesVisitDetails;
 	private OnOverrideCallback overrideCallback;
 	private boolean hasPhotoAdded, withChanges;
-	private OnRefreshCallback refreshCallback;
+	private FrameLayout flStoreVisitDetails;
 	private FragmentTransaction transaction;
 	private ArrayList<ImageObj> imageList;
 	private ArrayList<EntryObj> entryList;
 	private FragmentManager manager;
+	private String convention;
 	private MainActivity main;
-	private CheckOutObj out;
 	private SQLiteAdapter db;
+	private CheckOutObj out;
 	private VisitObj visit;
-
-	@Override
-	public void onStart() {
-		super.onStart();
-		setOnBackStack(true);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		setOnBackStack(false);
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +91,10 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		manager = main.getSupportFragmentManager();
 		db = main.getDatabase();
 		db.openConnection();
+		convention = TarkieLib.getConvention(db, Convention.STORES);
+		if(convention != null) {
+			convention = StringUtils.capitalize(convention);
+		}
 	}
 
 	@Override
@@ -101,24 +102,42 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		View view = inflater.inflate(R.layout.visit_details_layout, container, false);
 		tvStoreVisitDetails = (CodePanLabel) view.findViewById(R.id.tvStoreVisitDetails);
 		tvAddressVisitDetails = (CodePanLabel) view.findViewById(R.id.tvAddressVisitDetails);
+		tvTitleVisitDetails = (CodePanLabel) view.findViewById(R.id.tvTitleVisitDetails);
 		etNotesVisitDetails = (CodePanTextField) view.findViewById(R.id.etNotesVisitDetails);
 		llFormsVisitDetails = (LinearLayout) view.findViewById(R.id.llFormsVisitDetails);
 		llGridPhotoVisitDetails = (LinearLayout) view.findViewById(R.id.llGridPhotoVisitDetails);
+		flStoreVisitDetails = (FrameLayout) view.findViewById(R.id.flStoreVisitDetails);
 		btnBackVisitDetails = (CodePanButton) view.findViewById(R.id.btnBackVisitDetails);
 		btnCheckInVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckInVisitDetails);
 		btnCheckOutVisitDetails = (CodePanButton) view.findViewById(R.id.btnCheckOutVisitDetails);
 		btnAddPhotoVisitDetails = (CodePanButton) view.findViewById(R.id.btnAddPhotoVisitDetails);
 		btnSaveVisitDetails = (CodePanButton) view.findViewById(R.id.btnSaveVisitDetails);
+		btnStoreVisitDetails = (CodePanButton) view.findViewById(R.id.btnStoreVisitDetails);
+		btnAddFormVisitDetails = (CodePanButton) view.findViewById(R.id.btnAddFormVisitDetails);
+		btnStoreVisitDetails.setOnClickListener(this);
 		btnSaveVisitDetails.setOnClickListener(this);
 		btnBackVisitDetails.setOnClickListener(this);
 		btnCheckInVisitDetails.setOnClickListener(this);
 		btnCheckOutVisitDetails.setOnClickListener(this);
 		btnAddPhotoVisitDetails.setOnClickListener(this);
+		btnAddFormVisitDetails.setOnClickListener(this);
 		if(visit != null) {
 			StoreObj store = visit.store;
 			if(store != null) {
 				tvStoreVisitDetails.setText(store.name);
 				tvAddressVisitDetails.setText(store.address);
+			}
+			else {
+				String name = convention + " Name";
+				tvStoreVisitDetails.setText(name);
+				tvAddressVisitDetails.setText(R.string.address);
+				tvTitleVisitDetails.setText(visit.name);
+			}
+			if(!visit.isFromWeb) {
+				flStoreVisitDetails.setVisibility(View.VISIBLE);
+			}
+			else {
+				flStoreVisitDetails.setVisibility(View.GONE);
 			}
 			if(visit.isCheckIn) {
 				CheckInObj in = visit.in;
@@ -195,38 +214,40 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				for(final EntryObj entry : entryList) {
 					final int index = entryList.indexOf(entry);
 					FormObj form = entry.form;
-					View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
-					CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
-					CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
-					tvVisitDetailsForm.setText(form.name);
-					btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							if(visit.isCheckIn) {
-								FormFragment form = new FormFragment();
-								form.setEntry(entry);
-								form.setOnOverrideCallback(overrideCallback);
-								form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
-									@Override
-									public void onSaveEntry(EntryObj entry) {
-										entryList.set(index, entry);
-									}
-								});
-								transaction = manager.beginTransaction();
-								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-								transaction.add(R.id.rlMain, form, Tag.FORM);
-								transaction.hide(VisitDetailsFragment.this);
-								transaction.addToBackStack(null);
-								transaction.commit();
+					if(form.isChecked) {
+						View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
+						CodePanLabel tvVisitDetailsForm = (CodePanLabel) child.findViewById(R.id.tvVisitDetailsForm);
+						CodePanButton btnVisitDetailsForm = (CodePanButton) child.findViewById(R.id.btnVisitDetailsForm);
+						tvVisitDetailsForm.setText(form.name);
+						btnVisitDetailsForm.setOnClickListener(new OnClickListener() {
+							@Override
+							public void onClick(View view) {
+								if(visit.isCheckIn) {
+									FormFragment form = new FormFragment();
+									form.setEntry(entry);
+									form.setOnOverrideCallback(overrideCallback);
+									form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
+										@Override
+										public void onSaveEntry(EntryObj entry) {
+											entryList.set(index, entry);
+										}
+									});
+									transaction = manager.beginTransaction();
+									transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+											R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+									transaction.add(R.id.rlMain, form, Tag.FORM);
+									transaction.hide(VisitDetailsFragment.this);
+									transaction.addToBackStack(null);
+									transaction.commit();
+								}
+								else {
+									TarkieLib.alertDialog(getActivity(), R.string.check_in_required_title,
+											R.string.check_in_required_message);
+								}
 							}
-							else {
-								TarkieLib.alertDialog(getActivity(), R.string.check_in_required_title,
-										R.string.check_in_required_message);
-							}
-						}
-					});
-					llFormsVisitDetails.addView(child);
+						});
+						llFormsVisitDetails.addView(child);
+					}
 				}
 			}
 			return true;
@@ -366,7 +387,46 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				transaction.commit();
 				break;
 			case R.id.btnSaveVisitDetails:
-				saveTask(db);
+				StoreObj store = visit.store;
+				if(store != null) {
+					saveTask(db);
+				}
+				else {
+					String title = convention + " Required";
+					String message = "Please select a " + convention.toLowerCase();
+					TarkieLib.alertDialog(getActivity(), title, message);
+				}
+				break;
+			case R.id.btnStoreVisitDetails:
+				StoresFragment stores = new StoresFragment();
+				stores.setOnSelectStoreCallback(this);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, stores);
+				transaction.hide(this);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
+			case R.id.btnAddFormVisitDetails:
+				ArrayList<FormObj> taggedList = new ArrayList<>();
+				for(EntryObj entry : entryList) {
+					FormObj form = entry.form;
+					taggedList.add(form);
+				}
+				AddFormsFragment addForms = new AddFormsFragment();
+				addForms.setVisit(visit);
+				addForms.setTaggedList(taggedList);
+				addForms.setOnTagFormsCallback(this);
+				addForms.setOnFragmentCallback(this);
+				addForms.setOnOverrideCallback(overrideCallback);
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, addForms);
+				transaction.hide(this);
+				transaction.addToBackStack(null);
+				transaction.commit();
 				break;
 		}
 	}
@@ -401,8 +461,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					visit.isCheckIn = true;
 					setCheckInTime(in.dTime);
 					btnCheckOutVisitDetails.setEnabled(true);
-					if(refreshCallback != null) {
-						refreshCallback.onRefresh();
+					if(saveVisitCallback != null) {
+						saveVisitCallback.onSaveVisit(visit);
 					}
 					CodePanUtils.alertToast(getActivity(), "Check-in successful");
 					break;
@@ -441,10 +501,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		this.overrideCallback = overrideCallback;
 	}
 
-	public void setOnRefreshCallback(OnRefreshCallback refreshCallback) {
-		this.refreshCallback = refreshCallback;
-	}
-
 	@Override
 	public void onSelectStatus(final TaskStatusObj status) {
 		Thread bg = new Thread(new Runnable() {
@@ -473,8 +529,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					visit.out = out;
 					visit.isCheckOut = true;
 					setCheckOutTime(out.dTime);
-					if(refreshCallback != null) {
-						refreshCallback.onRefresh();
+					if(saveVisitCallback != null) {
+						saveVisitCallback.onSaveVisit(visit);
 					}
 					etNotesVisitDetails.setText(visit.notes);
 					CodePanUtils.alertToast(getActivity(), "Check-out successful");
@@ -568,11 +624,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			public void run() {
 				try {
 					StoreObj store = visit.store;
-					boolean result = TarkieLib.editTask(db, store.ID, visit.ID, notes,
+					boolean result = TarkieLib.editTask(db, visit.store, visit.ID, notes,
 							entryList, imageList);
 					if(result) {
 						visit.notes = notes;
-						saveTaskHandler.sendMessage(saveTaskHandler.obtainMessage(Result.SUCCESS));
+						visit.name = store.name;
+						saveTaskHandler.sendMessage(saveTaskHandler.obtainMessage(Result.SUCCESS, visit));
 					}
 					else {
 						saveTaskHandler.sendMessage(saveTaskHandler.obtainMessage(Result.FAILED));
@@ -591,11 +648,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		public boolean handleMessage(Message msg) {
 			switch(msg.what) {
 				case Result.SUCCESS:
-					if(refreshCallback != null) {
-						refreshCallback.onRefresh();
-					}
+					VisitObj visit = (VisitObj) msg.obj;
 					if(hasPhotoAdded) {
 						main.reloadPhotos();
+					}
+					if(saveVisitCallback != null) {
+						saveVisitCallback.onSaveVisit(visit);
 					}
 					manager.popBackStack();
 					CodePanUtils.alertToast(getActivity(), "Task has been successfully saved.");
@@ -611,12 +669,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onCameraDone(ArrayList<ImageObj> imageList) {
 		this.hasPhotoAdded = true;
-		this.withChanges = true;
 		if(imageList != null) {
 			imageList.addAll(0, this.imageList);
 		}
 		updatePhotoGrid(llGridPhotoVisitDetails, imageList);
 		this.imageList = imageList;
+		setWithChanges(true);
 	}
 
 	@Override
@@ -656,7 +714,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	@Override
 	public void onFragment(boolean status) {
 		if(overrideCallback != null) {
-			overrideCallback.onOverride(!status);
+			overrideCallback.onOverride(!status && withChanges);
 		}
 		if(!status) {
 			MainActivity main = (MainActivity) getActivity();
@@ -664,9 +722,44 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		}
 	}
 
-	private void setOnBackStack(boolean isOnBackStack) {
+	@Override
+	public void onSelectStore(StoreObj store) {
+		visit.store = store;
+		tvStoreVisitDetails.setText(store.name);
+		tvAddressVisitDetails.setText(store.address);
+		manager.popBackStack();
+		setWithChanges(true);
+	}
+
+	public void setOnSaveVisitCallback(OnSaveVisitCallback saveVisitCallback) {
+		this.saveVisitCallback = saveVisitCallback;
+	}
+
+	@Override
+	public void onTagForms(ArrayList<FormObj> formList) {
+		for(FormObj form : formList) {
+			boolean exists = false;
+			for(EntryObj entry : entryList) {
+				if(form.ID.equals(entry.form.ID)) {
+					entry.form = form;
+					exists = true;
+					break;
+				}
+			}
+			if(!exists) {
+				EntryObj entry = new EntryObj();
+				entry.form = form;
+				entryList.add(entry);
+			}
+		}
+		setWithChanges(true);
+		formsHandler.sendMessage(formsHandler.obtainMessage());
+	}
+
+	public void setWithChanges(boolean withChanges) {
+		this.withChanges = withChanges;
 		if(overrideCallback != null) {
-			overrideCallback.onOverride(isOnBackStack);
+			overrideCallback.onOverride(withChanges);
 		}
 	}
 }

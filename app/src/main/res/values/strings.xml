@@ -24,6 +24,7 @@
     <string name="employee_no">000-000</string>
     <string name="name">Name</string>
     <string name="name_hint">Type Name</string>
+    <string name="to">-</string>
     <string name="designation">Designation</string>
     <string name="mobile">Mobile No.</string>
     <string name="landline">Telephone</string>
@@ -73,7 +74,11 @@
     <string name="next">Next</string>
     <string name="delete">Delete</string>
     <string name="settings">Settings</string>
+    <string name="schedule">Schedule</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
     <string name="select_date">Select Date</string>
+    <string name="select_store">Select Store</string>
     <string name="select_range">Select Range</string>
     <string name="summary">Summary</string>
     <string name="add_geo_tag">Add Geo-tag</string>
@@ -81,6 +86,7 @@
     <string name="check_out">Check-out</string>
     <string name="forms">Forms</string>
     <string name="add_form">Add Form</string>
+    <string name="add_forms">Add Forms</string>
     <string name="ok_caps">OK</string>
     <string name="no_in_caps">NO IN</string>
     <string name="no_out_caps">NO OUT</string>
@@ -97,6 +103,7 @@
     <string name="app_forms_caps">APP FORMS</string>
     <string name="today_schedule_caps">TODAY\'S SCHEDULE</string>
     <string name="new_visit_caps">NEW VISIT</string>
+    <string name="add_another_visit">Add Another Visit</string>
     <string name="breaks_caps">BREAKS</string>
     <string name="save_caps">SAVE</string>
     <string name="active_caps">ACTIVE</string>
@@ -123,7 +130,7 @@
     <string name="upgrade_title">Upgrade to Use this Feature</string>
     <string name="upgrade_not_available">This feature is not available on your current subscription.</string>
     <string name="upgrade_contact">To avail this feature, simply upgrade by contacting Tarkie.</string>
-    <string name="select_store">SELECT STORE</string>
+    <string name="select_store_caps">SELECT STORE</string>
     <string name="gps_title">Location Services</string>
     <string name="gps_message">Please enable GPS satellites and Google\'s location service to continue.</string>
     <string name="mock_title">Mock Location</string>
@@ -191,6 +198,12 @@
     <string name="save_changes_message">Do you want to save changes?</string>
     <string name="save_photos_title">Save Photos?</string>
     <string name="save_photos_message">Do you want to save photos?</string>
+    <string name="add_new_visit_title">Add Visit?</string>
+    <string name="add_new_visit_message">Are you sure you want to add new visit?</string>
+    <string name="discard_changes_title">Discard Changes?</string>
+    <string name="discard_changes_message">All details will be lost. Are you sure you want to cancel?</string>
+    <string name="untag_forms_title">Not Allowed</string>
+    <string name="untag_forms_message">This form was tagged from dashboard. You are not allowed to un-tag this form.</string>
     <string-array name="tab_expense">
         <item>Expense Items</item>
         <item>Expense Reports</item>

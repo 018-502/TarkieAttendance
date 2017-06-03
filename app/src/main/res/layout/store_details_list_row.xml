@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:codePan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/twenty"
+                android:layout_height="@dimen/twenty_one"
+                android:layout_marginLeft="@dimen/twenty_five"
+                android:layout_marginStart="@dimen/twenty_five"
+                android:layout_marginTop="@dimen/fifteen"
+                android:src="@drawable/ic_employee"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvEmployee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/five"
+                android:layout_marginLeft="@dimen/three"
+                android:layout_marginStart="@dimen/three"
+                android:layout_marginTop="@dimen/sixteen"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llDesignation"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/fifteen"
+                android:layout_height="@dimen/eleven"
+                android:layout_marginLeft="@dimen/seventy"
+                android:layout_marginStart="@dimen/seventy"
+                android:src="@drawable/ic_position"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvPosition"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/eight"
+                android:layout_marginStart="@dimen/eight"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llMobile"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/fifteen"
+                android:layout_height="@dimen/fifteen"
+                android:layout_marginLeft="@dimen/seventy"
+                android:layout_marginStart="@dimen/seventy"
+                android:src="@drawable/ic_cell"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvCell"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/eight"
+                android:layout_marginStart="@dimen/eight"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLandline"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/fifteen"
+                android:layout_height="@dimen/fifteen"
+                android:layout_marginLeft="@dimen/seventy"
+                android:layout_marginStart="@dimen/seventy"
+                android:src="@drawable/ic_tel"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvPhone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/eight"
+                android:layout_marginStart="@dimen/eight"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llEmail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/fifteen"
+                android:layout_height="@dimen/eleven"
+                android:layout_marginLeft="@dimen/seventy"
+                android:layout_marginStart="@dimen/seventy"
+                android:src="@drawable/ic_email"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/eight"
+                android:layout_marginStart="@dimen/eight"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/thirty"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/fifteen"
+                android:layout_height="@dimen/fifteen"
+                android:layout_marginLeft="@dimen/seventy"
+                android:layout_marginStart="@dimen/seventy"
+                android:src="@drawable/ic_birthday"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvBirthday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/eight"
+                android:layout_marginStart="@dimen/eight"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llRemarks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="@dimen/fifteen"
+                android:layout_height="@dimen/fourteen"
+                android:layout_marginLeft="@dimen/seventy"
+                android:layout_marginStart="@dimen/seventy"
+                android:layout_marginTop="@dimen/fifteen"
+                android:src="@drawable/ic_remarks"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvRemarks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/eight"
+                android:layout_marginStart="@dimen/eight"
+                android:layout_marginTop="@dimen/ten"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/sixteen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/one"
+            android:layout_marginTop="@dimen/fifteen"
+            android:background="@color/gray_sec"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

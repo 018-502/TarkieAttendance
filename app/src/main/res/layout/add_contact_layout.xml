@@ -167,6 +167,7 @@
                     android:background="@drawable/state_rect_gray_sen_rad_three"
                     android:imeOptions="actionNext"
                     android:inputType="number"
+                    android:maxLength="11"
                     android:maxLines="1"
                     android:padding="@dimen/ten"
                     android:textColor="@color/gray_pri"

@@ -11,15 +11,18 @@ import com.codepan.database.SQLiteQuery;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.App;
+import com.mobileoptima.model.AnswerObj;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakOutObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FieldObj;
+import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.IncidentObj;
 import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
 import com.mobileoptima.schema.Tables;
@@ -54,7 +57,7 @@ public class Tx {
 			paramsObj.put("gps_time", gps.time);
 			paramsObj.put("latitude", gps.latitude);
 			paramsObj.put("longitude", gps.longitude);
-			paramsObj.put("store_id", store.ID);
+			paramsObj.put("store_id", store.webStoreID);
 			paramsObj.put("employee_id", emp.ID);
 			paramsObj.put("local_record_id", in.ID);
 			paramsObj.put("sync_batch_id", in.syncBatchID);
@@ -109,7 +112,7 @@ public class Tx {
 			String apiKey = TarkieLib.getAPIKey(db);
 			GpsObj gps = out.gps;
 			TimeInObj in = out.timeIn;
-			EmployeeObj emp = in.emp;
+			EmployeeObj emp = out.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);
@@ -232,7 +235,7 @@ public class Tx {
 			JSONObject paramsObj = new JSONObject();
 			String apiKey = TarkieLib.getAPIKey(db);
 			BreakInObj in = out.breakIn;
-			EmployeeObj emp = in.emp;
+			EmployeeObj emp = out.emp;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);
@@ -605,13 +608,15 @@ public class Tx {
 			paramsObj.put("local_record_id", entry.ID);
 			paramsObj.put("sync_batch_id", entry.syncBatchID);
 			JSONArray detailsArray = new JSONArray();
-			for(FieldObj field : entry.fieldList) {
+			FormObj form = entry.form;
+			for(FieldObj field : form.fieldList) {
 				JSONObject detailsObj = new JSONObject();
+				AnswerObj answer = field.answer;
 				detailsObj.put("field_id", field.ID);
 				detailsObj.put("field_type", field.type);
-				detailsObj.put("answer", field.answer.value);
-				detailsObj.put("local_record_id", field.answer.ID);
-				detailsObj.put("sync_batch_id", field.answer.syncBatchID);
+				detailsObj.put("answer", answer.value);
+				detailsObj.put("local_record_id", answer.ID);
+				detailsObj.put("sync_batch_id", answer.syncBatchID);
 				detailsArray.put(detailsObj);
 			}
 			paramsObj.put("question_answers", detailsArray);
@@ -755,6 +760,69 @@ public class Tx {
 					}
 				}
 				result = binder.finish();
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
+	public static boolean updateTask(SQLiteAdapter db, TaskObj task, OnErrorCallback errorCallback) {
+		boolean result = false;
+		final int INDENT = 4;
+		final int TIMEOUT = 5000;
+		String action = "edit-itinerary";
+		String url = App.WEB_API + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			StoreObj store = task.store;
+			EmployeeObj emp = task.emp;
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("itinerary_id", task.webTaskID);
+			paramsObj.put("store_id", store.webStoreID);
+			paramsObj.put("employee_id", emp.ID);
+			paramsObj.put("start_date", task.startDate);
+			paramsObj.put("end_date", task.endDate);
+			paramsObj.put("notes", task.notes);
+			JSONArray formArray = new JSONArray();
+			for(FormObj form : task.formList) {
+				formArray.put(form.ID);
+			}
+			paramsObj.put("forms", formArray);
+			params = paramsObj.toString(INDENT);
+			response = CodePanUtils.doHttpPost(url, paramsObj, TIMEOUT);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					if(status.equals("ok")) {
+						result = TarkieLib.updateStatusWebUpdate(db, TB.TASK, task.ID);
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
 			}
 		}
 		catch(JSONException je) {

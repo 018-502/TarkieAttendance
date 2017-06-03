@@ -8,12 +8,14 @@ import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseObj;
+import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
+import com.mobileoptima.model.VisitObj;
 
 import java.util.ArrayList;
 
@@ -48,6 +50,10 @@ public class Interface {
 
 	public interface OnSelectStoreCallback {
 		void onSelectStore(StoreObj store);
+	}
+
+	public interface OnAddStoreCallback {
+		void onAddStore(StoreObj store);
 	}
 
 	public interface OnOptionSelectedCallback {
@@ -120,5 +126,13 @@ public class Interface {
 
 	public interface OnSelectStatusCallback {
 		void onSelectStatus(TaskStatusObj status);
+	}
+
+	public interface OnSaveVisitCallback {
+		void onSaveVisit(VisitObj visit);
+	}
+
+	public interface OnTagFormsCallback {
+		void onTagForms(ArrayList<FormObj> formList);
 	}
 }

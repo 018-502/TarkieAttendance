@@ -47,7 +47,7 @@ public class Tables {
 		CONTACTS
 	}
 
-	public static String create(TB tb) {
+	public static SQLiteQuery create(TB tb) {
 		SQLiteQuery query = new SQLiteQuery();
 		switch(tb) {
 			case API_KEY:
@@ -107,17 +107,17 @@ public class Tables {
 				query.clearAll();
 				query.add(new Field("ID", true));
 				query.add(new Field("name", DataType.TEXT));
+				query.add(new Field("dDate", DataType.TEXT));
+				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("gpsLongitude", DataType.TEXT));
 				query.add(new Field("gpsLatitude", DataType.TEXT));
 				query.add(new Field("address", DataType.TEXT));
 				query.add(new Field("radius", DataType.TEXT));
-				query.add(new Field("dDate", DataType.TEXT));
-				query.add(new Field("dTime", DataType.TEXT));
 				query.add(new Field("syncBatchID", DataType.TEXT));
 				query.add(new Field("webStoreID", DataType.INTEGER));
 				query.add(new Field("isDefault", 0));
-				query.add(new Field("isSync", 0));
 				query.add(new Field("isFromWeb", 0));
+				query.add(new Field("isSync", 0));
 				break;
 			case CONVENTION:
 				query.clearAll();
@@ -398,6 +398,7 @@ public class Tables {
 				query.add(new Field("ID", true));
 				query.add(new Field("formID", DataType.INTEGER));
 				query.add(new Field("taskID", DataType.INTEGER));
+				query.add(new Field("isFromWeb", 0));
 				query.add(new Field("isTag", 1));
 				break;
 			case TASK_PHOTO:
@@ -477,7 +478,7 @@ public class Tables {
 				query.add(new Field("storeID", DataType.INTEGER));
 				query.add(new Field("empID", DataType.INTEGER));
 				query.add(new Field("name", DataType.TEXT));
-				query.add(new Field("position", DataType.TEXT));
+				query.add(new Field("designation", DataType.TEXT));
 				query.add(new Field("mobile", DataType.TEXT));
 				query.add(new Field("landline", DataType.TEXT));
 				query.add(new Field("email", DataType.TEXT));
@@ -485,7 +486,7 @@ public class Tables {
 				query.add(new Field("remarks", DataType.TEXT));
 				break;
 		}
-		return query.createTable(getName(tb));
+		return query;
 	}
 
 	public static String getName(TB tb) {

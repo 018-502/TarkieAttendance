@@ -7,6 +7,7 @@ public class StoreObj {
 	public String address;
 	public String header;
 	public String footer;
+	public String webStoreID;
 	public int radius;
 	public double longitude;
 	public double latitude;

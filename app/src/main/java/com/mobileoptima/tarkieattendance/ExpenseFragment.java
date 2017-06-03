@@ -4,8 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,21 +13,21 @@ import com.codepan.cache.TypefaceCache;
 import com.codepan.calendar.adapter.ViewPagerAdapter;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.SlidingTabLayout;
-import com.mobileoptima.model.ExpenseObj;
 
 import java.util.ArrayList;
 
 public class ExpenseFragment extends Fragment {
+
 	private ArrayList<Fragment> fragmentList;
-	private ExpenseItemsFragment items;
 	private ExpenseReportsFragment reports;
-	private SQLiteAdapter db;
+	private ExpenseItemsFragment items;
 	private SlidingTabLayout stlExpense;
-	private String[] tabItems;
-	private Typeface bold;
-	private ViewPager vpExpense;
 	private ViewPagerAdapter adapter;
+	private ViewPager vpExpense;
+	private String[] tabItems;
+	private SQLiteAdapter db;
 	private int green, gray;
+	private Typeface bold;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +80,7 @@ public class ExpenseFragment extends Fragment {
 	public void addExpenseReport() {
 		reports.addExpenseReport();
 	}
+
 	public void loadExpenseReports(SQLiteAdapter db) {
 		reports.loadExpenseReports(db);
 	}

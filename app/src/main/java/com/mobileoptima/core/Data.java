@@ -1,7 +1,5 @@
 package com.mobileoptima.core;
 
-import android.util.Log;
-
 import com.codepan.database.Condition;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.database.SQLiteQuery;
@@ -43,6 +41,7 @@ import com.mobileoptima.model.PageObj;
 import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
+import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TaskStatusObj;
 import com.mobileoptima.model.TimeInObj;
 import com.mobileoptima.model.TimeOutObj;
@@ -95,6 +94,28 @@ public class Data {
 		return formList;
 	}
 
+	public static ArrayList<FormObj> loadForms(SQLiteAdapter db, String taskID) {
+		ArrayList<FormObj> formList = new ArrayList<>();
+		String groupID = TarkieLib.getGroupID(db);
+		String f = Tables.getName(TB.FORMS);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String query = "SELECT f.ID, f.name, f.logoUrl, tf.ID, tf.isFromWeb FROM " + f + " f " +
+				"LEFT JOIN " + tf + " tf ON tf.formID = f.ID AND tf.taskID = '" + taskID + "' " +
+				"AND tf.isTag = 1 WHERE f.groupID = '" + groupID + "' AND f.isActive = 1";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			FormObj obj = new FormObj();
+			obj.ID = cursor.getString(0);
+			obj.name = cursor.getString(1);
+			obj.logoUrl = cursor.getString(2);
+			obj.isChecked = cursor.getString(3) != null;
+			obj.isTagged = cursor.getInt(4) == 1;
+			formList.add(obj);
+		}
+		cursor.close();
+		return formList;
+	}
+
 	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db, String taskID) {
 		ArrayList<EntryObj> entryList = new ArrayList<>();
 		String f = Tables.getName(TB.FORMS);
@@ -120,6 +141,7 @@ public class Data {
 			form.ID = cursor.getString(5);
 			form.name = cursor.getString(6);
 			form.logoUrl = cursor.getString(7);
+			form.isChecked = true;
 			entry.form = form;
 			entryList.add(entry);
 		}
@@ -456,9 +478,10 @@ public class Data {
 		ArrayList<TimeInObj> timeInList = new ArrayList<>();
 		String g = Tables.getName(TB.GPS);
 		String i = Tables.getName(TB.TIME_IN);
-		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, i.storeID, g.gpsDate, " +
-				"g.gpsTime, g.gpsLongitude, g.gpsLatitude FROM " + i + " i, " + g + " g " +
-				"WHERE i.isSync = 0 AND g.ID = i.gpsID";
+		String s = Tables.getName(TB.STORES);
+		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, g.gpsDate, " +
+				"g.gpsTime, g.gpsLongitude, g.gpsLatitude, s.ID, s.webStoreID FROM " + i + " i, " +
+				g + " g, " + s + " s WHERE i.isSync = 0 AND g.ID = i.gpsID AND s.ID = i.storeID";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TimeInObj in = new TimeInObj();
@@ -469,15 +492,16 @@ public class Data {
 			in.dDate = cursor.getString(2);
 			in.dTime = cursor.getString(3);
 			in.syncBatchID = cursor.getString(4);
-			StoreObj store = new StoreObj();
-			store.ID = cursor.getString(5);
-			in.store = store;
 			GpsObj gps = new GpsObj();
-			gps.date = cursor.getString(6);
-			gps.time = cursor.getString(7);
-			gps.longitude = cursor.getDouble(8);
-			gps.latitude = cursor.getDouble(9);
+			gps.date = cursor.getString(5);
+			gps.time = cursor.getString(6);
+			gps.longitude = cursor.getDouble(7);
+			gps.latitude = cursor.getDouble(8);
 			in.gps = gps;
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(9);
+			store.webStoreID = cursor.getString(10);
+			in.store = store;
 			timeInList.add(in);
 		}
 		cursor.close();
@@ -505,6 +529,7 @@ public class Data {
 			EmployeeObj emp = new EmployeeObj();
 			emp.ID = cursor.getString(6);
 			in.emp = emp;
+			out.emp = emp;
 			out.timeIn = in;
 			GpsObj gps = new GpsObj();
 			gps.date = cursor.getString(7);
@@ -568,6 +593,7 @@ public class Data {
 			EmployeeObj emp = new EmployeeObj();
 			emp.ID = cursor.getString(6);
 			in.emp = emp;
+			out.emp = emp;
 			out.breakIn = in;
 			GpsObj gps = new GpsObj();
 			gps.date = cursor.getString(7);
@@ -579,6 +605,47 @@ public class Data {
 		}
 		cursor.close();
 		return breakOutList;
+	}
+
+	public static ArrayList<TaskObj> loadTaskUpdate(SQLiteAdapter db) {
+		ArrayList<TaskObj> taskList = new ArrayList<>();
+		String s = Tables.getName(TB.STORES);
+		String t = Tables.getName(TB.TASK);
+		String f = Tables.getName(TB.FORMS);
+		String tf = Tables.getName(TB.TASK_FORM);
+		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.empID, " +
+				"s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON s.ID = t.storeID " +
+				"WHERE t.isWebUpdate = 0 AND t.isUpdate = 1 AND t.isSync = 1";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(0);
+			task.webTaskID = cursor.getString(1);
+			task.startDate = cursor.getString(2);
+			task.endDate = cursor.getString(3);
+			task.notes = cursor.getString(4);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(5);
+			task.emp = emp;
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(6);
+			store.webStoreID = cursor.getString(7);
+			task.store = store;
+			ArrayList<FormObj> formList = new ArrayList<>();
+			query = "SELECT f.ID FROM " + f + " f, " + tf + " tf WHERE f.ID = tf.formID AND " +
+					"tf.taskID = '" + task.ID + "' AND tf.isTag = 1";
+			Cursor c = db.read(query);
+			while(c.moveToNext()) {
+				FormObj form = new FormObj();
+				form.ID = c.getString(0);
+				formList.add(form);
+			}
+			c.close();
+			task.formList = formList;
+			taskList.add(task);
+		}
+		cursor.close();
+		return taskList;
 	}
 
 	public static ArrayList<IncidentReportObj> loadIncidentReportSync(SQLiteAdapter db) {
@@ -706,7 +773,6 @@ public class Data {
 			entry.isFromWeb = cursor.getInt(7) == 1;
 			FormObj form = new FormObj();
 			form.ID = cursor.getString(8);
-			entry.form = form;
 			ArrayList<FieldObj> fieldList = new ArrayList<>();
 			query = "SELECT f.ID, f.type, a.ID, a.value FROM " + a + " a, " + f + " f " +
 					"WHERE f.formID = " + form.ID + " AND a.entryID = " + entry.ID + " " +
@@ -733,7 +799,8 @@ public class Data {
 				fieldList.add(field);
 			}
 			c.close();
-			entry.fieldList = fieldList;
+			form.fieldList = fieldList;
+			entry.form = form;
 			entryList.add(entry);
 		}
 		cursor.close();
@@ -798,7 +865,8 @@ public class Data {
 		ArrayList<ChoiceObj> choiceList = new ArrayList<>();
 		String table = Tables.getName(TB.EXPENSE_TYPE);
 		String etc = Tables.getName(TB.EXPENSE_TYPE_CATEGORY);
-		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
+		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND " +
+				"categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
 		Cursor cursor = db.read(query);
 		ChoiceObj choice;
 		choice = new ChoiceObj();
@@ -823,26 +891,30 @@ public class Data {
 	}
 
 	public static ArrayList<ExpenseItemsObj> loadExpenseItems(SQLiteAdapter db, String startDate, String endDate) {
-		ArrayList<ExpenseItemsObj> expenseItemsList = new ArrayList<>();
+		ArrayList<ExpenseItemsObj> expenseItemList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate >= '" + startDate + "' AND dDate <= '" + endDate + "' AND empID = " + empID + " AND isDelete = 0 GROUP BY dDate ORDER BY dDate DESC";
+		String query = "SELECT dDate, SUM(amount) FROM " + table + " WHERE dDate " +
+				"BETWEEN '" + startDate + "' AND '" + endDate + "' AND empID = " + empID + " " +
+				"AND isDelete = 0 GROUP BY dDate ORDER BY dDate DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseItemsObj expenseItem = new ExpenseItemsObj();
 			expenseItem.dDate = cursor.getString(0);
 			expenseItem.totalAmount = cursor.getFloat(1);
-			expenseItemsList.add(expenseItem);
+			expenseItemList.add(expenseItem);
 		}
 		cursor.close();
-		return expenseItemsList;
+		return expenseItemList;
 	}
 
 	public static ArrayList<ExpenseObj> loadExpense(SQLiteAdapter db, String date) {
 		ArrayList<ExpenseObj> expenseList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(TB.EXPENSE);
-		String query = "SELECT ID, dDate, dTime, amount, typeID, name FROM " + table + " WHERE dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 ORDER BY dTime DESC";
+		String query = "SELECT ID, dDate, dTime, amount, typeID, name FROM " + table + " WHERE " +
+				"dDate = '" + date + "' AND empID = " + empID + " AND isDelete = 0 " +
+				"ORDER BY dTime DESC";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ExpenseObj expense = new ExpenseObj();
@@ -1040,13 +1112,13 @@ public class Data {
 		ArrayList<ContactObj> contactList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String table = Tables.getName(Tables.TB.CONTACTS);
-		String query = "SELECT name, position, mobile, landline, email, birthday, remarks " +
+		String query = "SELECT name, designation, mobile, landline, email, birthday, remarks " +
 				"FROM " + table + " WHERE storeID = " + storeID + " AND empID = '" + empID + "'";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			ContactObj contact = new ContactObj();
 			contact.name = cursor.getString(0);
-			contact.position = cursor.getString(1);
+			contact.designation = cursor.getString(1);
 			contact.mobile = cursor.getString(2);
 			contact.landline = cursor.getString(3);
 			contact.email = cursor.getString(4);

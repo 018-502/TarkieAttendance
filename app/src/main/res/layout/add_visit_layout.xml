@@ -73,4 +73,169 @@
 
     </RelativeLayout>
 
+    <LinearLayout
+        android:id="@+id/llDetailsAddVisit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlHeaderAddVisit"
+        android:orientation="vertical"
+        android:padding="@dimen/ten">
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvStoreAddVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/stores"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_rect_gray_sen_rad_three">
+
+            <com.codepan.widget.CodePanButton
+                android:id="@+id/btnStoreAddVisit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/state_rect_trans_rad_three"
+                android:gravity="start"
+                android:hint="@string/select_store"
+                android:padding="@dimen/ten"
+                android:textColor="@color/gray_pri"
+                android:textColorHint="@color/gray_ter"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_light"/>
+
+            <ImageView
+                android:layout_width="@dimen/twenty"
+                android:layout_height="@dimen/twenty_one"
+                android:layout_gravity="center_vertical|end"
+                android:layout_margin="@dimen/ten"
+                android:src="@drawable/ic_search_dark"/>
+
+        </FrameLayout>
+
+        <com.codepan.widget.CodePanLabel
+            android:id="@+id/tvScheduleAddVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/ten"
+            android:text="@string/schedule"
+            android:textColor="@color/gray_pri"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_light"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/two"
+                android:layout_marginRight="@dimen/two"
+                android:layout_weight="1"
+                android:background="@drawable/bg_rect_gray_sen_rad_three">
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnStartAddVisit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_trans_rad_three"
+                    android:gravity="start"
+                    android:hint="@string/start_date"
+                    android:padding="@dimen/ten"
+                    android:textColor="@color/gray_pri"
+                    android:textColorHint="@color/gray_ter"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+                <ImageView
+                    android:layout_width="@dimen/twenty"
+                    android:layout_height="@dimen/twenty_one"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_margin="@dimen/ten"
+                    android:src="@drawable/ic_date"/>
+
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/two"
+                android:layout_marginStart="@dimen/two"
+                android:layout_weight="1"
+                android:background="@drawable/bg_rect_gray_sen_rad_three">
+
+                <com.codepan.widget.CodePanButton
+                    android:id="@+id/btnEndAddVisit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/state_rect_trans_rad_three"
+                    android:gravity="start"
+                    android:hint="@string/end_date"
+                    android:padding="@dimen/ten"
+                    android:textColor="@color/gray_pri"
+                    android:textColorHint="@color/gray_ter"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+                <ImageView
+                    android:layout_width="@dimen/twenty"
+                    android:layout_height="@dimen/twenty_one"
+                    android:layout_gravity="center_vertical|end"
+                    android:layout_margin="@dimen/ten"
+                    android:src="@drawable/ic_date"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <com.codepan.widget.CodePanButton
+            android:id="@+id/btnAddAnotherVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/ten"
+            android:layout_marginTop="@dimen/twenty"
+            android:background="@drawable/state_rect_green_pri_rad_three"
+            android:paddingBottom="@dimen/eight"
+            android:paddingEnd="@dimen/ten"
+            android:paddingLeft="@dimen/ten"
+            android:paddingRight="@dimen/ten"
+            android:paddingStart="@dimen/ten"
+            android:paddingTop="@dimen/eight"
+            android:text="@string/add_another_visit"
+            android:textColor="@color/white"
+            android:textSize="@dimen/seventeen"
+            codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/llDetailsAddVisit"
+        android:scrollbarSize="@dimen/scrollbar"
+        android:scrollbarThumbVertical="@color/scrollbar">
+
+        <LinearLayout
+            android:id="@+id/llAddVisit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/one"
+                android:background="@color/divider"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </RelativeLayout>

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,9 +41,19 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 
-import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.OnFocusChangeListener;
+import static android.view.View.OnTouchListener;
+import static android.view.View.VISIBLE;
 
 public class ExpenseItemsDetailsFragment extends Fragment implements OnClickListener, OnFocusChangeListener, OnTouchListener {
+
+	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails,
+			btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails,
+			btnPhotoExpenseItemsDetails;
+	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails,
+			etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
+	private CodePanLabel tvDatetExpenseItemsDetails, tvTimeExpenseItemsDetails;
 	private CodePanButton btnBackExpenseItemsDetails, btnSaveExpenseItemsDetails, btnStoreExpenseItemsDetails, btnItemExpenseItemsDetails, btnPhotoExpenseItemsDetails;
 	private CodePanLabel tvDateExpenseItemsDetails, tvTimeExpenseItemsDetails;
 	private CodePanTextField etAmountExpenseItemsDetails, etOriginExpenseItemsDetails, etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails;
@@ -115,6 +124,7 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		btnPhotoExpenseItemsDetails.setOnClickListener(this);
 
 		tvDateExpenseItemsDetails.setText(expense.dDate);
+		tvDatetExpenseItemsDetails.setText(expense.dDate);
 		tvTimeExpenseItemsDetails.setText(expense.dTime);
 		btnStoreExpenseItemsDetails.setText(expense.store.name);
 		etAmountExpenseItemsDetails.setText(nf.format(expense.amount));
@@ -135,7 +145,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				break;
 			case R.id.btnSaveExpenseItemsDetails:
 				boolean result;
-				Log.e("paul", cbWithORExpenseItemsDetails.isChecked() + "");
 				CodePanUtils.hideKeyboard(view, getActivity());
 				expense.amount = Float.parseFloat(etAmountExpenseItemsDetails.getText().toString().replace(",", ""));
 				expense.origin = etOriginExpenseItemsDetails.getText().toString();
@@ -322,7 +331,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 			cbWithORExpenseItemsDetails.setChecked(d.withOR);
 			rlWithORExpenseItemsDetails.setVisibility(VISIBLE);
 		}
-		Log.e("paul", cbWithORExpenseItemsDetails.isChecked() + "");
 //		if(expense.isSubmit) {
 //			btnSaveExpenseItemsDetails.setEnabled(false);
 //			etStoreExpenseItemsDetails.setEnabled(false);
@@ -347,26 +355,26 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		editText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
 			}
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				String text = s.toString();
-				if (text.equals("")) {
+				if(text.equals("")) {
 					text = "0";
 					editText.setText(text);
 					editText.setSelection(text.length());
-				} else if (text.substring(0, 1).equals(".")) {
+				}
+				else if(text.substring(0, 1).equals(".")) {
 					text = "0" + text;
 					editText.setText(text);
 					editText.setSelection(text.length());
-				} else if (text.length() == 2 && text.substring(0, 1).equals("0") && !text.substring(1, 2).equals(".")) {
+				}
+				else if(text.length() == 2 && text.substring(0, 1).equals("0") && !text.substring(1, 2).equals(".")) {
 					text = text.substring(1);
 					editText.setText(text);
 					editText.setSelection(text.length());

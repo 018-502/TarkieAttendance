@@ -2,6 +2,7 @@ package com.mobileoptima.tarkieattendance;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Handler.Callback;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -27,6 +28,8 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.StoresAdapter;
+import com.mobileoptima.callback.Interface;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSelectStoreCallback;
 import com.mobileoptima.constant.Convention;
 import com.mobileoptima.core.Data;
@@ -39,11 +42,12 @@ import java.util.ArrayList;
 
 public class StoresFragment extends Fragment implements OnClickListener {
 
-	private final int LIMIT = 30;
+	private final int LIMIT = 100;
 	private final long IDLE_TIME = 500;
 
 	private boolean isEnd, isPause, isPending, isAdded;
 	private CodePanButton btnBackStores, btnAddStore;
+	private OnOverrideCallback overrideCallback;
 	private OnSelectStoreCallback selectStoreCallback;
 	private int visibleItem, totalItem, firstVisible;
 	private OnFragmentCallback fragmentCallback;
@@ -110,9 +114,10 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		tvTitleStores = (CodePanLabel) view.findViewById(R.id.tvTitleStores);
 		etSearchStores = (CodePanTextField) view.findViewById(R.id.etSearchStores);
 		btnBackStores = (CodePanButton) view.findViewById(R.id.btnBackStores);
-		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStore);
+		btnAddStore = (CodePanButton) view.findViewById(R.id.btnAddStores);
 		ivLoadingStores = (ImageView) view.findViewById(R.id.ivLoadingStores);
 		lvStores = (ListView) view.findViewById(R.id.lvStores);
+		view.findViewById(R.id.btnAddStores).setOnClickListener(this);
 		btnBackStores.setOnClickListener(this);
 		lvStores.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
@@ -180,6 +185,25 @@ public class StoresFragment extends Fragment implements OnClickListener {
 			case R.id.btnBackStores:
 				manager.popBackStack();
 				break;
+			case R.id.btnAddStores:
+				AddStoreFragment addStore = new AddStoreFragment();
+				addStore.setOnOverrideCallback(overrideCallback);
+				addStore.setOnAddStoreCallback(new Interface.OnAddStoreCallback() {
+					@Override
+					public void onAddStore(StoreObj store) {
+						if(selectStoreCallback != null) {
+							selectStoreCallback.onSelectStore(store);
+						}
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+				transaction.add(R.id.rlMain, addStore);
+				transaction.hide(this);
+				transaction.addToBackStack(null);
+				transaction.commit();
+				break;
 		}
 	}
 
@@ -189,6 +213,8 @@ public class StoresFragment extends Fragment implements OnClickListener {
 
 	public void loadStores(final SQLiteAdapter db, final String search) {
 		lvStores.setEnabled(false);
+		ivLoadingStores.startAnimation(anim);
+		ivLoadingStores.setVisibility(View.VISIBLE);
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -203,6 +229,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 						int lastPosition = storeList.size() - 1;
 						start = storeList.get(lastPosition).name;
 					}
+					Thread.sleep(250);
 					loadStoreHandler.sendMessage(loadStoreHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -213,10 +240,12 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		bg.start();
 	}
 
-	Handler loadStoreHandler = new Handler(new Handler.Callback() {
+	Handler loadStoreHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
 			lvStores.setEnabled(true);
+			ivLoadingStores.clearAnimation();
+			ivLoadingStores.setVisibility(View.GONE);
 			if(!isPause) {
 				setStore(false);
 			}
@@ -228,9 +257,9 @@ public class StoresFragment extends Fragment implements OnClickListener {
 	});
 
 	public void loadMoreStores(final SQLiteAdapter db, final String search) {
+		lvStores.setEnabled(false);
 		ivLoadingStores.startAnimation(anim);
 		ivLoadingStores.setVisibility(View.VISIBLE);
-		lvStores.setEnabled(false);
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -252,7 +281,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 						int lastPosition = additionalList.size() - 1;
 						start = additionalList.get(lastPosition).name;
 					}
-					Thread.sleep(500);
+					Thread.sleep(250);
 					loadMoreStoresHandler.sendMessage(loadMoreStoresHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -263,12 +292,12 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		bg.start();
 	}
 
-	Handler loadMoreStoresHandler = new Handler(new Handler.Callback() {
+	Handler loadMoreStoresHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message msg) {
+			lvStores.setEnabled(true);
 			ivLoadingStores.clearAnimation();
 			ivLoadingStores.setVisibility(View.GONE);
-			lvStores.setEnabled(true);
 			if(!isPause) {
 				setStore(true);
 			}
@@ -304,5 +333,9 @@ public class StoresFragment extends Fragment implements OnClickListener {
 		if(fragmentCallback != null) {
 			fragmentCallback.onFragment(isOnBackStack);
 		}
+	}
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
 	}
 }

@@ -1,15 +1,13 @@
 package com.mobileoptima.model;
 
-public class ExpenseObj {
-	public String ID;
-	public String dDate;
-	public String dTime;
-	public ExpenseTypeObj type;
-	public StoreObj store;
-	public String origin;
-	public String destination;
+public class ExpenseObj extends TransactionObj {
+
 	public String notes;
-	public boolean isTag;
+	public String origin;
+	public StoreObj store;
+	public String destination;
+	public ExpenseTypeObj type;
 	public boolean isSubmit;
+	public boolean isTag;
 	public float amount;
 }

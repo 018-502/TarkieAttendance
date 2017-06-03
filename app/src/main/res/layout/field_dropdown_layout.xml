@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/state_rect_trans_rad_three"
-            android:gravity="left"
+            android:gravity="start"
             android:padding="@dimen/ten"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/seventeen"

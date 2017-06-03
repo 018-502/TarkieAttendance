@@ -317,8 +317,8 @@
                     android:layout_margin="@dimen/three">
 
                     <ImageView
-                        android:layout_width="@dimen/twenty_five"
-                        android:layout_height="@dimen/nineteen"
+                        android:layout_width="@dimen/twenty"
+                        android:layout_height="@dimen/twenty"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_edit"/>
 

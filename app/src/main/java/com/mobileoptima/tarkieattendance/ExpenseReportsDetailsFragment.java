@@ -21,15 +21,18 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class ExpenseReportsDetailsFragment extends Fragment implements OnClickListener {
-	private AnnouncementObj obj;
-	private DisplayImageOptions options;
-	private CircularImageView ivPhotoAnnouncementDetails;
+
+	private CodePanLabel tvTitleAnnouncementDetails, tvSubjectAnnouncementDetails,
+			tvAnnouncedByAnnouncementDetails, tvAnnouncedTimeAnnouncementDetails,
+			tvMessageAnnouncementDetails;
 	private CodePanButton btnBackAnnouncementDetails, btnDeleteAnnouncementDetails;
-	private CodePanLabel tvTitleAnnouncementDetails, tvSubjectAnnouncementDetails, tvAnnouncedByAnnouncementDetails, tvAnnouncedTimeAnnouncementDetails, tvMessageAnnouncementDetails;
+	private OnDeleteAnnouncementCallback deleteAnnouncementCallback;
+	private CircularImageView ivPhotoAnnouncementDetails;
+	private FragmentTransaction transaction;
+	private DisplayImageOptions options;
 	private ImageLoader imageLoader;
 	private FragmentManager manager;
-	private OnDeleteAnnouncementCallback deleteAnnouncementCallback;
-	private FragmentTransaction transaction;
+	private AnnouncementObj obj;
 	private SQLiteAdapter db;
 
 	@Override

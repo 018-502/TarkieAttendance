@@ -842,13 +842,13 @@ public class Rx {
 						name = CodePanUtils.handleUniCode(name);
 						address = CodePanUtils.handleUniCode(address);
 						query.clearAll();
-						query.add(new FieldValue("ID", storeID));
 						query.add(new FieldValue("name", name));
 						query.add(new FieldValue("address", address));
+						query.add(new FieldValue("webStoreID", storeID));
 						query.add(new FieldValue("gpsLongitude", dataObj.getDouble("longitude")));
 						query.add(new FieldValue("gpsLatitude", dataObj.getDouble("latitude")));
 						query.add(new FieldValue("radius", dataObj.getInt("geo_fence_radius")));
-						String sql = "SELECT ID FROM " + table + " WHERE ID = '" + storeID + "'";
+						String sql = "SELECT ID FROM " + table + " WHERE webStoreID = '" + storeID + "'";
 						if(!db.isRecordExists(sql)) {
 							binder.insert(table, query);
 						}
@@ -1314,6 +1314,7 @@ public class Rx {
 							sql = "SELECT ID FROM " + tf + " WHERE taskID = '" + taskID + "' AND " +
 									"formID = '" + formID + "'";
 							if(!db.isRecordExists(sql)) {
+								query.add(new FieldValue("isFromWeb", true));
 								binder.insert(tf, query);
 							}
 							else {

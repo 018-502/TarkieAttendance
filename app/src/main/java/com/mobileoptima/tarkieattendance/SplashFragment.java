@@ -66,8 +66,6 @@ public class SplashFragment extends Fragment implements OnPermissionGrantedCallb
 				try {
 					db = SQLiteCache.getDatabase(getActivity(), App.DB);
 					db.openConnection();
-					TarkieLib.createTables(db);
-					TarkieLib.updateTables(db, 0, 0);
 					Thread.sleep(DELAY);
 					handler.sendMessage(handler.obtainMessage());
 				}

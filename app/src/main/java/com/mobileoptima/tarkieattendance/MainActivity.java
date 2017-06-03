@@ -20,7 +20,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -525,11 +524,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			case R.id.llClientsMain:
 				dlMain.closeDrawer(rlMenuMain);
 				final StoresFragment stores = new StoresFragment();
+				stores.setOnOverrideCallback(MainActivity.this);
 				stores.setOnSelectStoreCallback(new OnSelectStoreCallback() {
 					@Override
 					public void onSelectStore(StoreObj store) {
 						StoreDetailsFragment contacts = new StoreDetailsFragment();
 						contacts.setStore(store);
+						contacts.setOnOverrideCallback(MainActivity.this);
 						transaction = manager.beginTransaction();
 						transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 								R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -936,8 +937,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 	@Override
 	public void onBackPressed() {
 		if(isInitialized && isSecured) {
-			Log.e("isOverridden", "" + isOverridden);
-			Log.e("backPressedCallback", "" + (backPressedCallback != null));
 			if(isOverridden) {
 				if(backPressedCallback != null) {
 					backPressedCallback.onBackPressed();
@@ -1579,17 +1578,17 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		GpsObj gps = getGps();
 		String dDate = CodePanUtils.getDate();
 		String dTime = CodePanUtils.getTime();
-		String ID = TarkieLib.saveExpense(db, dDate, dTime, gps);
-		if(!ID.isEmpty() && tabType.equals(TabType.EXPENSE)) {
+		String expenseID = TarkieLib.saveExpense(db, gps, dDate, dTime);
+		if(expenseID != null && tabType.equals(TabType.EXPENSE)) {
 			Fragment fragment = manager.findFragmentByTag(tabType);
 			if(fragment != null) {
 				ExpenseFragment expense = (ExpenseFragment) fragment;
-				expense.addExpenseItem(dDate, dTime, ID);
+				expense.addExpenseItem(dDate, dTime, expenseID);
 			}
 		}
-		String name = "Expense " + TarkieLib.getTimeInExpenseCount(db);
-		CodePanUtils.alertToast(this, name + " " +
-				"has been added. You may enter more details later.");
+		String name = TarkieLib.getExpenseTitle(db);
+		CodePanUtils.alertToast(this, name + " " + "has been added. " +
+				"You may enter more details later.");
 		return true;
 	}
 }

@@ -23,30 +23,35 @@
         android:paddingStart="@dimen/ten"
         android:paddingTop="@dimen/eight">
 
-        <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvNameSchedule"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/ivNextSchedule"
             android:layout_toStartOf="@+id/ivNextSchedule"
-            android:textColor="@color/gray_pri"
-            android:textSize="@dimen/seventeen"
-            codePan:typeface="@string/proxima_nova_semi_bold"/>
+            android:gravity="center"
+            android:minHeight="@dimen/thirty_three"
+            android:orientation="vertical">
 
-        <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvAddressSchedule"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/tvNameSchedule"
-            android:layout_toLeftOf="@+id/ivNextSchedule"
-            android:layout_toStartOf="@+id/ivNextSchedule"
-            android:textColor="@color/gray_qui"
-            android:textSize="@dimen/thirteen"
-            codePan:typeface="@string/proxima_nova_mid"/>
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvNameSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_pri"
+                android:textSize="@dimen/seventeen"
+                codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+            <com.codepan.widget.CodePanLabel
+                android:id="@+id/tvAddressSchedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/gray_qui"
+                android:textSize="@dimen/thirteen"
+                codePan:typeface="@string/proxima_nova_mid"/>
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/ivNextSchedule"

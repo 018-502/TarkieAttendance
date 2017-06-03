@@ -119,6 +119,13 @@ public class SQLiteBinder {
 		drop.close();
 	}
 
+	public void createTable(String table, SQLiteQuery query) {
+		String sql = query.createTable(table);
+		SQLiteStatement create = db.compileStatement(sql);
+		create.execute();
+		create.close();
+	}
+
 	public void execute(String sql) {
 		SQLiteStatement statement = db.compileStatement(sql);
 		statement.execute();

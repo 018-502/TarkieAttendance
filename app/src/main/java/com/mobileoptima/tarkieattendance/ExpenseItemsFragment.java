@@ -7,7 +7,6 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,8 +29,6 @@ import com.mobileoptima.callback.Interface.OnUpdateExpenseCallback;
 import com.mobileoptima.constant.DateType;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
-import com.mobileoptima.model.ExpenseDefaultObj;
-import com.mobileoptima.model.ExpenseFuelConsumptionObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseTypeObj;
@@ -42,19 +39,20 @@ import java.util.ArrayList;
 import static android.view.View.OnLongClickListener;
 
 public class ExpenseItemsFragment extends Fragment implements OnClickListener, OnPickDateCallback {
-	private ArrayList<ExpenseItemsObj> expenseItemsList;
+
 	private CodePanLabel tvStartDateExpenseItems, tvEndDateExpenseItems;
-	private ExpenseItemsAdapter adapter;
-	private FragmentManager manager;
+	private ArrayList<ExpenseItemsObj> expenseItemsList;
+	private RelativeLayout rlPlaceholderExpenseItems;
 	private FragmentTransaction transaction;
+	private ExpenseItemsAdapter adapter;
+	private String startDate, endDate;
+	private FragmentManager manager;
 	private LayoutInflater inflater;
 	private ListView lvExpenseItems;
-	private MainActivity main;
-	private NumberFormat nf;
-	private RelativeLayout rlPlaceholderExpenseItems;
-	private SQLiteAdapter db;
-	private String startDate, endDate;
 	private ViewGroup container;
+	private MainActivity main;
+	private SQLiteAdapter db;
+	private NumberFormat nf;
 	private int dateType;
 
 	@Override
@@ -152,8 +150,8 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 			case DateType.END:
 				if(date != null) {
 					long startMillis = CodePanUtils.dateToMillis(startDate);
-					long endMIllis = CodePanUtils.dateToMillis(date);
-					if(endMIllis >= startMillis) {
+					long endMillis = CodePanUtils.dateToMillis(date);
+					if(endMillis >= startMillis) {
 						String end = CodePanUtils.getCalendarDate(date, true, true);
 						tvEndDateExpenseItems.setText(end);
 						endDate = date;
@@ -172,7 +170,8 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 			ExpenseItemsObj item = expenseItemsList.get(i);
 			if(item.dDate.equals(dDate)) {
 				if(item.isAdded) {
-					LinearLayout llItemsExpenseItems = (LinearLayout) lvExpenseItems.getChildAt(i).findViewById(R.id.llItemsExpenseItems);
+					LinearLayout llItemsExpenseItems = (LinearLayout) lvExpenseItems
+							.getChildAt(i).findViewById(R.id.llItemsExpenseItems);
 					item.childList = new ArrayList<>();
 					ArrayList<ExpenseObj> expenseList = Data.loadExpense(db, item.dDate);
 					for(ExpenseObj expense : expenseList) {
@@ -196,7 +195,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		expense.dDate = dDate;
 		expense.dTime = dTime;
 		ExpenseTypeObj type = new ExpenseTypeObj();
-		type.name = "Expense " + TarkieLib.getTimeInExpenseCount(db);
+		type.name = TarkieLib.getExpenseTitle(db);
 		expense.type = type;
 		expenseList.add(expense);
 		View v = inflater.inflate(R.layout.expense_items_list_row_collapsible, container, false);

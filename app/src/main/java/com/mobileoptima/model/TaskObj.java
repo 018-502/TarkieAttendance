@@ -1,20 +1,20 @@
 package com.mobileoptima.model;
 
-public class TaskObj {
+import java.util.ArrayList;
 
-	public String ID;
+public class TaskObj extends TransactionObj {
+
 	public String name;
-	public String empID;
 	public String notes;
-	public String endDate;
 	public String status;
 	public StoreObj store;
 	public int notesLimit;
+	public String endDate;
 	public String startDate;
-	public String dateCreated;
-	public String timeCreated;
-	public String syncBatchID;
+	public String webTaskID;
 	public boolean isFromWeb;
 	public boolean isCheckIn;
 	public boolean isCheckOut;
+	public ArrayList<FormObj> formList;
+	public ArrayList<PhotoObj> photoList;
 }

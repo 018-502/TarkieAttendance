@@ -12,19 +12,21 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.codepan.callback.Interface;
+import com.codepan.callback.Interface.OnRefreshCallback;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.StoreDetailsAdapter;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.StoreObj;
 
 import java.util.ArrayList;
 
-public class StoreDetailsFragment extends Fragment implements OnClickListener, Interface.OnRefreshCallback {
+public class StoreDetailsFragment extends Fragment implements OnClickListener, OnRefreshCallback {
 
 	private CodePanLabel tvPlaceholderStoreDetails, tvAddressStoreDetails, tvNameStoreDetails;
+	private OnOverrideCallback overrideCallback;
 	private ArrayList<ContactObj> contactList;
 	private FragmentTransaction transaction;
 	private StoreDetailsAdapter adapter;
@@ -65,6 +67,7 @@ public class StoreDetailsFragment extends Fragment implements OnClickListener, I
 				AddContactFragment addContact = new AddContactFragment();
 				addContact.setStore(store);
 				addContact.setOnRefreshCallback(this);
+				addContact.setOnOverrideCallback(overrideCallback);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
 						R.anim.slide_in_ltr, R.anim.slide_out_ltr);
@@ -117,5 +120,9 @@ public class StoreDetailsFragment extends Fragment implements OnClickListener, I
 
 	public void setStore(StoreObj store) {
 		this.store = store;
+	}
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
 	}
 }
