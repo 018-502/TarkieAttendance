@@ -921,6 +921,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 		checkSecurity();
 		updateSyncCount();
 		updateLastSynced();
+		updateLogo();
 		reloadSchedule();
 		reloadForms();
 		reloadVisits();
@@ -1326,7 +1327,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 			Fragment fragment = manager.findFragmentByTag(TabType.HOME);
 			if(fragment != null) {
 				HomeFragment home = (HomeFragment) fragment;
-				home.updateLogo(db, logoUrl);
+				home.updateLogo(logoUrl);
 			}
 		}
 	}

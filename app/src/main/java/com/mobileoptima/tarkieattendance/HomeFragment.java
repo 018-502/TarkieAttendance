@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 		btnNewVisitHome.setOnClickListener(this);
 		setStore(TarkieLib.getDefaultStore(db));
 		String logoUrl = TarkieLib.getCompanyLogo(db);
-		updateLogo(db, logoUrl);
+		updateLogo(logoUrl);
 		loadSchedule(db);
 		loadForms(db);
 		return view;
@@ -284,7 +284,7 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 		this.saveEntryCallback = saveEntryCallback;
 	}
 
-	public void updateLogo(SQLiteAdapter db, String logoUrl) {
+	public void updateLogo(String logoUrl) {
 		if(logoUrl != null) {
 			CodePanUtils.displayImage(ivLogoHome, logoUrl, this);
 		}

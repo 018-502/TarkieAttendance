@@ -191,9 +191,7 @@ public class StoresFragment extends Fragment implements OnClickListener {
 				addStore.setOnAddStoreCallback(new Interface.OnAddStoreCallback() {
 					@Override
 					public void onAddStore(StoreObj store) {
-						if(selectStoreCallback != null) {
-							selectStoreCallback.onSelectStore(store);
-						}
+						etSearchStores.setText(store.name);
 					}
 				});
 				transaction = manager.beginTransaction();
