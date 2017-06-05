@@ -89,7 +89,7 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 				rlDateSearchItem.setVisibility(View.VISIBLE);
 				vDivider.setVisibility(View.VISIBLE);
 				break;
-			//case EntriesSearchType.STORE:
+			case EntriesSearchType.STORE:
 			case EntriesSearchType.FORM:
 				flSearchItem.setVisibility(View.VISIBLE);
 				rlDateSearchItem.setVisibility(View.GONE);
@@ -164,9 +164,9 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 						case EntriesSearchType.DATE:
 							searchList = Data.searchEntriesByDate(db, startDate, endDate);
 							break;
-//						case EntriesSearchType.STORE:
-//							searchList = new ArrayList<>();
-//							break;
+						case EntriesSearchType.STORE:
+							searchList = new ArrayList<>();
+							break;
 						case EntriesSearchType.CATEGORY:
 							searchList = Data.searchEntriesByCategory(db);
 							break;
