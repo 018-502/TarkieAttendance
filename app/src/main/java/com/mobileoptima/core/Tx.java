@@ -775,7 +775,7 @@ public class Tx {
 		boolean result = false;
 		final int INDENT = 4;
 		final int TIMEOUT = 5000;
-		String action = "edit-itinerary";
+		String action = "edit-itinerary-visit";
 		String url = App.WEB_API + action;
 		String response = null;
 		String params = null;
