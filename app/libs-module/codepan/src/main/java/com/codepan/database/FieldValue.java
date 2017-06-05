@@ -5,61 +5,104 @@ public class FieldValue {
 	private final int TRUE = 1;
 	private final int FALSE = 0;
 
-	public String field;
-	public String value;
+	public String field, value;
+
+	public FieldValue(Field field, Field value) {
+		setField(field);
+		setValue(value);
+	}
 
 	public FieldValue(String field, String value) {
+		this.value = value != null ? "'" + value + "'" : "NULL";
 		this.field = field;
-		setString(value);
 	}
 
 	public FieldValue(String field, long value) {
+		this.value = String.valueOf(value);
 		this.field = field;
-		setLong(value);
 	}
 
 	public FieldValue(String field, int value) {
+		this.value = String.valueOf(value);
 		this.field = field;
-		setInt(value);
 	}
 
 	public FieldValue(String field, double value) {
+		this.value = String.valueOf(value);
 		this.field = field;
-		setDouble(value);
 	}
 
 	public FieldValue(String field, float value) {
+		this.value = String.valueOf(value);
 		this.field = field;
-		setFloat(value);
-	}
-
-	private void setString(String value) {
-		this.value = value;
-	}
-
-	private void setLong(long value) {
-		this.value = String.valueOf(value);
-	}
-
-	private void setInt(int value) {
-		this.value = String.valueOf(value);
-	}
-
-	private void setDouble(double value) {
-		this.value = String.valueOf(value);
-	}
-
-	private void setFloat(float value) {
-		this.value = String.valueOf(value);
 	}
 
 	public FieldValue(String field, boolean value) {
 		this.field = field;
 		if(value) {
-			setInt(TRUE);
+			this.value = String.valueOf(TRUE);
 		}
 		else {
-			setInt(FALSE);
+			this.value = String.valueOf(FALSE);
+		}
+	}
+
+	public FieldValue(Field field, String value) {
+		this.value = value != null ? "'" + value + "'" : "NULL";
+		setField(field);
+	}
+
+	public FieldValue(Field field, long value) {
+		this.value = String.valueOf(value);
+		setField(field);
+	}
+
+	public FieldValue(Field field, int value) {
+		this.value = String.valueOf(value);
+		setField(field);
+	}
+
+	public FieldValue(Field field, double value) {
+		this.value = String.valueOf(value);
+		setField(field);
+	}
+
+	public FieldValue(Field field, float value) {
+		this.value = String.valueOf(value);
+		setField(field);
+	}
+
+	public FieldValue(Field field, boolean value) {
+		setField(field);
+		if(value) {
+			this.value = String.valueOf(TRUE);
+		}
+		else {
+			this.value = String.valueOf(FALSE);
+		}
+	}
+
+	private void setField(Field field) {
+		if(field != null) {
+			Table table = field.table;
+			if(table != null) {
+				this.field = table.as + "." + table.name;
+			}
+			else {
+				this.field = field.field;
+			}
+		}
+	}
+
+	private void setValue(Field value) {
+		if(value != null) {
+			Table table = value.table;
+			if(table != null) {
+				this.value = table.as + "." + table.name;
+			}
+			else {
+				this.value = value.field;
+			}
 		}
 	}
 }

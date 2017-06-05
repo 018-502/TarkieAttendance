@@ -165,7 +165,7 @@ public class SearchItemFragment extends Fragment implements OnClickListener, OnP
 							searchList = Data.searchEntriesByDate(db, startDate, endDate);
 							break;
 						case EntriesSearchType.STORE:
-							searchList = new ArrayList<>();
+							searchList = Data.searchEntriesByStore(db, search);
 							break;
 						case EntriesSearchType.CATEGORY:
 							searchList = Data.searchEntriesByCategory(db);

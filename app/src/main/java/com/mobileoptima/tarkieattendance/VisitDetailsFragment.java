@@ -224,10 +224,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 									FormFragment form = new FormFragment();
 									form.setEntry(entry);
 									form.setOnOverrideCallback(overrideCallback);
+									form.setOnFragmentCallback(VisitDetailsFragment.this);
 									form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
 										@Override
 										public void onSaveEntry(EntryObj entry) {
 											visit.entryList.set(index, entry);
+											setWithChanges(true);
 										}
 									});
 									transaction = manager.beginTransaction();

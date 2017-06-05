@@ -7,10 +7,16 @@ public class Field {
 	public boolean isPrimaryKey, isDefault, withDataType;
 	public String field, defText;
 	public DataType type;
+	public Table table;
 	public int defInt;
 
 	public Field(String field) {
 		this.field = field;
+	}
+
+	public Field(String field, Table table) {
+		this.field = table.as + "." + field;
+		this.table = table;
 	}
 
 	public Field(String field, DataType type) {

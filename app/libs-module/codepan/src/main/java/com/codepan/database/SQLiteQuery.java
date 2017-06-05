@@ -7,10 +7,15 @@ public class SQLiteQuery {
 	private ArrayList<FieldValue> fieldValueList;
 	private ArrayList<Condition> conditionList;
 	private ArrayList<Field> fieldList;
+	private ArrayList<Table> tableList;
 
 	public enum DataType {
 		INTEGER,
 		TEXT
+	}
+
+	public void setTableList(ArrayList<Table> tableList) {
+		this.tableList = tableList;
 	}
 
 	public void setFieldList(ArrayList<Field> fieldList) {
@@ -23,6 +28,13 @@ public class SQLiteQuery {
 
 	public void setConditionList(ArrayList<Condition> conditionList) {
 		this.conditionList = conditionList;
+	}
+
+	public void add(Table table) {
+		if(tableList == null) {
+			tableList = new ArrayList<>();
+		}
+		tableList.add(table);
 	}
 
 	public void add(Field field) {
@@ -46,15 +58,9 @@ public class SQLiteQuery {
 		conditionList.add(condition);
 	}
 
-	public void removeCondition(int index) {
-		if(conditionList != null) {
-			conditionList.remove(index);
-		}
-	}
-
-	public void removeFieldValue(int index) {
-		if(fieldValueList != null) {
-			fieldValueList.remove(index);
+	public void removeTable(int index) {
+		if(tableList != null) {
+			tableList.remove(index);
 		}
 	}
 
@@ -64,15 +70,21 @@ public class SQLiteQuery {
 		}
 	}
 
-	public void clearConditionList() {
-		if(conditionList != null) {
-			conditionList.clear();
+	public void removeFieldValue(int index) {
+		if(fieldValueList != null) {
+			fieldValueList.remove(index);
 		}
 	}
 
-	public void clearFieldValueList() {
-		if(fieldValueList != null) {
-			fieldValueList.clear();
+	public void removeCondition(int index) {
+		if(conditionList != null) {
+			conditionList.remove(index);
+		}
+	}
+
+	public void clearTableList() {
+		if(tableList != null) {
+			tableList.clear();
 		}
 	}
 
@@ -82,31 +94,39 @@ public class SQLiteQuery {
 		}
 	}
 
+	public void clearFieldValueList() {
+		if(fieldValueList != null) {
+			fieldValueList.clear();
+		}
+	}
+
+	public void clearConditionList() {
+		if(conditionList != null) {
+			conditionList.clear();
+		}
+	}
+
 	public void clearAll() {
+		clearTableList();
 		clearFieldList();
 		clearFieldValueList();
 		clearConditionList();
 	}
 
-	public boolean hasConditions() {
-		if(conditionList != null) {
-			return !conditionList.isEmpty();
-		}
-		return false;
-	}
-
-	public boolean hasFieldsValues() {
-		if(fieldValueList != null) {
-			return !fieldValueList.isEmpty();
-		}
-		return false;
+	public boolean hasTables() {
+		return tableList != null && !tableList.isEmpty();
 	}
 
 	public boolean hasFields() {
-		if(fieldList != null) {
-			return !fieldList.isEmpty();
-		}
-		return false;
+		return fieldList != null && !fieldList.isEmpty();
+	}
+
+	public boolean hasFieldsValues() {
+		return fieldValueList != null && !fieldValueList.isEmpty();
+	}
+
+	public boolean hasConditions() {
+		return conditionList != null && !conditionList.isEmpty();
 	}
 
 	private String createFields() {
@@ -135,9 +155,22 @@ public class SQLiteQuery {
 		return fields;
 	}
 
+	public String getTables() {
+		String tables = "";
+		if(tableList != null) {
+			for(Table obj : tableList) {
+				tables += obj.name + " as " + obj.as;
+				if(tableList.indexOf(obj) < tableList.size() - 1) {
+					tables += ", ";
+				}
+			}
+		}
+		return tables;
+	}
+
 	public String getFields() {
 		String fields = "";
-		if(fieldValueList != null) {
+		if(fieldList != null) {
 			for(Field obj : fieldList) {
 				fields += obj.field;
 				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
@@ -153,7 +186,7 @@ public class SQLiteQuery {
 		if(fieldValueList != null) {
 			for(FieldValue obj : fieldValueList) {
 				if(obj.value != null) {
-					fieldsValues += obj.field + " = '" + obj.value + "'";
+					fieldsValues += obj.field + " = " + obj.value;
 				}
 				else {
 					fieldsValues += obj.field + " = NULL";
@@ -172,25 +205,25 @@ public class SQLiteQuery {
 			for(Condition obj : conditionList) {
 				switch(obj.operator) {
 					case EQUALS:
-						condition += obj.field + " = '" + obj.value + "'";
+						condition += obj.field + " = " + obj.value;
 						break;
 					case NOT_EQUALS:
-						condition += obj.field + " != '" + obj.value + "'";
+						condition += obj.field + " != " + obj.value;
 						break;
 					case GREATER_THAN:
-						condition += obj.field + " > '" + obj.value + "'";
+						condition += obj.field + " > " + obj.value;
 						break;
 					case LESS_THAN:
-						condition += obj.field + " < '" + obj.value + "'";
+						condition += obj.field + " < " + obj.value;
 						break;
 					case GREATER_THAN_OR_EQUALS:
-						condition += obj.field + " >= '" + obj.value + "'";
+						condition += obj.field + " >= " + obj.value;
 						break;
 					case LESS_THAN_OR_EQUALS:
-						condition += obj.field + " <= '" + obj.value + "'";
+						condition += obj.field + " <= " + obj.value;
 						break;
 					case BETWEEN:
-						condition += obj.field + " BETWEEN '" + obj.start + "' AND '" + obj.end + "'";
+						condition += obj.field + " BETWEEN " + obj.start + " AND " + obj.end;
 						break;
 					case IS_NULL:
 						condition += obj.field + " IS NULL";
@@ -199,7 +232,7 @@ public class SQLiteQuery {
 						condition += obj.field + " NOT NULL";
 						break;
 					case LIKE:
-						condition += obj.field + " LIKE '%" + obj.value + "%'";
+						condition += obj.field + " LIKE " + obj.value;
 						break;
 				}
 				if(conditionList.indexOf(obj) < conditionList.size() - 1) {
@@ -216,12 +249,7 @@ public class SQLiteQuery {
 		if(fieldValueList != null) {
 			for(FieldValue obj : fieldValueList) {
 				fields += obj.field;
-				if(obj.value != null) {
-					values += "'" + obj.value + "'";
-				}
-				else {
-					values += "NULL";
-				}
+				values += obj.value;
 				if(fieldValueList.indexOf(obj) < fieldValueList.size() - 1) {
 					fields += ", ";
 					values += ", ";
@@ -265,6 +293,10 @@ public class SQLiteQuery {
 			condition = " WHERE " + getConditions();
 		}
 		return "SELECT " + getFields() + " FROM " + table + condition;
+	}
+
+	public String select() {
+		return "SELECT " + getFields() + " FROM " + getTables() + " WHERE " + getConditions();
 	}
 
 	public String addColumn(String table, String column, String defText) {
