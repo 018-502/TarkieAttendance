@@ -1381,7 +1381,7 @@ public class TarkieLib {
 	public static int getCountSync(SQLiteAdapter db) {
 		int count = 0;
 		ArrayList<TB> tableList = new ArrayList<>();
-		//tableList.add(TB.TASK);
+		tableList.add(TB.TASK);
 		tableList.add(TB.TIME_IN);
 		tableList.add(TB.TIME_OUT);
 		tableList.add(TB.BREAK_IN);

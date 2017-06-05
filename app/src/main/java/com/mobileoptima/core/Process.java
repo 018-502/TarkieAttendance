@@ -305,13 +305,13 @@ public class Process {
 							handler.sendMessage(handler.obtainMessage());
 						}
 					}
-//					for(TaskObj task : Data.loadTaskSync(db)) {
-//						if(result) {
-//							result = Tx.syncTask(db, task, errorCallback);
-//							Thread.sleep(250);
-//							handler.sendMessage(handler.obtainMessage());
-//						}
-//					}
+					for(TaskObj task : Data.loadTaskSync(db)) {
+						if(result) {
+							result = Tx.syncTask(db, task, errorCallback);
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
 					for(TaskObj task : Data.loadTaskUpdate(db)) {
 						if(result) {
 							result = Tx.updateTask(db, task, errorCallback);
