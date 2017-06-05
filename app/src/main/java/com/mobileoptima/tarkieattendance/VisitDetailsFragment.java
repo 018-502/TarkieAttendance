@@ -49,7 +49,7 @@ import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.FormObj;
-import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TaskStatusObj;
@@ -74,8 +74,6 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private boolean hasPhotoAdded, withChanges;
 	private FrameLayout flStoreVisitDetails;
 	private FragmentTransaction transaction;
-	private ArrayList<ImageObj> imageList;
-	private ArrayList<EntryObj> entryList;
 	private FragmentManager manager;
 	private String convention;
 	private MainActivity main;
@@ -192,7 +190,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					entryList = Data.loadEntries(db, taskID);
+					visit.entryList = Data.loadEntries(db, taskID);
 					formsHandler.sendMessage(formsHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -211,8 +209,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			if(view != null) {
 				LayoutInflater inflater = getActivity().getLayoutInflater();
 				ViewGroup container = (ViewGroup) view.getParent();
-				for(final EntryObj entry : entryList) {
-					final int index = entryList.indexOf(entry);
+				for(final EntryObj entry : visit.entryList) {
+					final int index = visit.entryList.indexOf(entry);
 					FormObj form = entry.form;
 					if(form.isChecked) {
 						View child = inflater.inflate(R.layout.visit_details_form_item, container, false);
@@ -229,7 +227,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 									form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
 										@Override
 										public void onSaveEntry(EntryObj entry) {
-											entryList.set(index, entry);
+											visit.entryList.set(index, entry);
 										}
 									});
 									transaction = manager.beginTransaction();
@@ -259,7 +257,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			@Override
 			public void run() {
 				try {
-					imageList = Data.loadImages(db, taskID);
+					visit.photoList = Data.loadPhotos(db, taskID);
 					photosHandler.sendMessage(photosHandler.obtainMessage());
 				}
 				catch(Exception e) {
@@ -273,7 +271,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	Handler photosHandler = new Handler(new Callback() {
 		@Override
 		public boolean handleMessage(Message message) {
-			updatePhotoGrid(llGridPhotoVisitDetails, imageList);
+			updatePhotoGrid(llGridPhotoVisitDetails, visit.photoList);
 			return true;
 		}
 	});
@@ -410,7 +408,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				break;
 			case R.id.btnAddFormVisitDetails:
 				ArrayList<FormObj> taggedList = new ArrayList<>();
-				for(EntryObj entry : entryList) {
+				for(EntryObj entry : visit.entryList) {
 					FormObj form = entry.form;
 					taggedList.add(form);
 				}
@@ -543,13 +541,13 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		}
 	});
 
-	public void updatePhotoGrid(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
+	public void updatePhotoGrid(final LinearLayout llGridPhoto, final ArrayList<PhotoObj> photoList) {
 		View view = getView();
 		if(view != null) {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			ViewGroup container = (ViewGroup) view.getParent();
 			llGridPhoto.removeAllViews();
-			for(final ImageObj obj : imageList) {
+			for(final PhotoObj obj : photoList) {
 				String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
 						.getPath() + "/" + obj.fileName;
 				View child = inflater.inflate(R.layout.photo_item, container, false);
@@ -559,8 +557,8 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				btnPhoto.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						int position = imageList.indexOf(obj);
-						onPhotoGridItemClick(llGridPhoto, imageList, position);
+						int position = photoList.indexOf(obj);
+						onPhotoGridItemClick(llGridPhoto, photoList, position);
 					}
 				});
 				llGridPhoto.addView(child);
@@ -578,18 +576,18 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		}
 	}
 
-	public void onPhotoGridItemClick(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList, int position) {
+	public void onPhotoGridItemClick(final LinearLayout llGridPhoto, final ArrayList<PhotoObj> photoList, int position) {
 		ImagePreviewFragment preview = new ImagePreviewFragment();
 		preview.setDeletable(true);
-		preview.setImageList(imageList, position);
+		preview.setPhotoList(photoList, position);
 		preview.setOnFragmentCallback(this);
 		preview.setOnDeletePhotoCallback(new Interface.OnDeletePhotoCallback() {
 			@Override
 			public void onDeletePhoto(int position) {
-				imageList.remove(position);
+				photoList.remove(position);
 				llGridPhoto.removeViewAt(position);
-				if(imageList.size() > 0) {
-					invalidateViews(llGridPhoto, imageList);
+				if(photoList.size() > 0) {
+					invalidateViews(llGridPhoto, photoList);
 				}
 			}
 		});
@@ -602,7 +600,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		transaction.commit();
 	}
 
-	public void invalidateViews(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
+	public void invalidateViews(final LinearLayout llGridPhoto, final ArrayList<PhotoObj> photoList) {
 		int count = llGridPhoto.getChildCount();
 		for(int i = 0; i < count; i++) {
 			final int position = i;
@@ -611,7 +609,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			btnPhoto.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					onPhotoGridItemClick(llGridPhoto, imageList, position);
+					onPhotoGridItemClick(llGridPhoto, photoList, position);
 				}
 			});
 		}
@@ -625,7 +623,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				try {
 					StoreObj store = visit.store;
 					boolean result = TarkieLib.editTask(db, visit.store, visit.ID, notes,
-							entryList, imageList);
+							visit.entryList, visit.photoList);
 					if(result) {
 						visit.notes = notes;
 						visit.name = store.name;
@@ -667,13 +665,13 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	});
 
 	@Override
-	public void onCameraDone(ArrayList<ImageObj> imageList) {
+	public void onCameraDone(ArrayList<PhotoObj> photoList) {
 		this.hasPhotoAdded = true;
-		if(imageList != null) {
-			imageList.addAll(0, this.imageList);
+		if(photoList != null) {
+			photoList.addAll(0, visit.photoList);
 		}
-		updatePhotoGrid(llGridPhotoVisitDetails, imageList);
-		this.imageList = imageList;
+		updatePhotoGrid(llGridPhotoVisitDetails, photoList);
+		visit.photoList = photoList;
 		setWithChanges(true);
 	}
 
@@ -739,7 +737,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	public void onTagForms(ArrayList<FormObj> formList) {
 		for(FormObj form : formList) {
 			boolean exists = false;
-			for(EntryObj entry : entryList) {
+			for(EntryObj entry : visit.entryList) {
 				if(form.ID.equals(entry.form.ID)) {
 					entry.form = form;
 					exists = true;
@@ -749,7 +747,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			if(!exists) {
 				EntryObj entry = new EntryObj();
 				entry.form = form;
-				entryList.add(entry);
+				visit.entryList.add(entry);
 			}
 		}
 		setWithChanges(true);

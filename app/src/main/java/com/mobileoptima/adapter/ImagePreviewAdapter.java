@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.codepan.callback.Interface.OnSingleTapCallback;
 import com.codepan.widget.TouchImageView;
 import com.mobileoptima.constant.App;
-import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.tarkieattendance.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -21,15 +21,15 @@ import java.util.ArrayList;
 public class ImagePreviewAdapter extends PagerAdapter {
 
 	private OnSingleTapCallback singleTapCallback;
-	private ArrayList<ImageObj> imageList;
+	private ArrayList<PhotoObj> photoList;
 	private DisplayImageOptions options;
 	private ImageLoader imageLoader;
 	private LayoutInflater inflater;
 	private Context context;
 
-	public ImagePreviewAdapter(Context context, ArrayList<ImageObj> imageList) {
+	public ImagePreviewAdapter(Context context, ArrayList<PhotoObj> photoList) {
 		this.context = context;
-		this.imageList = imageList;
+		this.photoList = photoList;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
 		builder.showImageOnLoading(R.color.gray_non);
@@ -48,7 +48,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
 
 	@Override
 	public int getCount() {
-		return imageList.size();
+		return photoList.size();
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class ImagePreviewAdapter extends PagerAdapter {
 		assert imageLayout != null;
 		final TouchImageView ivImagePreview = (TouchImageView) imageLayout.findViewById(R.id.ivImagePreview);
 		ivImagePreview.setOnSingleTapCallback(singleTapCallback);
-		String fileName = imageList.get(position).fileName;
+		String fileName = photoList.get(position).fileName;
 		if(fileName != null) {
 			String uri = "file://" + context.getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() + "/" + fileName;
 			imageLoader.displayImage(uri, ivImagePreview, options);

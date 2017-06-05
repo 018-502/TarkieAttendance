@@ -19,6 +19,7 @@ import com.mobileoptima.adapter.PhotosAdapter;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 
 import java.util.ArrayList;
 
@@ -57,8 +58,10 @@ public class PhotosFragment extends Fragment {
 		gvPhotos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+				ArrayList<PhotoObj> photoList = new ArrayList<>();
+				photoList.addAll(imageList);
 				ImagePreviewFragment imagePreview = new ImagePreviewFragment();
-				imagePreview.setImageList(imageList, position);
+				imagePreview.setPhotoList(photoList, position);
 				imagePreview.setDeletable(false);
 				transaction = manager.beginTransaction();
 				transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,

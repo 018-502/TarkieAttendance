@@ -10,6 +10,7 @@ import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.SearchObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskStatusObj;
@@ -77,7 +78,7 @@ public class Interface {
 	}
 
 	public interface OnCameraDoneCallback {
-		void onCameraDone(ArrayList<ImageObj> imageList);
+		void onCameraDone(ArrayList<PhotoObj> photoList);
 	}
 
 	public interface OnHighlightEntriesCallback {

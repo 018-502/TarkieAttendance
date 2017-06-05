@@ -15,6 +15,6 @@ public class TaskObj extends TransactionObj {
 	public boolean isFromWeb;
 	public boolean isCheckIn;
 	public boolean isCheckOut;
-	public ArrayList<FormObj> formList;
+	public ArrayList<EntryObj> entryList;
 	public ArrayList<PhotoObj> photoList;
 }

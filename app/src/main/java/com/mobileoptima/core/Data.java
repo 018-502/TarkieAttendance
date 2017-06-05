@@ -118,10 +118,11 @@ public class Data {
 		String e = Tables.getName(TB.ENTRIES);
 		String tf = Tables.getName(TB.TASK_FORM);
 		String te = Tables.getName(TB.TASK_ENTRY);
-		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, f.ID, f.name, " +
-				"f.logoUrl FROM " + f + " f, " + tf + " tf LEFT JOIN " + e + " e ON e.ID = te.entryID " +
-				"AND e.formID = f.ID LEFT JOIN " + te + " te ON te.taskID = '" + taskID + "'" +
-				"WHERE f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
+		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, e.webEntryID, " +
+				"f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf LEFT JOIN " + e + " e " +
+				"ON e.ID = te.entryID AND e.formID = f.ID LEFT JOIN " + te + " te ON " +
+				"te.taskID = '" + taskID + "' WHERE f.ID = tf.formID AND " +
+				"tf.taskID = '" + taskID + "' AND tf.isTag = 1";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
@@ -132,11 +133,12 @@ public class Data {
 				entry.dTime = cursor.getString(2);
 				entry.isSubmit = cursor.getInt(3) == 1;
 				entry.referenceNo = cursor.getString(4);
+				entry.webEntryID = cursor.getString(5);
 			}
 			FormObj form = new FormObj();
-			form.ID = cursor.getString(5);
-			form.name = cursor.getString(6);
-			form.logoUrl = cursor.getString(7);
+			form.ID = cursor.getString(6);
+			form.name = cursor.getString(7);
+			form.logoUrl = cursor.getString(8);
 			form.isChecked = true;
 			entry.form = form;
 			entryList.add(entry);
@@ -396,23 +398,24 @@ public class Data {
 		return imageList;
 	}
 
-	public static ArrayList<ImageObj> loadImages(SQLiteAdapter db, String taskID) {
-		ArrayList<ImageObj> imageList = new ArrayList<>();
+	public static ArrayList<PhotoObj> loadPhotos(SQLiteAdapter db, String taskID) {
+		ArrayList<PhotoObj> photoList = new ArrayList<>();
 		String empID = TarkieLib.getEmployeeID(db);
 		String p = Tables.getName(TB.PHOTO);
 		String tp = Tables.getName(TB.TASK_PHOTO);
-		String query = "SELECT p.ID, p.fileName FROM " + p + " p, " + tp + " tp WHERE " +
-				"p.empID = '" + empID + "' AND p.isDelete = 0 AND p.isSignature = 0 " +
-				"AND tp.taskID = '" + taskID + "' AND p.ID = tp.photoID";
+		String query = "SELECT p.ID, p.fileName, p.webPhotoID FROM " + p + " p, " + tp + " tp " +
+				"WHERE p.empID = '" + empID + "' AND p.isDelete = 0 AND p.isSignature = 0 " +
+				"AND tp.taskID = '" + taskID + "' AND p.ID = tp.photoID AND tp.isTag = 1";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			ImageObj obj = new ImageObj();
-			obj.ID = cursor.getString(0);
-			obj.fileName = cursor.getString(1);
-			imageList.add(obj);
+			PhotoObj photo = new PhotoObj();
+			photo.ID = cursor.getString(0);
+			photo.fileName = cursor.getString(1);
+			photo.webPhotoID = cursor.getString(2);
+			photoList.add(photo);
 		}
 		cursor.close();
-		return imageList;
+		return photoList;
 	}
 
 	public static ArrayList<EntryObj> loadEntries(SQLiteAdapter db, SearchObj obj, int type) {
@@ -603,12 +606,40 @@ public class Data {
 		return breakOutList;
 	}
 
+	public static ArrayList<TaskObj> loadTaskSync(SQLiteAdapter db) {
+		ArrayList<TaskObj> taskList = new ArrayList<>();
+		String s = Tables.getName(TB.STORES);
+		String t = Tables.getName(TB.TASK);
+		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.empID, " +
+				"s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON s.ID = t.storeID " +
+				"WHERE t.isSync = 0";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(0);
+			task.webTaskID = cursor.getString(1);
+			task.startDate = cursor.getString(2);
+			task.endDate = cursor.getString(3);
+			task.notes = cursor.getString(4);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(5);
+			task.emp = emp;
+			StoreObj store = new StoreObj();
+			store.ID = cursor.getString(6);
+			store.webStoreID = cursor.getString(7);
+			task.store = store;
+			task.entryList = loadEntries(db, task.ID);
+			task.photoList = loadPhotos(db, task.ID);
+			taskList.add(task);
+		}
+		cursor.close();
+		return taskList;
+	}
+
 	public static ArrayList<TaskObj> loadTaskUpdate(SQLiteAdapter db) {
 		ArrayList<TaskObj> taskList = new ArrayList<>();
 		String s = Tables.getName(TB.STORES);
 		String t = Tables.getName(TB.TASK);
-		String f = Tables.getName(TB.FORMS);
-		String tf = Tables.getName(TB.TASK_FORM);
 		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.empID, " +
 				"s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON s.ID = t.storeID " +
 				"WHERE t.isWebUpdate = 0 AND t.isUpdate = 1 AND t.isSync = 1";
@@ -627,17 +658,8 @@ public class Data {
 			store.ID = cursor.getString(6);
 			store.webStoreID = cursor.getString(7);
 			task.store = store;
-			ArrayList<FormObj> formList = new ArrayList<>();
-			query = "SELECT f.ID FROM " + f + " f, " + tf + " tf WHERE f.ID = tf.formID AND " +
-					"tf.taskID = '" + task.ID + "' AND tf.isTag = 1";
-			Cursor c = db.read(query);
-			while(c.moveToNext()) {
-				FormObj form = new FormObj();
-				form.ID = c.getString(0);
-				formList.add(form);
-			}
-			c.close();
-			task.formList = formList;
+			task.entryList = loadEntries(db, task.ID);
+			task.photoList = loadPhotos(db, task.ID);
 			taskList.add(task);
 		}
 		cursor.close();
@@ -678,56 +700,56 @@ public class Data {
 		return incidentReportList;
 	}
 
-	public static ArrayList<ImageObj> loadTimeInPhotoUpload(SQLiteAdapter db) {
-		ArrayList<ImageObj> imageList = new ArrayList<>();
+	public static ArrayList<PhotoObj> loadTimeInPhotoUpload(SQLiteAdapter db) {
+		ArrayList<PhotoObj> photoList = new ArrayList<>();
 		String table = Tables.getName(TB.TIME_IN);
 		String query = "SELECT ID, syncBatchID, photo FROM " + table + " WHERE isPhotoUpload = 0 " +
 				"AND photo NOT NULL";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			ImageObj image = new ImageObj();
-			image.ID = cursor.getString(0);
-			image.syncBatchID = cursor.getString(1);
-			image.fileName = cursor.getString(2);
-			imageList.add(image);
+			PhotoObj photo = new PhotoObj();
+			photo.ID = cursor.getString(0);
+			photo.syncBatchID = cursor.getString(1);
+			photo.fileName = cursor.getString(2);
+			photoList.add(photo);
 		}
 		cursor.close();
-		return imageList;
+		return photoList;
 	}
 
-	public static ArrayList<ImageObj> loadTimeOutPhotoUpload(SQLiteAdapter db) {
-		ArrayList<ImageObj> imageList = new ArrayList<>();
+	public static ArrayList<PhotoObj> loadTimeOutPhotoUpload(SQLiteAdapter db) {
+		ArrayList<PhotoObj> photoList = new ArrayList<>();
 		String table = Tables.getName(TB.TIME_OUT);
 		String query = "SELECT ID, syncBatchID, photo FROM " + table + " WHERE isPhotoUpload = 0 " +
 				"AND photo NOT NULL";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			ImageObj image = new ImageObj();
-			image.ID = cursor.getString(0);
-			image.syncBatchID = cursor.getString(1);
-			image.fileName = cursor.getString(2);
-			imageList.add(image);
+			PhotoObj photo = new PhotoObj();
+			photo.ID = cursor.getString(0);
+			photo.syncBatchID = cursor.getString(1);
+			photo.fileName = cursor.getString(2);
+			photoList.add(photo);
 		}
 		cursor.close();
-		return imageList;
+		return photoList;
 	}
 
-	public static ArrayList<ImageObj> loadSignatureUpload(SQLiteAdapter db) {
-		ArrayList<ImageObj> imageList = new ArrayList<>();
+	public static ArrayList<PhotoObj> loadSignatureUpload(SQLiteAdapter db) {
+		ArrayList<PhotoObj> photoList = new ArrayList<>();
 		String i = Tables.getName(TB.TIME_IN);
 		String o = Tables.getName(TB.TIME_OUT);
 		String query = "SELECT i.ID, i.syncBatchID, o.signature FROM " + i + " i, " + o + " o " +
 				"WHERE o.isSignatureUpload = 0 AND o.timeInID = i.ID AND o.signature NOT NULL";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
-			ImageObj image = new ImageObj();
-			image.ID = cursor.getString(0);
-			image.syncBatchID = cursor.getString(1);
-			image.fileName = cursor.getString(2);
-			imageList.add(image);
+			PhotoObj photo = new PhotoObj();
+			photo.ID = cursor.getString(0);
+			photo.syncBatchID = cursor.getString(1);
+			photo.fileName = cursor.getString(2);
+			photoList.add(photo);
 		}
 		cursor.close();
-		return imageList;
+		return photoList;
 	}
 
 	public static ArrayList<PhotoObj> loadPhotosUpload(SQLiteAdapter db) {

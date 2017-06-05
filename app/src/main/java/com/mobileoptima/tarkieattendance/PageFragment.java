@@ -55,6 +55,7 @@ import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
 import com.mobileoptima.model.ImageObj;
 import com.mobileoptima.model.PageObj;
+import com.mobileoptima.model.PhotoObj;
 
 import java.util.ArrayList;
 
@@ -665,18 +666,18 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 				}
 				if(answer.value != null) {
 					String array[] = answer.value.split(",");
-					ArrayList<ImageObj> imageList = new ArrayList<>();
+					ArrayList<PhotoObj> photoList = new ArrayList<>();
 					for(String photoID : array) {
-						ImageObj image = new ImageObj();
+						PhotoObj photo = new PhotoObj();
 						String fileName = TarkieLib.getFileName(db, photoID);
 						if(fileName != null && !fileName.isEmpty()) {
-							image.ID = photoID;
-							image.fileName = fileName;
-							imageList.add(image);
+							photo.ID = photoID;
+							photo.fileName = fileName;
+							photoList.add(photo);
 						}
 					}
-					updatePhotoGrid(llGridPhoto, imageList);
-					answer.imageList = imageList;
+					updatePhotoGrid(llGridPhoto, photoList);
+					answer.photoList = photoList;
 				}
 				if(isEditable) {
 					flAddPhoto.setVisibility(View.VISIBLE);
@@ -693,12 +694,12 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 						camera.setOnFragmentCallback(PageFragment.this);
 						camera.setOnCameraDoneCallback(new OnCameraDoneCallback() {
 							@Override
-							public void onCameraDone(ArrayList<ImageObj> imageList) {
-								if(answer.imageList != null) {
-									imageList.addAll(0, answer.imageList);
+							public void onCameraDone(ArrayList<PhotoObj> photoList) {
+								if(answer.photoList != null) {
+									photoList.addAll(0, answer.photoList);
 								}
-								updatePhotoGrid(llGridPhoto, imageList);
-								answer.imageList = imageList;
+								updatePhotoGrid(llGridPhoto, photoList);
+								answer.photoList = photoList;
 								withChanges = true;
 							}
 						});
@@ -720,13 +721,13 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 		this.page = page;
 	}
 
-	public void updatePhotoGrid(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
+	public void updatePhotoGrid(final LinearLayout llGridPhoto, final ArrayList<PhotoObj> photoList) {
 		View view = getView();
 		if(view != null) {
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			ViewGroup container = (ViewGroup) view.getParent();
 			llGridPhoto.removeAllViews();
-			for(final ImageObj obj : imageList) {
+			for(final PhotoObj obj : photoList) {
 				String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
 						.getPath() + "/" + obj.fileName;
 				View child = inflater.inflate(R.layout.photo_item, container, false);
@@ -736,8 +737,8 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 				btnPhoto.setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						int position = imageList.indexOf(obj);
-						onPhotoGridItemClick(llGridPhoto, imageList, position);
+						int position = photoList.indexOf(obj);
+						onPhotoGridItemClick(llGridPhoto, photoList, position);
 					}
 				});
 				llGridPhoto.addView(child);
@@ -755,19 +756,19 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 		}
 	}
 
-	public void onPhotoGridItemClick(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList, int position) {
+	public void onPhotoGridItemClick(final LinearLayout llGridPhoto, final ArrayList<PhotoObj> photoList, int position) {
 		FormFragment form = (FormFragment) manager.findFragmentByTag(Tag.FORM);
 		boolean isEditable = entry == null || !entry.isSubmit;
 		ImagePreviewFragment preview = new ImagePreviewFragment();
 		preview.setDeletable(isEditable);
-		preview.setImageList(imageList, position);
+		preview.setPhotoList(photoList, position);
 		preview.setOnDeletePhotoCallback(new OnDeletePhotoCallback() {
 			@Override
 			public void onDeletePhoto(int position) {
-				imageList.remove(position);
+				photoList.remove(position);
 				llGridPhoto.removeViewAt(position);
-				if(imageList.size() > 0) {
-					invalidateViews(llGridPhoto, imageList);
+				if(photoList.size() > 0) {
+					invalidateViews(llGridPhoto, photoList);
 				}
 			}
 		});
@@ -781,7 +782,7 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 		transaction.commit();
 	}
 
-	public void invalidateViews(final LinearLayout llGridPhoto, final ArrayList<ImageObj> imageList) {
+	public void invalidateViews(final LinearLayout llGridPhoto, final ArrayList<PhotoObj> photoList) {
 		int count = llGridPhoto.getChildCount();
 		for(int i = 0; i < count; i++) {
 			final int position = i;
@@ -790,7 +791,7 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 			btnPhoto.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					onPhotoGridItemClick(llGridPhoto, imageList, position);
+					onPhotoGridItemClick(llGridPhoto, photoList, position);
 				}
 			});
 		}
@@ -844,10 +845,10 @@ public class PageFragment extends Fragment implements OnFragmentCallback {
 						}
 						break;
 					case FieldType.PHOTO:
-						if(answer.imageList != null && !answer.imageList.isEmpty()) {
+						if(answer.photoList != null && !answer.photoList.isEmpty()) {
 							answer.value = "";
-							for(ImageObj image : answer.imageList) {
-								answer.value += image.ID + ",";
+							for(PhotoObj photo : answer.photoList) {
+								answer.value += photo.ID + ",";
 							}
 							int length = answer.value.length();
 							if(length != 0) {

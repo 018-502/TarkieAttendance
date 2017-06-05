@@ -771,6 +771,78 @@ public class Tx {
 		return result;
 	}
 
+	public static boolean syncTask(SQLiteAdapter db, TaskObj task, OnErrorCallback errorCallback) {
+		boolean result = false;
+		final int INDENT = 4;
+		final int TIMEOUT = 5000;
+		String action = "add-itinerary-visit";
+		String url = App.WEB_API + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			StoreObj store = task.store;
+			EmployeeObj emp = task.emp;
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("itinerary_id", task.webTaskID);
+			paramsObj.put("store_id", store.webStoreID);
+			paramsObj.put("employee_id", emp.ID);
+			paramsObj.put("start_date", task.startDate);
+			paramsObj.put("end_date", task.endDate);
+			paramsObj.put("notes", task.notes);
+			JSONArray entryArray = new JSONArray();
+			JSONArray formArray = new JSONArray();
+			for(EntryObj entry : task.entryList) {
+				FormObj form = entry.form;
+				formArray.put(form.ID);
+				entryArray.put(entry.webEntryID);
+			}
+			JSONArray photoArray = new JSONArray();
+			for(PhotoObj photo: task.photoList) {
+				photoArray.put(photo.ID);
+			}
+			paramsObj.put("forms", formArray);
+			paramsObj.put("entries", entryArray);
+			paramsObj.put("photos", photoArray);
+			params = paramsObj.toString(INDENT);
+			response = CodePanUtils.doHttpPost(url, paramsObj, TIMEOUT);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					if(status.equals("ok")) {
+						result = TarkieLib.updateStatusSync(db, TB.TASK, task.ID);
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
 	public static boolean updateTask(SQLiteAdapter db, TaskObj task, OnErrorCallback errorCallback) {
 		boolean result = false;
 		final int INDENT = 4;
@@ -791,11 +863,20 @@ public class Tx {
 			paramsObj.put("start_date", task.startDate);
 			paramsObj.put("end_date", task.endDate);
 			paramsObj.put("notes", task.notes);
+			JSONArray entryArray = new JSONArray();
 			JSONArray formArray = new JSONArray();
-			for(FormObj form : task.formList) {
+			for(EntryObj entry : task.entryList) {
+				FormObj form = entry.form;
 				formArray.put(form.ID);
+				entryArray.put(entry.webEntryID);
+			}
+			JSONArray photoArray = new JSONArray();
+			for(PhotoObj photo: task.photoList) {
+				photoArray.put(photo.ID);
 			}
 			paramsObj.put("forms", formArray);
+			paramsObj.put("entries", entryArray);
+			paramsObj.put("photos", photoArray);
 			params = paramsObj.toString(INDENT);
 			response = CodePanUtils.doHttpPost(url, paramsObj, TIMEOUT);
 			CodePanUtils.logHttpRequest(params, response);

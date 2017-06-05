@@ -9,6 +9,6 @@ public class AnswerObj {
 	public boolean isCheck;
 	public boolean isActive;
 	public ArrayList<ChoiceObj> choiceList;
-	public ArrayList<ImageObj> imageList;
+	public ArrayList<PhotoObj> photoList;
 	public String syncBatchID;
 }

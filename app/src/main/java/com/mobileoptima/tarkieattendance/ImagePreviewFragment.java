@@ -17,7 +17,7 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.ImagePreviewAdapter;
 import com.mobileoptima.callback.Interface.OnDeletePhotoCallback;
 import com.mobileoptima.core.TarkieLib;
-import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 
 import java.util.ArrayList;
 
@@ -28,7 +28,7 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 	private OnFragmentCallback fragmentCallback;
 	private FrameLayout flDeleteImagePreview;
 	private FragmentTransaction transaction;
-	private ArrayList<ImageObj> imageList;
+	private ArrayList<PhotoObj> photoList;
 	private CodePanLabel tvImagePreview;
 	private ImagePreviewAdapter adapter;
 	private ViewPager vpImagePreview;
@@ -65,7 +65,7 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 		vpImagePreview = (ViewPager) view.findViewById(R.id.vpImagePreview);
 		btnDeleteImagePreview.setOnClickListener(this);
 		btnBackImagePreview.setOnClickListener(this);
-		adapter = new ImagePreviewAdapter(getActivity(), imageList);
+		adapter = new ImagePreviewAdapter(getActivity(), photoList);
 		vpImagePreview.setAdapter(adapter);
 		vpImagePreview.setCurrentItem(position);
 		vpImagePreview.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -76,7 +76,7 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 			@Override
 			public void onPageSelected(int position) {
 				ImagePreviewFragment.this.position = position;
-				ImageObj obj = imageList.get(position);
+				PhotoObj obj = photoList.get(position);
 				tvImagePreview.setText(obj.fileName);
 			}
 
@@ -84,7 +84,7 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 			public void onPageScrollStateChanged(int state) {
 			}
 		});
-		ImageObj obj = imageList.get(position);
+		PhotoObj obj = photoList.get(position);
 		tvImagePreview.setText(obj.fileName);
 		if(!isDeletable) {
 			flDeleteImagePreview.setVisibility(View.INVISIBLE);
@@ -106,18 +106,18 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 					@Override
 					public void onClick(View v) {
 						alert.getDialogActivity().getSupportFragmentManager().popBackStack();
-						ImageObj obj = imageList.get(position);
+						PhotoObj obj = photoList.get(position);
 						boolean result = TarkieLib.deletePhoto(getActivity(), db, obj);
 						if(result) {
 							if(deletePhotoCallback != null) {
 								deletePhotoCallback.onDeletePhoto(position);
 							}
 							position = position == 0 ? position : position - 1;
-							if(imageList.size() > 0) {
-								adapter = new ImagePreviewAdapter(getActivity(), imageList);
+							if(photoList.size() > 0) {
+								adapter = new ImagePreviewAdapter(getActivity(), photoList);
 								vpImagePreview.setAdapter(adapter);
 								vpImagePreview.setCurrentItem(position);
-								ImageObj current = imageList.get(position);
+								PhotoObj current = photoList.get(position);
 								tvImagePreview.setText(current.fileName);
 							}
 							else {
@@ -142,8 +142,8 @@ public class ImagePreviewFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	public void setImageList(ArrayList<ImageObj> imageList, int position) {
-		this.imageList = imageList;
+	public void setPhotoList(ArrayList<PhotoObj> photoList, int position) {
+		this.photoList = photoList;
 		this.position = position;
 	}
 

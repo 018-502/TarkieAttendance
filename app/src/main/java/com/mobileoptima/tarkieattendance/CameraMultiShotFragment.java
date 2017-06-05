@@ -1,7 +1,7 @@
 package com.mobileoptima.tarkieattendance;
 
 import android.animation.LayoutTransition;
-import android.graphics.Bitmap;
+import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +35,7 @@ import com.mobileoptima.callback.Interface.OnDeletePhotoCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.constant.App;
 import com.mobileoptima.core.TarkieLib;
-import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 
 import java.util.ArrayList;
 
@@ -60,7 +60,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	private FocusIndicatorView dvCameraMultiShot;
 	private FragmentTransaction transaction;
 	private FrameLayout flCameraMultiShot;
-	private ArrayList<ImageObj> imageList;
+	private ArrayList<PhotoObj> photoList;
 	private CameraSurfaceView surfaceView;
 	private LayoutTransition transition;
 	private FragmentManager manager;
@@ -92,7 +92,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		imageList = new ArrayList<>();
+		photoList = new ArrayList<>();
 		manager = getActivity().getSupportFragmentManager();
 		maxWidth = CodePanUtils.getMaxWidth(getActivity());
 		maxHeight = CodePanUtils.getMaxHeight(getActivity());
@@ -168,7 +168,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 					CodePanUtils.fadeOut(rlOptionsCameraMultiShot);
 				}
 				if(cameraDoneCallback != null) {
-					cameraDoneCallback.onCameraDone(imageList);
+					cameraDoneCallback.onCameraDone(photoList);
 				}
 				getActivity().getSupportFragmentManager().popBackStack();
 				break;
@@ -186,7 +186,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 				break;
 			case R.id.btnClearCameraMultiShot:
 				rlOptionsCameraMultiShot.performClick();
-				if(!imageList.isEmpty()) {
+				if(!photoList.isEmpty()) {
 					final AlertDialogFragment alert = new AlertDialogFragment();
 					alert.setOnFragmentCallback(this);
 					alert.setDialogTitle("Delete Photos");
@@ -195,7 +195,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 						@Override
 						public void onClick(View v) {
 							alert.getDialogActivity().getSupportFragmentManager().popBackStack();
-							clearPhotos(db, imageList);
+							clearPhotos(db, photoList);
 							if(overrideCallback != null) {
 								overrideCallback.onOverride(false);
 							}
@@ -239,12 +239,12 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	@Override
 	public void onCapture(String fileName) {
 		this.fileName = fileName;
-		ImageObj obj = new ImageObj();
+		PhotoObj obj = new PhotoObj();
 		obj.dDate = CodePanUtils.getDate();
 		obj.dTime = CodePanUtils.getTime();
 		obj.fileName = fileName;
 		obj.ID = TarkieLib.savePhoto(db, obj);
-		imageList.add(obj);
+		photoList.add(obj);
 		if(surfaceView != null && surfaceView.isCaptured()) {
 			surfaceView.reset();
 		}
@@ -258,15 +258,14 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	public void updatePhotoGrid(final int position) {
 		View view = getView();
 		if(view != null) {
+			String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
+					.getPath() + "/" + fileName;
 			ViewGroup container = (ViewGroup) view.getParent();
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			View child = inflater.inflate(R.layout.photo_grid_item, container, false);
 			CodePanButton btnPhotoGrid = (CodePanButton) child.findViewById(R.id.btnPhotoGrid);
 			ImageView ivPhotoGrid = (ImageView) child.findViewById(R.id.ivPhotoGrid);
-			int size = CodePanUtils.getWidth(child);
-			Bitmap bitmap = CodePanUtils.getBitmapThumbnails(getActivity(), App.FOLDER, fileName, size);
-			ivPhotoGrid.setImageBitmap(bitmap);
-			imageList.get(position).bitmap = bitmap;
+			CodePanUtils.displayImage(ivPhotoGrid, uri, R.color.gray_ter);
 			btnPhotoGrid.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -284,14 +283,14 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 			if(rlPhotoGridCameraMultiShot.getVisibility() == View.GONE) {
 				CodePanUtils.expandView(rlPhotoGridCameraMultiShot, true);
 			}
-			String taken = String.valueOf(imageList.size());
+			String taken = String.valueOf(photoList.size());
 			tvPhotosTakenCameraMultiShot.setText(taken);
 		}
 	}
 
 	@Override
 	public void onBackPressed() {
-		if(!imageList.isEmpty() && !inOtherFragment) {
+		if(!photoList.isEmpty() && !inOtherFragment) {
 			final AlertDialogFragment alert = new AlertDialogFragment();
 			alert.setOnFragmentCallback(this);
 			alert.setDialogTitle(R.string.save_photos_title);
@@ -302,7 +301,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 					alert.getDialogActivity().getSupportFragmentManager().popBackStack();
 					getActivity().getSupportFragmentManager().popBackStack();
 					if(cameraDoneCallback != null) {
-						cameraDoneCallback.onCameraDone(imageList);
+						cameraDoneCallback.onCameraDone(photoList);
 					}
 					if(overrideCallback != null) {
 						overrideCallback.onOverride(false);
@@ -312,8 +311,8 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 			alert.setNegativeButton("No", new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if(!imageList.isEmpty()) {
-						clearPhotos(db, imageList);
+					if(!photoList.isEmpty()) {
+						clearPhotos(db, photoList);
 					}
 					if(overrideCallback != null) {
 						overrideCallback.onOverride(false);
@@ -336,16 +335,16 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 
 	@Override
 	public void onDeletePhoto(int position) {
-		imageList.remove(position);
+		photoList.remove(position);
 		llPhotoGridCameraMultiShot.removeViewAt(position);
-		this.position = imageList.size();
-		if(imageList.size() == 0) {
+		this.position = photoList.size();
+		if(photoList.size() == 0) {
 			CodePanUtils.collapseView(rlPhotoGridCameraMultiShot, true);
 		}
 		else {
 			invalidateViews();
 		}
-		String taken = String.valueOf(imageList.size());
+		String taken = String.valueOf(photoList.size());
 		tvPhotosTakenCameraMultiShot.setText(taken);
 	}
 
@@ -364,7 +363,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 		}
 	}
 
-	public void clearPhotos(final SQLiteAdapter db, final ArrayList<ImageObj> deleteList) {
+	public void clearPhotos(final SQLiteAdapter db, final ArrayList<PhotoObj> deleteList) {
 		Thread bg = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -372,7 +371,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 				try {
 					boolean result = TarkieLib.deletePhotos(getActivity(), db, deleteList);
 					if(result) {
-						imageList.clear();
+						photoList.clear();
 						clearPhotosHandler.sendMessage(clearPhotosHandler.obtainMessage());
 					}
 				}
@@ -398,7 +397,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 
 	public void onPhotoGridItemClick(int position) {
 		ImagePreviewFragment imagePreview = new ImagePreviewFragment();
-		imagePreview.setImageList(imageList, position);
+		imagePreview.setPhotoList(photoList, position);
 		imagePreview.setOnDeletePhotoCallback(this);
 		imagePreview.setOnFragmentCallback(this);
 		transaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -416,7 +415,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 		if(!status) {
 			MainActivity main = (MainActivity) getActivity();
 			main.setOnBackPressedCallback(this);
-			if(!imageList.isEmpty()) {
+			if(!photoList.isEmpty()) {
 				if(overrideCallback != null) {
 					overrideCallback.onOverride(true);
 				}

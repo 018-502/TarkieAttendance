@@ -1,11 +1,10 @@
 package com.mobileoptima.model;
 
-import java.util.ArrayList;
-
 public class EntryObj extends TransactionObj {
 
 	public FormObj form;
 	public StoreObj store;
+	public String webEntryID;
 	public String referenceNo;
 	public String dateSubmitted;
 	public String timeSubmitted;

@@ -42,7 +42,7 @@ import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseTypeObj;
 import com.mobileoptima.model.FieldObj;
 import com.mobileoptima.model.FormObj;
-import com.mobileoptima.model.ImageObj;
+import com.mobileoptima.model.PhotoObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
@@ -810,7 +810,7 @@ public class TarkieLib {
 	}
 
 	public static boolean editTask(SQLiteAdapter db, StoreObj store, String taskID, String notes,
-								   ArrayList<EntryObj> entryList, ArrayList<ImageObj> imageList) {
+								   ArrayList<EntryObj> entryList, ArrayList<PhotoObj> photoList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String t = Tables.getName(TB.TASK);
 		String tf = Tables.getName(TB.TASK_FORM);
@@ -859,12 +859,12 @@ public class TarkieLib {
 				}
 			}
 		}
-		for(ImageObj image : imageList) {
+		for(PhotoObj photo : photoList) {
 			query.clearAll();
 			query.add(new Field("ID"));
-			query.add(new Condition("photoID", image.ID));
+			query.add(new Condition("photoID", photo.ID));
 			query.add(new Condition("taskID", taskID));
-			query.add(new FieldValue("photoID", image.ID));
+			query.add(new FieldValue("photoID", photo.ID));
 			query.add(new FieldValue("taskID", taskID));
 			query.add(new FieldValue("isTag", true));
 			String sql = query.select(tp);
@@ -1378,6 +1378,7 @@ public class TarkieLib {
 	public static int getCountSync(SQLiteAdapter db) {
 		int count = 0;
 		ArrayList<TB> tableList = new ArrayList<>();
+		tableList.add(TB.TASK);
 		tableList.add(TB.TIME_IN);
 		tableList.add(TB.TIME_OUT);
 		tableList.add(TB.BREAK_IN);
@@ -1603,16 +1604,16 @@ public class TarkieLib {
 		return db.getString(query);
 	}
 
-	public static String savePhoto(SQLiteAdapter db, ImageObj obj) {
+	public static String savePhoto(SQLiteAdapter db, PhotoObj photo) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		String syncBatchID = getSyncBatchID(db);
 		String empID = getEmployeeID(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("empID", empID));
-		query.add(new FieldValue("dDate", obj.dDate));
-		query.add(new FieldValue("dTime", obj.dTime));
-		query.add(new FieldValue("fileName", obj.fileName));
-		query.add(new FieldValue("isSignature", obj.isSignature));
+		query.add(new FieldValue("dDate", photo.dDate));
+		query.add(new FieldValue("dTime", photo.dTime));
+		query.add(new FieldValue("fileName", photo.fileName));
+		query.add(new FieldValue("isSignature", photo.isSignature));
 		query.add(new FieldValue("syncBatchID", syncBatchID));
 		String photoID = binder.insert(Tables.getName(PHOTO), query);
 		binder.finish();
@@ -1630,7 +1631,7 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean deletePhoto(Context context, SQLiteAdapter db, ImageObj obj) {
+	public static boolean deletePhoto(Context context, SQLiteAdapter db, PhotoObj obj) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		SQLiteQuery query = new SQLiteQuery();
 		query.add(new FieldValue("isDelete", true));
@@ -1640,10 +1641,10 @@ public class TarkieLib {
 		return binder.finish();
 	}
 
-	public static boolean deletePhotos(Context context, SQLiteAdapter db, ArrayList<ImageObj> deleteList) {
+	public static boolean deletePhotos(Context context, SQLiteAdapter db, ArrayList<PhotoObj> deleteList) {
 		SQLiteBinder binder = new SQLiteBinder(db);
 		SQLiteQuery query = new SQLiteQuery();
-		for(ImageObj obj : deleteList) {
+		for(PhotoObj obj : deleteList) {
 			query.clearAll();
 			query.add(new FieldValue("isDelete", true));
 			binder.update(Tables.getName(PHOTO), query, obj.ID);
@@ -1669,8 +1670,8 @@ public class TarkieLib {
 						}
 						break;
 					case FieldType.PHOTO:
-						if(answer.imageList != null) {
-							if(answer.imageList.isEmpty()) {
+						if(answer.photoList != null) {
+							if(answer.photoList.isEmpty()) {
 								return field;
 							}
 						}
