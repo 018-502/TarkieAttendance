@@ -25,6 +25,8 @@ import com.codepan.utils.CodePanUtils;
 import com.codepan.utils.SpannableMap;
 import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.adapter.ExpenseItemsAdapter;
+import com.mobileoptima.callback.Interface;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnUpdateExpenseCallback;
 import com.mobileoptima.constant.DateType;
 import com.mobileoptima.core.Data;
@@ -40,19 +42,20 @@ import static android.view.View.OnLongClickListener;
 
 public class ExpenseItemsFragment extends Fragment implements OnClickListener, OnPickDateCallback {
 
-	private CodePanLabel tvStartDateExpenseItems, tvEndDateExpenseItems;
 	private ArrayList<ExpenseItemsObj> expenseItemsList;
-	private RelativeLayout rlPlaceholderExpenseItems;
-	private FragmentTransaction transaction;
+	private CodePanLabel tvStartDateExpenseItems, tvEndDateExpenseItems;
 	private ExpenseItemsAdapter adapter;
-	private String startDate, endDate;
 	private FragmentManager manager;
+	private FragmentTransaction transaction;
 	private LayoutInflater inflater;
 	private ListView lvExpenseItems;
-	private ViewGroup container;
 	private MainActivity main;
-	private SQLiteAdapter db;
 	private NumberFormat nf;
+	private OnOverrideCallback overrideCallback;
+	private RelativeLayout rlPlaceholderExpenseItems;
+	private SQLiteAdapter db;
+	private String startDate, endDate;
+	private ViewGroup container;
 	private int dateType;
 
 	@Override
@@ -165,6 +168,10 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 		loadExpenseItems(db);
 	}
 
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
+	}
+
 	public void addExpenseItem(String dDate, String dTime, String expenseID) {
 		for(int i = 0; i < expenseItemsList.size(); i++) {
 			ExpenseItemsObj item = expenseItemsList.get(i);
@@ -258,6 +265,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 			public void onClick(View v) {
 				ExpenseItemsDetailsFragment expenseItemsDetails = new ExpenseItemsDetailsFragment();
 				expenseItemsDetails.setExpense(expense.ID);
+				expenseItemsDetails.setOnOverrideCallback(overrideCallback);
 				expenseItemsDetails.setOnUpdateExpenseCallback(new OnUpdateExpenseCallback() {
 					@Override
 					public void onUpdateExpense(ExpenseObj updatedExpense) {

@@ -297,6 +297,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
 					}
 					else {
 						ExpenseFragment expense = new ExpenseFragment();
+						expense.setOnOverrideCallback(this);
 						transaction.add(R.id.flContainerMain, expense, TabType.EXPENSE);
 					}
 					if(current != null) {

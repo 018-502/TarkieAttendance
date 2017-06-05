@@ -18,8 +18,10 @@ import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.codepan.widget.CodePanButton;
 import com.codepan.widget.CodePanLabel;
+import com.mobileoptima.callback.Interface;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
+import com.mobileoptima.callback.Interface.OnExpenseCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
@@ -29,6 +31,7 @@ import com.mobileoptima.constant.ImageType;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.CheckInObj;
 import com.mobileoptima.model.CheckOutObj;
+import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.TaskObj;
 import com.mobileoptima.model.TimeInObj;
@@ -42,6 +45,7 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 	private OnOverrideCallback overrideCallback;
 	private OnCheckOutCallback checkOutCallback;
 	private OnCheckInCallback checkInCallback;
+	private OnExpenseCallback expenseCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
@@ -104,6 +108,9 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 				break;
 			case ImageType.CHECK_OUT:
 				tvTitleCaptured.setText(R.string.check_out);
+				break;
+			case ImageType.EXPENSE:
+				tvTitleCaptured.setText(R.string.expense);
 				break;
 		}
 		return view;
@@ -174,6 +181,13 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 							checkOutCallback.onCheckOut(out);
 						}
 						break;
+					case ImageType.EXPENSE:
+						manager.popBackStack();
+						manager.popBackStack();
+						if(expenseCallback != null) {
+							expenseCallback.onExpense(photo);
+						}
+						break;
 				}
 				break;
 		}
@@ -229,6 +243,10 @@ public class CapturedFragment extends Fragment implements OnClickListener,
 
 	public void setOnCheckOutCallback(OnCheckOutCallback checkOutCallback) {
 		this.checkOutCallback = checkOutCallback;
+	}
+
+	public void setOnExpenseCallback(OnExpenseCallback expenseCallback) {
+		this.expenseCallback = expenseCallback;
 	}
 
 	@Override

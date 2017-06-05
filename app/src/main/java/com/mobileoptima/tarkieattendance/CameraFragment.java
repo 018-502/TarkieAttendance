@@ -22,6 +22,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.FocusIndicatorView;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
+import com.mobileoptima.callback.Interface.OnExpenseCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
@@ -43,6 +44,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private OnOverrideCallback overrideCallback;
 	private OnCheckOutCallback checkOutCallback;
 	private OnCheckInCallback checkInCallback;
+	private OnExpenseCallback expenseCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
@@ -56,6 +58,9 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private View vCamera;
 	private GpsObj gps;
 	private int type;
+
+	public CameraFragment() {
+	}
 
 	@Override
 	public void onResume() {
@@ -129,6 +134,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 		captured.setOnTimeOutCallback(timeOutCallback);
 		captured.setOnCheckInCallback(checkInCallback);
 		captured.setOnCheckOutCallback(checkOutCallback);
+		captured.setOnExpenseCallback(expenseCallback);
 		captured.setOnOverrideCallback(overrideCallback);
 		captured.setOnRetakeCameraCallback(this);
 		captured.setImage(fileName);
@@ -225,5 +231,9 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 
 	public void setOnCheckOutCallback(OnCheckOutCallback checkOutCallback) {
 		this.checkOutCallback = checkOutCallback;
+	}
+
+	public void setOnExpenseCallback(OnExpenseCallback expenseCallback) {
+		this.expenseCallback = expenseCallback;
 	}
 }

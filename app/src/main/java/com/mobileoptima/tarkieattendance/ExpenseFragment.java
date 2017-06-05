@@ -13,6 +13,8 @@ import com.codepan.cache.TypefaceCache;
 import com.codepan.calendar.adapter.ViewPagerAdapter;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.SlidingTabLayout;
+import com.mobileoptima.callback.Interface;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 
 import java.util.ArrayList;
 
@@ -21,6 +23,7 @@ public class ExpenseFragment extends Fragment {
 	private ArrayList<Fragment> fragmentList;
 	private ExpenseReportsFragment reports;
 	private ExpenseItemsFragment items;
+	private OnOverrideCallback overrideCallback;
 	private SlidingTabLayout stlExpense;
 	private ViewPagerAdapter adapter;
 	private ViewPager vpExpense;
@@ -49,7 +52,9 @@ public class ExpenseFragment extends Fragment {
 		stlExpense = (SlidingTabLayout) view.findViewById(R.id.stlExpense);
 		vpExpense = (ViewPager) view.findViewById(R.id.vpExpense);
 		items = new ExpenseItemsFragment();
+		items.setOnOverrideCallback(overrideCallback);
 		reports = new ExpenseReportsFragment();
+		reports.setOnOverrideCallback(overrideCallback);
 		fragmentList.add(items);
 		fragmentList.add(reports);
 		adapter = new ViewPagerAdapter(getChildFragmentManager(), fragmentList, tabItems);
@@ -67,6 +72,10 @@ public class ExpenseFragment extends Fragment {
 		stlExpense.setSelectedTypeface(bold);
 		stlExpense.setSelectedColor(gray);
 		return view;
+	}
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
 	}
 
 	public void addExpenseItem(String dDate, String dTime, String ID) {

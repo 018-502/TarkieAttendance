@@ -124,6 +124,10 @@ public class Interface {
 		void onCheckOut(CheckOutObj out);
 	}
 
+	public interface OnExpenseCallback {
+		void onExpense(String photo);
+	}
+
 	public interface OnSelectStatusCallback {
 		void onSelectStatus(TaskStatusObj status);
 	}
