@@ -113,7 +113,7 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 	public boolean isValidated() {
 		return !etNameAddStore.getText().toString().isEmpty();
 	}
-
+//
 	public void showAlert() {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setOnFragmentCallback(this);
