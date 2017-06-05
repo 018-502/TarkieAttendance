@@ -7,6 +7,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -272,6 +273,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 						int pos = expenseList.indexOf(expense);
 						View child = getChild(view, item, expenseList, expense);
 						((CodePanLabel) child.findViewById(R.id.tvExpenseTypeExpenseItems)).setText(updatedExpense.type.name);
+						((CodePanLabel) child.findViewById(R.id.tvAmountExpenseItems)).setText(nf.format(updatedExpense.amount));
 						item.childList.set(pos, child);
 						item.totalAmount = updateTotalAmount(item.childList);
 						adapter.notifyDataSetChanged();
@@ -349,6 +351,7 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 	}
 
 	public float updateTotalAmount(ArrayList<View> child) {
+		Log.e("paul", "haha");
 		float total = 0;
 		for(int c = 0; c < child.size(); c++) {
 			CodePanLabel tvAmountExpenseItems = (CodePanLabel) child.get(c).findViewById(R.id.tvAmountExpenseItems);

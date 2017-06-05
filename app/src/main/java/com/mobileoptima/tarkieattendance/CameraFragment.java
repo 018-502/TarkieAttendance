@@ -22,7 +22,7 @@ import com.codepan.widget.CodePanButton;
 import com.codepan.widget.FocusIndicatorView;
 import com.mobileoptima.callback.Interface.OnCheckInCallback;
 import com.mobileoptima.callback.Interface.OnCheckOutCallback;
-import com.mobileoptima.callback.Interface.OnExpenseCallback;
+import com.mobileoptima.callback.Interface.OnUsePhotoCallback;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnRetakeCameraCallback;
 import com.mobileoptima.callback.Interface.OnTimeInCallback;
@@ -44,7 +44,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 	private OnOverrideCallback overrideCallback;
 	private OnCheckOutCallback checkOutCallback;
 	private OnCheckInCallback checkInCallback;
-	private OnExpenseCallback expenseCallback;
+	private OnUsePhotoCallback expenseCallback;
 	private OnTimeOutCallback timeOutCallback;
 	private OnTimeInCallback timeInCallback;
 	private FragmentTransaction transaction;
@@ -233,7 +233,7 @@ public class CameraFragment extends Fragment implements OnClickListener, OnCaptu
 		this.checkOutCallback = checkOutCallback;
 	}
 
-	public void setOnExpenseCallback(OnExpenseCallback expenseCallback) {
+	public void setOnExpenseCallback(OnUsePhotoCallback expenseCallback) {
 		this.expenseCallback = expenseCallback;
 	}
 }

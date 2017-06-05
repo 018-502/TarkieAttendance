@@ -124,8 +124,8 @@ public class Interface {
 		void onCheckOut(CheckOutObj out);
 	}
 
-	public interface OnExpenseCallback {
-		void onExpense(String photo);
+	public interface OnUsePhotoCallback {
+		void onUsePhoto(String fileName);
 	}
 
 	public interface OnSelectStatusCallback {
