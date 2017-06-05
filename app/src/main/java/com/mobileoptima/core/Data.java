@@ -8,6 +8,7 @@ import com.codepan.database.Table;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.EntriesSearchType;
+import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
@@ -24,6 +25,9 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
+import com.mobileoptima.model.ExpenseDefaultObj;
+import com.mobileoptima.model.ExpenseFuelConsumptionObj;
+import com.mobileoptima.model.ExpenseFuelPurchaseObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseReportsObj;
@@ -907,12 +911,23 @@ public class Data {
 		String query = "SELECT ID, name, isRequired FROM " + table + " WHERE isActive = 1 AND " +
 				"categoryID IN (SELECT ID FROM " + etc + " WHERE isActive = 1)";
 		Cursor cursor = db.read(query);
+		ChoiceObj choice;
+		choice = new ChoiceObj();
+		choice.ID = "1";
+		choice.name = "Fuel Consumption";
+		choice.isCheck = true;
+		choiceList.add(0, choice);
+		choice = new ChoiceObj();
+		choice.ID = "2";
+		choice.name = "Fuel Purchase";
+		choice.isCheck = false;
+		choiceList.add(1, choice);
 		while(cursor.moveToNext()) {
-			ChoiceObj obj = new ChoiceObj();
-			obj.ID = cursor.getString(0);
-			obj.name = cursor.getString(1);
-			obj.isCheck = cursor.getInt(2) == 1;
-			choiceList.add(obj);
+			choice = new ChoiceObj();
+			choice.ID = cursor.getString(0);
+			choice.name = cursor.getString(1);
+			choice.isCheck = cursor.getInt(2) == 1;
+			choiceList.add(choice);
 		}
 		cursor.close();
 		return choiceList;

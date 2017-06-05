@@ -274,16 +274,6 @@ public class Tables {
 				query.add(new Field("isWebUpdate", 0));
 				query.add(new Field("isWebDelete", 0));
 				break;
-			case EXPENSE_DEFAULT:
-				query.clearAll();
-				query.add(new Field("ID", true));
-				query.add(new Field("expenseID", DataType.INTEGER));
-				query.add(new Field("photo", DataType.TEXT));
-				query.add(new Field("withOR", 0));
-				query.add(new Field("isPhotoThumbnail", 0));
-				query.add(new Field("isPhotoUpload", 0));
-				query.add(new Field("isPhotoDelete", 0));
-				break;
 			case EXPENSE_FUEL_CONSUMPTION:
 				query.clearAll();
 				query.add(new Field("ID", true));
@@ -313,6 +303,16 @@ public class Tables {
 				query.add(new Field("isStartPhotoThumbnail", 0));
 				query.add(new Field("isStartPhotoUpload", 0));
 				query.add(new Field("isStartPhotoDelete", 0));
+				query.add(new Field("isPhotoThumbnail", 0));
+				query.add(new Field("isPhotoUpload", 0));
+				query.add(new Field("isPhotoDelete", 0));
+				break;
+			case EXPENSE_DEFAULT:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("expenseID", DataType.INTEGER));
+				query.add(new Field("photo", DataType.TEXT));
+				query.add(new Field("withOR", 0));
 				query.add(new Field("isPhotoThumbnail", 0));
 				query.add(new Field("isPhotoUpload", 0));
 				query.add(new Field("isPhotoDelete", 0));

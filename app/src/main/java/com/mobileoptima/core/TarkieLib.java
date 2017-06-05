@@ -991,6 +991,7 @@ public class TarkieLib {
 			ExpenseFuelConsumptionObj fc = (ExpenseFuelConsumptionObj) expense;
 			table = Tables.getName(EXPENSE_FUEL_CONSUMPTION);
 			query = new SQLiteQuery();
+			query.add(new FieldValue("expenseID", fc.ID));
 			query.add(new FieldValue("start", fc.start));
 			query.add(new FieldValue("end", fc.end));
 			query.add(new FieldValue("rate", fc.rate));
@@ -1011,6 +1012,7 @@ public class TarkieLib {
 			ExpenseFuelPurchaseObj fp = (ExpenseFuelPurchaseObj) expense;
 			table = Tables.getName(EXPENSE_FUEL_PURCHASE);
 			query = new SQLiteQuery();
+			query.add(new FieldValue("expenseID", fp.ID));
 			query.add(new FieldValue("start", fp.start));
 			query.add(new FieldValue("liters", fp.liters));
 			query.add(new FieldValue("price", fp.price));
@@ -1028,10 +1030,11 @@ public class TarkieLib {
 				binder.insert(table, query);
 			}
 		}
-		else if(expense instanceof ExpenseDefaultObj) {
+		else {
 			ExpenseDefaultObj d = (ExpenseDefaultObj) expense;
 			table = Tables.getName(EXPENSE_DEFAULT);
 			query = new SQLiteQuery();
+			query.add(new FieldValue("expenseID", d.ID));
 			query.add(new FieldValue("photo", d.photo));
 			query.add(new FieldValue("withOR", d.withOR));
 			query.add(new FieldValue("isPhotoUpload", false));
@@ -1066,7 +1069,7 @@ public class TarkieLib {
 					while(c.moveToNext()) {
 						fc.start = c.getString(0);
 						fc.end = c.getString(1);
-						fc.rate = c.getString(2);
+						fc.rate = c.getFloat(2);
 						fc.startPhoto = c.getString(3);
 						fc.endPhoto = c.getString(4);
 					}

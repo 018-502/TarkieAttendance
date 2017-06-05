@@ -120,18 +120,6 @@
                         android:textSize="@dimen/seventeen"
                         codePan:typeface="@string/proxima_nova_semi_bold"/>
 
-                    <!--<com.codepan.widget.CodePanButton-->
-                    <!--android:id="@+id/btnItemExpenseItemsDetails"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@drawable/state_rect_trans_rad_three"-->
-                    <!--android:gravity="start"-->
-                    <!--android:hint="@string/search"-->
-                    <!--android:padding="@dimen/ten"-->
-                    <!--android:textColor="@color/gray_pri"-->
-                    <!--android:textSize="@dimen/seventeen"-->
-                    <!--codePan:typeface="@string/proxima_nova_light"/>-->
-
                     <ImageView
                         android:layout_width="@dimen/twenty"
                         android:layout_height="@dimen/twenty_one"
@@ -151,18 +139,20 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rlItemExpenseItemsDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:id="@+id/rlItemExpenseItemsDetails"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_margin="@dimen/ten"
+                    android:layout_marginLeft="@dimen/ten"
+                    android:layout_marginStart="@dimen/ten"
+                    android:layout_marginTop="@dimen/ten"
                     android:layout_toLeftOf="@+id/flPhotoExpenseItemsDetails"
-                    android:layout_toStartOf="@id/flPhotoExpenseItemsDetails">
+                    android:layout_toStartOf="@+id/flPhotoExpenseItemsDetails">
 
                     <com.codepan.widget.CodePanLabel
                         android:id="@+id/tvItemExpenseItemsDetails"
@@ -192,7 +182,7 @@
                             android:padding="@dimen/ten"
                             android:textColor="@color/gray_pri"
                             android:textSize="@dimen/seventeen"
-                            codePan:typeface="@string/proxima_nova_light"/>
+                            codePan:typeface="@string/proxima_nova_semi_bold"/>
 
                         <ImageView
                             android:layout_width="@dimen/seventeen"
@@ -204,13 +194,12 @@
                     </FrameLayout>
 
                     <com.codepan.widget.CodePanLabel
-                        android:id="@+id/tvDatetExpenseItemsDetails"
+                        android:id="@+id/tvDateExpenseItemsDetails"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
                         android:layout_below="@+id/flItemExpenseItemsDetails"
-                        android:layout_marginBottom="@dimen/ten"
                         android:text="Oct 20, 2016"
                         android:textColor="@color/gray_pri"
                         android:textSize="@dimen/fourteen"
@@ -223,7 +212,6 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_below="@+id/flItemExpenseItemsDetails"
-                        android:layout_marginBottom="@dimen/ten"
                         android:text="8:12 AM"
                         android:textColor="@color/gray_pri"
                         android:textSize="@dimen/fourteen"
@@ -243,6 +231,7 @@
                         android:id="@+id/ivPhotoExpenseItemsDetails"
                         android:layout_width="@dimen/one_hundred"
                         android:layout_height="@dimen/one_hundred"
+                        android:scaleType="centerCrop"
                         android:src="@drawable/ic_camera"/>
 
                     <com.codepan.widget.CodePanButton
@@ -251,6 +240,49 @@
                         android:layout_height="@dimen/one_hundred"
                         android:background="@drawable/state_rect_trans_dark"/>
 
+                    <LinearLayout
+                        android:id="@+id/llRateExpenseItemsDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <com.codepan.widget.CodePanLabel
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/ten"
+                            android:text="Mileage Rate"
+                            android:textColor="@color/gray_pri"
+                            android:textSize="@dimen/seventeen"
+                            codePan:typeface="@string/proxima_nova_light"/>
+
+                        <com.codepan.widget.CodePanTextField
+                            android:id="@+id/etRateExpenseItemsDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/five"
+                            android:background="@drawable/state_rect_gray_sen_rad_three"
+                            android:gravity="end"
+                            android:hint="0.00"
+                            android:imeOptions="actionNext"
+                            android:inputType="numberDecimal"
+                            android:maxLines="1"
+                            android:padding="@dimen/ten"
+                            android:textColor="@color/gray_pri"
+                            android:textColorHint="@color/gray_pri"
+                            android:textSize="@dimen/seventeen"
+                            codePan:autoHideKeyboard="true"
+                            codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                        <com.codepan.widget.CodePanLabel
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="P/Km"
+                            android:textColor="@color/gray_pri"
+                            android:textSize="@dimen/fourteen"
+                            codePan:typeface="@string/proxima_nova_light"/>
+                    </LinearLayout>
                 </FrameLayout>
 
                 <View
@@ -258,6 +290,7 @@
                     android:layout_height="@dimen/one"
                     android:layout_below="@+id/flPhotoExpenseItemsDetails"
                     android:background="@color/divider"/>
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -303,23 +336,262 @@
                     android:layout_toRightOf="@id/tvCurrencyExpenseItemsDetails"
                     android:background="@drawable/state_rect_gray_sen_rad_three"
                     android:gravity="end"
+                    android:hint="0.00"
+                    android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
-                    android:paddingBottom="@dimen/ten"
-                    android:paddingEnd="@dimen/eight"
-                    android:paddingLeft="@dimen/eight"
-                    android:paddingRight="@dimen/eight"
-                    android:paddingStart="@dimen/eight"
-                    android:paddingTop="@dimen/ten"
-                    android:text="0.00"
+                    android:maxLines="1"
+                    android:padding="@dimen/ten"
                     android:textColor="@color/gray_pri"
                     android:textColorHint="@color/gray_pri"
                     android:textSize="@dimen/seventeen"
+                    codePan:autoHideKeyboard="true"
                     codePan:typeface="@string/proxima_nova_semi_bold"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/one"
                     android:layout_below="@+id/etAmountExpenseItemsDetails"
+                    android:background="@color/divider"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/llStartEndExpenseItemsDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/rlStartExpenseItemsDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvStartExpenseItemsDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="@dimen/ten"
+                        android:layout_marginStart="@dimen/ten"
+                        android:layout_marginTop="@dimen/ten"
+                        android:layout_toLeftOf="@+id/flStartExpenseItemsDetails"
+                        android:layout_toStartOf="@+id/flStartExpenseItemsDetails"
+                        android:text="Start"
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/seventeen"
+                        codePan:typeface="@string/proxima_nova_light"/>
+
+                    <com.codepan.widget.CodePanTextField
+                        android:id="@+id/etStartExpenseItemsDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvStartExpenseItemsDetails"
+                        android:layout_marginLeft="@dimen/ten"
+                        android:layout_marginStart="@dimen/ten"
+                        android:layout_marginTop="@dimen/ten"
+                        android:layout_toLeftOf="@+id/flStartExpenseItemsDetails"
+                        android:layout_toStartOf="@+id/flStartExpenseItemsDetails"
+                        android:background="@drawable/state_rect_gray_sen_rad_three"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1"
+                        android:padding="@dimen/ten"
+                        android:textColor="@color/gray_pri"
+                        android:textColorHint="@color/gray_qua"
+                        android:textSize="@dimen/seventeen"
+                        codePan:autoHideKeyboard="true"
+                        codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                    <FrameLayout
+                        android:id="@+id/flStartExpenseItemsDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="@dimen/ten">
+
+                        <ImageView
+                            android:id="@+id/ivStartExpenseItemsDetails"
+                            android:layout_width="@dimen/one_hundred"
+                            android:layout_height="@dimen/one_hundred"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_camera"/>
+
+                        <com.codepan.widget.CodePanButton
+                            android:id="@+id/btnStartExpenseItemsDetails"
+                            android:layout_width="@dimen/one_hundred"
+                            android:layout_height="@dimen/one_hundred"
+                            android:background="@drawable/state_rect_trans_dark"/>
+
+                    </FrameLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/rlEndExpenseItemsDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.codepan.widget.CodePanLabel
+                        android:id="@+id/tvEndExpenseItemsDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginLeft="@dimen/ten"
+                        android:layout_marginStart="@dimen/ten"
+                        android:layout_marginTop="@dimen/ten"
+                        android:layout_toLeftOf="@+id/flEndExpenseItemsDetails"
+                        android:layout_toStartOf="@+id/flEndExpenseItemsDetails"
+                        android:text="End"
+                        android:textColor="@color/gray_pri"
+                        android:textSize="@dimen/seventeen"
+                        codePan:typeface="@string/proxima_nova_light"/>
+
+                    <com.codepan.widget.CodePanTextField
+                        android:id="@+id/etEndExpenseItemsDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvEndExpenseItemsDetails"
+                        android:layout_marginLeft="@dimen/ten"
+                        android:layout_marginStart="@dimen/ten"
+                        android:layout_marginTop="@dimen/ten"
+                        android:layout_toLeftOf="@+id/flEndExpenseItemsDetails"
+                        android:layout_toStartOf="@+id/flEndExpenseItemsDetails"
+                        android:background="@drawable/state_rect_gray_sen_rad_three"
+                        android:imeOptions="actionNext"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1"
+                        android:padding="@dimen/ten"
+                        android:textColor="@color/gray_pri"
+                        android:textColorHint="@color/gray_qua"
+                        android:textSize="@dimen/seventeen"
+                        codePan:autoHideKeyboard="true"
+                        codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                    <FrameLayout
+                        android:id="@+id/flEndExpenseItemsDetails"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_margin="@dimen/ten">
+
+                        <ImageView
+                            android:id="@+id/ivEndExpenseItemsDetails"
+                            android:layout_width="@dimen/one_hundred"
+                            android:layout_height="@dimen/one_hundred"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/ic_camera"/>
+
+                        <com.codepan.widget.CodePanButton
+                            android:id="@+id/btnEndExpenseItemsDetails"
+                            android:layout_width="@dimen/one_hundred"
+                            android:layout_height="@dimen/one_hundred"
+                            android:background="@drawable/state_rect_trans_dark"/>
+
+                    </FrameLayout>
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/one"
+                    android:background="@color/divider"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlOriginExpenseItemsDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.codepan.widget.CodePanLabel
+                    android:id="@+id/tvOriginExpenseItemsDetails"
+                    android:layout_width="@dimen/one_hundred_ten"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/ten"
+                    android:layout_marginStart="@dimen/ten"
+                    android:text="Origin"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+                <com.codepan.widget.CodePanTextField
+                    android:id="@+id/etOriginExpenseItemsDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/ten"
+                    android:layout_toEndOf="@+id/tvOriginExpenseItemsDetails"
+                    android:layout_toRightOf="@id/tvOriginExpenseItemsDetails"
+                    android:background="@drawable/state_rect_gray_sen_rad_three"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:padding="@dimen/ten"
+                    android:textColor="@color/gray_pri"
+                    android:textColorHint="@color/gray_qua"
+                    android:textSize="@dimen/seventeen"
+                    codePan:autoHideKeyboard="true"
+                    codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/one"
+                    android:layout_below="@+id/etOriginExpenseItemsDetails"
+                    android:background="@color/divider"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rlDestinationExpenseItemsDetails"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.codepan.widget.CodePanLabel
+                    android:id="@+id/tvDestinationExpenseItemsDetails"
+                    android:layout_width="@dimen/one_hundred_ten"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/ten"
+                    android:layout_marginStart="@dimen/ten"
+                    android:text="Destination"
+                    android:textColor="@color/gray_pri"
+                    android:textSize="@dimen/seventeen"
+                    codePan:typeface="@string/proxima_nova_light"/>
+
+                <com.codepan.widget.CodePanTextField
+                    android:id="@+id/etDestinationExpenseItemsDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/ten"
+                    android:layout_toEndOf="@+id/tvDestinationExpenseItemsDetails"
+                    android:layout_toRightOf="@id/tvDestinationExpenseItemsDetails"
+                    android:background="@drawable/state_rect_gray_sen_rad_three"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:padding="@dimen/ten"
+                    android:textColor="@color/gray_pri"
+                    android:textColorHint="@color/gray_qua"
+                    android:textSize="@dimen/seventeen"
+                    codePan:autoHideKeyboard="true"
+                    codePan:typeface="@string/proxima_nova_semi_bold"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/one"
+                    android:layout_below="@+id/etDestinationExpenseItemsDetails"
                     android:background="@color/divider"/>
 
             </RelativeLayout>
@@ -363,100 +635,6 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/rlOriginExpenseItemsDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvOriginExpenseItemsDetails"
-                    android:layout_width="@dimen/one_hundred_ten"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/ten"
-                    android:layout_marginStart="@dimen/ten"
-                    android:text="Origin"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/seventeen"
-                    codePan:typeface="@string/proxima_nova_light"/>
-
-                <com.codepan.widget.CodePanTextField
-                    android:id="@+id/etOriginExpenseItemsDetails"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/ten"
-                    android:layout_toEndOf="@+id/tvOriginExpenseItemsDetails"
-                    android:layout_toRightOf="@id/tvOriginExpenseItemsDetails"
-                    android:background="@drawable/state_rect_gray_sen_rad_three"
-                    android:hint=""
-                    android:paddingBottom="@dimen/ten"
-                    android:paddingEnd="@dimen/eight"
-                    android:paddingLeft="@dimen/eight"
-                    android:paddingRight="@dimen/eight"
-                    android:paddingStart="@dimen/eight"
-                    android:paddingTop="@dimen/ten"
-                    android:textColor="@color/gray_pri"
-                    android:textColorHint="@color/gray_qua"
-                    android:textSize="@dimen/seventeen"
-                    codePan:typeface="@string/proxima_nova_semi_bold"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/one"
-                    android:layout_below="@+id/etOriginExpenseItemsDetails"
-                    android:background="@color/divider"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/rlDestinationExpenseItemsDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.codepan.widget.CodePanLabel
-                    android:id="@+id/tvDestinationExpenseItemsDetails"
-                    android:layout_width="@dimen/one_hundred_ten"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/ten"
-                    android:layout_marginStart="@dimen/ten"
-                    android:text="Destination"
-                    android:textColor="@color/gray_pri"
-                    android:textSize="@dimen/seventeen"
-                    codePan:typeface="@string/proxima_nova_light"/>
-
-                <com.codepan.widget.CodePanTextField
-                    android:id="@+id/etDestinationExpenseItemsDetails"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/ten"
-                    android:layout_toEndOf="@+id/tvDestinationExpenseItemsDetails"
-                    android:layout_toRightOf="@id/tvDestinationExpenseItemsDetails"
-                    android:background="@drawable/state_rect_gray_sen_rad_three"
-                    android:hint=""
-                    android:paddingBottom="@dimen/ten"
-                    android:paddingEnd="@dimen/eight"
-                    android:paddingLeft="@dimen/eight"
-                    android:paddingRight="@dimen/eight"
-                    android:paddingStart="@dimen/eight"
-                    android:paddingTop="@dimen/ten"
-                    android:textColor="@color/gray_pri"
-                    android:textColorHint="@color/gray_qua"
-                    android:textSize="@dimen/seventeen"
-                    codePan:typeface="@string/proxima_nova_semi_bold"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/one"
-                    android:layout_below="@+id/etDestinationExpenseItemsDetails"
-                    android:background="@color/divider"/>
-
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/rlNotesExpenseItemsDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -482,18 +660,15 @@
                     android:background="@drawable/state_rect_gray_sen_rad_three"
                     android:gravity="top"
                     android:hint="@string/notes_placeholder"
+                    android:imeOptions="actionDone"
                     android:inputType="textCapSentences|textMultiLine"
                     android:minHeight="@dimen/ninety"
-                    android:paddingBottom="@dimen/ten"
-                    android:paddingEnd="@dimen/eight"
-                    android:paddingLeft="@dimen/eight"
-                    android:paddingRight="@dimen/eight"
-                    android:paddingStart="@dimen/eight"
-                    android:paddingTop="@dimen/ten"
+                    android:padding="@dimen/ten"
                     android:textColor="@color/gray_pri"
                     android:textColorHint="@color/gray_qua"
                     android:textSize="@dimen/seventeen"
-                    codePan:typeface="@string/proxima_nova_light"/>
+                    codePan:autoHideKeyboard="true"
+                    codePan:typeface="@string/proxima_nova_semi_bold"/>
 
                 <View
                     android:layout_width="match_parent"

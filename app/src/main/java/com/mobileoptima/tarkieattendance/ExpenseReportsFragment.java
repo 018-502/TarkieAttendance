@@ -20,12 +20,15 @@ import android.widget.RelativeLayout;
 import com.codepan.database.SQLiteAdapter;
 import com.codepan.widget.CodePanTextField;
 import com.mobileoptima.adapter.ExpenseReportsAdapter;
+import com.mobileoptima.callback.Interface;
+import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.model.ExpenseReportsObj;
 
 import java.util.ArrayList;
 
 public class ExpenseReportsFragment extends Fragment implements OnClickListener {
+
 	private final long IDLE_TIME = 500;
 	private ArrayList<ExpenseReportsObj> expenseReportsList;
 	private CodePanTextField etSearchExpenseReports;
@@ -34,6 +37,7 @@ public class ExpenseReportsFragment extends Fragment implements OnClickListener 
 	private FragmentManager manager;
 	private FragmentTransaction transaction;
 	private ListView lvExpenseReports;
+	private OnOverrideCallback overrideCallback;
 	private RelativeLayout rlPlaceholderExpenseReports;
 	private SQLiteAdapter db;
 	private String search;
@@ -91,6 +95,10 @@ public class ExpenseReportsFragment extends Fragment implements OnClickListener 
 
 	@Override
 	public void onClick(View v) {
+	}
+
+	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
+		this.overrideCallback = overrideCallback;
 	}
 
 	private Runnable inputFinishChecker = new Runnable() {
