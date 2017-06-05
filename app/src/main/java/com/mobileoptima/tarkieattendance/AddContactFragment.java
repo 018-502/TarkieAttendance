@@ -106,7 +106,7 @@ public class AddContactFragment extends Fragment implements OnClickListener, OnP
 					TarkieLib.alertDialog(main, "Invalid Email", "Please enter a valid email.");
 					return;
 				}
-				showAlert(true);
+				addContact();
 				break;
 			case R.id.btnBirthdateAddContact:
 				showCalendar();
@@ -159,7 +159,7 @@ public class AddContactFragment extends Fragment implements OnClickListener, OnP
 		return true;
 	}
 
-	public void saveContact() {
+	public void addContact() {
 		String name = etNameAddContact.getText().toString();
 		ContactObj contact = new ContactObj();
 		contact.store = store;
@@ -193,34 +193,22 @@ public class AddContactFragment extends Fragment implements OnClickListener, OnP
 		withChanges = true;
 	}
 
-	public void showAlert(boolean isSave) {
+	public void showAlert() {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setOnFragmentCallback(this);
-		if(isSave) {
-			alert.setDialogTitle("Save Contact");
-			alert.setDialogMessage("Are you sure you want to add this contact?");
-			alert.setPositiveButton("Yes", new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					manager.popBackStack();
-					saveContact();
-				}
-			});
-		}
-		else {
-			alert.setDialogTitle("Discard Changes");
-			alert.setDialogMessage("All changes will be lost. Are you sure you want to cancel?");
-			alert.setPositiveButton("Yes", new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					manager.popBackStack();
-					manager.popBackStack();
-				}
-			});
-		}
-		alert.setNegativeButton("Cancel", new View.OnClickListener() {
+		alert.setDialogTitle(R.string.save_changes_title);
+		alert.setDialogMessage(R.string.save_changes_message);
+		alert.setPositiveButton("Yes", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				manager.popBackStack();
+				addContact();
+			}
+		});
+		alert.setNegativeButton("Discard", new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				manager.popBackStack();
 				manager.popBackStack();
 			}
 		});
@@ -238,7 +226,7 @@ public class AddContactFragment extends Fragment implements OnClickListener, OnP
 			manager.popBackStack();
 		}
 		else {
-			showAlert(false);
+			showAlert();
 		}
 	}
 
