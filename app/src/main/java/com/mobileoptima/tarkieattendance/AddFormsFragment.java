@@ -178,7 +178,7 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 					save();
 				}
 			});
-			alert.setNegativeButton("No", new OnClickListener() {
+			alert.setNegativeButton("Discard", new OnClickListener() {
 				@Override
 				public void onClick(View view) {
 					manager.popBackStack();
