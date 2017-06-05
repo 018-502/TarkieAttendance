@@ -6,8 +6,11 @@ public class SQLiteQuery {
 
 	private ArrayList<FieldValue> fieldValueList;
 	private ArrayList<Condition> conditionList;
-	private ArrayList<Field> fieldList;
 	private ArrayList<Table> tableList;
+	private ArrayList<Field> fieldList;
+	private ArrayList<Field> orderList;
+	private ArrayList<Field> groupList;
+	private boolean ascending = true;
 
 	public enum DataType {
 		INTEGER,
@@ -28,6 +31,14 @@ public class SQLiteQuery {
 
 	public void setConditionList(ArrayList<Condition> conditionList) {
 		this.conditionList = conditionList;
+	}
+
+	public void setOrderList(ArrayList<Field> orderList) {
+		this.orderList = orderList;
+	}
+
+	public void setGroupList(ArrayList<Field> groupList) {
+		this.groupList = groupList;
 	}
 
 	public void add(Table table) {
@@ -58,6 +69,20 @@ public class SQLiteQuery {
 		conditionList.add(condition);
 	}
 
+	public void order(Field field) {
+		if(orderList == null) {
+			orderList = new ArrayList<>();
+		}
+		orderList.add(field);
+	}
+
+	public void group(Field field) {
+		if(groupList == null) {
+			groupList = new ArrayList<>();
+		}
+		groupList.add(field);
+	}
+
 	public void removeTable(int index) {
 		if(tableList != null) {
 			tableList.remove(index);
@@ -79,6 +104,18 @@ public class SQLiteQuery {
 	public void removeCondition(int index) {
 		if(conditionList != null) {
 			conditionList.remove(index);
+		}
+	}
+
+	public void removeOrder(int index) {
+		if(orderList != null) {
+			orderList.remove(index);
+		}
+	}
+
+	public void removeGroup(int index) {
+		if(groupList != null) {
+			groupList.remove(index);
 		}
 	}
 
@@ -106,9 +143,23 @@ public class SQLiteQuery {
 		}
 	}
 
+	public void clearOrderList() {
+		if(orderList != null) {
+			orderList.clear();
+		}
+	}
+
+	public void clearGroupList() {
+		if(groupList != null) {
+			groupList.clear();
+		}
+	}
+
 	public void clearAll() {
 		clearTableList();
 		clearFieldList();
+		clearOrderList();
+		clearGroupList();
 		clearFieldValueList();
 		clearConditionList();
 	}
@@ -121,12 +172,24 @@ public class SQLiteQuery {
 		return fieldList != null && !fieldList.isEmpty();
 	}
 
-	public boolean hasFieldsValues() {
+	public boolean hasFieldValues() {
 		return fieldValueList != null && !fieldValueList.isEmpty();
 	}
 
 	public boolean hasConditions() {
 		return conditionList != null && !conditionList.isEmpty();
+	}
+
+	public boolean hasOrders() {
+		return orderList != null && !orderList.isEmpty();
+	}
+
+	public boolean hasGroups() {
+		return groupList != null && !groupList.isEmpty();
+	}
+
+	public void ascending(boolean ascending) {
+		this.ascending = ascending;
 	}
 
 	private String createFields() {
@@ -168,7 +231,7 @@ public class SQLiteQuery {
 		return tables;
 	}
 
-	public String getFields() {
+	private String getFields(ArrayList<Field> fieldList) {
 		String fields = "";
 		if(fieldList != null) {
 			for(Field obj : fieldList) {
@@ -181,9 +244,39 @@ public class SQLiteQuery {
 		return fields;
 	}
 
+	public String getFields() {
+		String fields = "";
+		if(hasFields()) {
+			for(Field obj : fieldList) {
+				fields += obj.field;
+				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
+					fields += ", ";
+				}
+			}
+		}
+		return fields;
+	}
+
+	private String getOrders() {
+		String orders = "";
+		if(hasOrders()) {
+			String direction = ascending ? "ASC" : "DESC";
+			orders = " ORDER BY " + getFields(orderList) + " " + direction;
+		}
+		return orders;
+	}
+
+	private String getGroups() {
+		String groups = "";
+		if(hasGroups()) {
+			groups = " GROUP BY " + getFields(groupList);
+		}
+		return groups;
+	}
+
 	public String getFieldsValues() {
 		String fieldsValues = "";
-		if(fieldValueList != null) {
+		if(hasFieldValues()) {
 			for(FieldValue obj : fieldValueList) {
 				if(obj.value != null) {
 					fieldsValues += obj.field + " = " + obj.value;
@@ -201,7 +294,7 @@ public class SQLiteQuery {
 
 	public String getConditions() {
 		String condition = "";
-		if(conditionList != null) {
+		if(hasConditions()) {
 			for(Condition obj : conditionList) {
 				switch(obj.operator) {
 					case EQUALS:
@@ -246,7 +339,7 @@ public class SQLiteQuery {
 	public String insert(String table) {
 		String fields = "";
 		String values = "";
-		if(fieldValueList != null) {
+		if(hasFieldValues()) {
 			for(FieldValue obj : fieldValueList) {
 				fields += obj.field;
 				values += obj.value;
@@ -288,15 +381,21 @@ public class SQLiteQuery {
 	}
 
 	public String select(String table) {
-		String condition = "";
-		if(conditionList != null && !conditionList.isEmpty()) {
-			condition = " WHERE " + getConditions();
+		String conditions = "";
+		if(hasConditions()) {
+			conditions = " WHERE " + getConditions();
 		}
-		return "SELECT " + getFields() + " FROM " + table + condition;
+		return "SELECT " + getFields() + " FROM " + table + conditions
+				+ getGroups() + getOrders();
 	}
 
 	public String select() {
-		return "SELECT " + getFields() + " FROM " + getTables() + " WHERE " + getConditions();
+		String conditions = "";
+		if(hasConditions()) {
+			conditions = " WHERE " + getConditions();
+		}
+		return "SELECT " + getFields() + " FROM " + getTables() + conditions
+				+ getGroups() + getOrders();
 	}
 
 	public String addColumn(String table, String column, String defText) {

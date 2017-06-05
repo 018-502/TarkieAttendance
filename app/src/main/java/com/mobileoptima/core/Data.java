@@ -1,5 +1,7 @@
 package com.mobileoptima.core;
 
+import android.util.Log;
+
 import com.codepan.database.Condition;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteAdapter;
@@ -426,6 +428,7 @@ public class Data {
 		Table f = new Table(Tables.getName(TB.FORMS), "f");
 		Table e = new Table(Tables.getName(TB.ENTRIES), "e");
 		Field formID = new Field("ID", f);
+		Field entryID = new Field("ID", e);
 		query.add(e);
 		query.add(f);
 		query.add(new Field("ID", e));
@@ -439,6 +442,8 @@ public class Data {
 		query.add(new Condition("isDelete", false, e));
 		query.add(new Condition("empID", empID, e));
 		query.add(new Condition("formID", formID, e));
+		query.order(entryID);
+		query.ascending(false);
 		if(obj != null) {
 			switch(type) {
 				case EntriesSearchType.DATE:
@@ -448,7 +453,6 @@ public class Data {
 					Table t = new Table(Tables.getName(TB.TASK), "t");
 					Table te = new Table(Tables.getName(TB.TASK_ENTRY), "te");
 					Field taskID = new Field("ID", t);
-					Field entryID = new Field("ID", e);
 					query.add(t);
 					query.add(te);
 					query.add(new Condition("storeID", obj.search, t));
@@ -473,6 +477,7 @@ public class Data {
 					break;
 			}
 		}
+		Log.e("BITCH", ""+query.select());
 		Cursor cursor = db.read(query.select());
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
