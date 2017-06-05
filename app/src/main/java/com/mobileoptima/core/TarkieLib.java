@@ -1069,7 +1069,7 @@ public class TarkieLib {
 					while(c.moveToNext()) {
 						fc.start = c.getString(0);
 						fc.end = c.getString(1);
-						fc.rate = c.getString(2);
+						fc.rate = c.getFloat(2);
 						fc.startPhoto = c.getString(3);
 						fc.endPhoto = c.getString(4);
 					}

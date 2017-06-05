@@ -147,7 +147,7 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 					fc = (ExpenseFuelConsumptionObj) expense;
 					fc.start = "";
 					fc.end = "";
-					fc.rate = "";
+					fc.rate = Float.parseFloat(etRateExpenseItemsDetails.getText().toString().replace(",", ""));;
 					fc.startPhoto = "";
 					fc.endPhoto = "";
 					result = TarkieLib.updateExpense(db, fc);
