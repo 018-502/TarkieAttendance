@@ -1,7 +1,5 @@
 package com.mobileoptima.core;
 
-import android.util.Log;
-
 import com.codepan.database.Condition;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteAdapter;
@@ -477,7 +475,6 @@ public class Data {
 					break;
 			}
 		}
-		Log.e("BITCH", ""+query.select());
 		Cursor cursor = db.read(query.select());
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
