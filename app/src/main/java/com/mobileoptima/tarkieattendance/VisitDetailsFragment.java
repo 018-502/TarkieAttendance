@@ -68,10 +68,10 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			btnAddFormVisitDetails;
 	private CodePanLabel tvStoreVisitDetails, tvAddressVisitDetails, tvTitleVisitDetails;
 	private LinearLayout llFormsVisitDetails, llGridPhotoVisitDetails;
+	private boolean hasPhotosAdded, hasEntriesSaved, withChanges;
 	private OnSaveVisitCallback saveVisitCallback;
 	private CodePanTextField etNotesVisitDetails;
 	private OnOverrideCallback overrideCallback;
-	private boolean hasPhotoAdded, withChanges;
 	private FrameLayout flStoreVisitDetails;
 	private FragmentTransaction transaction;
 	private FragmentManager manager;
@@ -223,12 +223,14 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 								if(visit.isCheckIn) {
 									FormFragment form = new FormFragment();
 									form.setEntry(entry);
+									form.setOverridden(true);
 									form.setOnOverrideCallback(overrideCallback);
 									form.setOnFragmentCallback(VisitDetailsFragment.this);
 									form.setOnSaveEntryCallback(new OnSaveEntryCallback() {
 										@Override
 										public void onSaveEntry(EntryObj entry) {
 											visit.entryList.set(index, entry);
+											hasEntriesSaved = true;
 											setWithChanges(true);
 										}
 									});
@@ -416,6 +418,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 				}
 				AddFormsFragment addForms = new AddFormsFragment();
 				addForms.setVisit(visit);
+				addForms.setOverridden(true);
 				addForms.setTaggedList(taggedList);
 				addForms.setOnTagFormsCallback(this);
 				addForms.setOnFragmentCallback(this);
@@ -649,8 +652,11 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 			switch(msg.what) {
 				case Result.SUCCESS:
 					VisitObj visit = (VisitObj) msg.obj;
-					if(hasPhotoAdded) {
+					if(hasPhotosAdded) {
 						main.reloadPhotos();
+					}
+					if(hasEntriesSaved) {
+						main.reloadEntries();
 					}
 					if(saveVisitCallback != null) {
 						saveVisitCallback.onSaveVisit(visit);
@@ -668,7 +674,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 
 	@Override
 	public void onCameraDone(ArrayList<PhotoObj> photoList) {
-		this.hasPhotoAdded = true;
+		this.hasPhotosAdded = true;
 		if(photoList != null) {
 			photoList.addAll(0, visit.photoList);
 		}

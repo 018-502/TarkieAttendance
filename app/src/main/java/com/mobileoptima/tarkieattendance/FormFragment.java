@@ -48,6 +48,7 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 	private FragmentManager manager;
 	private CodePanLabel tvForm;
 	private ViewGroup container;
+	private boolean isOverridden;
 	private SQLiteAdapter db;
 	private EntryObj entry;
 	private FormObj form;
@@ -454,15 +455,59 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 
 	@Override
 	public void onBackPressed() {
-		PageFragment current = (PageFragment) manager.findFragmentByTag(tag);
-		if(current.withChanges()) {
-			PageObj obj = getPage(tag);
-			if(obj != null) {
-				obj.fieldList = current.getFieldList();
+		PageObj obj = getPage(tag);
+		if(pageList.indexOf(obj) > 0) {
+			PageFragment current = (PageFragment) manager.findFragmentByTag(tag);
+			if(current.withChanges()) {
+				if(obj != null) {
+					obj.fieldList = current.getFieldList();
+					obj.withChanges = true;
+				}
+			}
+			manager.popBackStack();
+			decrementPage();
+		}
+		else {
+			if(withChanges() && (entry == null || !entry.isSubmit)) {
+				AlertDialogFragment alert = new AlertDialogFragment();
+				alert.setDialogTitle(R.string.save_changes_title);
+				alert.setDialogMessage(R.string.save_changes_message);
+				alert.setOnFragmentCallback(this);
+				alert.setPositiveButton("Yes", new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						manager.popBackStack();
+						saveEntry(false);
+					}
+				});
+				alert.setNegativeButton("Discard", new OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						manager.popBackStack();
+						popAllPages();
+					}
+				});
+				transaction = manager.beginTransaction();
+				transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+						R.anim.fade_in, R.anim.fade_out);
+				transaction.add(R.id.rlMain, alert);
+				transaction.addToBackStack(null);
+				transaction.commit();
+			}
+			else {
+				manager.popBackStack();
 			}
 		}
-		manager.popBackStack();
-		decrementPage();
+	}
+
+	public boolean withChanges() {
+		PageFragment current = (PageFragment) manager.findFragmentByTag(tag);
+		for(PageObj page : pageList) {
+			if(page.withChanges) {
+				return true;
+			}
+		}
+		return current.withChanges();
 	}
 
 	public OnBackPressedCallback getOnBackPressedCallback() {
@@ -481,7 +526,16 @@ public class FormFragment extends Fragment implements OnClickListener, OnBackPre
 			fragmentCallback.onFragment(isOnBackStack);
 		}
 		if(overrideCallback != null) {
-			overrideCallback.onOverride(isOnBackStack);
+			if(isOnBackStack) {
+				overrideCallback.onOverride(true);
+			}
+			else {
+				overrideCallback.onOverride(isOverridden);
+			}
 		}
+	}
+
+	public void setOverridden(boolean isOverridden) {
+		this.isOverridden = isOverridden;
 	}
 }

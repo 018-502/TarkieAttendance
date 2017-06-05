@@ -36,12 +36,12 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 	private OnTagFormsCallback tagFormsCallback;
 	private OnOverrideCallback overrideCallback;
 	private OnFragmentCallback fragmentCallback;
+	private boolean withChanges, isOverridden;
 	private FragmentTransaction transaction;
 	private ArrayList<FormObj> taggedList;
 	private ArrayList<FormObj> formList;
 	private FragmentManager manager;
 	private AddFormsAdapter adapter;
-	private boolean withChanges;
 	private ListView lvAddForms;
 	private SQLiteAdapter db;
 	private VisitObj visit;
@@ -87,9 +87,6 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 					cbAddForms.setChecked(obj.isChecked);
 					if(!withChanges) {
 						withChanges = true;
-						if(overrideCallback != null) {
-							overrideCallback.onOverride(true);
-						}
 					}
 				}
 				else {
@@ -221,6 +218,18 @@ public class AddFormsFragment extends Fragment implements OnClickListener, OnFra
 		if(fragmentCallback != null) {
 			fragmentCallback.onFragment(isOnBackStack);
 		}
+		if(overrideCallback != null) {
+			if(isOnBackStack) {
+				overrideCallback.onOverride(true);
+			}
+			else {
+				overrideCallback.onOverride(isOverridden);
+			}
+		}
+	}
+
+	public void setOverridden(boolean isOverridden) {
+		this.isOverridden = isOverridden;
 	}
 
 	public void setOnFragmentCallback(OnFragmentCallback fragmentCallback) {

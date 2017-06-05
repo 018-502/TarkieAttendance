@@ -1,6 +1,7 @@
 package com.mobileoptima.tarkieattendance;
 
 import android.animation.LayoutTransition;
+import android.animation.LayoutTransition.TransitionListener;
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -128,7 +129,7 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 		btnClearCameraMultiShot.setOnClickListener(this);
 		rlOptionsCameraMultiShot.setOnClickListener(this);
 		transition = llPhotoGridCameraMultiShot.getLayoutTransition();
-		transition.addTransitionListener(new LayoutTransition.TransitionListener() {
+		transition.addTransitionListener(new TransitionListener() {
 			@Override
 			public void startTransition(LayoutTransition transition, ViewGroup container, View view,
 										int transitionType) {
@@ -258,14 +259,19 @@ public class CameraMultiShotFragment extends Fragment implements OnClickListener
 	public void updatePhotoGrid(final int position) {
 		View view = getView();
 		if(view != null) {
-			String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
+			final String uri = "file://" + getActivity().getDir(App.FOLDER, Context.MODE_PRIVATE)
 					.getPath() + "/" + fileName;
 			ViewGroup container = (ViewGroup) view.getParent();
 			LayoutInflater inflater = getActivity().getLayoutInflater();
 			View child = inflater.inflate(R.layout.photo_grid_item, container, false);
 			CodePanButton btnPhotoGrid = (CodePanButton) child.findViewById(R.id.btnPhotoGrid);
-			ImageView ivPhotoGrid = (ImageView) child.findViewById(R.id.ivPhotoGrid);
-			CodePanUtils.displayImage(ivPhotoGrid, uri, R.color.gray_ter);
+			final ImageView ivPhotoGrid = (ImageView) child.findViewById(R.id.ivPhotoGrid);
+			new Handler().postDelayed(new Runnable() {
+				@Override
+				public void run() {
+					CodePanUtils.displayImage(ivPhotoGrid, uri, R.color.gray_ter);
+				}
+			}, 250);
 			btnPhotoGrid.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
