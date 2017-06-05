@@ -95,7 +95,7 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 							"Please complete required fields.", this);
 				}
 				else {
-					showAlert(true);
+					addStore();
 				}
 				break;
 			case R.id.btnBackStoreDetails:
@@ -117,40 +117,19 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 	public void showAlert(boolean isSave) {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setOnFragmentCallback(this);
-		if(isSave) {
-			alert.setDialogTitle("Save " + convention);
-			alert.setDialogMessage("Are you sure you want to add this " + convention + "?");
-			alert.setPositiveButton("Yes", new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					StoreObj store = new StoreObj();
-					store.name = etNameAddStore.getText().toString();
-					store.address = etAddressAddStore.getText().toString();
-					if(TarkieLib.addStore(db, store)) {
-						manager.popBackStack();
-						manager.popBackStack();
-						CodePanUtils.alertToast(main, "You have successfully added\n" + store.name);
-						if(addStoreCallback != null) {
-							addStoreCallback.onAddStore(store);
-						}
-					}
-				}
-			});
-		}
-		else {
-			alert.setDialogTitle(R.string.discard_changes_title);
-			alert.setDialogMessage(R.string.discard_changes_message);
-			alert.setPositiveButton("Yes", new View.OnClickListener() {
-				@Override
-				public void onClick(View view) {
-					manager.popBackStack();
-					manager.popBackStack();
-				}
-			});
-		}
-		alert.setNegativeButton("Cancel", new View.OnClickListener() {
+		alert.setDialogTitle(R.string.save_changes_title);
+		alert.setDialogMessage(R.string.save_changes_message);
+		alert.setPositiveButton("Yes", new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+				manager.popBackStack();
+				addStore();
+			}
+		});
+		alert.setNegativeButton("Discard", new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				manager.popBackStack();
 				manager.popBackStack();
 			}
 		});
@@ -160,6 +139,19 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		transaction.add(R.id.rlMain, alert);
 		transaction.addToBackStack(null);
 		transaction.commit();
+	}
+
+	public void addStore() {
+		StoreObj store = new StoreObj();
+		store.name = etNameAddStore.getText().toString();
+		store.address = etAddressAddStore.getText().toString();
+		if(TarkieLib.addStore(db, store)) {
+			manager.popBackStack();
+			CodePanUtils.alertToast(main, "You have successfully added\n" + store.name);
+			if(addStoreCallback != null) {
+				addStoreCallback.onAddStore(store);
+			}
+		}
 	}
 
 	@Override
