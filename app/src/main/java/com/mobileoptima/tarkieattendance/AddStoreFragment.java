@@ -114,7 +114,7 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 		return !etNameAddStore.getText().toString().isEmpty();
 	}
 
-	public void showAlert(boolean isSave) {
+	public void showAlert() {
 		final AlertDialogFragment alert = new AlertDialogFragment();
 		alert.setOnFragmentCallback(this);
 		alert.setDialogTitle(R.string.save_changes_title);
@@ -173,7 +173,7 @@ public class AddStoreFragment extends Fragment implements OnClickListener, TextW
 			manager.popBackStack();
 		}
 		else {
-			showAlert(false);
+			showAlert();
 		}
 	}
 
