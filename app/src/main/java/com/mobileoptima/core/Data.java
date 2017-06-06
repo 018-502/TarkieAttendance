@@ -727,8 +727,8 @@ public class Data {
 		ArrayList<TaskObj> taskList = new ArrayList<>();
 		String s = Tables.getName(TB.STORES);
 		String t = Tables.getName(TB.TASK);
-		String query = "SELECT t.ID, t.dDate, dTime, t.webTaskID, t.startDate, t.endDate, " +
-				"t.notes, t.syncBatchID, t.empID, s.ID, s.webStoreID FROM " + t + " t " +
+		String query = "SELECT t.ID, t.dateCreated, timeCreated, t.webTaskID, t.startDate, " +
+				"t.endDate, t.notes, t.syncBatchID, t.empID, s.ID, s.webStoreID FROM " + t + " t " +
 				"LEFT JOIN " + s + " s ON s.ID = t.storeID WHERE t.isSync = 0";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
