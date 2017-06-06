@@ -351,7 +351,6 @@ public class ExpenseItemsFragment extends Fragment implements OnClickListener, O
 	}
 
 	public float updateTotalAmount(ArrayList<View> child) {
-		Log.e("paul", "haha");
 		float total = 0;
 		for(int c = 0; c < child.size(); c++) {
 			CodePanLabel tvAmountExpenseItems = (CodePanLabel) child.get(c).findViewById(R.id.tvAmountExpenseItems);
