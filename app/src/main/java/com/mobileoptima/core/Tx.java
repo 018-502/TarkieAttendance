@@ -792,8 +792,8 @@ public class Tx {
 			paramsObj.put("start_date", task.startDate);
 			paramsObj.put("end_date", task.endDate);
 			paramsObj.put("notes", task.notes);
-			//paramsObj.put("local_record_id", task.ID);
-			//paramsObj.put("sync_batch_id", task.syncBatchID);
+			paramsObj.put("local_record_id", task.ID);
+			paramsObj.put("sync_batch_id", task.syncBatchID);
 			JSONArray entryArray = new JSONArray();
 			JSONArray formArray = new JSONArray();
 			for(EntryObj entry : task.entryList) {
