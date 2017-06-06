@@ -1,7 +1,5 @@
 package com.mobileoptima.core;
 
-import android.util.Log;
-
 import com.codepan.database.Condition;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteAdapter;
@@ -651,28 +649,104 @@ public class Data {
 		return breakOutList;
 	}
 
+	public static ArrayList<CheckInObj> loadCheckInSync(SQLiteAdapter db) {
+		ArrayList<CheckInObj> checkInList = new ArrayList<>();
+		String g = Tables.getName(TB.GPS);
+		String t = Tables.getName(TB.TASK);
+		String i = Tables.getName(TB.CHECK_IN);
+		String query = "SELECT i.ID, i.empID, i.dDate, i.dTime, i.syncBatchID, g.gpsDate, " +
+				"g.gpsTime, g.gpsLongitude, g.gpsLatitude, t.ID, t.webTaskID FROM " + i + " i, " +
+				g + " g, " + t + " t WHERE i.isSync = 0 AND g.ID = i.gpsID AND t.ID = i.taskID";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			CheckInObj in = new CheckInObj();
+			in.ID = cursor.getString(0);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(1);
+			in.emp = emp;
+			in.dDate = cursor.getString(2);
+			in.dTime = cursor.getString(3);
+			in.syncBatchID = cursor.getString(4);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(5);
+			gps.time = cursor.getString(6);
+			gps.longitude = cursor.getDouble(7);
+			gps.latitude = cursor.getDouble(8);
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(9);
+			task.webTaskID = cursor.getString(10);
+			in.task = task;
+			in.gps = gps;
+			checkInList.add(in);
+		}
+		cursor.close();
+		return checkInList;
+	}
+
+	public static ArrayList<CheckOutObj> loadCheckOutSync(SQLiteAdapter db) {
+		ArrayList<CheckOutObj> checkOutList = new ArrayList<>();
+		String g = Tables.getName(TB.GPS);
+		String t = Tables.getName(TB.TASK);
+		String i = Tables.getName(TB.CHECK_IN);
+		String o = Tables.getName(TB.CHECK_OUT);
+		String query = "SELECT o.ID, o.dDate, o.dTime, o.syncBatchID, g.gpsDate, g.gpsTime, " +
+				"g.gpsLongitude, g.gpsLatitude, i.ID, i.empID, t.ID, t.webTaskID, t.status " +
+				"FROM " + o + " o, " + g + " g, " + i + " i, " + t + " t WHERE o.isSync = 0 " +
+				"AND g.ID = o.gpsID AND t.ID = i.taskID AND i.ID = o.checkInID";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			CheckOutObj out = new CheckOutObj();
+			out.ID = cursor.getString(0);
+			out.dDate = cursor.getString(1);
+			out.dTime = cursor.getString(2);
+			out.syncBatchID = cursor.getString(3);
+			GpsObj gps = new GpsObj();
+			gps.date = cursor.getString(4);
+			gps.time = cursor.getString(5);
+			gps.longitude = cursor.getDouble(6);
+			gps.latitude = cursor.getDouble(7);
+			CheckInObj in = new CheckInObj();
+			in.ID = cursor.getString(8);
+			EmployeeObj emp = new EmployeeObj();
+			emp.ID = cursor.getString(9);
+			out.emp = emp;
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(10);
+			task.webTaskID = cursor.getString(11);
+			task.status = cursor.getString(12);
+			in.task = task;
+			out.checkIn = in;
+			out.gps = gps;
+			checkOutList.add(out);
+		}
+		cursor.close();
+		return checkOutList;
+	}
+
 	public static ArrayList<TaskObj> loadTaskSync(SQLiteAdapter db) {
 		ArrayList<TaskObj> taskList = new ArrayList<>();
 		String s = Tables.getName(TB.STORES);
 		String t = Tables.getName(TB.TASK);
-		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.syncBatchID, " +
-				"t.empID, s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON " +
-				"s.ID = t.storeID WHERE t.isSync = 0";
+		String query = "SELECT t.ID, t.dDate, dTime, t.webTaskID, t.startDate, t.endDate, " +
+				"t.notes, t.syncBatchID, t.empID, s.ID, s.webStoreID FROM " + t + " t " +
+				"LEFT JOIN " + s + " s ON s.ID = t.storeID WHERE t.isSync = 0";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TaskObj task = new TaskObj();
 			task.ID = cursor.getString(0);
-			task.webTaskID = cursor.getString(1);
-			task.startDate = cursor.getString(2);
-			task.endDate = cursor.getString(3);
-			task.notes = cursor.getString(4);
-			task.syncBatchID = cursor.getString(5);
+			task.dDate = cursor.getString(1);
+			task.dTime = cursor.getString(2);
+			task.webTaskID = cursor.getString(3);
+			task.startDate = cursor.getString(4);
+			task.endDate = cursor.getString(5);
+			task.notes = cursor.getString(6);
+			task.syncBatchID = cursor.getString(7);
 			EmployeeObj emp = new EmployeeObj();
-			emp.ID = cursor.getString(6);
+			emp.ID = cursor.getString(8);
 			task.emp = emp;
 			StoreObj store = new StoreObj();
-			store.ID = cursor.getString(7);
-			store.webStoreID = cursor.getString(8);
+			store.ID = cursor.getString(9);
+			store.webStoreID = cursor.getString(10);
 			task.store = store;
 			task.entryList = loadEntries(db, task.ID);
 			task.photoList = loadPhotos(db, task.ID);

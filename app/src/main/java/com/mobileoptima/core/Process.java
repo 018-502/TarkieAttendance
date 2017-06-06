@@ -12,6 +12,8 @@ import com.mobileoptima.constant.App;
 import com.mobileoptima.constant.ProcessName;
 import com.mobileoptima.model.BreakInObj;
 import com.mobileoptima.model.BreakOutObj;
+import com.mobileoptima.model.CheckInObj;
+import com.mobileoptima.model.CheckOutObj;
 import com.mobileoptima.model.EntryObj;
 import com.mobileoptima.model.IncidentReportObj;
 import com.mobileoptima.model.PhotoObj;
@@ -315,6 +317,20 @@ public class Process {
 					for(TaskObj task : Data.loadTaskUpdate(db)) {
 						if(result) {
 							result = Tx.updateTask(db, task, errorCallback);
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
+					for(CheckInObj in : Data.loadCheckInSync(db)) {
+						if(result) {
+							result = Tx.syncCheckIn(db, in, errorCallback);
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
+					for(CheckOutObj out : Data.loadCheckOutSync(db)) {
+						if(result) {
+							result = Tx.syncCheckOut(db, out, errorCallback);
 							Thread.sleep(250);
 							handler.sendMessage(handler.obtainMessage());
 						}

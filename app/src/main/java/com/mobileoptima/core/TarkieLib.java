@@ -1393,6 +1393,8 @@ public class TarkieLib {
 		tableList.add(TB.TIME_OUT);
 		tableList.add(TB.BREAK_IN);
 		tableList.add(TB.BREAK_OUT);
+		tableList.add(TB.CHECK_IN);
+		tableList.add(TB.CHECK_OUT);
 		tableList.add(TB.INCIDENT_REPORT);
 		tableList.add(TB.ENTRIES);
 		//tableList.add(TB.EXPENSE);
