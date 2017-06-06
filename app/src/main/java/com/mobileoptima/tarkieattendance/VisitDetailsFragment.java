@@ -82,6 +82,18 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 	private VisitObj visit;
 
 	@Override
+	public void onStart() {
+		super.onStart();
+		setOnBackStack(true);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		setOnBackStack(false);
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		main = (MainActivity) getActivity();
@@ -766,6 +778,12 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 		this.withChanges = withChanges;
 		if(overrideCallback != null) {
 			overrideCallback.onOverride(withChanges);
+		}
+	}
+
+	private void setOnBackStack(boolean isOnBackStack) {
+		if(overrideCallback != null) {
+			overrideCallback.onOverride(isOnBackStack);
 		}
 	}
 }

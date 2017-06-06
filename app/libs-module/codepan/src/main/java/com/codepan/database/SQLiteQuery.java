@@ -220,41 +220,52 @@ public class SQLiteQuery {
 
 	public String getTables() {
 		String tables = "";
-		if(tableList != null) {
-			for(Table obj : tableList) {
-				tables += obj.name + " as " + obj.as;
-				if(tableList.indexOf(obj) < tableList.size() - 1) {
-					tables += ", ";
-				}
-			}
+		if(hasTables()) {
+			tables = getTables(tableList);
 		}
 		return tables;
-	}
-
-	private String getFields(ArrayList<Field> fieldList) {
-		String fields = "";
-		if(fieldList != null) {
-			for(Field obj : fieldList) {
-				fields += obj.field;
-				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
-					fields += ", ";
-				}
-			}
-		}
-		return fields;
 	}
 
 	public String getFields() {
 		String fields = "";
 		if(hasFields()) {
-			for(Field obj : fieldList) {
-				fields += obj.field;
-				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
-					fields += ", ";
+			fields = getFields(fieldList);
+		}
+		return fields;
+	}
+
+	public String getFieldsValues() {
+		String fieldsValues = "";
+		if(hasFieldValues()) {
+			fieldsValues = getFieldsValues(fieldValueList);
+		}
+		return fieldsValues;
+	}
+
+	public String getConditions() {
+		String conditions = "";
+		if(hasConditions()) {
+			conditions = getConditions(conditionList);
+		}
+		return conditions;
+	}
+
+	private String getTables(ArrayList<Table> tableList) {
+		String tables = "";
+		if(tableList != null) {
+			for(Table obj : tableList) {
+				if(!obj.hasJoin()) {
+					if(tableList.indexOf(obj) > 0) {
+						tables += ", ";
+					}
+					tables += obj.table;
+				}
+				else {
+					tables += " " + obj.table + getConditions(obj.conditionList);
 				}
 			}
 		}
-		return fields;
+		return tables;
 	}
 
 	private String getOrders() {
@@ -274,7 +285,20 @@ public class SQLiteQuery {
 		return groups;
 	}
 
-	public String getFieldsValues() {
+	private String getFields(ArrayList<Field> fieldList) {
+		String fields = "";
+		if(fieldList != null) {
+			for(Field obj : fieldList) {
+				fields += obj.field;
+				if(fieldList.indexOf(obj) < fieldList.size() - 1) {
+					fields += ", ";
+				}
+			}
+		}
+		return fields;
+	}
+
+	private String getFieldsValues(ArrayList<FieldValue> fieldValueList) {
 		String fieldsValues = "";
 		if(hasFieldValues()) {
 			for(FieldValue obj : fieldValueList) {
@@ -292,7 +316,7 @@ public class SQLiteQuery {
 		return fieldsValues;
 	}
 
-	public String getConditions() {
+	private String getConditions(ArrayList<Condition> conditionList) {
 		String condition = "";
 		if(hasConditions()) {
 			for(Condition obj : conditionList) {

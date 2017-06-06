@@ -328,7 +328,7 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 				select(false);
 			}
 			else {
-				getActivity().onBackPressed();
+				manager.popBackStack();
 			}
 		}
 	}

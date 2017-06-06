@@ -773,6 +773,7 @@ public class Tx {
 
 	public static boolean syncTask(SQLiteAdapter db, TaskObj task, OnErrorCallback errorCallback) {
 		boolean result = false;
+		boolean hasData = false;
 		final int INDENT = 4;
 		final int TIMEOUT = 5000;
 		String action = "add-itinerary-visit";
@@ -791,6 +792,8 @@ public class Tx {
 			paramsObj.put("start_date", task.startDate);
 			paramsObj.put("end_date", task.endDate);
 			paramsObj.put("notes", task.notes);
+			//paramsObj.put("local_record_id", task.ID);
+			//paramsObj.put("sync_batch_id", task.syncBatchID);
 			JSONArray entryArray = new JSONArray();
 			JSONArray formArray = new JSONArray();
 			for(EntryObj entry : task.entryList) {
@@ -799,7 +802,7 @@ public class Tx {
 				entryArray.put(entry.webEntryID);
 			}
 			JSONArray photoArray = new JSONArray();
-			for(PhotoObj photo: task.photoList) {
+			for(PhotoObj photo : task.photoList) {
 				photoArray.put(photo.ID);
 			}
 			paramsObj.put("forms", formArray);
@@ -815,8 +818,9 @@ public class Tx {
 					JSONObject initObj = initArray.getJSONObject(i);
 					String status = initObj.getString("status");
 					String message = initObj.getString("message");
+					int recNo = initObj.getInt("recno");
 					if(status.equals("ok")) {
-						result = TarkieLib.updateStatusSync(db, TB.TASK, task.ID);
+						hasData = recNo > 0;
 					}
 					else {
 						if(errorCallback != null) {
@@ -832,6 +836,28 @@ public class Tx {
 				if(errorCallback != null) {
 					errorCallback.onError(message, params, response, true);
 				}
+			}
+			if(hasData) {
+				SQLiteBinder binder = new SQLiteBinder(db);
+				String table = Tables.getName(TB.TASK);
+				JSONArray dataArray = responseObj.getJSONArray("data");
+				for(int i = 0; i < dataArray.length(); i++) {
+					try {
+						SQLiteQuery query = new SQLiteQuery();
+						JSONObject dataObj = dataArray.getJSONObject(i);
+						query.add(new FieldValue("webTaskID", dataObj.getString("itinerary_id")));
+						query.add(new FieldValue("isSync", true));
+						binder.update(table, query, task.ID);
+					}
+					catch(Exception e) {
+						e.printStackTrace();
+						if(errorCallback != null) {
+							errorCallback.onError(e.getMessage(), params, response, false);
+						}
+						return false;
+					}
+				}
+				result = binder.finish();
 			}
 		}
 		catch(JSONException je) {
@@ -871,7 +897,7 @@ public class Tx {
 				entryArray.put(entry.webEntryID);
 			}
 			JSONArray photoArray = new JSONArray();
-			for(PhotoObj photo: task.photoList) {
+			for(PhotoObj photo : task.photoList) {
 				photoArray.put(photo.ID);
 			}
 			paramsObj.put("forms", formArray);

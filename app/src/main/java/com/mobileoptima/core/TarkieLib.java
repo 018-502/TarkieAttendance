@@ -340,8 +340,13 @@ public class TarkieLib {
 		if(!db.isColumnExists(table, column)) {
 			binder.addColumn(table, DataType.TEXT, column);
 		}
-		switch(n) {
-			case 2:
+		column = "taskFormID";
+		table = Tables.getName(TB.TASK_ENTRY);
+		if(!db.isColumnExists(table, column)) {
+			binder.addColumn(table, DataType.INTEGER, column);
+		}
+		switch(o) {
+			case 1:
 				TB tb = TB.STORES;
 				table = Tables.getName(tb);
 				binder.dropTable(table);
@@ -829,18 +834,7 @@ public class TarkieLib {
 		binder.update(tf, query);
 		binder.update(tp, query);
 		for(EntryObj entry : entryList) {
-			if(entry.ID != null) {
-				query.clearAll();
-				query.add(new Field("ID"));
-				query.add(new Condition("entryID", entry.ID));
-				query.add(new Condition("taskID", taskID));
-				query.add(new FieldValue("entryID", entry.ID));
-				query.add(new FieldValue("taskID", taskID));
-				String sql = query.select(te);
-				if(!db.isRecordExists(sql)) {
-					binder.insert(te, query);
-				}
-			}
+			String taskFormID = null;
 			FormObj form = entry.form;
 			if(form.isChecked) {
 				query.clearAll();
@@ -852,10 +846,23 @@ public class TarkieLib {
 				query.add(new FieldValue("isTag", true));
 				String sql = query.select(tf);
 				if(db.isRecordExists(sql)) {
+					taskFormID = db.getString(sql);
 					binder.update(tf, query);
 				}
 				else {
-					binder.insert(tf, query);
+					taskFormID = binder.insert(tf, query);
+				}
+			}
+			if(entry.ID != null) {
+				query.clearAll();
+				query.add(new Field("ID"));
+				query.add(new Condition("entryID", entry.ID));
+				query.add(new Condition("taskFormID", taskFormID));
+				query.add(new FieldValue("entryID", entry.ID));
+				query.add(new FieldValue("taskFormID", taskFormID));
+				String sql = query.select(te);
+				if(!db.isRecordExists(sql)) {
+					binder.insert(te, query);
 				}
 			}
 		}

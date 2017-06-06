@@ -58,7 +58,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 				holder.tvTitleEntries = (CodePanLabel) view.findViewById(R.id.tvTitleEntries);
 				holder.tvDateEntries = (CodePanLabel) view.findViewById(R.id.tvDateEntries);
 				holder.tvStatusEntries = (CodePanLabel) view.findViewById(R.id.tvStatusEntries);
-				holder.tvStoreEntries = (CodePanLabel) view.findViewById(R.id.tvStoreEntries);
+				holder.tvFormEntries = (CodePanLabel) view.findViewById(R.id.tvFormEntries);
 				holder.tvReferenceNoEntries = (CodePanLabel) view.findViewById(R.id.tvReferenceNoEntries);
 				holder.cbEntries = (CheckBox) view.findViewById(R.id.cbEntries);
 				view.setTag(holder);
@@ -66,15 +66,14 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 			else {
 				holder = (ViewHolder) view.getTag();
 			}
-			if(obj.form != null) {
-				holder.tvTitleEntries.setText(obj.form.name);
-			}
 			if(obj.store != null) {
-				holder.tvStoreEntries.setText(obj.store.name);
-				holder.tvStoreEntries.setVisibility(View.VISIBLE);
+				holder.tvTitleEntries.setText(obj.store.name);
+				holder.tvFormEntries.setText(obj.form.name);
+				holder.tvFormEntries.setVisibility(View.VISIBLE);
 			}
 			else {
-				holder.tvStoreEntries.setVisibility(View.GONE);
+				holder.tvTitleEntries.setText(obj.form.name);
+				holder.tvFormEntries.setVisibility(View.GONE);
 			}
 			if(obj.isSubmit) {
 				holder.tvStatusEntries.setTextColor(green);
@@ -117,7 +116,7 @@ public class EntriesAdapter extends ArrayAdapter<EntryObj> {
 		private CodePanLabel tvTitleEntries;
 		private CodePanLabel tvStatusEntries;
 		private CodePanLabel tvDateEntries;
-		private CodePanLabel tvStoreEntries;
+		private CodePanLabel tvFormEntries;
 		private CodePanLabel tvReferenceNoEntries;
 		private CheckBox cbEntries;
 	}

@@ -8,7 +8,6 @@ import com.codepan.database.Table;
 import com.codepan.model.GpsObj;
 import com.codepan.utils.CodePanUtils;
 import com.mobileoptima.constant.EntriesSearchType;
-import com.mobileoptima.constant.ExpenseType;
 import com.mobileoptima.constant.FieldType;
 import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Status;
@@ -25,9 +24,6 @@ import com.mobileoptima.model.ChoiceObj;
 import com.mobileoptima.model.ContactObj;
 import com.mobileoptima.model.EmployeeObj;
 import com.mobileoptima.model.EntryObj;
-import com.mobileoptima.model.ExpenseDefaultObj;
-import com.mobileoptima.model.ExpenseFuelConsumptionObj;
-import com.mobileoptima.model.ExpenseFuelPurchaseObj;
 import com.mobileoptima.model.ExpenseItemsObj;
 import com.mobileoptima.model.ExpenseObj;
 import com.mobileoptima.model.ExpenseReportsObj;
@@ -56,6 +52,7 @@ import net.sqlcipher.Cursor;
 import java.util.ArrayList;
 
 import static com.codepan.database.Condition.Operator;
+import static com.codepan.database.Table.Join;
 
 public class Data {
 	public static ArrayList<InventoryObj> loadInventory(SQLiteAdapter db) {
@@ -126,7 +123,7 @@ public class Data {
 		String te = Tables.getName(TB.TASK_ENTRY);
 		String query = "SELECT e.ID, e.dDate, e.dTime, e.isSubmit, e.referenceNo, e.webEntryID, " +
 				"f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf LEFT JOIN " + te + " te " +
-				"ON te.taskID = tf.taskID LEFT JOIN " + e + " e ON e.ID = te.entryID " +
+				"ON te.taskFormID = tf.ID LEFT JOIN " + e + " e ON e.ID = te.entryID " +
 				"WHERE f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
@@ -429,22 +426,39 @@ public class Data {
 		SQLiteQuery query = new SQLiteQuery();
 		Table f = new Table(Tables.getName(TB.FORMS), "f");
 		Table e = new Table(Tables.getName(TB.ENTRIES), "e");
-		Field formID = new Field("ID", f);
-		Field entryID = new Field("ID", e);
+		Table s = new Table(Tables.getName(TB.STORES), "s");
+		Table t = new Table(Tables.getName(TB.TASK), "t");
+		Table te = new Table(Tables.getName(TB.TASK_ENTRY), "te");
+		Table tf = new Table(Tables.getName(TB.TASK_FORM), "tf");
+		Field tID = new Field("ID", t);
+		Field fID = new Field("ID", f);
+		Field eID = new Field("ID", e);
+		Field sID = new Field("ID", s);
+		Field tfID = new Field("ID", tf);
+		s.add(new Condition("storeID", sID, t));
+		t.add(new Condition("taskID", tID, tf));
+		tf.add(new Condition("taskFormID", tfID, te));
+		te.add(new Condition("entryID", eID, te));
 		query.add(e);
 		query.add(f);
+		query.add(te.join(Join.LEFT));
+		query.add(tf.join(Join.LEFT));
+		query.add(t.join(Join.LEFT));
+		query.add(s.join(Join.LEFT));
 		query.add(new Field("ID", e));
 		query.add(new Field("dDate", e));
 		query.add(new Field("dTime", e));
 		query.add(new Field("isSubmit", e));
 		query.add(new Field("referenceNo", e));
-		query.add(formID);
+		query.add(fID);
 		query.add(new Field("name", f));
 		query.add(new Field("logoUrl", f));
+		query.add(sID);
+		query.add(new Field("name", s));
 		query.add(new Condition("isDelete", false, e));
 		query.add(new Condition("empID", empID, e));
-		query.add(new Condition("formID", formID, e));
-		query.order(entryID);
+		query.add(new Condition("formID", fID, e));
+		query.order(eID);
 		query.ascending(false);
 		if(obj != null) {
 			switch(type) {
@@ -452,14 +466,11 @@ public class Data {
 					query.add(new Condition("dDate", obj.search, e));
 					break;
 				case EntriesSearchType.STORE:
-					Table t = new Table(Tables.getName(TB.TASK), "t");
-					Table te = new Table(Tables.getName(TB.TASK_ENTRY), "te");
-					Field taskID = new Field("ID", t);
-					query.add(t);
-					query.add(te);
+					Field taskFormID = new Field("ID", tf);
 					query.add(new Condition("storeID", obj.search, t));
-					query.add(new Condition("taskID", taskID, te));
-					query.add(new Condition("entryID", entryID, te));
+					query.add(new Condition("entryID", eID, te));
+					query.add(new Condition("taskID", tID, tf));
+					query.add(new Condition("taskFormID", taskFormID, te));
 					break;
 				case EntriesSearchType.CATEGORY:
 					query.add(new Condition("category", obj.search, f));
@@ -492,6 +503,13 @@ public class Data {
 			form.name = cursor.getString(6);
 			form.logoUrl = cursor.getString(7);
 			entry.form = form;
+			String storeID = cursor.getString(8);
+			if(storeID != null) {
+				StoreObj store = new StoreObj();
+				store.ID = cursor.getString(8);
+				store.name = cursor.getString(9);
+				entry.store = store;
+			}
 			entryList.add(entry);
 		}
 		cursor.close();
@@ -635,9 +653,9 @@ public class Data {
 		ArrayList<TaskObj> taskList = new ArrayList<>();
 		String s = Tables.getName(TB.STORES);
 		String t = Tables.getName(TB.TASK);
-		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.empID, " +
-				"s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON s.ID = t.storeID " +
-				"WHERE t.isSync = 0";
+		String query = "SELECT t.ID, t.webTaskID, t.startDate, t.endDate, t.notes, t.syncBatchID, " +
+				"t.empID, s.ID, s.webStoreID FROM " + t + " t LEFT JOIN " + s + " s ON " +
+				"s.ID = t.storeID WHERE t.isSync = 0";
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			TaskObj task = new TaskObj();
@@ -646,12 +664,13 @@ public class Data {
 			task.startDate = cursor.getString(2);
 			task.endDate = cursor.getString(3);
 			task.notes = cursor.getString(4);
+			task.syncBatchID = cursor.getString(5);
 			EmployeeObj emp = new EmployeeObj();
-			emp.ID = cursor.getString(5);
+			emp.ID = cursor.getString(6);
 			task.emp = emp;
 			StoreObj store = new StoreObj();
-			store.ID = cursor.getString(6);
-			store.webStoreID = cursor.getString(7);
+			store.ID = cursor.getString(7);
+			store.webStoreID = cursor.getString(8);
 			task.store = store;
 			task.entryList = loadEntries(db, task.ID);
 			task.photoList = loadPhotos(db, task.ID);
@@ -1015,10 +1034,11 @@ public class Data {
 		String s = Tables.getName(TB.STORES);
 		String e = Tables.getName(TB.ENTRIES);
 		String te = Tables.getName(TB.TASK_ENTRY);
-		String sql = "SELECT s.name, COUNT(e.ID), s.ID FROM " + te + " te, " + s + " s, " +
-				t + " t, " + e + " e WHERE t.ID = te.taskID AND s.ID = t.storeID " +
-				"AND e.ID = te.entryID AND " + query.getConditions() + " GROUP BY s.ID " +
-				"ORDER BY s.name";
+		String tf = Tables.getName(TB.TASK_FORM);
+		String sql = "SELECT s.name, COUNT(e.ID), s.ID FROM " + te + " te, " + tf + " tf, " +
+				s + " s, " + t + " t, " + e + " e WHERE t.ID = tf.taskID AND s.ID = t.storeID " +
+				"AND te.taskFormID = tf.ID AND e.ID = te.entryID AND " + query.getConditions() + " " +
+				"GROUP BY s.ID ORDER BY s.name";
 		Cursor cursor = db.read(sql);
 		while(cursor.moveToNext()) {
 			SearchObj obj = new SearchObj();

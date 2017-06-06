@@ -387,12 +387,6 @@ public class Tables {
 				query.add(new Field("fieldID", DataType.INTEGER));
 				query.add(new Field("isUpdate", 0));
 				break;
-			case TASK_ENTRY:
-				query.clearAll();
-				query.add(new Field("ID", true));
-				query.add(new Field("entryID", DataType.INTEGER));
-				query.add(new Field("taskID", DataType.INTEGER));
-				break;
 			case TASK_FORM:
 				query.clearAll();
 				query.add(new Field("ID", true));
@@ -400,6 +394,12 @@ public class Tables {
 				query.add(new Field("taskID", DataType.INTEGER));
 				query.add(new Field("isFromWeb", 0));
 				query.add(new Field("isTag", 1));
+				break;
+			case TASK_ENTRY:
+				query.clearAll();
+				query.add(new Field("ID", true));
+				query.add(new Field("entryID", DataType.INTEGER));
+				query.add(new Field("taskFormID", DataType.INTEGER));
 				break;
 			case TASK_PHOTO:
 				query.clearAll();

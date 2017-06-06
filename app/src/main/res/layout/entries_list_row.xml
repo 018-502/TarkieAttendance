@@ -37,16 +37,15 @@
             android:id="@+id/tvTitleEntries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Thompson, Josh"
             android:textColor="@color/gray_pri"
             android:textSize="@dimen/sixteen"
-            codePan:typeface="@string/proxima_nova_bold"/>
+            codePan:typeface="@string/proxima_nova_semi_bold"/>
 
         <com.codepan.widget.CodePanLabel
-            android:id="@+id/tvStoreEntries"
+            android:id="@+id/tvFormEntries"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/gray_qua"
+            android:textColor="@color/gray_qui"
             android:textSize="@dimen/fifteen"
             android:visibility="gone"
             codePan:typeface="@string/proxima_nova_light"/>

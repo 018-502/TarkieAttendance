@@ -14,7 +14,7 @@ public class App {
 	public static final String ERROR_PWD = "(M6hKd}=2.q{M>V(6~<nmkK6!U~!~&js[~G";
 	public static final String API_KEY = "V0gu1964h5j762s7WiG52i45CMg1s9Xo8dbX565P20m3w7U7CA";
 	public static final String DB_PWD = null;
-	public static final int DB_VERSION = 3;
+	public static final int DB_VERSION = 4;
 	public static final int GPS_COUNTDOWN = 10;
 	public static final int BATTERY_THRESHOLD = 10;
 }
