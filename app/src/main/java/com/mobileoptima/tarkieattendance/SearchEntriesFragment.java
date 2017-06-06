@@ -120,7 +120,8 @@ public class SearchEntriesFragment extends Fragment implements OnClickListener,
 			}
 		});
 		stlSearchEntries.setCustomTabView(R.layout.tab_item_layout, R.id.tvTab);
-		stlSearchEntries.setDistributeEvenly(isTablet);
+		//stlSearchEntries.setDistributeEvenly(isTablet);
+		stlSearchEntries.setDistributeEvenly(false);
 		stlSearchEntries.setViewPager(vpSearchEntries);
 		stlSearchEntries.setSelectedTypeface(bold);
 		stlSearchEntries.setSelectedColor(gray);
