@@ -62,9 +62,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 			etDestinationExpenseItemsDetails, etNotesExpenseItemsDetails, etRateExpenseItemsDetails,
 			etStartExpenseItemsDetails, etEndExpenseItemsDetails;
 	private ExpenseObj expense;
-	private ExpenseFuelConsumptionObj fc;
-	private ExpenseFuelPurchaseObj fp;
-	private ExpenseDefaultObj d;
 	private FragmentManager manager;
 	private FragmentTransaction transaction;
 	private ImageView ivPhotoExpenseItemsDetails, ivStartExpenseItemsDetails, ivEndExpenseItemsDetails;
@@ -87,8 +84,8 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		nf.setMaximumFractionDigits(2);
 		db = main.getDatabase();
 		db.openConnection();
-		expense = TarkieLib.getExpense(db, expenseID);
 		defaultPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.ic_camera);
+		expense = TarkieLib.getExpense(db, expenseID);
 	}
 
 	@Override
@@ -142,20 +139,18 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		etOriginExpenseItemsDetails.setText(expense.origin);
 		etDestinationExpenseItemsDetails.setText(expense.destination);
 		etNotesExpenseItemsDetails.setText(expense.notes);
-		updateDetails(expense);
+		updateView();
 		return view;
 	}
 
 	@Override
 	public void onClick(View view) {
+		CodePanUtils.hideKeyboard(view, getActivity());
 		switch(view.getId()) {
 			case R.id.btnBackExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				manager.popBackStack();
 				break;
 			case R.id.btnSaveExpenseItemsDetails:
-				boolean result;
-				CodePanUtils.hideKeyboard(view, getActivity());
 				String amount = etAmountExpenseItemsDetails.getText().toString().replace(",", "");
 				if(!amount.isEmpty()) {
 					expense.amount = Float.parseFloat(amount);
@@ -163,36 +158,8 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				expense.origin = etOriginExpenseItemsDetails.getText().toString();
 				expense.destination = etDestinationExpenseItemsDetails.getText().toString();
 				expense.notes = etNotesExpenseItemsDetails.getText().toString();
-				int typeID = 0;
-				if(expense.type.ID != null) {
-					typeID = Integer.parseInt(expense.type.ID);
-				}
-				switch(typeID) {
-					case ExpenseType.FUEL_CONSUMPTION:
-						fc = (ExpenseFuelConsumptionObj) expense;
-						fc.start = etStartExpenseItemsDetails.getText().toString();
-						fc.end = etEndExpenseItemsDetails.getText().toString();
-						String rate = etRateExpenseItemsDetails.getText().toString().replace(",", "");
-						if(!rate.isEmpty()) {
-							fc.rate = Float.parseFloat(rate);
-						}
-						result = TarkieLib.updateExpense(db, fc);
-						break;
-					case ExpenseType.FUEL_PURCHASE:
-						fp = (ExpenseFuelPurchaseObj) expense;
-						fp.start = etStartExpenseItemsDetails.getText().toString();
-						fp.liters = "";
-						fp.price = "";
-						fp.withOR = cbWithORExpenseItemsDetails.isChecked();
-						result = TarkieLib.updateExpense(db, fp);
-						break;
-					default:
-						d = (ExpenseDefaultObj) expense;
-						d.withOR = cbWithORExpenseItemsDetails.isChecked();
-						result = TarkieLib.updateExpense(db, d);
-						break;
-				}
-				if(result) {
+				updateExpense(expense);
+				if(TarkieLib.updateExpense(db, expense)) {
 					if(updateExpenseCallback != null) {
 						updateExpenseCallback.onUpdateExpense(expense);
 					}
@@ -215,7 +182,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				}
 				break;
 			case R.id.btnStoreExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				StoresFragment stores = new StoresFragment();
 				stores.setOnSelectStoreCallback(new Interface.OnSelectStoreCallback() {
 					@Override
@@ -234,7 +200,6 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				transaction.commit();
 				break;
 			case R.id.btnItemExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				OptionsFragment options = new OptionsFragment();
 				ArrayList<ChoiceObj> optionList = Data.loadExpenseTypes(db);
 				options.setItems(optionList, "Expense Type");
@@ -244,7 +209,8 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 						if(expense.type.ID == null || !expense.type.ID.equals(choice.ID)) {
 							expense.type.ID = choice.ID;
 							expense.type.name = choice.name;
-							expense = updateDetails(expense);
+							expense = updateExpense(expense);
+							updateView();
 						}
 					}
 				});
@@ -256,97 +222,33 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				transaction.commit();
 				break;
 			case R.id.btnPhotoExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				cameraFragment(new OnUsePhotoCallback() {
 					@Override
 					public void onUsePhoto(String fileName) {
-						int typeID = 0;
-						if(expense.type.ID != null) {
-							typeID = Integer.parseInt(expense.type.ID);
-						}
-						switch(typeID) {
-							case ExpenseType.FUEL_CONSUMPTION:
-								break;
-							case ExpenseType.FUEL_PURCHASE:
-								fp = (ExpenseFuelPurchaseObj) expense;
-								fp.start = etStartExpenseItemsDetails.getText().toString();
-								fp.liters = "";
-								fp.price = "";
-								fp.withOR = cbWithORExpenseItemsDetails.isChecked();
-								fp.photo = fileName;
-								updateDetails(fp);
-								break;
-							default:
-								d = (ExpenseDefaultObj) expense;
-								d.withOR = cbWithORExpenseItemsDetails.isChecked();
-								d.photo = fileName;
-								updateDetails(d);
-								break;
-						}
+						ivPhotoExpenseItemsDetails.setTag(fileName);
+						ivPhotoExpenseItemsDetails.setImageBitmap(getPhoto(fileName));
 					}
 				});
 				break;
 			case R.id.btnStartExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				cameraFragment(new OnUsePhotoCallback() {
 					@Override
 					public void onUsePhoto(String fileName) {
-						int typeID = 0;
-						if(expense.type.ID != null) {
-							typeID = Integer.parseInt(expense.type.ID);
-						}
-						switch(typeID) {
-							case ExpenseType.FUEL_CONSUMPTION:
-								fc = (ExpenseFuelConsumptionObj) expense;
-								fc.start = etStartExpenseItemsDetails.getText().toString();
-								fc.end = etEndExpenseItemsDetails.getText().toString();
-								String rate = etRateExpenseItemsDetails.getText().toString().replace(",", "");
-								if(!rate.isEmpty()) {
-									fc.rate = Float.parseFloat(rate);
-								}
-								fc.startPhoto = fileName;
-								updateDetails(fc);
-								break;
-							case ExpenseType.FUEL_PURCHASE:
-								fp = (ExpenseFuelPurchaseObj) expense;
-								fp.start = etStartExpenseItemsDetails.getText().toString();
-								fp.liters = "";
-								fp.price = "";
-								fp.withOR = cbWithORExpenseItemsDetails.isChecked();
-								fp.startPhoto = fileName;
-								updateDetails(fp);
-								break;
-						}
+						ivStartExpenseItemsDetails.setTag(fileName);
+						ivStartExpenseItemsDetails.setImageBitmap(getPhoto(fileName));
 					}
 				});
 				break;
 			case R.id.btnEndExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				cameraFragment(new OnUsePhotoCallback() {
 					@Override
 					public void onUsePhoto(String fileName) {
-						int typeID = 0;
-						if(expense.type.ID != null) {
-							typeID = Integer.parseInt(expense.type.ID);
-						}
-						switch(typeID) {
-							case ExpenseType.FUEL_CONSUMPTION:
-								fc = (ExpenseFuelConsumptionObj) expense;
-								fc.start = etStartExpenseItemsDetails.getText().toString();
-								fc.end = etEndExpenseItemsDetails.getText().toString();
-								String rate = etRateExpenseItemsDetails.getText().toString().replace(",", "");
-								if(!rate.isEmpty()) {
-									fc.rate = Float.parseFloat(rate);
-								}
-								fc.endPhoto = fileName;
-								updateDetails(fc);
-								break;
-						}
+						ivEndExpenseItemsDetails.setTag(fileName);
+						ivEndExpenseItemsDetails.setImageBitmap(getPhoto(fileName));
 					}
 				});
 				break;
 			case R.id.rlWithORExpenseItemsDetails:
-				CodePanUtils.hideKeyboard(view, getActivity());
 				if(cbWithORExpenseItemsDetails.isChecked()) {
 					cbWithORExpenseItemsDetails.setChecked(false);
 				}
@@ -394,17 +296,18 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 		this.updateExpenseCallback = saveExpenseCallback;
 	}
 
-	public ExpenseObj updateDetails(ExpenseObj expense) {
-		btnItemExpenseItemsDetails.setText(expense.type.name);
-		int type = 0;
-		if(expense.type.ID != null) {
-			type = Integer.parseInt(expense.type.ID);
-		}
+	public ExpenseObj updateExpense(ExpenseObj expense) {
 		String start;
-		String end;
-		String rate;
-		switch(type) {
+		String photo = "";
+		String startPhoto = "";
+		String endPhoto = "";
+		int typeID = 0;
+		if(expense.type.ID != null) {
+			typeID = Integer.parseInt(expense.type.ID);
+		}
+		switch(typeID) {
 			case ExpenseType.FUEL_CONSUMPTION:
+				ExpenseFuelConsumptionObj fc;
 				if(!(expense instanceof ExpenseFuelConsumptionObj)) {
 					fc = new ExpenseFuelConsumptionObj();
 					fc.ID = expense.ID;
@@ -417,40 +320,37 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 					fc.destination = expense.destination;
 					fc.isTag = expense.isTag;
 					fc.isSubmit = expense.isSubmit;
-					expense = fc;
 				}
-				fc = (ExpenseFuelConsumptionObj) expense;
-				ivPhotoExpenseItemsDetails.setVisibility(GONE);
-				btnPhotoExpenseItemsDetails.setVisibility(GONE);
-				rate = etRateExpenseItemsDetails.getText().toString();
+				else {
+					fc = (ExpenseFuelConsumptionObj) expense;
+				}
+				String rate = etRateExpenseItemsDetails.getText().toString().replace(",","");
 				if(!rate.isEmpty()) {
-					fc.rate = Integer.parseInt(rate);
+					fc.rate = Float.parseFloat(rate);
 				}
-				if(fc.rate != 0) {
-					etRateExpenseItemsDetails.setText(nf.format(fc.rate));
-				}
-				llRateExpenseItemsDetails.setVisibility(VISIBLE);
 				start = etStartExpenseItemsDetails.getText().toString();
 				if(!start.isEmpty()) {
 					fc.start = start;
 				}
-				etStartExpenseItemsDetails.setText(fc.start);
-				if(fc.startPhoto == null && fp != null && fp.startPhoto != null) {
-					fc.startPhoto = fp.startPhoto;
+				if(ivStartExpenseItemsDetails.getTag() != null) {
+					startPhoto = ivStartExpenseItemsDetails.getTag().toString();
 				}
-				ivStartExpenseItemsDetails.setImageBitmap(getPhoto(fc.startPhoto));
-				end = etEndExpenseItemsDetails.getText().toString();
+				if(!startPhoto.isEmpty()) {
+					fc.startPhoto = startPhoto;
+				}
+				String end = etEndExpenseItemsDetails.getText().toString();
 				if(!end.isEmpty()) {
 					fc.end = end;
 				}
-				etEndExpenseItemsDetails.setText(fc.end);
-				ivEndExpenseItemsDetails.setImageBitmap(getPhoto(fc.endPhoto));
-				llStartEndExpenseItemsDetails.setVisibility(VISIBLE);
-				rlStartExpenseItemsDetails.setVisibility(VISIBLE);
-				rlEndExpenseItemsDetails.setVisibility(VISIBLE);
-				rlWithORExpenseItemsDetails.setVisibility(GONE);
+				if(ivEndExpenseItemsDetails.getTag() != null) {
+					endPhoto = ivEndExpenseItemsDetails.getTag().toString();
+				}
+				if(!endPhoto.isEmpty()) {
+					fc.endPhoto = endPhoto;
+				}
 				return fc;
 			case ExpenseType.FUEL_PURCHASE:
+				ExpenseFuelPurchaseObj fp;
 				if(!(expense instanceof ExpenseFuelPurchaseObj)) {
 					fp = new ExpenseFuelPurchaseObj();
 					fp.ID = expense.ID;
@@ -463,33 +363,30 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 					fp.destination = expense.destination;
 					fp.isTag = expense.isTag;
 					fp.isSubmit = expense.isSubmit;
-					expense = fp;
 				}
-				fp = (ExpenseFuelPurchaseObj) expense;
-				if(fp.photo == null && d != null && d.photo != null) {
-					fp.photo = d.photo;
+				else {
+					fp = (ExpenseFuelPurchaseObj) expense;
 				}
-				ivPhotoExpenseItemsDetails.setImageBitmap(getPhoto(fp.photo));
-				ivPhotoExpenseItemsDetails.setVisibility(VISIBLE);
-				btnPhotoExpenseItemsDetails.setVisibility(VISIBLE);
-				llRateExpenseItemsDetails.setVisibility(GONE);
+				if(ivPhotoExpenseItemsDetails.getTag() != null) {
+					photo = ivPhotoExpenseItemsDetails.getTag().toString();
+				}
+				if(!photo.isEmpty()) {
+					fp.photo = photo;
+				}
 				start = etStartExpenseItemsDetails.getText().toString();
 				if(!start.isEmpty()) {
 					fp.start = start;
 				}
-				etStartExpenseItemsDetails.setText(fp.start);
-				if(fp.startPhoto == null && fc != null && fc.startPhoto != null) {
-					fp.startPhoto = fc.startPhoto;
+				if(ivStartExpenseItemsDetails.getTag() != null) {
+					startPhoto = ivStartExpenseItemsDetails.getTag().toString();
 				}
-				ivStartExpenseItemsDetails.setImageBitmap(getPhoto(fp.startPhoto));
-				llStartEndExpenseItemsDetails.setVisibility(VISIBLE);
-				rlStartExpenseItemsDetails.setVisibility(VISIBLE);
-				rlEndExpenseItemsDetails.setVisibility(GONE);
+				if(!startPhoto.isEmpty()) {
+					fp.startPhoto = startPhoto;
+				}
 				fp.withOR = cbWithORExpenseItemsDetails.isChecked();
-				cbWithORExpenseItemsDetails.setChecked(fp.withOR);
-				rlWithORExpenseItemsDetails.setVisibility(VISIBLE);
 				return fp;
 			default:
+				ExpenseDefaultObj d;
 				if(!(expense instanceof ExpenseDefaultObj)) {
 					d = new ExpenseDefaultObj();
 					d.ID = expense.ID;
@@ -502,12 +399,62 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 					d.destination = expense.destination;
 					d.isTag = expense.isTag;
 					d.isSubmit = expense.isSubmit;
-					expense = d;
 				}
-				d = (ExpenseDefaultObj) expense;
-				if(d.photo == null && fp != null && fp.photo != null) {
-					d.photo = fp.photo;
+				else {
+					d = (ExpenseDefaultObj) expense;
 				}
+				if(ivPhotoExpenseItemsDetails.getTag() != null) {
+					photo = ivPhotoExpenseItemsDetails.getTag().toString();
+				}
+				if(!photo.isEmpty()) {
+					d.photo = photo;
+				}
+				d.withOR = cbWithORExpenseItemsDetails.isChecked();
+				return d;
+		}
+	}
+
+	public void updateView() {
+		btnItemExpenseItemsDetails.setText(expense.type.name);
+		int typeID = 0;
+		if(expense.type.ID != null) {
+			typeID = Integer.parseInt(expense.type.ID);
+		}
+		switch(typeID) {
+			case ExpenseType.FUEL_CONSUMPTION:
+				ExpenseFuelConsumptionObj fc = (ExpenseFuelConsumptionObj) expense;
+				ivPhotoExpenseItemsDetails.setVisibility(GONE);
+				btnPhotoExpenseItemsDetails.setVisibility(GONE);
+				if(fc.rate != 0) {
+					etRateExpenseItemsDetails.setText(nf.format(fc.rate));
+				}
+				llRateExpenseItemsDetails.setVisibility(VISIBLE);
+				etStartExpenseItemsDetails.setText(fc.start);
+				ivStartExpenseItemsDetails.setImageBitmap(getPhoto(fc.startPhoto));
+				ivStartExpenseItemsDetails.setTag(fc.startPhoto);
+				etEndExpenseItemsDetails.setText(fc.end);
+				ivEndExpenseItemsDetails.setImageBitmap(getPhoto(fc.endPhoto));
+				llStartEndExpenseItemsDetails.setVisibility(VISIBLE);
+				rlStartExpenseItemsDetails.setVisibility(VISIBLE);
+				rlEndExpenseItemsDetails.setVisibility(VISIBLE);
+				rlWithORExpenseItemsDetails.setVisibility(GONE);
+				break;
+			case ExpenseType.FUEL_PURCHASE:
+				ExpenseFuelPurchaseObj fp = (ExpenseFuelPurchaseObj) expense;
+				ivPhotoExpenseItemsDetails.setImageBitmap(getPhoto(fp.photo));
+				ivPhotoExpenseItemsDetails.setVisibility(VISIBLE);
+				btnPhotoExpenseItemsDetails.setVisibility(VISIBLE);
+				llRateExpenseItemsDetails.setVisibility(GONE);
+				etStartExpenseItemsDetails.setText(fp.start);
+				ivStartExpenseItemsDetails.setImageBitmap(getPhoto(fp.startPhoto));
+				llStartEndExpenseItemsDetails.setVisibility(VISIBLE);
+				rlStartExpenseItemsDetails.setVisibility(VISIBLE);
+				rlEndExpenseItemsDetails.setVisibility(GONE);
+				cbWithORExpenseItemsDetails.setChecked(fp.withOR);
+				rlWithORExpenseItemsDetails.setVisibility(VISIBLE);
+				break;
+			default:
+				ExpenseDefaultObj d = (ExpenseDefaultObj) expense;
 				ivPhotoExpenseItemsDetails.setImageBitmap(getPhoto(d.photo));
 				ivPhotoExpenseItemsDetails.setVisibility(VISIBLE);
 				btnPhotoExpenseItemsDetails.setVisibility(VISIBLE);
@@ -515,10 +462,9 @@ public class ExpenseItemsDetailsFragment extends Fragment implements OnClickList
 				llStartEndExpenseItemsDetails.setVisibility(GONE);
 				rlStartExpenseItemsDetails.setVisibility(GONE);
 				rlEndExpenseItemsDetails.setVisibility(GONE);
-				d.withOR = cbWithORExpenseItemsDetails.isChecked();
 				cbWithORExpenseItemsDetails.setChecked(d.withOR);
 				rlWithORExpenseItemsDetails.setVisibility(VISIBLE);
-				return d;
+				break;
 		}
 	}
 

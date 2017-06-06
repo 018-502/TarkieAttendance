@@ -659,7 +659,7 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 					CodePanUtils.alertToast(getActivity(), "Task has been successfully saved.");
 					break;
 				case Result.FAILED:
-					CodePanUtils.alertToast(getActivity(), "Failed to updateDetails task.");
+					CodePanUtils.alertToast(getActivity(), "Failed to updateExpense task.");
 					break;
 			}
 			return false;

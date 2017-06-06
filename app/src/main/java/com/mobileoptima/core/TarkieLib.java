@@ -1387,6 +1387,7 @@ public class TarkieLib {
 		tableList.add(TB.BREAK_OUT);
 		tableList.add(TB.INCIDENT_REPORT);
 		tableList.add(TB.ENTRIES);
+		tableList.add(TB.EXPENSE);
 		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
 			query.clearAll();
@@ -1395,6 +1396,9 @@ public class TarkieLib {
 				case ENTRIES:
 					query.add(new Condition("isDelete", false));
 					query.add(new Condition("isSubmit", true));
+					break;
+				case EXPENSE:
+					query.add(new Condition("isDelete", false));
 					break;
 			}
 			String table = Tables.getName(tb);
@@ -1436,6 +1440,7 @@ public class TarkieLib {
 		int count = 0;
 		ArrayList<TB> tableList = new ArrayList<>();
 		tableList.add(TB.TASK);
+		tableList.add(TB.EXPENSE);
 		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
 			query.clearAll();
