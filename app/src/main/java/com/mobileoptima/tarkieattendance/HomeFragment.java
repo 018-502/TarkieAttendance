@@ -351,6 +351,8 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 			llScheduleHome.addView(child);
 			String message = "You have added a new Visit. Tap " + visit.name + " to edit.";
 			CodePanUtils.alertToast(getActivity(), message);
+			MainActivity main = (MainActivity) getActivity();
+			main.updateSyncCount();
 		}
 	}
 }
