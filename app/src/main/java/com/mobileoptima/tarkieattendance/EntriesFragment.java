@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -76,7 +77,7 @@ public class EntriesFragment extends Fragment implements OnClickListener, OnFrag
 		lvEntries = (ListView) view.findViewById(R.id.lvEntries);
 		btnBackEntries.setOnClickListener(this);
 		btnSelectEntries.setOnClickListener(this);
-		lvEntries.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		lvEntries.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 				EntryObj obj = entryList.get(i);

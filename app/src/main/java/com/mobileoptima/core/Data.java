@@ -1,5 +1,7 @@
 package com.mobileoptima.core;
 
+import android.util.Log;
+
 import com.codepan.database.Condition;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteAdapter;

@@ -1395,7 +1395,7 @@ public class TarkieLib {
 		tableList.add(TB.BREAK_OUT);
 		tableList.add(TB.INCIDENT_REPORT);
 		tableList.add(TB.ENTRIES);
-		tableList.add(TB.EXPENSE);
+		//tableList.add(TB.EXPENSE);
 		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
 			query.clearAll();
@@ -1448,7 +1448,7 @@ public class TarkieLib {
 		int count = 0;
 		ArrayList<TB> tableList = new ArrayList<>();
 		tableList.add(TB.TASK);
-		tableList.add(TB.EXPENSE);
+		//tableList.add(TB.EXPENSE);
 		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
 			query.clearAll();

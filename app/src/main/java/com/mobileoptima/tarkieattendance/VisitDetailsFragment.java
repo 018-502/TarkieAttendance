@@ -244,6 +244,10 @@ public class VisitDetailsFragment extends Fragment implements OnClickListener,
 											visit.entryList.set(index, entry);
 											hasEntriesSaved = true;
 											setWithChanges(true);
+											MainActivity main = (MainActivity) getActivity();
+											main.updateSyncCount();
+											main.reloadEntries();
+											main.reloadPhotos();
 										}
 									});
 									transaction = manager.beginTransaction();

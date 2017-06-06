@@ -176,8 +176,10 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 							llScheduleHome.addView(child, index);
 						}
 						else {
-							visitList.remove(index);
-							llScheduleHome.removeViewAt(index);
+							if(!visitList.isEmpty()) {
+								visitList.remove(index);
+								llScheduleHome.removeViewAt(index);
+							}
 						}
 						MainActivity main = (MainActivity) getActivity();
 						main.updateSyncCount();

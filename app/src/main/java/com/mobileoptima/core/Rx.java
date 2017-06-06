@@ -836,23 +836,24 @@ public class Rx {
 					JSONArray dataArray = responseObj.getJSONArray("data");
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
-						String storeID = dataObj.getString("store_id");
 						String name = dataObj.getString("store_name");
 						String address = dataObj.getString("address");
+						String webStoreID = dataObj.getString("store_id");
 						name = CodePanUtils.handleUniCode(name);
 						address = CodePanUtils.handleUniCode(address);
 						query.clearAll();
 						query.add(new FieldValue("name", name));
 						query.add(new FieldValue("address", address));
-						query.add(new FieldValue("webStoreID", storeID));
+						query.add(new FieldValue("webStoreID", webStoreID));
 						query.add(new FieldValue("gpsLongitude", dataObj.getDouble("longitude")));
 						query.add(new FieldValue("gpsLatitude", dataObj.getDouble("latitude")));
 						query.add(new FieldValue("radius", dataObj.getInt("geo_fence_radius")));
-						String sql = "SELECT ID FROM " + table + " WHERE webStoreID = '" + storeID + "'";
+						String sql = "SELECT ID FROM " + table + " WHERE webStoreID = '" + webStoreID + "'";
 						if(!db.isRecordExists(sql)) {
 							binder.insert(table, query);
 						}
 						else {
+							String storeID = db.getString(sql);
 							binder.update(table, query, storeID);
 						}
 					}
@@ -1488,8 +1489,6 @@ public class Rx {
 					JSONArray dataArray = responseObj.getJSONArray("data");
 					for(int d = 0; d < dataArray.length(); d++) {
 						JSONObject dataObj = dataArray.getJSONObject(d);
-
-
 						String ID = dataObj.getString("expense_type_id");
 						String name = dataObj.getString("expense_type_name");
 						boolean isRequired = dataObj.getString("is_required").equals("yes");
