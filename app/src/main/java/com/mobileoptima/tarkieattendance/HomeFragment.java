@@ -169,10 +169,16 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 				details.setOnSaveVisitCallback(new OnSaveVisitCallback() {
 					@Override
 					public void onSaveVisit(VisitObj visit) {
-						visitList.set(index, visit);
-						View child = getSchedule(inflater, container, visit);
-						llScheduleHome.removeViewAt(index);
-						llScheduleHome.addView(child, index);
+						if(!visit.isCheckOut) {
+							visitList.set(index, visit);
+							View child = getSchedule(inflater, container, visit);
+							llScheduleHome.removeViewAt(index);
+							llScheduleHome.addView(child, index);
+						}
+						else {
+							visitList.remove(index);
+							llScheduleHome.removeViewAt(index);
+						}
 						MainActivity main = (MainActivity) getActivity();
 						main.updateSyncCount();
 						main.reloadVisits();
