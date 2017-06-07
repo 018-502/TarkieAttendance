@@ -239,7 +239,7 @@ public class Tx {
 			String apiKey = TarkieLib.getAPIKey(db);
 			BreakInObj in = out.breakIn;
 			EmployeeObj emp = out.emp;
-			GpsObj gps = in.gps;
+			GpsObj gps = out.gps;
 			paramsObj.put("api_key", apiKey);
 			paramsObj.put("date_out", out.dDate);
 			paramsObj.put("time_out", out.dTime);
