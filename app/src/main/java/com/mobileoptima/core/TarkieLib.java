@@ -1412,7 +1412,8 @@ public class TarkieLib {
 					break;
 			}
 			String table = Tables.getName(tb);
-			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE " + query.getConditions();
+			String sql = "SELECT COUNT(ID) FROM " + table + " WHERE " +
+					query.getConditions();
 			count += db.getInt(sql);
 		}
 		return count;
@@ -1423,6 +1424,8 @@ public class TarkieLib {
 		ArrayList<TB> tableList = new ArrayList<>();
 		tableList.add(TB.TIME_IN);
 		tableList.add(TB.TIME_OUT);
+		tableList.add(TB.CHECK_IN);
+		tableList.add(TB.CHECK_OUT);
 		tableList.add(TB.PHOTO);
 		SQLiteQuery query = new SQLiteQuery();
 		for(TB tb : tableList) {
@@ -1434,7 +1437,13 @@ public class TarkieLib {
 					query.add(new Condition("isDelete", false));
 					query.add(new Condition("fileName", Operator.NOT_NULL));
 					break;
-				default:
+				case CHECK_IN:
+				case CHECK_OUT:
+					query.add(new Condition("isUpload", false));
+					query.add(new Condition("photo", Operator.NOT_NULL));
+					break;
+				case TIME_IN:
+				case TIME_OUT:
 					query.add(new Condition("isPhotoUpload", false));
 					query.add(new Condition("photo", Operator.NOT_NULL));
 					break;

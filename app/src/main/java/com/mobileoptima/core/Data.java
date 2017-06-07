@@ -1,5 +1,7 @@
 package com.mobileoptima.core;
 
+import android.util.Log;
+
 import com.codepan.database.Condition;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteAdapter;
@@ -125,6 +127,7 @@ public class Data {
 				"f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf LEFT JOIN " + te + " te " +
 				"ON te.taskFormID = tf.ID LEFT JOIN " + e + " e ON e.ID = te.entryID " +
 				"WHERE f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
+		Log.e("query", ""+query);
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
@@ -717,6 +720,53 @@ public class Data {
 			in.task = task;
 			out.checkIn = in;
 			out.gps = gps;
+			checkOutList.add(out);
+		}
+		cursor.close();
+		return checkOutList;
+	}
+
+	public static ArrayList<CheckInObj> loadCheckInUpload(SQLiteAdapter db) {
+		ArrayList<CheckInObj> checkInList = new ArrayList<>();
+		String t = Tables.getName(TB.TASK);
+		String i = Tables.getName(TB.CHECK_IN);
+		String query = "SELECT i.ID, i.photo, t.ID, t.webTaskID FROM " + i + " i, " +
+				t + " t WHERE i.isUpload = 0 AND t.ID = i.taskID AND i.photo NOT NULL";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			CheckInObj in = new CheckInObj();
+			in.ID = cursor.getString(0);
+			in.photo = cursor.getString(1);
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(2);
+			task.webTaskID = cursor.getString(3);
+			in.task = task;
+			checkInList.add(in);
+		}
+		cursor.close();
+		return checkInList;
+	}
+
+	public static ArrayList<CheckOutObj> loadCheckOutUpload(SQLiteAdapter db) {
+		ArrayList<CheckOutObj> checkOutList = new ArrayList<>();
+		String t = Tables.getName(TB.TASK);
+		String i = Tables.getName(TB.CHECK_IN);
+		String o = Tables.getName(TB.CHECK_OUT);
+		String query = "SELECT o.ID, o.photo, i.ID, t.ID, t.webTaskID FROM " + o + " o, " +
+				t + " t, " + i + " i WHERE o.isUpload = 0 AND t.ID = i.taskID AND " +
+				"o.photo NOT NULL AND i.ID = o.checkInID";
+		Cursor cursor = db.read(query);
+		while(cursor.moveToNext()) {
+			CheckOutObj out = new CheckOutObj();
+			out.ID = cursor.getString(0);
+			out.photo = cursor.getString(1);
+			CheckInObj in = new CheckInObj();
+			in.ID = cursor.getString(2);
+			TaskObj task = new TaskObj();
+			task.ID = cursor.getString(3);
+			task.webTaskID = cursor.getString(4);
+			in.task = task;
+			out.checkIn = in;
 			checkOutList.add(out);
 		}
 		cursor.close();

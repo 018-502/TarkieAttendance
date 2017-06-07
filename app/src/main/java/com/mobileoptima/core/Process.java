@@ -363,6 +363,20 @@ public class Process {
 							handler.sendMessage(handler.obtainMessage());
 						}
 					}
+					for(CheckInObj in : Data.loadCheckInUpload(db)) {
+						if(result) {
+							result = Tx.uploadCheckInPhoto(db, in, errorCallback);
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
+					for(CheckOutObj out : Data.loadCheckOutUpload(db)) {
+						if(result) {
+							result = Tx.uploadCheckOutPhoto(db, out, errorCallback);
+							Thread.sleep(250);
+							handler.sendMessage(handler.obtainMessage());
+						}
+					}
 					for(PhotoObj photo : Data.loadSignatureUpload(db)) {
 						if(result) {
 							result = Tx.uploadSignature(db, photo, errorCallback);

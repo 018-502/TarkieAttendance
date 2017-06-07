@@ -601,6 +601,129 @@ public class Tx {
 		return result;
 	}
 
+	public static boolean uploadCheckInPhoto(SQLiteAdapter db, CheckInObj in, OnErrorCallback errorCallback) {
+		boolean result = false;
+		final int INDENT = 4;
+		String action = "upload-check-in-out-photo";
+		String url = App.WEB_FILES + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			TaskObj task = in.task;
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("itinerary_id", task.webTaskID);
+			paramsObj.put("type", "check-in");
+			params = paramsObj.toString(INDENT);
+			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
+					"/" + in.photo;
+			File file = new File(path);
+			if(!file.exists() || file.isDirectory()) {
+				return TarkieLib.updateStatusUpload(db, TB.CHECK_IN, in.ID);
+			}
+			response = CodePanUtils.uploadFile(url, params, "image", "image/png", file);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					if(status.equals("ok")) {
+						result = TarkieLib.updateStatusUpload(db, TB.CHECK_IN, in.ID);
+						if(result) {
+							CodePanUtils.deleteFile(db.getContext(), App.FOLDER, in.photo);
+						}
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
+	public static boolean uploadCheckOutPhoto(SQLiteAdapter db, CheckOutObj out, OnErrorCallback errorCallback) {
+		boolean result = false;
+		final int INDENT = 4;
+		String action = "upload-check-in-out-photo";
+		String url = App.WEB_FILES + action;
+		String response = null;
+		String params = null;
+		try {
+			JSONObject paramsObj = new JSONObject();
+			String apiKey = TarkieLib.getAPIKey(db);
+			CheckInObj in = out.checkIn;
+			TaskObj task = in.task;
+			paramsObj.put("api_key", apiKey);
+			paramsObj.put("itinerary_id", task.webTaskID);
+			paramsObj.put("type", "check-out");
+			params = paramsObj.toString(INDENT);
+			String path = db.getContext().getDir(App.FOLDER, Context.MODE_PRIVATE).getPath() +
+					"/" + out.photo;
+			File file = new File(path);
+			if(!file.exists() || file.isDirectory()) {
+				return TarkieLib.updateStatusUpload(db, TB.CHECK_OUT, out.ID);
+			}
+			response = CodePanUtils.uploadFile(url, params, "image", "image/png", file);
+			CodePanUtils.logHttpRequest(params, response);
+			JSONObject responseObj = new JSONObject(response);
+			if(responseObj.isNull("error")) {
+				JSONArray initArray = responseObj.getJSONArray("init");
+				for(int i = 0; i < initArray.length(); i++) {
+					JSONObject initObj = initArray.getJSONObject(i);
+					String status = initObj.getString("status");
+					String message = initObj.getString("message");
+					if(status.equals("ok")) {
+						result = TarkieLib.updateStatusUpload(db, TB.CHECK_OUT, out.ID);
+						if(result) {
+							CodePanUtils.deleteFile(db.getContext(), App.FOLDER, out.photo);
+						}
+					}
+					else {
+						if(errorCallback != null) {
+							errorCallback.onError(message, params, response, true);
+						}
+						return false;
+					}
+				}
+			}
+			else {
+				JSONObject errorObj = responseObj.getJSONObject("error");
+				String message = errorObj.getString("message");
+				if(errorCallback != null) {
+					errorCallback.onError(message, params, response, true);
+				}
+			}
+		}
+		catch(JSONException je) {
+			je.printStackTrace();
+			if(errorCallback != null) {
+				errorCallback.onError(je.getMessage(), params, response, false);
+			}
+		}
+		return result;
+	}
+
 	public static boolean uploadSignature(SQLiteAdapter db, PhotoObj photo, OnErrorCallback errorCallback) {
 		boolean result = false;
 		final int INDENT = 4;
@@ -934,7 +1057,9 @@ public class Tx {
 			for(EntryObj entry : task.entryList) {
 				FormObj form = entry.form;
 				formArray.put(form.ID);
-				entryArray.put(entry.webEntryID);
+				if(entry.webEntryID != null) {
+					entryArray.put(entry.webEntryID);
+				}
 			}
 			JSONArray photoArray = new JSONArray();
 			for(PhotoObj photo : task.photoList) {
@@ -1029,7 +1154,9 @@ public class Tx {
 			for(EntryObj entry : task.entryList) {
 				FormObj form = entry.form;
 				formArray.put(form.ID);
-				entryArray.put(entry.webEntryID);
+				if(entry.webEntryID != null) {
+					entryArray.put(entry.webEntryID);
+				}
 			}
 			JSONArray photoArray = new JSONArray();
 			for(PhotoObj photo : task.photoList) {
