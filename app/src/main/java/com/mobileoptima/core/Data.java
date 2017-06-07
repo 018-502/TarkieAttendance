@@ -1,7 +1,5 @@
 package com.mobileoptima.core;
 
-import android.util.Log;
-
 import com.codepan.database.Condition;
 import com.codepan.database.Field;
 import com.codepan.database.SQLiteAdapter;
@@ -127,7 +125,6 @@ public class Data {
 				"f.ID, f.name, f.logoUrl FROM " + f + " f, " + tf + " tf LEFT JOIN " + te + " te " +
 				"ON te.taskFormID = tf.ID LEFT JOIN " + e + " e ON e.ID = te.entryID " +
 				"WHERE f.ID = tf.formID AND tf.taskID = '" + taskID + "' AND tf.isTag = 1";
-		Log.e("query", ""+query);
 		Cursor cursor = db.read(query);
 		while(cursor.moveToNext()) {
 			EntryObj entry = new EntryObj();
