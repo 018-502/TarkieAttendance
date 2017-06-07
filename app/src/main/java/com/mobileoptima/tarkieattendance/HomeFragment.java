@@ -25,10 +25,12 @@ import com.codepan.widget.CodePanLabel;
 import com.mobileoptima.callback.Interface.OnOverrideCallback;
 import com.mobileoptima.callback.Interface.OnSaveEntryCallback;
 import com.mobileoptima.callback.Interface.OnSaveVisitCallback;
+import com.mobileoptima.constant.InventoryType;
 import com.mobileoptima.constant.Tag;
 import com.mobileoptima.core.Data;
 import com.mobileoptima.core.TarkieLib;
 import com.mobileoptima.model.FormObj;
+import com.mobileoptima.model.InventoryObj;
 import com.mobileoptima.model.StoreObj;
 import com.mobileoptima.model.VisitObj;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -43,12 +45,13 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 
 	private LinearLayout llInventoryHome, llScheduleHome, llFormHome;
 	private OnSaveEntryCallback saveEntryCallback;
+	private ArrayList<InventoryObj> inventoryList;
 	private OnOverrideCallback overrideCallback;
 	private FragmentTransaction transaction;
 	private CodePanButton btnNewVisitHome;
 	private ArrayList<VisitObj> visitList;
-	private DisplayImageOptions options;
 	private ArrayList<FormObj> formList;
+	private DisplayImageOptions options;
 	private CodePanLabel tvStoreHome;
 	private FragmentManager manager;
 	private ImageLoader imageLoader;
@@ -89,6 +92,7 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 		updateLogo(logoUrl);
 		loadSchedule(db);
 		loadForms(db);
+		loadInventory(db);
 		return view;
 	}
 
@@ -222,59 +226,7 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 			if(view != null) {
 				ViewGroup container = (ViewGroup) view.getParent();
 				for(final FormObj obj : formList) {
-					View child = inflater.inflate(R.layout.home_list_item, container, false);
-					CodePanLabel tvNameHome = (CodePanLabel) child.findViewById(R.id.tvNameHome);
-					CodePanButton btnItemHome = (CodePanButton) child.findViewById(R.id.btnItemHome);
-					ImageView ivLogoHome = (ImageView) child.findViewById(R.id.ivLogoHome);
-					imageLoader.displayImage(obj.logoUrl, ivLogoHome, options);
-					btnItemHome.setOnClickListener(new OnClickListener() {
-						@Override
-						public void onClick(View view) {
-							if(TarkieLib.isTimeIn(db)) {
-								FormFragment form = new FormFragment();
-								form.setForm(obj);
-								form.setOnOverrideCallback(overrideCallback);
-								form.setOnSaveEntryCallback(saveEntryCallback);
-								transaction = manager.beginTransaction();
-								transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
-										R.anim.slide_in_ltr, R.anim.slide_out_ltr);
-								transaction.replace(R.id.rlMain, form, Tag.FORM);
-								transaction.addToBackStack(null);
-								transaction.commit();
-							}
-							else {
-								Resources res = getResources();
-								String message = res.getString(R.string.time_in_required_form_message);
-								String bold = res.getString(R.string.proxima_nova_bold);
-								ArrayList<SpannableMap> list = new ArrayList<>();
-								int start = message.indexOf("'");
-								int end = message.length() - 1;
-								list.add(new SpannableMap(getActivity(), bold, start, end));
-								final AlertDialogFragment alert = new AlertDialogFragment();
-								alert.setDialogTitle(R.string.time_in_required_title);
-								alert.setDialogMessage(R.string.time_in_required_form_message);
-								alert.setSpannableList(list);
-								alert.setPositiveButton("OK", new View.OnClickListener() {
-									@Override
-									public void onClick(View view) {
-										manager.popBackStack();
-										MainActivity main = (MainActivity) getActivity();
-										main.openMenu();
-									}
-								});
-								transaction = manager.beginTransaction();
-								transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
-										R.anim.fade_in, R.anim.fade_out);
-								transaction.add(R.id.rlMain, alert);
-								transaction.addToBackStack(null);
-								transaction.commit();
-							}
-						}
-					});
-					if(formList.indexOf(obj) == formList.size() - 1) {
-						btnItemHome.setBackgroundResource(R.drawable.state_rect_trans_rad_bot_five);
-					}
-					tvNameHome.setText(obj.name);
+					View child = getForm(inflater, container, obj);
 					llFormHome.addView(child);
 				}
 				MainActivity main = (MainActivity) getActivity();
@@ -283,6 +235,158 @@ public class HomeFragment extends Fragment implements ImageLoadingListener, OnCl
 			return true;
 		}
 	});
+
+	public View getForm(LayoutInflater inflater, ViewGroup container, final FormObj obj) {
+		View child = inflater.inflate(R.layout.home_list_item, container, false);
+		CodePanLabel tvNameHome = (CodePanLabel) child.findViewById(R.id.tvNameHome);
+		CodePanButton btnItemHome = (CodePanButton) child.findViewById(R.id.btnItemHome);
+		ImageView ivLogoHome = (ImageView) child.findViewById(R.id.ivLogoHome);
+		imageLoader.displayImage(obj.logoUrl, ivLogoHome, options);
+		btnItemHome.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(TarkieLib.isTimeIn(db)) {
+					FormFragment form = new FormFragment();
+					form.setForm(obj);
+					form.setOnOverrideCallback(overrideCallback);
+					form.setOnSaveEntryCallback(saveEntryCallback);
+					transaction = manager.beginTransaction();
+					transaction.setCustomAnimations(R.anim.slide_in_rtl, R.anim.slide_out_rtl,
+							R.anim.slide_in_ltr, R.anim.slide_out_ltr);
+					transaction.replace(R.id.rlMain, form, Tag.FORM);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				}
+				else {
+					Resources res = getResources();
+					String message = res.getString(R.string.time_in_required_form_message);
+					String bold = res.getString(R.string.proxima_nova_bold);
+					ArrayList<SpannableMap> list = new ArrayList<>();
+					int start = message.indexOf("'");
+					int end = message.length() - 1;
+					list.add(new SpannableMap(getActivity(), bold, start, end));
+					final AlertDialogFragment alert = new AlertDialogFragment();
+					alert.setDialogTitle(R.string.time_in_required_title);
+					alert.setDialogMessage(R.string.time_in_required_form_message);
+					alert.setSpannableList(list);
+					alert.setPositiveButton("OK", new View.OnClickListener() {
+						@Override
+						public void onClick(View view) {
+							manager.popBackStack();
+							MainActivity main = (MainActivity) getActivity();
+							main.openMenu();
+						}
+					});
+					transaction = manager.beginTransaction();
+					transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+							R.anim.fade_in, R.anim.fade_out);
+					transaction.add(R.id.rlMain, alert);
+					transaction.addToBackStack(null);
+					transaction.commit();
+				}
+			}
+		});
+		if(formList.indexOf(obj) == formList.size() - 1) {
+			btnItemHome.setBackgroundResource(R.drawable.state_rect_trans_rad_bot_five);
+		}
+		tvNameHome.setText(obj.name);
+		return child;
+	}
+
+	public void loadInventory(final SQLiteAdapter db) {
+		Thread bg = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					inventoryList = Data.loadInventory(db);
+					inventoryHandler.sendMessage(inventoryHandler.obtainMessage());
+				}
+				catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		bg.start();
+	}
+
+	Handler inventoryHandler = new Handler(new Callback() {
+		@Override
+		public boolean handleMessage(Message message) {
+			llInventoryHome.removeAllViews();
+			LayoutInflater inflater = getActivity().getLayoutInflater();
+			View view = getView();
+			if(view != null) {
+				ViewGroup container = (ViewGroup) view.getParent();
+				for(final InventoryObj inventory : inventoryList) {
+					View child = getInventory(inflater, container, inventory);
+					llInventoryHome.addView(child);
+				}
+			}
+			return true;
+		}
+	});
+
+	public View getInventory(LayoutInflater inflater, ViewGroup container, final InventoryObj inventory) {
+		View child = inflater.inflate(R.layout.home_list_item, container, false);
+		CodePanLabel tvNameHome = (CodePanLabel) child.findViewById(R.id.tvNameHome);
+		CodePanButton btnItemHome = (CodePanButton) child.findViewById(R.id.btnItemHome);
+		ImageView ivLogoHome = (ImageView) child.findViewById(R.id.ivLogoHome);
+		switch(inventory.type) {
+			case InventoryType.TRACKING:
+				ivLogoHome.setImageResource(R.drawable.ic_tracking);
+				break;
+			case InventoryType.ORDERS:
+				ivLogoHome.setImageResource(R.drawable.ic_orders);
+				break;
+			case InventoryType.PULL_OUTS:
+				ivLogoHome.setImageResource(R.drawable.ic_pull_out);
+				break;
+		}
+		btnItemHome.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				if(TarkieLib.isTimeIn(db)) {
+					//TODO Inventory Module
+				}
+				else {
+					timeInRequired();
+				}
+			}
+		});
+		if(inventoryList.indexOf(inventory) == inventoryList.size() - 1) {
+			btnItemHome.setBackgroundResource(R.drawable.state_rect_trans_rad_bot_five);
+		}
+		tvNameHome.setText(inventory.name);
+		return child;
+	}
+
+	public void timeInRequired() {
+		Resources res = getResources();
+		String message = res.getString(R.string.time_in_required_form_message);
+		String bold = res.getString(R.string.proxima_nova_bold);
+		ArrayList<SpannableMap> list = new ArrayList<>();
+		int start = message.indexOf("'");
+		int end = message.length() - 1;
+		list.add(new SpannableMap(getActivity(), bold, start, end));
+		final AlertDialogFragment alert = new AlertDialogFragment();
+		alert.setDialogTitle(R.string.time_in_required_title);
+		alert.setDialogMessage(R.string.time_in_required_form_message);
+		alert.setSpannableList(list);
+		alert.setPositiveButton("OK", new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				manager.popBackStack();
+				MainActivity main = (MainActivity) getActivity();
+				main.openMenu();
+			}
+		});
+		transaction = manager.beginTransaction();
+		transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out,
+				R.anim.fade_in, R.anim.fade_out);
+		transaction.add(R.id.rlMain, alert);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
 
 	public void setOnOverrideCallback(OnOverrideCallback overrideCallback) {
 		this.overrideCallback = overrideCallback;
